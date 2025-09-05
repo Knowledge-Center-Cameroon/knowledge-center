@@ -13,6 +13,7 @@ import {
   Send
 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
+import { Link } from "react-router-dom";
 
 const Footer = () => {
   const [email, setEmail] = useState("");
@@ -28,19 +29,12 @@ const Footer = () => {
     }
   };
 
-  const scrollToSection = (sectionId: string) => {
-    const element = document.getElementById(sectionId);
-    if (element) {
-      element.scrollIntoView({ behavior: "smooth" });
-    }
-  };
-
   return (
-    <footer className="bg-gradient-subtle border-t border-border">
+    <footer className="border-t border-border">
       {/* Newsletter Section */}
-      <div className="bg-gradient-primary py-16">
-        <div className="container mx-auto px-4 lg:px-8 text-center">
-          <h3 className="text-3xl font-playfair font-bold text-white mb-4">
+      <div className="bg-black py-16">
+        <div className="container mx-auto px-4 lg:px-8 text-center text-white">
+          <h3 className="text-3xl font-playfair font-bold mb-4">
             Stay Updated with KC
           </h3>
           <p className="text-white/90 mb-8 max-w-2xl mx-auto">
@@ -60,7 +54,7 @@ const Footer = () => {
             <Button 
               type="submit" 
               variant="secondary"
-              className="bg-white text-primary hover:bg-white/90"
+              className="bg-white text-black hover:bg-white/90"
             >
               <Send className="h-4 w-4 mr-2" />
               Subscribe
@@ -75,13 +69,16 @@ const Footer = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {/* Brand Section */}
             <div className="lg:col-span-1">
-              <div className="flex items-center space-x-3 mb-6">
-                <div className="w-12 h-12 bg-gradient-primary rounded-full flex items-center justify-center">
-                  <GraduationCap className="w-7 h-7 text-white" />
-                </div>
-                <div className="text-xl font-playfair font-bold">
-                  <span className="text-primary">KC</span>
-                  <span className="text-accent ml-1">Knowledge Center</span>
+              <div className="flex items-center gap-3 mb-6">
+                <img
+                  src="/logo_trans.png"
+                  alt="Knowledge Center Logo"
+                  className="h-10 w-10 md:h-12 md:w-12 object-contain"
+                />
+                <div className="text-lg md:text-xl font-heading font-bold leading-tight">
+                  <span className="text-kc-blue">Knowledge</span>
+                  <span className="text-kc-red ml-1">Center</span>
+                  <span className="block text-[12px] text-muted-foreground font-normal -mt-0.5">Cameroon</span>
                 </div>
               </div>
               <p className="text-muted-foreground mb-6 leading-relaxed">
@@ -135,20 +132,20 @@ const Footer = () => {
               <h4 className="text-lg font-playfair font-semibold mb-6">Quick Links</h4>
               <ul className="space-y-3">
                 {[
-                  { label: "Home", id: "home" },
-                  { label: "About Us", id: "about" },
-                  { label: "Our Projects", id: "projects" },
-                  { label: "Blog", id: "blog" },
-                  { label: "Meet Our Team", id: "team" },
-                  { label: "Contact Us", id: "contact" },
+                  { label: "Home", to: "/" },
+                  { label: "About Us", to: "/about" },
+                  { label: "Our Projects", to: "/projects" },
+                  { label: "Blog", to: "/blog" },
+                  { label: "Meet Our Team", to: "/team" },
+                  { label: "Contact Us", to: "/contact" },
                 ].map((link) => (
-                  <li key={link.id}>
-                    <button
-                      onClick={() => scrollToSection(link.id)}
+                  <li key={link.to}>
+                    <Link
+                      to={link.to}
                       className="text-muted-foreground hover:text-primary transition-smooth"
                     >
                       {link.label}
-                    </button>
+                    </Link>
                   </li>
                 ))}
               </ul>
@@ -159,36 +156,36 @@ const Footer = () => {
               <h4 className="text-lg font-playfair font-semibold mb-6">Our Programs</h4>
               <ul className="space-y-3">
                 <li>
-                  <button
-                    onClick={() => scrollToSection("stem-registration")}
+                  <Link
+                    to="/stem-registration"
                     className="text-muted-foreground hover:text-primary transition-smooth"
                   >
                     STEM Education Program
-                  </button>
+                  </Link>
                 </li>
                 <li>
-                  <button
-                    onClick={() => scrollToSection("projects")}
+                  <Link
+                    to="/projects"
                     className="text-muted-foreground hover:text-primary transition-smooth"
                   >
                     Summer Education Program
-                  </button>
+                  </Link>
                 </li>
                 <li>
-                  <button
-                    onClick={() => scrollToSection("projects")}
+                  <Link
+                    to="/projects"
                     className="text-muted-foreground hover:text-primary transition-smooth"
                   >
                     Weekend School
-                  </button>
+                  </Link>
                 </li>
                 <li>
-                  <button
-                    onClick={() => scrollToSection("projects")}
+                  <Link
+                    to="/projects"
                     className="text-muted-foreground hover:text-primary transition-smooth"
                   >
                     STEM Competition
-                  </button>
+                  </Link>
                 </li>
               </ul>
             </div>
@@ -231,26 +228,23 @@ const Footer = () => {
       </div>
 
       {/* Bottom Bar */}
-      <div className="border-t border-border py-8">
+      <div className="bg-black text-white border-t border-border py-8">
         <div className="container mx-auto px-4 lg:px-8">
           <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
-            <p className="text-muted-foreground text-center md:text-left">
-              © {new Date().getFullYear()} Knowledge Center Cameroon. All rights reserved.
+            <p className="text-white/80 text-center md:text-left">
+              &copy; {new Date().getFullYear()} Knowledge Center Cameroon. All rights reserved.
             </p>
             
             <div className="flex space-x-6 text-sm">
-              <a href="/privacy" className="text-muted-foreground hover:text-primary transition-smooth">
+              <Link to="/privacy" className="text-white/80 hover:text-white transition-smooth">
                 Privacy Policy
-              </a>
-              <a href="/terms" className="text-muted-foreground hover:text-primary transition-smooth">
+              </Link>
+              <Link to="/terms" className="text-white/80 hover:text-white transition-smooth">
                 Terms of Service
-              </a>
-              <button
-                onClick={() => scrollToSection("donations")}
-                className="text-muted-foreground hover:text-accent transition-smooth"
-              >
+              </Link>
+              <Link to="/donate" className="text-white hover:text-accent transition-smooth">
                 Donate
-              </button>
+              </Link>
             </div>
           </div>
         </div>

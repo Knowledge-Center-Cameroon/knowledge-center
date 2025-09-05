@@ -58,7 +58,7 @@ const Activities = () => {
   ];
 
   return (
-    <section className="py-20 lg:py-32 bg-gradient-subtle">
+    <section className="py-20 lg:py-32 bg-black">
       <div className="container mx-auto px-4 lg:px-8">
         {/* Header */}
         <div className="text-center mb-16">
@@ -76,7 +76,7 @@ const Activities = () => {
           {activities.map((activity, index) => (
             <Card 
               key={index} 
-              className={`card-gradient shadow-elegant overflow-hidden transition-bounce hover:scale-105 ${
+              className={`shadow-elegant overflow-hidden transition-bounce hover:scale-105 ${
                 index % 2 === 0 ? 'lg:flex-row' : 'lg:flex-row-reverse'
               }`}
             >
@@ -89,12 +89,12 @@ const Activities = () => {
                       alt={activity.title}
                       className="w-full h-full object-cover transition-transform hover:scale-110 duration-700"
                     />
-                    <div className={`absolute inset-0 bg-gradient-to-r ${activity.gradient} opacity-20`} />
+                    <div className="absolute inset-0 bg-black/30" />
                   </div>
 
                   {/* Content Section */}
                   <div className="p-8 lg:p-12 flex flex-col justify-center">
-                    <div className={`w-16 h-16 bg-gradient-to-r ${activity.gradient} rounded-full flex items-center justify-center mb-6`}>
+                    <div className={`w-16 h-16 bg-kc-blue rounded-full flex items-center justify-center mb-6`}>
                       <activity.icon className="h-8 w-8 text-white" />
                     </div>
                     
