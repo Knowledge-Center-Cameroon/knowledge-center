@@ -9,6 +9,7 @@ import {
   Users,
   Heart
 } from "lucide-react";
+import { motion } from "framer-motion";
 
 const Team = () => {
   const [flippedCard, setFlippedCard] = useState<number | null>(null);
@@ -84,7 +85,13 @@ const Team = () => {
     <section id="team" className="py-20 lg:py-32 bg-gradient-subtle">
       <div className="container mx-auto px-4 lg:px-8">
         {/* Header */}
-        <div className="text-center mb-16">
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-80px" }}
+          transition={{ duration: 0.4 }}
+          className="text-center mb-16"
+        >
           <h2 className="text-4xl lg:text-5xl font-playfair font-bold mb-6">
             Meet Our <span className="text-gradient">Team</span>
           </h2>
@@ -92,15 +99,18 @@ const Team = () => {
             With a vibrant and committed staff body, we aim for nothing less than the best. 
             Meet the passionate educators who make KC's mission a reality.
           </p>
-        </div>
+        </motion.div>
 
         {/* Team Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
           {teamMembers.map((member, index) => (
-            <div 
-              key={index} 
+            <motion.div 
+              key={index}
               className="relative h-80 cursor-pointer perspective-1000"
               onClick={() => handleCardClick(index)}
+              whileHover={{ y: -4 }}
+              whileTap={{ scale: 0.98 }}
+              transition={{ type: "spring", stiffness: 260, damping: 20 }}
             >
               <div className={`relative w-full h-full transition-transform duration-700 transform-style-3d ${
                 flippedCard === index ? 'rotate-y-180' : ''
@@ -158,7 +168,7 @@ const Team = () => {
                   </CardContent>
                 </Card>
               </div>
-            </div>
+            </motion.div>
           ))}
         </div>
 
@@ -172,7 +182,7 @@ const Team = () => {
           </div>
           
           <div className="grid md:grid-cols-3 gap-8">
-            <div className="text-center">
+            <motion.div className="text-center" whileHover={{ y: -4 }}>
               <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Heart className="h-6 w-6 text-white" />
               </div>
@@ -180,9 +190,9 @@ const Team = () => {
               <p className="text-white/80 text-sm">
                 We believe in creating a family environment where every member feels valued and supported.
               </p>
-            </div>
+            </motion.div>
             
-            <div className="text-center">
+            <motion.div className="text-center" whileHover={{ y: -4 }}>
               <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4">
                 <GraduationCap className="h-6 w-6 text-white" />
               </div>
@@ -190,9 +200,9 @@ const Team = () => {
               <p className="text-white/80 text-sm">
                 We are committed to delivering the highest quality education and achieving exceptional results.
               </p>
-            </div>
+            </motion.div>
             
-            <div className="text-center">
+            <motion.div className="text-center" whileHover={{ y: -4 }}>
               <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Users className="h-6 w-6 text-white" />
               </div>
@@ -200,7 +210,7 @@ const Team = () => {
               <p className="text-white/80 text-sm">
                 Together, we achieve more. Our collaborative approach ensures comprehensive student support.
               </p>
-            </div>
+            </motion.div>
           </div>
         </div>
       </div>
