@@ -5,6 +5,8 @@ import heroImage from "@/assets/hero-image.jpg";
 import studentsImage from "@/assets/students-studying.jpg";
 import scienceLabImage from "@/assets/science-lab.jpg";
 import sportsImage from "@/assets/sports-recreation.jpg";
+import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
 
 const Hero = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -60,7 +62,7 @@ const Hero = () => {
   };
 
   return (
-    <section id="home" className="relative h-screen flex items-center justify-center overflow-hidden">
+    <section id="home" className="relative h-[78vh] md:h-[88vh] min-h-[560px] md:min-h-[620px] flex items-center justify-center overflow-hidden">
       {/* Background Images */}
       <div className="absolute inset-0">
         {slides.map((slide, index) => (
@@ -75,52 +77,61 @@ const Hero = () => {
               alt={slide.title}
               className="w-full h-full object-cover"
             />
-            <div className="absolute inset-0 bg-black/50" />
+            {/* Solid overlay for better text contrast */}
+            <div className="absolute inset-0 bg-black/65" />
           </div>
         ))}
       </div>
 
       {/* Content */}
-      <div className="relative z-10 container mx-auto px-4 lg:px-8 text-center text-white">
-        <div className="max-w-5xl mx-auto animate-fade-in">
-          <h1 className="text-4xl md:text-6xl lg:text-7xl font-heading font-bold mb-6 leading-tight">
-            <span className="text-kc-blue bg-white/90 px-4 py-2 rounded-lg inline-block mb-2 mr-2">Knowledge</span>
-            <span className="text-kc-red bg-white/90 px-4 py-2 rounded-lg inline-block mb-2">Center</span>
-            <br />
-            <span className="text-white text-3xl md:text-4xl lg:text-5xl">Cameroon</span>
+      <div className="relative z-10 container mx-auto px-4 lg:px-8 text-center text-white pt-24 md:pt-28 lg:pt-32">
+        <motion.div
+          initial={{ opacity: 0, y: 18 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+          className="max-w-3xl md:max-w-4xl mx-auto bg-black/40 backdrop-blur-md border border-white/10 rounded-2xl shadow-elegant px-5 py-6 sm:px-8 sm:py-8 md:px-10 md:py-10"
+        >
+          {/* Badge */}
+          <div className="inline-flex items-center gap-2 bg-white text-kc-black rounded-full px-3 py-1 text-xs sm:text-sm font-semibold mb-4 md:mb-5">
+            <span className="w-2 h-2 rounded-full bg-kc-red" />
+            Knowledge Center Cameroon
+          </div>
+
+          {/* Heading */}
+          <h1 className="text-[1.9rem] sm:text-4xl md:text-5xl lg:text-6xl font-heading font-extrabold leading-tight mb-3 md:mb-4">
+            Empowering Young Scientists
           </h1>
-          
-          <h2 className="text-xl md:text-2xl lg:text-3xl font-body font-medium mb-8 text-white/95 bg-kc-black/50 backdrop-blur-sm px-6 py-3 rounded-lg inline-block">
-            Empowering Young Scientists Through STEM Education
-          </h2>
-          
-          <p className="text-lg md:text-xl lg:text-xl font-body mb-12 text-white/90 max-w-4xl mx-auto leading-relaxed bg-kc-black/40 backdrop-blur-sm p-6 rounded-lg">
+          <div className="text-base sm:text-lg md:text-xl text-white/90 mb-6 md:mb-7">
+            {slides[currentSlide].subtitle}
+          </div>
+
+          {/* Description */}
+          <p className="text-sm sm:text-base md:text-lg font-body text-white/85 leading-relaxed mb-6 md:mb-8">
             {slides[currentSlide].description}
           </p>
 
           {/* CTA Buttons */}
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-            <Button
-              size="lg"
-              variant="blue"
-              onClick={() => scrollToSection("stem-registration")}
-              className="px-8 py-4 text-lg font-semibold group"
-            >
-              Join Our STEM Program
-              <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center">
+            <Button asChild size="lg" variant="blue" className="px-6 sm:px-7 py-3 sm:py-4 text-base sm:text-lg font-semibold group">
+              <Link to="/stem-registration">
+                Join Our STEM Program
+                <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
+              </Link>
             </Button>
-            
+
             <Button
+              asChild
               size="lg"
               variant="blackOutline"
-              onClick={() => scrollToSection("about")}
-              className="px-8 py-4 text-lg font-semibold group bg-white/10 backdrop-blur-sm hover:bg-white hover:text-kc-black border-white"
+              className="px-6 sm:px-7 py-3 sm:py-4 text-base sm:text-lg font-semibold group bg-white/10 backdrop-blur-md hover:bg-white hover:text-kc-black border-white"
             >
-              <Play className="mr-2 h-5 w-5" />
-              Discover Our Story
+              <Link to="/about">
+                <Play className="mr-2 h-5 w-5" />
+                Discover Our Story
+              </Link>
             </Button>
           </div>
-        </div>
+        </motion.div>
       </div>
 
       {/* Navigation Controls */}
