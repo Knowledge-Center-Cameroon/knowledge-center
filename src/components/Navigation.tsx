@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Menu, X, GraduationCap } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Link, NavLink } from "react-router-dom";
+import { motion } from "framer-motion";
 
 const Navigation = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -16,71 +18,70 @@ const Navigation = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const scrollToSection = (sectionId: string) => {
-    const element = document.getElementById(sectionId);
-    if (element) {
-      element.scrollIntoView({ behavior: "smooth" });
-      setIsMobileMenuOpen(false);
-    }
-  };
+  const closeMobile = () => setIsMobileMenuOpen(false);
 
   const navItems = [
-    { label: "Home", id: "home" },
-    { label: "About Us", id: "about" },
-    { label: "Projects", id: "projects" },
-    { label: "Blog", id: "blog" },
-    { label: "Meet the Team", id: "team" },
-    { label: "Contact Us", id: "contact" },
+    { label: "Home", to: "/" },
+    { label: "About Us", to: "/about" },
+    { label: "Projects", to: "/projects" },
+    { label: "Blog", to: "/blog" },
+    { label: "Meet the Team", to: "/team" },
+    { label: "Contact Us", to: "/contact" },
   ];
 
   return (
     <header
       className={cn(
         "fixed top-0 left-0 right-0 z-50 transition-smooth",
-        isScrolled
-          ? "bg-white/95 backdrop-blur-md shadow-elegant border-b border-border"
-          : "bg-transparent"
+        "bg-white/95 backdrop-blur-md shadow-elegant border-b border-border"
       )}
     >
-      <nav className="container mx-auto px-4 lg:px-8">
+      <nav className="container mx-auto px-3 sm:px-4 lg:px-8">
         <div className="flex items-center justify-between h-16 lg:h-20">
           {/* Logo */}
-          <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 lg:w-12 lg:h-12 bg-white rounded-lg flex items-center justify-center shadow-md">
-              <div className="text-kc-blue text-xl lg:text-2xl font-bold">KC</div>
+          <Link to="/" className="flex items-center gap-3" onClick={closeMobile}>
+            <img
+              src="/logo_trans.png"
+              alt="Knowledge Center Logo"
+              className="h-10 w-10 lg:h-12 lg:w-12 object-contain"
+            />
+            <div className="flex flex-col leading-tight">
+              <span className="text-base sm:text-lg lg:text-xl font-heading font-bold tracking-tight">
+                <span className="text-kc-blue">Knowledge</span>
+                <span className="text-kc-red ml-1">Center</span>
+              </span>
+              <span className="hidden sm:block text-[11px] text-muted-foreground -mt-0.5">Cameroon</span>
             </div>
-            <div className="text-xl lg:text-2xl font-heading font-bold">
-              <span className="text-kc-blue">Knowledge</span>
-              <span className="text-kc-red ml-1">Center</span>
-            </div>
-          </div>
+          </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden lg:flex items-center space-x-8">
+          <div className="hidden lg:flex items-center gap-6 xl:gap-8">
             {navItems.map((item) => (
-              <button
-                key={item.id}
-                onClick={() => scrollToSection(item.id)}
-                className="text-foreground hover:text-primary transition-smooth font-medium"
+              <NavLink
+                key={item.to}
+                to={item.to}
+                onClick={closeMobile}
+                className={({ isActive }) =>
+                  cn(
+                    "relative text-foreground transition-smooth font-medium",
+                    "after:absolute after:-bottom-1 after:left-0 after:h-0.5 after:w-0 after:bg-primary after:transition-all",
+                    "hover:after:w-full",
+                    isActive ? "text-primary after:w-full" : "hover:text-primary"
+                  )
+                }
               >
                 {item.label}
-              </button>
+              </NavLink>
             ))}
           </div>
 
           {/* CTA Buttons */}
           <div className="hidden lg:flex items-center space-x-4">
-            <Button 
-              variant="blackOutline" 
-              onClick={() => scrollToSection("donations")}
-            >
-              Donate
+            <Button asChild variant="blackOutline">
+              <Link to="/donate">Donate</Link>
             </Button>
-            <Button 
-              variant="blue"
-              onClick={() => scrollToSection("stem-registration")}
-            >
-              STEM Registration
+            <Button asChild variant="blue">
+              <Link to="/stem-registration">STEM Registration</Link>
             </Button>
           </div>
 
@@ -104,28 +105,27 @@ const Navigation = () => {
           <div className="lg:hidden absolute top-full left-0 right-0 bg-white/95 backdrop-blur-md border-b border-border shadow-lg animate-slide-up">
             <div className="container mx-auto px-4 py-6 space-y-4">
               {navItems.map((item) => (
-                <button
-                  key={item.id}
-                  onClick={() => scrollToSection(item.id)}
-                  className="block w-full text-left py-2 text-foreground hover:text-primary transition-smooth font-medium"
+                <NavLink
+                  key={item.to}
+                  to={item.to}
+                  onClick={closeMobile}
+                  className={({ isActive }) =>
+                    cn(
+                      "block w-full text-left py-2 transition-smooth font-medium",
+                      "relative rounded-lg px-3",
+                      isActive ? "bg-black text-white" : "text-foreground hover:bg-black/5"
+                    )
+                  }
                 >
                   {item.label}
-                </button>
+                </NavLink>
               ))}
               <div className="flex flex-col space-y-3 pt-4 border-t border-border">
-                <Button 
-                  variant="blackOutline"
-                  onClick={() => scrollToSection("donations")}
-                  className="w-full"
-                >
-                  Donate
+                <Button asChild variant="blackOutline" className="w-full" onClick={closeMobile}>
+                  <Link to="/donate">Donate</Link>
                 </Button>
-                <Button 
-                  variant="blue"
-                  onClick={() => scrollToSection("stem-registration")}
-                  className="w-full"
-                >
-                  STEM Registration
+                <Button asChild variant="blue" className="w-full" onClick={closeMobile}>
+                  <Link to="/stem-registration">STEM Registration</Link>
                 </Button>
               </div>
             </div>
