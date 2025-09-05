@@ -107,35 +107,38 @@ const Stats = () => {
   };
 
   return (
-    <section ref={sectionRef} className="py-20 lg:py-32 bg-gradient-primary">
+    <section ref={sectionRef} className="py-14 md:py-20 lg:py-28 bg-black">
       <div className="container mx-auto px-4 lg:px-8">
         {/* Header */}
-        <div className="text-center mb-16">
-          <h2 className="text-4xl lg:text-5xl font-playfair font-bold text-white mb-6">
+        <div className="text-center mb-10 md:mb-12">
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-playfair font-bold text-white mb-3 md:mb-4">
             Our Impact in Numbers
           </h2>
-          <p className="text-xl text-white/90 max-w-3xl mx-auto leading-relaxed">
+          <p className="text-base md:text-lg text-white/85 max-w-3xl mx-auto leading-relaxed">
             Since our founding in 2019, we've been making a significant impact in STEM education across Cameroon.
           </p>
         </div>
 
         {/* Stats Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 lg:gap-8">
           {statsData.map((stat, index) => (
             <Card 
               key={index} 
-              className="bg-white/10 backdrop-blur-sm border-white/20 text-white shadow-lg transition-bounce hover:scale-105"
+              className={
+                `bg-white/[0.03] backdrop-blur-sm border border-white/10 text-white shadow-lg transition-bounce hover:scale-[1.02] ` +
+                (index % 2 === 0 ? 'border-t-4 border-kc-blue' : 'border-t-4 border-kc-red')
+              }
             >
-              <CardContent className="p-8 text-center">
-                <div className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-6">
-                  <stat.icon className="h-8 w-8 text-white" />
+              <CardContent className="p-6 md:p-7 lg:p-8 text-center">
+                <div className={(index % 2 === 0 ? 'bg-kc-blue' : 'bg-kc-red') + " w-14 h-14 md:w-16 md:h-16 rounded-full flex items-center justify-center mx-auto mb-5 md:mb-6"}>
+                  <stat.icon className="h-7 w-7 md:h-8 md:w-8 text-white" />
                 </div>
                 
-                <div className="text-4xl lg:text-5xl font-playfair font-bold mb-2">
+                <div className={(index % 2 === 0 ? 'text-kc-blue' : 'text-kc-red') + " text-3xl md:text-4xl lg:text-5xl font-playfair font-extrabold mb-1 md:mb-2"}>
                   {getCurrentValue(index).toLocaleString()}{stat.suffix}
                 </div>
                 
-                <div className="text-white/90 font-medium">
+                <div className="text-white/90 font-medium text-sm md:text-base">
                   {stat.label}
                 </div>
               </CardContent>
@@ -144,13 +147,13 @@ const Stats = () => {
         </div>
 
         {/* Achievement Highlights */}
-        <div className="mt-16 text-center">
-          <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 lg:p-12 border border-white/20">
+        <div className="mt-10 md:mt-12 text-center">
+          <div className="bg-white/5 backdrop-blur-sm rounded-2xl p-6 md:p-8 lg:p-10 border border-white/10">
             <h3 className="text-2xl font-playfair font-bold text-white mb-6">
               Excellence in Education Since 2019
             </h3>
             
-            <div className="grid md:grid-cols-3 gap-8 text-white/90">
+            <div className="grid md:grid-cols-3 gap-6 md:gap-8 text-white/90">
               <div>
                 <h4 className="font-semibold text-white mb-2">95% Success Rate</h4>
                 <p className="text-sm">
