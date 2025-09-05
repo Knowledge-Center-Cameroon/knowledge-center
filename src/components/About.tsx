@@ -12,9 +12,15 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import studentsImage from "@/assets/students-studying.jpg";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 
 const About = () => {
-  const [openFaq, setOpenFaq] = useState<number | null>(0);
+  const [openFaq, setOpenFaq] = useState<string | undefined>("item-0");
 
   const values = [
     {
@@ -113,7 +119,7 @@ const About = () => {
 
         {/* Mission & Vision */}
         <div className="grid md:grid-cols-2 gap-8 mb-20">
-          <Card className="card-gradient shadow-elegant transition-bounce hover:scale-105">
+          <Card className="shadow-elegant transition-bounce hover:scale-105">
             <CardContent className="p-8">
               <div className="w-16 h-16 bg-kc-blue rounded-full flex items-center justify-center mb-6">
                 <Target className="h-8 w-8 text-white" />
@@ -127,7 +133,7 @@ const About = () => {
             </CardContent>
           </Card>
 
-          <Card className="card-gradient shadow-elegant transition-bounce hover:scale-105">
+          <Card className="shadow-elegant transition-bounce hover:scale-105">
             <CardContent className="p-8">
               <div className="w-16 h-16 bg-kc-red rounded-full flex items-center justify-center mb-6">
                 <Lightbulb className="h-8 w-8 text-white" />
@@ -147,7 +153,7 @@ const About = () => {
           <h3 className="text-3xl font-heading font-bold text-center mb-12">Our Core Values</h3>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
             {values.map((value, index) => (
-              <Card key={index} className="card-gradient shadow-elegant text-center transition-bounce hover:scale-105">
+              <Card key={index} className="shadow-elegant text-center transition-bounce hover:scale-105">
                 <CardContent className="p-6">
                   <div className="w-12 h-12 bg-kc-black rounded-full flex items-center justify-center mx-auto mb-4">
                     <value.icon className="h-6 w-6 text-white" />
@@ -170,33 +176,22 @@ const About = () => {
 
         {/* FAQ Section */}
         <div>
-          <h3 className="text-3xl font-heading font-bold text-center mb-12">Frequently Asked Questions</h3>
-          <div className="max-w-3xl mx-auto space-y-4">
+          <h3 className="text-3xl font-heading font-bold text-center mb-8 md:mb-10">Frequently Asked Questions</h3>
+          <Accordion type="single" collapsible value={openFaq} onValueChange={setOpenFaq} className="max-w-3xl mx-auto">
             {faqs.map((faq, index) => (
-              <Card key={index} className="card-gradient shadow-elegant">
-                <CardContent className="p-0">
-                  <Button
-                    variant="ghost"
-                    onClick={() => setOpenFaq(openFaq === index ? null : index)}
-                    className="w-full p-6 justify-between text-left font-semibold hover:bg-transparent"
-                  >
-                    {faq.question}
-                    {openFaq === index ? (
-                      <ChevronUp className="h-5 w-5" />
-                    ) : (
-                      <ChevronDown className="h-5 w-5" />
-                    )}
-                  </Button>
-                  
-                  {openFaq === index && (
-                    <div className="px-6 pb-6 animate-slide-up">
-                      <p className="text-muted-foreground leading-relaxed">{faq.answer}</p>
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
+              <AccordionItem key={index} value={`item-${index}`} className="border border-border rounded-xl mb-3 md:mb-4 overflow-hidden bg-white/5 backdrop-blur-sm">
+                <AccordionTrigger className="px-5 md:px-6 py-4 md:py-5 text-left font-semibold hover:no-underline">
+                  <div className="flex items-center justify-between w-full">
+                    <span>{faq.question}</span>
+                    <ChevronDown className="h-5 w-5 transition-transform data-[state=open]:rotate-180" />
+                  </div>
+                </AccordionTrigger>
+                <AccordionContent className="px-5 md:px-6 pb-5 md:pb-6 text-muted-foreground">
+                  {faq.answer}
+                </AccordionContent>
+              </AccordionItem>
             ))}
-          </div>
+          </Accordion>
         </div>
       </div>
     </section>
