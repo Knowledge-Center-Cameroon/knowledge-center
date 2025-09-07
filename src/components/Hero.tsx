@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight, Play, ArrowRight } from "lucide-react";
-import heroImage from "@/assets/hero-image.jpg";
-import studentsImage from "@/assets/students-studying.jpg";
-import scienceLabImage from "@/assets/science-lab.jpg";
-import sportsImage from "@/assets/sports-recreation.jpg";
+import heroImage from "@/assets/hero-image.jpeg";
+import heroImage2 from "@/assets/hero-image2.jpeg";
+import heroImage3 from "@/assets/weekend.jpeg";
+import heroImage4 from "@/assets/hero-image4.jpeg";
+import heroImage5 from "@/assets/hero-image5.jpeg";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 
@@ -19,19 +20,25 @@ const Hero = () => {
       description: "We tutor young Cameroonians, and growing scientists, unto unprecedented levels of scientific curiosity, creativity, and love.",
     },
     {
-      image: studentsImage,
+      image: heroImage2,
       title: "Home where passion meets academic drive",
       subtitle: "Inspiring Excellence in Science",
       description: "Building from a rich repertoire of books and question papers, combined with novel material developed by the KC staff.",
     },
     {
-      image: scienceLabImage,
+      image: heroImage3,
       title: "Inspiring a generation of creative thinkers",
       subtitle: "Hands-on Learning Experience",
       description: "We help them see the applications and manifestations of the concepts they learn, fostering creativity in solving real-world problems.",
     },
     {
-      image: sportsImage,
+      image: heroImage4,
+      title: "Family, epiphany, serendipity, and scientific obsession",
+      subtitle: "Beyond the Classroom",
+      description: "Every once in a while, we seal the pages of our books and just head out into the sun. To play, to laugh, and to live.",
+    },
+    {
+      image: heroImage5,
       title: "Family, epiphany, serendipity, and scientific obsession",
       subtitle: "Beyond the Classroom",
       description: "Every once in a while, we seal the pages of our books and just head out into the sun. To play, to laugh, and to live.",
@@ -62,7 +69,7 @@ const Hero = () => {
   };
 
   return (
-    <section id="home" className="relative h-[78vh] md:h-[88vh] min-h-[560px] md:min-h-[620px] flex items-center justify-center overflow-hidden">
+    <section id="home" className="relative h-[88vh] md:h-[95vh] min-h-[600px] md:min-h-[680px] lg:min-h-[760px] flex items-center justify-center overflow-hidden">
       {/* Background Images */}
       <div className="absolute inset-0">
         {slides.map((slide, index) => (
@@ -84,29 +91,29 @@ const Hero = () => {
       </div>
 
       {/* Content */}
-      <div className="relative z-10 container mx-auto px-4 lg:px-8 text-center text-white pt-24 md:pt-28 lg:pt-32">
+      <div className="relative z-10 container mx-auto px-4 lg:px-8 text-center text-white">
         <motion.div
           initial={{ opacity: 0, y: 18 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-          className="max-w-3xl md:max-w-4xl mx-auto bg-black/40 backdrop-blur-md border border-white/10 rounded-2xl shadow-elegant px-5 py-6 sm:px-8 sm:py-8 md:px-10 md:py-10"
+          className="max-w-3xl md:max-w-4xl mx-auto glass rounded-2xl shadow-elegant px-5 py-6 sm:px-8 sm:py-8 md:px-10 md:py-10"
         >
           {/* Badge */}
           <div className="inline-flex items-center gap-2 bg-white text-kc-black rounded-full px-3 py-1 text-xs sm:text-sm font-semibold mb-4 md:mb-5">
             <span className="w-2 h-2 rounded-full bg-kc-red" />
-            Knowledge Center Cameroon
+            Knowledge Center
           </div>
 
           {/* Heading */}
-          <h1 className="text-[1.9rem] sm:text-4xl md:text-5xl lg:text-6xl font-heading font-extrabold leading-tight mb-3 md:mb-4">
+          <h1 className="heading-1 mb-3 md:mb-4">
             Empowering Young Scientists
           </h1>
-          <div className="text-base sm:text-lg md:text-xl text-white/90 mb-6 md:mb-7">
+          <div className="subheading text-white/90 mb-6 md:mb-7">
             {slides[currentSlide].subtitle}
           </div>
 
           {/* Description */}
-          <p className="text-sm sm:text-base md:text-lg font-body text-white/85 leading-relaxed mb-6 md:mb-8">
+          <p className="text-base md:text-lg font-body text-white/85 leading-relaxed mb-6 md:mb-8">
             {slides[currentSlide].description}
           </p>
 
@@ -123,7 +130,7 @@ const Hero = () => {
               asChild
               size="lg"
               variant="blackOutline"
-              className="px-6 sm:px-7 py-3 sm:py-4 text-base sm:text-lg font-semibold group bg-white/10 backdrop-blur-md hover:bg-white hover:text-kc-black border-white"
+              className="px-6 sm:px-7 py-3 sm:py-4 text-base sm:text-lg text-white font-semibold group bg-white/10 backdrop-blur-md hover:bg-white hover:text-kc-black border-white"
             >
               <Link to="/about">
                 <Play className="mr-2 h-5 w-5" />
@@ -167,12 +174,17 @@ const Hero = () => {
         ))}
       </div>
 
-      {/* Scroll Indicator */}
-      <div className="absolute bottom-8 right-8 hidden lg:block animate-bounce">
-        <div className="w-6 h-10 border-2 border-white/50 rounded-full p-1">
+      {/* Scroll Indicator (clickable) */}
+      <button
+        type="button"
+        onClick={() => scrollToSection("projects")}
+        aria-label="Scroll to projects section"
+        className="absolute bottom-8 right-8 hidden lg:block animate-bounce focus:outline-none"
+      >
+        <div className="w-6 h-10 border-2 border-white/50 rounded-full p-1 hover:border-white/80 transition-colors">
           <div className="w-1 h-3 bg-white/70 rounded-full mx-auto animate-pulse" />
         </div>
-      </div>
+      </button>
     </section>
   );
 };
