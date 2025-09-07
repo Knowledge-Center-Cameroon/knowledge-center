@@ -2,12 +2,13 @@ import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
 
 const Navigation = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const location = useLocation();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -25,9 +26,16 @@ const Navigation = () => {
     { label: "About Us", to: "/about" },
     { label: "Projects", to: "/projects" },
     { label: "Blog", to: "/blog" },
-    { label: "Meet the Team", to: "/team" },
     { label: "Contact Us", to: "/contact" },
   ];
+
+  // Determine active index for sliding pill: match by startsWith
+  const activeIndex = Math.max(
+    0,
+    navItems.findIndex((item) =>
+      item.to === "/" ? location.pathname === "/" : location.pathname.startsWith(item.to)
+    )
+  );
 
   return (
     <header
@@ -36,7 +44,7 @@ const Navigation = () => {
         "bg-white/95 backdrop-blur-md shadow-elegant border-b border-border"
       )}
     >
-      <nav className="container mx-auto px-3 sm:px-4 lg:px-8">
+      <nav className="container mx-auto px-3 sm:px-4 lg:px-8 font-heading">
         <div className="flex items-center justify-between h-16 lg:h-20">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-3" onClick={closeMobile}>
@@ -50,37 +58,47 @@ const Navigation = () => {
                 <span className="text-kc-blue">Knowledge</span>
                 <span className="text-kc-red ml-1">Center</span>
               </span>
-              <span className="hidden sm:block text-[11px] text-muted-foreground -mt-0.5">Cameroon</span>
             </div>
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden lg:flex items-center gap-6 xl:gap-8">
-            {navItems.map((item) => (
-              <NavLink
-                key={item.to}
-                to={item.to}
-                onClick={closeMobile}
-                className={({ isActive }) =>
-                  cn(
-                    "relative text-foreground transition-smooth font-medium",
-                    "after:absolute after:-bottom-1 after:left-0 after:h-0.5 after:w-0 after:bg-primary after:transition-all",
-                    "hover:after:w-full",
-                    isActive ? "text-primary after:w-full" : "hover:text-primary"
-                  )
-                }
-              >
-                {item.label}
-              </NavLink>
-            ))}
+          <div className="hidden lg:block relative">
+            {/* Sliding pill container: 5 equal columns */}
+            <div className="grid grid-cols-5 items-center">
+              {/* Sliding pill */}
+              <motion.span
+                layout
+                initial={false}
+                animate={{ x: `${activeIndex * 100}%` }}
+                transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+                className="absolute inset-y-0 my-auto h-9 rounded-full bg-black/80"
+                style={{ width: "calc(100%/5)" }}
+              />
+              {navItems.map((item) => (
+                <NavLink
+                  key={item.to}
+                  to={item.to}
+                  onClick={closeMobile}
+                  className={({ isActive }) =>
+                    cn(
+                      "relative z-10 text-foreground transition-smooth font-semibold",
+                      "px-3 py-2 text-sm text-center",
+                      isActive ? "text-white" : "hover:text-primary"
+                    )
+                  }
+                >
+                  {item.label}
+                </NavLink>
+              ))}
+            </div>
           </div>
 
           {/* CTA Buttons */}
-          <div className="hidden lg:flex items-center space-x-4">
-            <Button asChild variant="blackOutline">
+          <div className="hidden lg:flex items-center space-x-3">
+            <Button asChild variant="blackOutline" size="sm">
               <Link to="/donate">Donate</Link>
             </Button>
-            <Button asChild variant="blue">
+            <Button asChild variant="blue" size="sm">
               <Link to="/stem-registration">STEM Registration</Link>
             </Button>
           </div>
