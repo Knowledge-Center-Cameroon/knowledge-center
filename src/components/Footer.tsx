@@ -14,7 +14,7 @@ import {
   Send
 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
-import { Link } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import StemBackground from "@/components/StemBackground";
 
 const Footer = () => {
@@ -86,19 +86,19 @@ const Footer = () => {
               {/* Social Links */}
               <div className="flex space-x-4 mt-4">
                 <a 
-                  href="https://www.facebook.com/kccameroon/" 
+                  href="https://web.facebook.com/share/g/16KfY5hwvv/" 
                   target="_blank" 
                   rel="noopener noreferrer"
-                  className="w-10 h-10 bg-primary/10 hover:bg-primary text-primary hover:text-white rounded-full flex items-center justify-center transition-smooth"
+                  className="w-10 h-10 bg-white/10 hover:bg-white/20 text-white rounded-full flex items-center justify-center transition-smooth border border-white/10"
                   aria-label="Facebook"
                 >
                   <Facebook className="h-5 w-5" />
                 </a>
                 <a 
-                  href="https://x.com/kccameroon" 
+                  href="https://x.com/KCCameroon" 
                   target="_blank" 
                   rel="noopener noreferrer"
-                  className="w-10 h-10 bg-primary/10 hover:bg-primary text-primary hover:text-white rounded-full flex items-center justify-center transition-smooth"
+                  className="w-10 h-10 bg-white/10 hover:bg-white/20 text-white rounded-full flex items-center justify-center transition-smooth border border-white/10"
                   aria-label="X"
                 >
                   <Twitter className="h-5 w-5" />
@@ -107,16 +107,16 @@ const Footer = () => {
                   href="https://www.youtube.com/@KnowledgeCenterCameroon-bz8dt" 
                   target="_blank" 
                   rel="noopener noreferrer"
-                  className="w-10 h-10 bg-accent/10 hover:bg-accent text-accent hover:text-white rounded-full flex items-center justify-center transition-smooth"
+                  className="w-10 h-10 bg-white/10 hover:bg-white/20 text-white rounded-full flex items-center justify-center transition-smooth border border-white/10"
                   aria-label="YouTube"
                 >
                   <Youtube className="h-5 w-5" />
                 </a>
                 <a 
-                  href="https:linkedin.com/in/knowledge-center" 
+                  href="https://www.linkedin.com/company/knowledge-centercmr" 
                   target="_blank" 
                   rel="noopener noreferrer"
-                  className="w-10 h-10 bg-primary/10 hover:bg-primary text-primary hover:text-white rounded-full flex items-center justify-center transition-smooth"
+                  className="w-10 h-10 bg-white/10 hover:bg-white/20 text-white rounded-full flex items-center justify-center transition-smooth border border-white/10"
                   aria-label="LinkedIn"
                 >
                   <Linkedin className="h-5 w-5" />
@@ -127,22 +127,23 @@ const Footer = () => {
             {/* Quick Links */}
             <div>
               <h4 className="text-lg text-white font-playfair font-semibold mb-6">Quick Links</h4>
-              <ul className="space-y-3 text-white">
+              <ul className="space-y-3 text-white/90">
                 {[
                   { label: "Home", to: "/" },
                   { label: "About Us", to: "/about" },
                   { label: "Our Projects", to: "/projects" },
                   { label: "Blog", to: "/blog" },
-                  { label: "Meet Our Team", to: "/team" },
                   { label: "Contact Us", to: "/contact" },
                 ].map((link) => (
                   <li key={link.to}>
-                    <Link
+                    <NavLink
                       to={link.to}
-                      className="text-white hover:text-primary transition-smooth"
+                      className={({ isActive }) =>
+                        `transition-smooth ${isActive ? 'text-white underline underline-offset-4' : 'hover:text-white'}`
+                      }
                     >
                       {link.label}
-                    </Link>
+                    </NavLink>
                   </li>
                 ))}
               </ul>

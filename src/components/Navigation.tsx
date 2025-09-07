@@ -71,7 +71,7 @@ const Navigation = () => {
                 initial={false}
                 animate={{ x: `${activeIndex * 100}%` }}
                 transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-                className="absolute inset-y-0 my-auto h-9 rounded-full bg-black/80"
+                className="absolute inset-y-0 my-auto h-10 rounded-full bg-black shadow-lg"
                 style={{ width: "calc(100%/5)" }}
               />
               {navItems.map((item) => (
@@ -81,9 +81,11 @@ const Navigation = () => {
                   onClick={closeMobile}
                   className={({ isActive }) =>
                     cn(
-                      "relative z-10 text-foreground transition-smooth font-semibold",
+                      "relative z-10 transition-smooth font-semibold",
                       "px-3 py-2 text-sm text-center",
-                      isActive ? "text-white" : "hover:text-primary"
+                      isActive
+                        ? "text-white drop-shadow-sm"
+                        : "text-foreground/80 hover:text-foreground"
                     )
                   }
                 >
