@@ -11,13 +11,14 @@ import {
   ChevronUp 
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import studentsImage from "@/assets/students-studying.jpg";
+import about from "@/assets/about.jpeg";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import StemBackground from "@/components/StemBackground";
 
 const About = () => {
   const [openFaq, setOpenFaq] = useState<string | undefined>("item-0");
@@ -47,12 +48,12 @@ const About = () => {
 
   const faqs = [
     {
-      question: "What is Knowledge Center Cameroon?",
+      question: "What is Knowledge Center (KC)?",
       answer: "Knowledge Center (KC) is an educational institution founded in November 2019 by academically high-achieving university freshmen passionate about helping future generations of science students succeed in their academic endeavors, especially at their end-of-course GCE examinations."
     },
     {
       question: "What subjects do you offer tutoring in?",
-      answer: "We specialize in STEM subjects including Mathematics, Physics, Chemistry, Biology, and Technology. Our curriculum is built from a rich repertoire of books and question papers, combined with novel material developed by our dedicated staff."
+      answer: "We specialize in STEM subjects including Mathematics, Physics, Chemistry, Biology, and Computer Science. Our curriculum is built from a rich repertoire beyond books and question papers, combined with novel material developed by our dedicated staff."
     },
     {
       question: "Who can join KC programs?",
@@ -70,16 +71,19 @@ const About = () => {
 
   return (
     <section id="about" className="py-20 lg:py-32">
-      <div className="container mx-auto px-4 lg:px-8">
+      <div className="container mx-auto px-4 lg:px-8 max-w-6xl">
         {/* Header */}
-        <div className="text-center mb-16">
-          <h2 className="text-4xl lg:text-5xl font-heading font-bold mb-6">
-            <span className="text-kc-blue">About</span> <span className="text-kc-red">Knowledge Center</span>
-          </h2>
-          <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-            Discover our journey from a small act of community service to a far bigger odyssey 
-            of scientific and humanitarian engagement.
-          </p>
+        <div className="relative overflow-hidden rounded-2xl mb-16">
+          <StemBackground opacity={0.15} density={36} lineDistance={120} speed={0.45} showIcons={true} />
+          <div className="relative z-10 text-center py-8">
+            <h2 className="heading-2 mb-6">
+              <span className="text-kc-blue">About</span> <span className="text-kc-red">Knowledge Center</span>
+            </h2>
+            <p className="subheading max-w-3xl mx-auto leading-relaxed">
+              Discover our journey from a small act of community service to a far bigger odyssey 
+              of scientific and humanitarian engagement.
+            </p>
+          </div>
         </div>
 
         {/* Who We Are Section */}
@@ -110,8 +114,8 @@ const About = () => {
           
           <div className="animate-slide-up">
             <img 
-              src={studentsImage} 
-              alt="KC Students studying together" 
+              src={about} 
+              alt="KC Students together" 
               className="rounded-2xl shadow-elegant w-full"
             />
           </div>
@@ -183,7 +187,6 @@ const About = () => {
                 <AccordionTrigger className="px-5 md:px-6 py-4 md:py-5 text-left font-semibold hover:no-underline">
                   <div className="flex items-center justify-between w-full">
                     <span>{faq.question}</span>
-                    <ChevronDown className="h-5 w-5 transition-transform data-[state=open]:rotate-180" />
                   </div>
                 </AccordionTrigger>
                 <AccordionContent className="px-5 md:px-6 pb-5 md:pb-6 text-muted-foreground">
