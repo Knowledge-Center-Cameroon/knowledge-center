@@ -7,8 +7,8 @@ import Layout from "./components/Layout";
 import Home from "./pages/Home";
 import AboutPage from "./pages/AboutPage";
 import ProjectsPage from "./pages/ProjectsPage";
+import ProjectDetailPage from "./pages/ProjectDetailPage";
 import BlogPage from "./pages/BlogPage";
-import TeamPage from "./pages/TeamPage";
 import ContactPage from "./pages/ContactPage";
 import DonatePage from "./pages/DonatePage";
 import StemRegistrationPage from "./pages/StemRegistrationPage";
@@ -29,8 +29,9 @@ const App = () => (
             <Route index element={<Home />} />
             <Route path="about" element={<AboutPage />} />
             <Route path="projects" element={<ProjectsPage />} />
+            <Route path="projects/:slug" element={<ProjectDetailPage />} />
             <Route path="blog" element={<BlogPage />} />
-            <Route path="team" element={<TeamPage />} />
+            <Route path="team" element={<AboutPage />} />
             <Route path="contact" element={<ContactPage />} />
             <Route path="donate" element={<DonatePage />} />
             <Route path="stem-registration" element={<StemRegistrationPage />} />
