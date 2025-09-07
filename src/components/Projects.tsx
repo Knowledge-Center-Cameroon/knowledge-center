@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -14,9 +14,12 @@ import {
   ArrowRight,
   CheckCircle
 } from "lucide-react";
-import scienceLabImage from "@/assets/science-lab.jpg";
-import studentsImage from "@/assets/students-studying.jpg";
+import Stem from "@/assets/stem.jpg";
+import weekend from "@/assets/weekend.jpeg";
+import summer2 from "@/assets/summer2.jpeg"
 import { motion } from "framer-motion";
+import StemBackground from "@/components/StemBackground";
+import { Link } from "react-router-dom";
 
 const Projects = () => {
   const [activeTab, setActiveTab] = useState("stem");
@@ -26,18 +29,18 @@ const Projects = () => {
       title: "STEM Education Program",
       icon: FlaskConical,
       description: "Our flagship program focusing on Science, Technology, Engineering, and Mathematics education for young Cameroonians.",
-      image: scienceLabImage,
+      image: Stem,
       features: [
-        "Comprehensive curriculum covering Physics, Chemistry, Biology, and Mathematics",
-        "Hands-on laboratory experiments and practical sessions",
-        "Individual mentorship and academic guidance", 
+        "National exam, across the country",
+        "Problem solving, innovation and creativity skills",
+        "Mentorship and academic guidance", 
         "Preparation for GCE examinations and beyond",
         "Project-based learning with real-world applications",
-        "Access to modern educational resources and materials"
+        "Global opportunities"
       ],
       details: [
-        "Audience: Form 3–Upper Sixth (O/L & A/L)",
-        "Schedule: Weekdays and select weekends",
+        "Audience: Form 4–Upper Sixth (O/L & A/L)",
+        "Schedule: Annually, every december",
         "Support: Mentorship + exam-prep clinics",
         "Outcomes: Improved GCE performance and deeper STEM literacy"
       ],
@@ -50,19 +53,22 @@ const Projects = () => {
     summer: {
       title: "Summer Education Program",
       icon: GraduationCap,
-      description: "Intensive summer sessions designed to accelerate learning and provide enrichment opportunities during school breaks.",
-      image: studentsImage,
+      description: "Intensive summer sessions designed to accelerate learning and provide enrichment opportunities and useful skill aqcuisition during school breaks.",
+      image: summer2,
       features: [
-        "6-week intensive learning program",
-        "Advanced topics and accelerated curriculum",
-        "Field trips to research institutions and universities",
-        "Guest lectures from industry professionals",
-        "Collaborative group projects and presentations",
-        "Certificate of completion and achievement recognition"
+        "2-month intensive learning program",
+        "Interactive audio-visual lectures",
+        "Beyond classroom knowledge",
+        "Mentorship and orientation",
+        "Leadership masterclass",
+        "Tech Boot Camp",
+        "Club Activities",
+        "Sports and recreation",
+        "Global scholar program"
       ],
       details: [
-        "Duration: 6 weeks (June–August)",
-        "Format: Small groups + labs + peer sessions",
+        "Duration: 2 months (July–August)",
+        "Format: SMordern classrooms with audio-visual lectures",
         "Extras: Industry talks and campus tours",
         "Outcome: Portfolio-ready projects"
       ],
@@ -76,11 +82,12 @@ const Projects = () => {
       title: "Weekend School",
       icon: Calendar,
       description: "Flexible weekend classes for students who need additional support or want to advance their knowledge while attending regular school.",
-      image: scienceLabImage,
+      image: weekend,
       features: [
         "Saturday and Sunday class options",
         "Flexible scheduling to accommodate regular school",
-        "Small class sizes for personalized attention",
+        "Academically distinguished students",
+        "Audio-visual lectures from passionate tutors",
         "Supplementary materials and practice exercises",
         "Peer tutoring and collaborative learning",
         "Progress tracking and regular assessments"
@@ -100,34 +107,59 @@ const Projects = () => {
   };
 
   const currentProject = projects[activeTab as keyof typeof projects];
+  const Icon = currentProject.icon;
+
+  // Refs for auto-centering active tab on mobile
+  const tabRefs: Record<"stem" | "summer" | "weekend", React.RefObject<HTMLButtonElement>> = {
+    stem: useRef<HTMLButtonElement>(null),
+    summer: useRef<HTMLButtonElement>(null),
+    weekend: useRef<HTMLButtonElement>(null),
+  };
+
+  useEffect(() => {
+    const ref = tabRefs[activeTab as "stem" | "summer" | "weekend"]; // narrow type
+    ref?.current?.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
+  }, [activeTab]);
 
   return (
     <section id="projects" className="py-20 lg:py-32">
-      <div className="container mx-auto px-4 lg:px-8">
-        {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 12 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-80px" }}
-          transition={{ duration: 0.4 }}
-          className="text-center mb-16"
-        >
-          <h2 className="text-3xl md:text-4xl font-heading font-bold text-center mb-12">
-            <span className="text-kc-blue">Our</span> <span className="text-kc-red">Projects</span>
-          </h2>
-          <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-            Comprehensive educational programs designed to meet diverse learning needs 
-            and empower students at every stage of their academic journey.
-          </p>
-        </motion.div>
+      <div className="container mx-auto px-4 lg:px-8 max-w-6xl">
+        {/* Header with STEM canvas */}
+        <div className="relative overflow-hidden rounded-2xl mb-16">
+          <StemBackground opacity={0.12} density={34} lineDistance={120} speed={0.45} showIcons={true} />
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-80px" }}
+            transition={{ duration: 0.4 }}
+            className="relative z-10 text-center py-8"
+          >
+            <h2 className="heading-2 text-center mb-4 md:mb-6">
+              <span className="text-kc-blue">Our</span> <span className="text-kc-red">Projects</span>
+            </h2>
+            <p className="subheading max-w-3xl mx-auto leading-relaxed">
+              Comprehensive educational programs designed to meet diverse learning needs 
+              and empower students at every stage of their academic journey.
+            </p>
+          </motion.div>
+        </div>
 
         {/* Tabs Navigation */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-1 md:grid-cols-3 mb-12 bg-muted/50 p-2 rounded-xl">
+          <TabsList className="relative w-full mb-12 p-2 rounded-2xl bg-white/20 backdrop-blur-md border border-white/25 shadow-elegant overflow-x-auto md:overflow-visible flex md:grid md:grid-cols-3 gap-2 scroll-px-2 snap-x snap-mandatory">
+            {/* Animated indicator */}
+            <div
+              className="hidden md:block absolute bottom-2 left-2 h-1 rounded-full bg-white/40 transition-transform duration-300 ease-out"
+              style={{
+                width: 'calc((100% - 1rem) / 3)',
+                transform: `translateX(${(activeTab === 'stem' ? 0 : activeTab === 'summer' ? 1 : 2) * 100}%)`
+              }}
+            />
             <motion.div whileHover={{ y: -2 }} transition={{ type: "spring", stiffness: 260, damping: 18 }}>
               <TabsTrigger 
                 value="stem" 
-                className="flex items-center space-x-2 py-4 px-6 data-[state=active]:bg-black data-[state=active]:text-white font-semibold"
+                ref={tabRefs.stem}
+                className="flex items-center whitespace-nowrap space-x-2 py-4 px-6 font-semibold rounded-xl transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/40 data-[state=active]:bg-black/70 data-[state=active]:text-white data-[state=inactive]:text-foreground/80 data-[state=inactive]:hover:bg-white/20 border border-white/0 data-[state=active]:border-white/20 shadow-sm snap-start"
               >
                 <FlaskConical className="h-5 w-5" />
                 <span>STEM Program</span>
@@ -136,7 +168,8 @@ const Projects = () => {
             <motion.div whileHover={{ y: -2 }} transition={{ type: "spring", stiffness: 260, damping: 18 }}>
               <TabsTrigger 
                 value="summer" 
-                className="flex items-center space-x-2 py-4 px-6 data-[state=active]:bg-black data-[state=active]:text-white font-semibold"
+                ref={tabRefs.summer}
+                className="flex items-center whitespace-nowrap space-x-2 py-4 px-6 font-semibold rounded-xl transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/40 data-[state=active]:bg-black/70 data-[state=active]:text-white data-[state=inactive]:text-foreground/80 data-[state=inactive]:hover:bg-white/20 border border-white/0 data-[state=active]:border-white/20 shadow-sm snap-start"
               >
                 <GraduationCap className="h-5 w-5" />
                 <span>Summer Education</span>
@@ -145,7 +178,8 @@ const Projects = () => {
             <motion.div whileHover={{ y: -2 }} transition={{ type: "spring", stiffness: 260, damping: 18 }}>
               <TabsTrigger 
                 value="weekend" 
-                className="flex items-center space-x-2 py-4 px-6 data-[state=active]:bg-black data-[state=active]:text-white font-semibold"
+                ref={tabRefs.weekend}
+                className="flex items-center whitespace-nowrap space-x-2 py-4 px-6 font-semibold rounded-xl transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/40 data-[state=active]:bg-black/70 data-[state=active]:text-white data-[state=inactive]:text-foreground/80 data-[state=inactive]:hover:bg-white/20 border border-white/0 data-[state=active]:border-white/20 shadow-sm snap-start"
               >
                 <Calendar className="h-5 w-5" />
                 <span>Weekend School</span>
@@ -158,7 +192,7 @@ const Projects = () => {
             <motion.div whileHover={{ scale: 1.005 }} transition={{ duration: 0.2 }}>
               <Card className="shadow-elegant overflow-hidden">
                 <CardContent className="p-0">
-                  <div className="grid lg:grid-cols-2 min-h-[600px]">
+                  <div className="grid lg:grid-cols-2 min-h-[420px] md:min-h-[520px] lg:min-h-[600px]">
                     {/* Image Section */}
                     <div className="relative">
                       <motion.img 
@@ -171,8 +205,8 @@ const Projects = () => {
                       <div className="absolute inset-0 bg-black/30" />
                       
                       {/* Stats Overlay */}
-                      <div className="absolute bottom-0 left-0 right-0 bg-black/50 backdrop-blur-sm p-6">
-                        <div className="grid grid-cols-3 gap-4 text-white text-center">
+                      <div className="absolute bottom-0 left-0 right-0 bg-black/50 backdrop-blur-sm p-4 md:p-6">
+                        <div className="grid grid-cols-3 gap-3 md:gap-4 text-white text-center text-xs md:text-sm">
                           {currentProject.stats.map((stat, index) => (
                             <motion.div key={index} whileHover={{ y: -2 }} transition={{ duration: 0.15 }}>
                               <div className="text-2xl font-heading font-bold">{stat.number}</div>
@@ -186,7 +220,7 @@ const Projects = () => {
                     {/* Content Section */}
                     <div className="p-6 md:p-8 lg:p-12 flex flex-col justify-center">
                       <div className="w-16 h-16 bg-kc-blue rounded-full flex items-center justify-center mb-6">
-                        <currentProject.icon className="h-8 w-8 text-white" />
+                        <Icon className="h-8 w-8 text-white" />
                       </div>
                       
                       <h3 className="text-3xl font-heading font-bold mb-4">
@@ -235,7 +269,7 @@ const Projects = () => {
                           <Button 
                             variant="blue"
                             size="lg"
-                            className="group font-semibold"
+                            className="group font-semibold w-full sm:w-auto"
                           >
                             Enroll Now
                             <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
@@ -245,6 +279,7 @@ const Projects = () => {
                           <Button 
                             variant="blackOutline"
                             size="lg"
+                            className="w-full sm:w-auto"
                           >
                             Learn More
                           </Button>
@@ -285,13 +320,11 @@ const Projects = () => {
                   </p>
 
                   <motion.div whileHover={{ y: -2 }} whileTap={{ scale: 0.98 }}>
-                    <Button 
-                      variant="red"
-                      size="lg"
-                      className="font-semibold"
-                    >
-                      Join Competition
-                      <Trophy className="ml-2 h-4 w-4" />
+                    <Button variant="red" size="lg" className="font-semibold" asChild>
+                      <Link to="/stem-registration">
+                        Join Competition
+                        <Trophy className="ml-2 h-4 w-4" />
+                      </Link>
                     </Button>
                   </motion.div>
                 </div>
