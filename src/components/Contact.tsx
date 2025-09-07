@@ -25,24 +25,79 @@ const Contact = () => {
     message: ""
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [messageCount, setMessageCount] = useState(0);
+  const WEB3FORMS_KEY = (import.meta as any).env?.VITE_WEB3FORMS_ACCESS_KEY as string | undefined;
 
   const handleInputChange = (field: string, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
+    if (field === "message") {
+      setMessageCount(value.length);
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!formData.name || !formData.email || !formData.message) {
+      toast({ title: "Please fill all required fields", description: "Name, Email and Message are required." });
+      return;
+    }
+    if (!formData.subject) {
+      toast({ title: "Select a subject", description: "Please choose a subject so we can route your message." });
+      return;
+    }
+
     setIsSubmitting(true);
-    
-    // Simulate form submission
-    setTimeout(() => {
-      toast({
-        title: "Message Sent Successfully!",
-        description: "We'll get back to you within 24 hours. Thank you for contacting KC!",
-      });
-      setFormData({ name: "", email: "", subject: "", message: "" });
-      setIsSubmitting(false);
-    }, 2000);
+
+    // Submit to Web3Forms if configured
+    if (WEB3FORMS_KEY) {
+      try {
+        const res = await fetch("https://api.web3forms.com/submit", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+          body: JSON.stringify({
+            access_key: WEB3FORMS_KEY,
+            name: formData.name,
+            email: formData.email,
+            subject: formData.subject,
+            message: formData.message,
+          }),
+        });
+
+        const data = await res.json().catch(() => ({} as any));
+        if (res.ok && data?.success) {
+          toast({
+            title: "Message Sent Successfully!",
+            description: "We'll get back to you within 24 hours. Thank you for contacting KC!",
+          });
+          setFormData({ name: "", email: "", subject: "", message: "" });
+          setMessageCount(0);
+        } else {
+          toast({
+            title: "Failed to send message",
+            description: data?.message || "Please try again or email us directly at kcstemhub@gmail.com",
+          });
+        }
+      } catch (err) {
+        toast({
+          title: "Network error",
+          description: "Please check your connection and try again.",
+        });
+      } finally {
+        setIsSubmitting(false);
+      }
+    } else {
+      // Fallback if not configured
+      setTimeout(() => {
+        toast({
+          title: "Demo: Message not actually sent",
+          description: "Set VITE_WEB3FORMS_ACCESS_KEY in your .env to enable real submissions.",
+        });
+        setIsSubmitting(false);
+      }, 600);
+    }
   };
 
   const contactInfo = [
@@ -55,13 +110,13 @@ const Contact = () => {
     {
       icon: Phone,
       title: "Call Us",
-      details: ["+237 123 456 789", "+237 987 654 321"],
+      details: ["+237 680 789 894", "+237 671 316 3526"],
       color: "text-green-600"
     },
     {
       icon: Mail,
       title: "Email Us",
-      details: ["info@kccameroon.com", "admissions@kccameroon.com"],
+      details: ["kcstemhub@gmail.com"],
       color: "text-purple-600"
     },
     {
@@ -84,13 +139,13 @@ const Contact = () => {
 
   return (
     <section id="contact" className="py-20 lg:py-32">
-      <div className="container mx-auto px-4 lg:px-8">
+      <div className="container mx-auto px-4 lg:px-8 max-w-6xl">
         {/* Header */}
         <div className="text-center mb-16">
-          <h2 className="text-4xl lg:text-5xl font-heading font-bold mb-6">
+          <h2 className="heading-2 mb-6">
             <span className="text-kc-blue">Contact</span> <span className="text-kc-red">Us</span>
           </h2>
-          <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
+          <p className="subheading max-w-3xl mx-auto leading-relaxed">
             Ready to join our STEM community or have questions? We'd love to hear from you. 
             Get in touch and let's start the conversation.
           </p>
@@ -152,6 +207,7 @@ const Contact = () => {
 
           {/* Contact Form */}
           <div className="lg:col-span-2">
+            <div className="max-w-2xl mx-auto w-full">
             <Card className="card-gradient shadow-elegant">
               <CardContent className="p-8">
                 <div className="flex items-center space-x-3 mb-8">
@@ -192,8 +248,8 @@ const Contact = () => {
 
                   <div>
                     <Label htmlFor="subject">Subject *</Label>
-                    <Select onValueChange={(value) => handleInputChange("subject", value)}>
-                      <SelectTrigger className="mt-2">
+                    <Select value={formData.subject} onValueChange={(value) => handleInputChange("subject", value)}>
+                      <SelectTrigger className="mt-2" id="subject">
                         <SelectValue placeholder="Select a subject" />
                       </SelectTrigger>
                       <SelectContent>
@@ -217,6 +273,7 @@ const Contact = () => {
                       required
                       className="mt-2 resize-none"
                     />
+                    <div className="mt-1 text-xs text-muted-foreground text-right">{messageCount} / 1000</div>
                   </div>
 
                   {/* CAPTCHA placeholder */}
@@ -246,6 +303,7 @@ const Contact = () => {
                 </form>
               </CardContent>
             </Card>
+            </div>
           </div>
         </div>
 
