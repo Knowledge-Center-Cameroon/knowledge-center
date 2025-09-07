@@ -108,7 +108,7 @@ const Stats = () => {
 
   return (
     <section ref={sectionRef} className="py-14 md:py-20 lg:py-28 bg-black">
-      <div className="container mx-auto px-4 lg:px-8">
+      <div className="container mx-auto px-4 lg:px-8 max-w-6xl">
         {/* Header */}
         <div className="text-center mb-10 md:mb-12">
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-playfair font-bold text-white mb-3 md:mb-4">
@@ -122,27 +122,26 @@ const Stats = () => {
         {/* Stats Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 lg:gap-8">
           {statsData.map((stat, index) => (
-            <Card 
-              key={index} 
-              className={
-                `bg-white/[0.03] backdrop-blur-sm border border-white/10 text-white shadow-lg transition-bounce hover:scale-[1.02] ` +
-                (index % 2 === 0 ? 'border-t-4 border-kc-blue' : 'border-t-4 border-kc-red')
-              }
-            >
-              <CardContent className="p-6 md:p-7 lg:p-8 text-center">
-                <div className={(index % 2 === 0 ? 'bg-kc-blue' : 'bg-kc-red') + " w-14 h-14 md:w-16 md:h-16 rounded-full flex items-center justify-center mx-auto mb-5 md:mb-6"}>
-                  <stat.icon className="h-7 w-7 md:h-8 md:w-8 text-white" />
-                </div>
-                
-                <div className={(index % 2 === 0 ? 'text-kc-blue' : 'text-kc-red') + " text-3xl md:text-4xl lg:text-5xl font-playfair font-extrabold mb-1 md:mb-2"}>
-                  {getCurrentValue(index).toLocaleString()}{stat.suffix}
-                </div>
-                
-                <div className="text-white/90 font-medium text-sm md:text-base">
-                  {stat.label}
-                </div>
-              </CardContent>
-            </Card>
+            <div key={index} className="neon-rotate-wrapper">
+              <div className="neon-rotate neon-snake"></div>
+              <Card 
+                className="relative z-10 bg-white/[0.03] backdrop-blur-sm border border-white/10 text-white shadow-lg transition-bounce hover:scale-[1.02] rounded-2xl"
+              >
+                <CardContent className="p-6 md:p-7 lg:p-8 text-center">
+                  <div className={(index % 2 === 0 ? 'bg-kc-blue' : 'bg-kc-red') + " w-14 h-14 md:w-16 md:h-16 rounded-full flex items-center justify-center mx-auto mb-5 md:mb-6"}>
+                    <stat.icon className="h-7 w-7 md:h-8 md:w-8 text-white" />
+                  </div>
+                  
+                  <div className={(index % 2 === 0 ? 'text-kc-blue' : 'text-kc-red') + " text-3xl md:text-4xl lg:text-5xl font-playfair font-extrabold mb-1 md:mb-2"}>
+                    {getCurrentValue(index).toLocaleString()}{stat.suffix}
+                  </div>
+                  
+                  <div className="text-white/90 font-medium text-sm md:text-base">
+                    {stat.label}
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
           ))}
         </div>
 
