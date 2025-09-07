@@ -9,9 +9,9 @@ import {
   Heart, 
   ArrowRight 
 } from "lucide-react";
-import studentsImage from "@/assets/students-studying.jpg";
-import scienceLabImage from "@/assets/science-lab.jpg";
-import sportsImage from "@/assets/sports-recreation.jpg";
+import studentsImage from "@/assets/hero-image3.jpeg";
+import scienceLabImage from "@/assets/hero-image2.jpeg";
+import sportsImage from "@/assets/hero-image5.jpeg";
 
 const Activities = () => {
   const activities = [
