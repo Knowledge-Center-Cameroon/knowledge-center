@@ -15,6 +15,15 @@ const pageTransition = { duration: 0.35, ease: [0.22, 1, 0.36, 1] };
 
 const Layout: React.FC = () => {
   const location = useLocation();
+  React.useEffect(() => {
+    if ('scrollRestoration' in window.history) {
+      window.history.scrollRestoration = 'manual';
+    }
+  }, []);
+  React.useEffect(() => {
+    // Scroll to top on route change to ensure Home shows the Hero first
+    window.scrollTo({ top: 0, behavior: "auto" });
+  }, [location.pathname]);
 
   return (
     <div className="min-h-screen flex flex-col bg-background text-foreground">

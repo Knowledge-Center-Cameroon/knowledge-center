@@ -6,6 +6,7 @@ import { useNavigate, Link } from "react-router-dom";
 import { projects } from "@/data/projects";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ArrowRight } from "lucide-react";
+import StemBackground from "@/components/StemBackground";
 
 const ProjectsPage: React.FC = () => {
   const navigate = useNavigate();
@@ -15,8 +16,11 @@ const ProjectsPage: React.FC = () => {
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-      className="min-h-[60vh]"
+      className="min-h-[60vh] relative"
     >
+      <div className="absolute inset-0 -z-10">
+        <StemBackground opacity={0.08} density={44} lineDistance={120} speed={0.4} showIcons={true} />
+      </div>
       <section id="projects" className="py-16 lg:py-24">
         <div className="container mx-auto px-4 lg:px-8 max-w-6xl">
           {/* Header */}

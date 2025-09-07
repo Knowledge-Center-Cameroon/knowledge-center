@@ -16,6 +16,7 @@ import {
   HelpCircle
 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
+import { AeroButton } from "@/components/aerobutton";
 
 const Contact = () => {
   const [formData, setFormData] = useState({
@@ -282,24 +283,16 @@ const Contact = () => {
                     <span className="text-sm">CAPTCHA verification would go here</span>
                   </div>
 
-                  <Button 
-                    type="submit" 
+                  <AeroButton
+                    type="submit"
                     disabled={isSubmitting}
-                    variant="red"
-                    className="w-full py-3 font-semibold"
-                  >
-                    {isSubmitting ? (
-                      <>
-                        <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
-                        Sending Message...
-                      </>
-                    ) : (
-                      <>
-                        <Send className="h-4 w-4 mr-2" />
-                        Send Message
-                      </>
-                    )}
-                  </Button>
+                    loading={isSubmitting}
+                    text="Send"
+                    width={30}
+                    primaryCol="#FF6B6B"
+                    gradientCol="#FFD93D"
+                    className="w-full rounded-full gap-2 text-white py-3"
+                  />
                 </form>
               </CardContent>
             </Card>

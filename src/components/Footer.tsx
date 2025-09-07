@@ -227,7 +227,11 @@ const Footer = () => {
       </div>
 
       {/* Bottom Bar */}
-      <div className="bg-black text-white border-t border-border py-8">
+      <div className="relative bg-black text-white border-t border-border py-8">
+        {/* Wave separator between main footer and bottom bar */}
+        <svg className="absolute -top-10 left-0 w-full h-10 text-kc-black" viewBox="0 0 1440 80" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M0,64 C240,32 480,0 720,0 C960,0 1200,32 1440,64 L1440,80 L0,80 Z" fill="currentColor" />
+        </svg>
         <div className="container mx-auto px-4 lg:px-8 max-w-6xl">
           <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
             <p className="text-white/80 text-center md:text-left">

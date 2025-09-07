@@ -21,21 +21,32 @@ const Navigation = () => {
 
   const closeMobile = () => setIsMobileMenuOpen(false);
 
+  const handleNavClick = (e: React.MouseEvent, to: string) => {
+    if (to === "/") {
+      // Always scroll to top when clicking Home
+      if (location.pathname === "/") {
+        e.preventDefault();
+      }
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+    closeMobile();
+  };
+
   const navItems = [
     { label: "Home", to: "/" },
     { label: "About Us", to: "/about" },
     { label: "Projects", to: "/projects" },
+    { label: "Events", to: "/events" },
     { label: "Blog", to: "/blog" },
     { label: "Contact Us", to: "/contact" },
   ];
 
-  // Determine active index for sliding pill: match by startsWith
-  const activeIndex = Math.max(
-    0,
-    navItems.findIndex((item) =>
-      item.to === "/" ? location.pathname === "/" : location.pathname.startsWith(item.to)
-    )
+  // Determine active index for sliding pill: exact for home, prefix for others
+  const foundIndex = navItems.findIndex((item) =>
+    item.to === "/" ? location.pathname === "/" : location.pathname.startsWith(item.to)
   );
+  const activeIndex = foundIndex === -1 ? 0 : foundIndex;
+  const navCount = navItems.length;
 
   return (
     <header
@@ -47,7 +58,7 @@ const Navigation = () => {
       <nav className="container mx-auto px-3 sm:px-4 lg:px-8 font-heading">
         <div className="flex items-center justify-between h-16 lg:h-20">
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-3" onClick={closeMobile}>
+          <Link to="/" className="flex items-center gap-3" onClick={(e) => handleNavClick(e, "/")}>
             <img
               src="/logo_trans.png"
               alt="Knowledge Center Logo"
@@ -63,29 +74,33 @@ const Navigation = () => {
 
           {/* Desktop Navigation */}
           <div className="hidden lg:block relative">
-            {/* Sliding pill container: 5 equal columns */}
-            <div className="grid grid-cols-5 items-center">
+            {/* Sliding pill container: dynamic equal columns */}
+            <div
+              className="relative grid items-center"
+              style={{ gridTemplateColumns: `repeat(${navCount}, minmax(0, 1fr))` }}
+            >
               {/* Sliding pill */}
               <motion.span
                 layout
-                initial={false}
-                animate={{ x: `${activeIndex * 100}%` }}
+                initial={{ left: 0 }}
+                animate={{ left: `calc((100% / ${navCount}) * ${activeIndex})` }}
                 transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-                className="absolute inset-y-0 my-auto h-10 rounded-full bg-black shadow-lg"
-                style={{ width: "calc(100%/5)" }}
+                className="absolute top-0 bottom-0 my-auto h-10 rounded-full bg-neutral-900 shadow-lg"
+                style={{ width: `calc(100%/${navCount})` }}
               />
               {navItems.map((item) => (
                 <NavLink
                   key={item.to}
                   to={item.to}
-                  onClick={closeMobile}
+                  onClick={(e) => handleNavClick(e, item.to)}
+                  end={item.to === "/" ? true : undefined}
                   className={({ isActive }) =>
                     cn(
                       "relative z-10 transition-smooth font-semibold",
                       "px-3 py-2 text-sm text-center",
                       isActive
                         ? "text-white drop-shadow-sm"
-                        : "text-foreground/80 hover:text-foreground"
+                        : "text-foreground hover:text-foreground"
                     )
                   }
                 >
@@ -128,12 +143,13 @@ const Navigation = () => {
                 <NavLink
                   key={item.to}
                   to={item.to}
-                  onClick={closeMobile}
+                  onClick={(e) => handleNavClick(e, item.to)}
+                  end={item.to === "/" ? true : undefined}
                   className={({ isActive }) =>
                     cn(
                       "block w-full text-left py-2 transition-smooth font-medium",
                       "relative rounded-lg px-3",
-                      isActive ? "bg-black text-white" : "text-foreground hover:bg-black/5"
+                      isActive ? "bg-neutral-900 text-white" : "text-foreground hover:bg-black/5"
                     )
                   }
                 >

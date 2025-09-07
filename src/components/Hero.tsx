@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Button } from "@/components/ui/button";
-import { ChevronLeft, ChevronRight, Play, ArrowRight } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import heroImage from "@/assets/hero-image.jpeg";
 import heroImage2 from "@/assets/hero-image2.jpeg";
 import heroImage3 from "@/assets/weekend.jpeg";
@@ -8,6 +7,7 @@ import heroImage4 from "@/assets/hero-image4.jpeg";
 import heroImage5 from "@/assets/hero-image5.jpeg";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
+import { ArrowButton } from "@/components/arrowbtn";
 
 const Hero = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -119,24 +119,25 @@ const Hero = () => {
 
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center">
-            <Button asChild size="lg" variant="blue" className="px-6 sm:px-7 py-3 sm:py-4 text-base sm:text-lg font-semibold group">
-              <Link to="/stem-registration">
-                Join Our STEM Program
-                <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
-              </Link>
-            </Button>
+            <ArrowButton
+              text="Join Our STEM Program"
+              bgPrimaryColor="#FFFFFF"
+              bgSecondaryColor="#3498db"
+              textPrimaryColor="#3498db"
+              textSecondaryColor="#FFFFFF"
+              className="rounded-full"
+              href="/stem-registration"
+            />
 
-            <Button
-              asChild
-              size="lg"
-              variant="blackOutline"
-              className="px-6 sm:px-7 py-3 sm:py-4 text-base sm:text-lg text-white font-semibold group bg-white/10 backdrop-blur-md hover:bg-white hover:text-kc-black border-white"
-            >
-              <Link to="/about">
-                <Play className="mr-2 h-5 w-5" />
-                Discover Our Story
-              </Link>
-            </Button>
+            <ArrowButton
+              text="Discover Our Story"
+              bgPrimaryColor="rgba(255,255,255,0.12)"
+              bgSecondaryColor="#FFFFFF"
+              textPrimaryColor="#FFFFFF"
+              textSecondaryColor="#111827"
+              className="rounded-full backdrop-blur-md border border-white/30"
+              href="/about"
+            />
           </div>
         </motion.div>
       </div>

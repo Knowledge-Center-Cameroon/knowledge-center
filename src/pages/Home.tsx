@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import Hero from "@/components/Hero";
 import Stats from "@/components/Stats";
 import Projects from "@/components/Projects";
+import Testimonials from "@/components/Testimonials";
 
 const fadeUp = {
   initial: { opacity: 0, y: 16 },
@@ -11,6 +12,9 @@ const fadeUp = {
 };
 
 const Home: React.FC = () => {
+  React.useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "auto" });
+  }, []);
   return (
     <div className="space-y-16 lg:space-y-24">
       <motion.section {...fadeUp}>
@@ -21,6 +25,9 @@ const Home: React.FC = () => {
       </motion.section>
       <motion.section {...fadeUp}>
         <Projects />
+      </motion.section>
+      <motion.section {...fadeUp}>
+        <Testimonials />
       </motion.section>
     </div>
   );

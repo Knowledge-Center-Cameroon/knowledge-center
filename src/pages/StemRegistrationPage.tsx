@@ -1,6 +1,6 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { Button } from "@/components/ui/button";
+import { ArrowButton } from "@/components/arrowbtn";
 
 const StemRegistrationPage: React.FC = () => {
   return (
@@ -16,12 +16,24 @@ const StemRegistrationPage: React.FC = () => {
           Register your interest in our STEM program. We will contact you with dates, curriculum, and next steps.
         </p>
         <div className="flex flex-wrap gap-3">
-          <Button variant="blue" asChild>
-            <a href="#" onClick={(e) => e.preventDefault()}>Start Registration</a>
-          </Button>
-          <Button variant="blackOutline" asChild>
-            <a href="#" onClick={(e) => e.preventDefault()}>Download Brochure</a>
-          </Button>
+          <ArrowButton
+            text="Start Registration"
+            bgPrimaryColor="#FFFFFF"
+            bgSecondaryColor="#3498db"
+            textPrimaryColor="#3498db"
+            textSecondaryColor="#FFFFFF"
+            className="rounded-full"
+            onClick={() => {/* hook up form dialog or navigation here */}}
+          />
+          <ArrowButton
+            text="Download Brochure"
+            bgPrimaryColor="rgba(17,24,39,0.08)"
+            bgSecondaryColor="#111827"
+            textPrimaryColor="#111827"
+            textSecondaryColor="#FFFFFF"
+            className="rounded-full"
+            onClick={() => {/* wire to brochure link */}}
+          />
         </div>
       </div>
     </motion.section>
