@@ -16,7 +16,7 @@ const BlogPage: React.FC = () => {
       className="container mx-auto px-4 lg:px-8 py-16"
     >
       <div className="max-w-3xl mb-10">
-        <h1 className="text-4xl font-heading font-bold mb-3">Blog</h1>
+        <h2 className="heading-2 mb-6">Blog</h2>
         <p className="text-muted-foreground">
           Stories, updates, and insights from Knowledge Center.
         </p>

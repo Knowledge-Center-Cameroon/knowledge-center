@@ -21,9 +21,9 @@ const ProjectsPage: React.FC = () => {
         <div className="container mx-auto px-4 lg:px-8 max-w-6xl">
           {/* Header */}
           <div className="text-center mb-10 md:mb-12">
-            <h1 className="text-3xl md:text-4xl font-heading font-bold mb-3 md:mb-4">
+            <h2 className="heading-2 mb-6">
               Explore Our Projects
-            </h1>
+            </h2>
             <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
               Dive deeper into each of our programs. Browse highlights below or jump straight into a project page.
             </p>
