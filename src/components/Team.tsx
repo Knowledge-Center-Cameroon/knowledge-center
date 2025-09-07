@@ -10,60 +10,61 @@ import {
   Heart
 } from "lucide-react";
 import { motion } from "framer-motion";
+import StemBackground from "@/components/StemBackground";
 
 const Team = () => {
   const [flippedCard, setFlippedCard] = useState<number | null>(null);
 
   const teamMembers = [
     {
-      name: "Dr. Emmanuel Tabi",
-      role: "Founder & Director",
-      education: "PhD Physics, University of Buea",
+      name: "Teh Allen Kuma",
+      role: "Founder & President",
+      education: "Astrophysicist",
       bio: "Passionate educator with over 8 years of experience in STEM education. Founded KC with a vision to transform science education in Cameroon.",
       achievements: ["Best Teacher Award 2020", "STEM Education Pioneer", "Published 15+ Research Papers"],
       email: "emmanuel@kccameroon.com",
       linkedin: "#",
-      avatar: "ET"
+      avatar: "TA"
     },
     {
-      name: "Sarah Mbaku",
-      role: "Head of Mathematics",
+      name: "Sandrine Ojong",
+      role: "Co Founder",
       education: "MSc Mathematics, University of Yaoundé I",
       bio: "Mathematics enthusiast who believes in making complex concepts simple and accessible to all students.",
       achievements: ["Mathematics Olympiad Coach", "Curriculum Developer", "Student Mentor of the Year"],
       email: "sarah@kccameroon.com",
       linkedin: "#",
-      avatar: "SM"
+      avatar: "SO"
     },
     {
-      name: "Dr. Peter Ngwa",
-      role: "Physics & Chemistry Lead",
+      name: "Njomo Robert",
+      role: "Co Founder",
       education: "PhD Chemistry, University of Douala",
       bio: "Research scientist turned educator, bringing real-world laboratory experience to the classroom.",
       achievements: ["Research Excellence Award", "Lab Safety Expert", "Innovation in Teaching"],
       email: "peter@kccameroon.com",
       linkedin: "#",
-      avatar: "PN"
+      avatar: "NJ"
     },
     {
-      name: "Grace Fon",
-      role: "Biology & Environmental Science",
+      name: "Selouis",
+      role: "Chief Operating Officer",
       education: "MSc Biology, University of Bamenda",
       bio: "Environmental scientist passionate about connecting biology to real-world environmental challenges.",
       achievements: ["Environmental Education Award", "Field Research Expert", "Community Outreach Leader"],
       email: "grace@kccameroon.com",
       linkedin: "#",
-      avatar: "GF"
+      avatar: "S"
     },
     {
-      name: "John Atanga",
-      role: "Technology & Engineering",
+      name: "Ngwa Rhoda",
+      role: "General Secretary",
       education: "BSc Computer Engineering, University of Buea",
       bio: "Tech innovator bridging the gap between traditional education and modern technology solutions.",
       achievements: ["Tech Innovation Award", "Coding Workshop Leader", "Digital Literacy Advocate"],
       email: "john@kccameroon.com",
       linkedin: "#",
-      avatar: "JA"
+      avatar: "NR"
     },
     {
       name: "Marie Kom",
@@ -83,23 +84,26 @@ const Team = () => {
 
   return (
     <section id="team" className="py-20 lg:py-32 bg-gradient-subtle">
-      <div className="container mx-auto px-4 lg:px-8">
-        {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 12 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-80px" }}
-          transition={{ duration: 0.4 }}
-          className="text-center mb-16"
-        >
-          <h2 className="text-4xl lg:text-5xl font-playfair font-bold mb-6">
-            Meet Our <span className="text-gradient">Team</span>
-          </h2>
-          <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-            With a vibrant and committed staff body, we aim for nothing less than the best. 
-            Meet the passionate educators who make KC's mission a reality.
-          </p>
-        </motion.div>
+      <div className="container mx-auto px-4 lg:px-8 max-w-6xl">
+        {/* Header with STEM canvas */}
+        <div className="relative overflow-hidden rounded-2xl mb-16">
+          <StemBackground opacity={0.12} density={34} lineDistance={120} speed={0.45} showIcons={true} />
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-80px" }}
+            transition={{ duration: 0.4 }}
+            className="relative z-10 text-center py-8"
+          >
+            <h2 className="text-4xl lg:text-5xl font-playfair font-bold mb-6">
+              Meet Our <span className="text-gradient">Team</span>
+            </h2>
+            <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
+              With a vibrant and committed staff body, we aim for nothing less than the best. 
+              Meet the passionate educators who make KC's mission a reality.
+            </p>
+          </motion.div>
+        </div>
 
         {/* Team Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
@@ -119,7 +123,7 @@ const Team = () => {
                 <Card className="absolute inset-0 card-gradient shadow-elegant backface-hidden">
                   <CardContent className="p-6 h-full flex flex-col items-center justify-center text-center">
                     {/* Avatar */}
-                    <div className="w-20 h-20 bg-gradient-primary rounded-full flex items-center justify-center text-white text-2xl font-playfair font-bold mb-4">
+                    <div className="w-20 h-20 bg-kc-red rounded-full flex items-center justify-center text-white text-2xl font-playfair font-bold mb-4">
                       {member.avatar}
                     </div>
                     
@@ -173,7 +177,7 @@ const Team = () => {
         </div>
 
         {/* Team Values */}
-        <div className="bg-gradient-primary rounded-2xl p-8 lg:p-12 text-white">
+        <div className="bg-kc-blue rounded-2xl p-8 lg:p-12 text-white">
           <div className="text-center mb-8">
             <h3 className="text-3xl font-playfair font-bold mb-4">Our Team Values</h3>
             <p className="text-white/90 max-w-2xl mx-auto">
