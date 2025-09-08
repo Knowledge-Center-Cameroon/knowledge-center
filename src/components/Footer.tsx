@@ -158,7 +158,7 @@ const Footer = () => {
                     to="/stem-registration"
                     className="text-white hover:text-primary transition-smooth"
                   >
-                    STEM Education Program
+                    National STEM Competition
                   </Link>
                 </li>
                 <li>

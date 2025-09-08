@@ -5,7 +5,6 @@ import About from "@/components/About";
 import Activities from "@/components/Activities";
 import Stats from "@/components/Stats";
 import Projects from "@/components/Projects";
-import Team from "@/components/Team";
 import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
 
@@ -30,8 +29,7 @@ const Index = () => {
       {/* Projects Section */}
       <Projects />
       
-      {/* Team Section */}
-      <Team />
+      
       
       {/* Contact Section */}
       <Contact />

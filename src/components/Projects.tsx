@@ -26,7 +26,7 @@ const Projects = () => {
 
   const projects = {
     stem: {
-      title: "STEM Education Program",
+      title: "National STEM Competition",
       icon: FlaskConical,
       description: "Our flagship program focusing on Science, Technology, Engineering, and Mathematics education for young Cameroonians.",
       image: Stem,

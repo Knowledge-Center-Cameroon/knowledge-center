@@ -8,8 +8,8 @@ import StemBackground from "@/components/StemBackground";
 
 const UPCOMING = [
   {
-    title: "STEM Weekend Hackathon",
-    date: "Oct 12, 2025",
+    title: "National STEM Competition",
+    date: "Dec 28, 2025",
     time: "09:00 - 18:00",
     location: "KC Campus, Buea",
     description:
@@ -17,10 +17,10 @@ const UPCOMING = [
     badge: "Featured",
   },
   {
-    title: "Robotics Showcase Night",
-    date: "Nov 02, 2025",
-    time: "17:00 - 20:00",
-    location: "KC Auditorium",
+    title: "Weekend Program for 2025/2026",
+    date: "Sep 14, 2025",
+    time: "12:00 - 17:00",
+    location: "KC Center",
     description:
       "Teams demo autonomous bots, line followers, and arm builds. Families and partners welcome!",
   },
@@ -28,20 +28,20 @@ const UPCOMING = [
 
 const PAST = [
   {
-    title: "Science Career Day",
-    date: "Aug 21, 2025",
-    time: "10:00 - 16:00",
-    location: "KC Campus, Buea",
+    title: "National STEM Convention",
+    date: "Aug 30, 2025",
+    time: "09:00 - 16:00",
+    location: "Mountain Hotel, Buea",
     description:
       "Talks from scientists and engineers, scholarship guidance, and networking with peers.",
   },
   {
-    title: "Math Olympiad Prep Camp",
+    title: "Summer Opening Ceremony",
     date: "Jul 05, 2025",
     time: "09:00 - 15:00",
-    location: "KC Training Center",
+    location: "Veracity University, Buea",
     description:
-      "Problem-solving masterclasses with past medalists and intensive mock sessions.",
+      "Opening ceremony to the commencement of an impact full summer.",
   },
 ];
 

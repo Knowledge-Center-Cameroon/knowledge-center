@@ -9,7 +9,6 @@ import {
   MapPin, 
   Phone, 
   Mail, 
-  Clock,
   Send,
   MessageSquare,
   Users,
@@ -111,7 +110,7 @@ const Contact = () => {
     {
       icon: Phone,
       title: "Call Us",
-      details: ["+237 680 789 894", "+237 671 316 3526"],
+      details: ["+237 680 789 894", "+237 650 986 127"],
       color: "text-green-600"
     },
     {
@@ -120,12 +119,7 @@ const Contact = () => {
       details: ["kcstemhub@gmail.com"],
       color: "text-purple-600"
     },
-    {
-      icon: Clock,
-      title: "Office Hours",
-      details: ["Mon - Fri: 8:00 AM - 6:00 PM", "Sat: 9:00 AM - 4:00 PM"],
-      color: "text-orange-600"
-    }
+
   ];
 
   const subjects = [
@@ -277,11 +271,10 @@ const Contact = () => {
                     <div className="mt-1 text-xs text-muted-foreground text-right">{messageCount} / 1000</div>
                   </div>
 
-                  {/* CAPTCHA placeholder */}
-                  <div className="p-4 border-2 border-dashed border-muted rounded-lg text-center text-muted-foreground">
+                  {/* <div className="p-4 border-2 border-dashed border-muted rounded-lg text-center text-muted-foreground">
                     <div className="w-8 h-8 bg-muted rounded mx-auto mb-2"></div>
                     <span className="text-sm">CAPTCHA verification would go here</span>
-                  </div>
+                  </div> */}
 
                   <AeroButton
                     type="submit"

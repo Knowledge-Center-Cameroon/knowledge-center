@@ -1,7 +1,6 @@
 import React from "react";
 import { motion } from "framer-motion";
 import About from "@/components/About";
-import Team from "@/components/Team";
 
 const AboutPage: React.FC = () => {
   return (
@@ -12,9 +11,6 @@ const AboutPage: React.FC = () => {
       className="min-h-[60vh]"
     >
       <About />
-      <div className="mt-20">
-        <Team />
-      </div>
     </motion.div>
   );
 };
