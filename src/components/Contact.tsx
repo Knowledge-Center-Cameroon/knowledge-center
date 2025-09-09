@@ -282,8 +282,8 @@ const Contact = () => {
                     loading={isSubmitting}
                     text="Send"
                     width={30}
-                    primaryCol="#FF6B6B"
-                    gradientCol="#FFD93D"
+                    primaryCol="red"
+                    gradientCol="blue"
                     className="w-full rounded-full gap-2 text-white py-3"
                   />
                 </form>
@@ -296,15 +296,22 @@ const Contact = () => {
         {/* Google Maps Embed */}
         <div className="mt-16">
           <h3 className="text-2xl font-heading font-bold text-center mb-8">Find Us in Buea</h3>
-          <Card className="shadow-elegant overflow-hidden">
+          <Card className="shadow-elegant overflow-hidden bg-kc-black">
             <CardContent className="p-0">
-              <div className="relative h-96 bg-muted rounded-lg flex items-center justify-center">
-                <div className="text-center text-muted-foreground">
-                  <MapPin className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                  <p className="text-lg font-medium">Interactive Map</p>
-                  <p className="text-sm">Google Maps integration would be embedded here</p>
-                  <p className="text-xs mt-2">Location: Buea, Southwest Region, Cameroon</p>
+              <div className="relative w-full aspect-[16/9]">
+                {/* Dark theme effect via CSS filters on the embed */}
+                <div className="absolute inset-0 filter invert hue-rotate-180 saturate-75 brightness-90 contrast-90">
+                  <iframe
+                    title="Knowledge Center KC - Google Map"
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3979.316754043103!2d9.27541847471133!3d4.157989746123863!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x10613341d1c0ff45%3A0x3d7d600cd306579!2sKnowledge%20Center%20KC!5e0!3m2!1sen!2scm!4v1757380618185!5m2!1sen!2scm"
+                    className="w-full h-full border-0"
+                    allowFullScreen
+                    loading="lazy"
+                    referrerPolicy="no-referrer-when-downgrade"
+                  />
                 </div>
+                {/* subtle border radius and outline */}
+                <div className="absolute inset-0 rounded-md ring-1 ring-white/10 pointer-events-none" />
               </div>
             </CardContent>
           </Card>
