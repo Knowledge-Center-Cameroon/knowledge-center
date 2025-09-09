@@ -46,7 +46,7 @@ const Footer = () => {
             <div className="lg:col-span-1">
               <div className="flex items-center gap-3 mb-6">
                 <img
-                  src="/logo_trans.png"
+                  src="/logo.png"
                   alt="Knowledge Center Logo"
                   className="h-10 w-10 md:h-12 md:w-12 object-contain"
                 />

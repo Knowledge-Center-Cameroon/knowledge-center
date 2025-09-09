@@ -5,6 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { ArrowButton } from "@/components/arrowbtn";
 import StemBackground from "@/components/StemBackground";
+import Timeline, { type TimelineItem } from "@/components/Timeline";
 
 const UPCOMING = [
   {
@@ -112,23 +113,48 @@ const EventsPage: React.FC = () => {
       </motion.div>
 
       <motion.div variants={fadeUp}>
-        <Tabs defaultValue="upcoming" className="w-full">
-          <TabsList className="relative w-full mb-8 p-2 rounded-2xl bg-white/40 backdrop-blur-md border border-white/40 shadow-elegant grid grid-cols-2 gap-2">
-            <TabsTrigger value="upcoming" className="font-semibold rounded-xl data-[state=active]:bg-kc-blue data-[state=active]:text-white data-[state=inactive]:text-foreground/80 data-[state=inactive]:hover:bg-white/50">
-              Upcoming
-            </TabsTrigger>
-            <TabsTrigger value="past" className="font-semibold rounded-xl data-[state=active]:bg-kc-red data-[state=active]:text-white data-[state=inactive]:text-foreground/80 data-[state=inactive]:hover:bg-white/50">
-              Past
-            </TabsTrigger>
-          </TabsList>
+        <div className="grid lg:grid-cols-12 gap-8">
+          <div className="lg:col-span-8">
+            <Tabs defaultValue="upcoming" className="w-full">
+              <TabsList className="relative w-full mb-8 p-2 rounded-2xl bg-white/40 backdrop-blur-md border border-white/40 shadow-elegant grid grid-cols-2 gap-2">
+                <TabsTrigger value="upcoming" className="font-semibold rounded-xl data-[state=active]:bg-kc-blue data-[state=active]:text-white data-[state=inactive]:text-foreground/80 data-[state=inactive]:hover:bg-white/50">
+                  Upcoming
+                </TabsTrigger>
+                <TabsTrigger value="past" className="font-semibold rounded-xl data-[state=active]:bg-kc-red data-[state=active]:text-white data-[state=inactive]:text-foreground/80 data-[state=inactive]:hover:bg-white/50">
+                  Past
+                </TabsTrigger>
+              </TabsList>
 
-          <TabsContent value="upcoming">
-            <EventsGrid items={UPCOMING} />
-          </TabsContent>
-          <TabsContent value="past">
-            <EventsGrid items={PAST} />
-          </TabsContent>
-        </Tabs>
+              <TabsContent value="upcoming">
+                <EventsGrid items={UPCOMING} />
+              </TabsContent>
+              <TabsContent value="past">
+                <EventsGrid items={PAST} />
+              </TabsContent>
+            </Tabs>
+          </div>
+          <div className="lg:col-span-4">
+            {(() => {
+              const timeItems: TimelineItem[] = [
+                ...UPCOMING.map((e) => ({
+                  title: e.title,
+                  date: `${e.date} • ${e.time}`,
+                  subtitle: e.location,
+                  description: e.description,
+                  href: "#",
+                })),
+                ...PAST.map((e) => ({
+                  title: e.title,
+                  date: `${e.date} • ${e.time}`,
+                  subtitle: e.location,
+                  description: e.description,
+                  href: "#",
+                })),
+              ];
+              return <Timeline title="Event Timeline" items={timeItems} />;
+            })()}
+          </div>
+        </div>
       </motion.div>
     </motion.section>
   );

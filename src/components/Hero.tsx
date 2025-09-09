@@ -6,6 +6,7 @@ import heroImage3 from "@/assets/weekend.jpeg";
 import heroImage4 from "@/assets/hero-image4.jpeg";
 import heroImage5 from "@/assets/hero-image5.jpeg";
 import { motion } from "framer-motion";
+import AnimatedLogo from "@/components/AnimatedLogo";
 import { Link } from "react-router-dom";
 import { ArrowButton } from "@/components/arrowbtn";
 
@@ -98,16 +99,28 @@ const Hero = () => {
           transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
           className="max-w-3xl md:max-w-4xl mx-auto glass rounded-2xl shadow-elegant px-5 py-6 sm:px-8 sm:py-8 md:px-10 md:py-10"
         >
-          {/* Badge */}
-          <div className="inline-flex items-center gap-2 bg-white text-kc-black rounded-full px-3 py-1 text-xs sm:text-sm font-semibold mb-4 md:mb-5">
-            <span className="w-2 h-2 rounded-full bg-kc-red" />
-            Knowledge Center
+          {/* Animated Logo */}
+          <div className="flex justify-center mb-4 md:mb-6">
+            <AnimatedLogo size={120} />
           </div>
 
-          {/* Heading */}
-          <h1 className="heading-1 mb-3 md:mb-4">
-            Empowering Young Scientists
-          </h1>
+
+          {/* Heading with animated glow */}
+          <div className="relative mb-3 md:mb-4">
+            <motion.div
+              className="absolute inset-0 -z-10 flex items-center justify-center"
+              initial={{ opacity: 0.25, scale: 0.95 }}
+              animate={{ opacity: [0.25, 0.45, 0.25], scale: [0.95, 1, 0.95] }}
+              transition={{ duration: 2.6, repeat: Infinity, ease: "easeInOut" }}
+            >
+              <div className="h-20 w-64 md:h-24 md:w-96 rounded-full blur-2xl"
+                   style={{ background: "linear-gradient(90deg, hsl(var(--kc-blue)), hsl(var(--kc-red)))" }} />
+            </motion.div>
+            <h1 className="heading-1 bg-clip-text text-white"
+                style={{ backgroundImage: "linear-gradient(90deg, hsl(var(--kc-blue)), hsl(var(--kc-red)))" }}>
+              Empowering Young Scientists
+            </h1>
+          </div>
           <div className="subheading text-white/90 mb-6 md:mb-7">
             {slides[currentSlide].subtitle}
           </div>
