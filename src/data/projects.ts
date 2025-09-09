@@ -17,7 +17,7 @@ import ExtraImg from "@/assets/1747611530465.jpeg";
 export const projects: Project[] = [
   {
     slug: "stem-education",
-    title: "STEM Education Program",
+    title: "National STEM Competition",
     summary:
       "Our flagship program focusing on Science, Technology, Engineering, and Mathematics education for young Cameroonians.",
     images: [StemImg, SummerImg, WeekendImg],

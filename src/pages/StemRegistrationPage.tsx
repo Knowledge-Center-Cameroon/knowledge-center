@@ -11,7 +11,7 @@ const StemRegistrationPage: React.FC = () => {
       className="container mx-auto px-4 lg:px-8 py-12"
     >
       <div className="max-w-3xl">
-        <h1 className="text-4xl font-heading font-bold mb-4">STEM Education Program</h1>
+        <h1 className="text-4xl font-heading font-bold mb-4">National STEM Competition</h1>
         <p className="text-muted-foreground mb-8">
           Register your interest in our STEM program. We will contact you with dates, curriculum, and next steps.
         </p>

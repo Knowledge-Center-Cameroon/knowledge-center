@@ -46,7 +46,7 @@ const Footer = () => {
             <div className="lg:col-span-1">
               <div className="flex items-center gap-3 mb-6">
                 <img
-                  src="/logo_trans.png"
+                  src="/logo.png"
                   alt="Knowledge Center Logo"
                   className="h-10 w-10 md:h-12 md:w-12 object-contain"
                 />
@@ -86,7 +86,7 @@ const Footer = () => {
               {/* Social Links */}
               <div className="flex space-x-4 mt-4">
                 <a 
-                  href="https://web.facebook.com/share/g/16KfY5hwvv/" 
+                  href="https://web.facebook.com/share/g/1YeC5UgLSP/" 
                   target="_blank" 
                   rel="noopener noreferrer"
                   className="w-10 h-10 bg-white/10 hover:bg-white/20 text-white rounded-full flex items-center justify-center transition-smooth border border-white/10"
@@ -104,7 +104,7 @@ const Footer = () => {
                   <Twitter className="h-5 w-5" />
                 </a>
                 <a 
-                  href="https://www.youtube.com/@KnowledgeCenterCameroon-bz8dt" 
+                  href="https://youtube.com/@knowledgecentercameroon-bz8dt?si=LVdBwRFkRBY2M79c" 
                   target="_blank" 
                   rel="noopener noreferrer"
                   className="w-10 h-10 bg-white/10 hover:bg-white/20 text-white rounded-full flex items-center justify-center transition-smooth border border-white/10"
@@ -113,7 +113,7 @@ const Footer = () => {
                   <Youtube className="h-5 w-5" />
                 </a>
                 <a 
-                  href="https://www.linkedin.com/company/knowledge-centercmr" 
+                  href="https://www.linkedin.com/company/knowledge-centercmr/" 
                   target="_blank" 
                   rel="noopener noreferrer"
                   className="w-10 h-10 bg-white/10 hover:bg-white/20 text-white rounded-full flex items-center justify-center transition-smooth border border-white/10"
@@ -158,7 +158,7 @@ const Footer = () => {
                     to="/stem-registration"
                     className="text-white hover:text-primary transition-smooth"
                   >
-                    STEM Education Program
+                    National STEM Competition
                   </Link>
                 </li>
                 <li>

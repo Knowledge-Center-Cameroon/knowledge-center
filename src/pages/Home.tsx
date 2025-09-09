@@ -1,6 +1,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 import Hero from "@/components/Hero";
+import Countdown from "@/components/Countdown";
 import Stats from "@/components/Stats";
 import Projects from "@/components/Projects";
 import Testimonials from "@/components/Testimonials";
@@ -28,6 +29,9 @@ const Home: React.FC = () => {
       </motion.section>
       <motion.section {...fadeUp}>
         <Testimonials />
+      </motion.section>
+      <motion.section {...fadeUp}>
+        <Countdown />
       </motion.section>
     </div>
   );

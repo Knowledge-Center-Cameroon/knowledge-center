@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Card, CardContent } from "@/components/ui/card";
-import { Users, GraduationCap, Trophy, BookOpen } from "lucide-react";
+import { Users, GraduationCap, School, Hand, Library, Link, Landmark, Handshake } from "lucide-react";
 
 const Stats = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -16,30 +16,30 @@ const Stats = () => {
   const statsData = [
     {
       icon: Users,
-      label: "Active Students",
-      value: 500,
+      label: "Students Impacted",
+      value: 50000,
       suffix: "+",
       color: "text-blue-600"
     },
     {
       icon: GraduationCap,
-      label: "Successful Graduates",
-      value: 200,
+      label: "Alumni and Scholars",
+      value: 7000,
       suffix: "+",
       color: "text-green-600"
     },
     {
-      icon: Trophy,
-      label: "Awards Won",
-      value: 25,
+      icon: Landmark,
+      label: "Centers Nationwide",
+      value: 13,
       suffix: "+",
       color: "text-yellow-600"
     },
     {
-      icon: BookOpen,
-      label: "Programs Offered",
-      value: 8,
-      suffix: "",
+      icon: Handshake,
+      label: "Institutional Partners",
+      value: 90,
+      suffix: "+",
       color: "text-purple-600"
     }
   ];

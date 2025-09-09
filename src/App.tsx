@@ -43,7 +43,7 @@ const App = () => (
             <Route path="projects/:slug" element={<ProjectDetailPage />} />
             <Route path="events" element={<EventsPage />} />
             <Route path="blog" element={<BlogPage />} />
-            <Route path="team" element={<AboutPage />} />
+            
             <Route path="contact" element={<ContactPage />} />
             <Route path="donate" element={<DonatePage />} />
             <Route path="stem-registration" element={<StemRegistrationPage />} />
