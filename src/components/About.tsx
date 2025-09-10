@@ -16,6 +16,12 @@ import hero2 from "@/assets/hero-image2.jpeg";
 import hero3 from "@/assets/hero-image3.jpeg";
 import hero4 from "@/assets/hero-image4.jpeg";
 import hero5 from "@/assets/hero-image5.jpeg";
+import hero6 from "@/assets/hero6.jpeg";
+import hero7 from "@/assets/hero7.jpeg";
+import hero8 from "@/assets/hero8.jpeg";
+import hero9 from "@/assets/hero9.jpeg";
+import hero10 from "@/assets/hero10.jpeg";
+
 import { type CarouselApi, Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 import {
   Accordion,
@@ -155,7 +161,7 @@ const About = () => {
         <div className="relative overflow-hidden rounded-2xl mb-16">
           <StemBackground opacity={0.15} density={36} lineDistance={120} speed={0.45} showIcons={true} />
           <div className="relative z-10 text-center py-8">
-            <div className="h-1 w-28 mx-auto mb-4 bg- rounded-full" />
+            <div className="h-1 w-28 mx-auto mb-3 bg-kc-blue rounded-full" />
             <h2 className="heading-2 mb-6">
               <span className="text-kc-blue">About</span> <span className="text-kc-red">Knowledge Center</span>
             </h2>
@@ -238,7 +244,7 @@ const About = () => {
           <div className="animate-slide-up">
             <Carousel setApi={setPhiloApi} className="rounded-2xl shadow-elegant bg-white/5 backdrop-blur-sm p-2">
               <CarouselContent>
-                {[hero3, hero4, hero5, hero2].map((img, i) => (
+                {[hero6, hero7, hero8, hero9, hero10].map((img, i) => (
                   <CarouselItem key={i}>
                     <div className="relative overflow-hidden rounded-xl">
                       <img src={img} alt={`KC philosophy ${i + 1}`} className="w-full h-[360px] object-cover" />

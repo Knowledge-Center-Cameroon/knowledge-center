@@ -5,6 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { blogPosts } from "@/data/blogs";
 import { Link } from "react-router-dom";
 import Timeline, { type TimelineItem } from "@/components/Timeline";
+import StemBackground from "@/components/StemBackground";
 
 const BlogPage: React.FC = () => {
   const posts = [...blogPosts].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
@@ -16,7 +17,11 @@ const BlogPage: React.FC = () => {
       transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
       className="container mx-auto px-4 lg:px-8 py-16"
     >
+        <div className="absolute inset-0 -z-10">
+              <StemBackground opacity={0.08} density={44} lineDistance={120} speed={0.4} showIcons={true} />
+            </div>
       <div className="max-w-3xl mb-10">
+      <div className="h-1 w-20 mb-3 bg-kc-blue rounded-full" />
         <h2 className="heading-2 mb-6">Blog</h2>
         <p className="text-muted-foreground">
           Stories, updates, and insights from Knowledge Center.

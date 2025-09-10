@@ -271,7 +271,7 @@ const Projects = () => {
                             size="lg"
                             className="group font-semibold w-full sm:w-auto"
                           >
-                            Enroll Now
+                            <a href="/stem-registration" target="_blank" rel="noopener noreferrer">Enroll Now</a>
                             <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
                           </Button>
                         </motion.div>
@@ -281,7 +281,7 @@ const Projects = () => {
                             size="lg"
                             className="w-full sm:w-auto"
                           >
-                            Learn More
+                            <a href="projects/stem-education" target="_blank" rel="noopener noreferrer">Learn More</a>
                           </Button>
                         </motion.div>
                       </div>
@@ -346,7 +346,7 @@ const Projects = () => {
                   <motion.div className="bg-white/10 rounded-xl p-6 backdrop-blur-sm" whileHover={{ y: -2 }}>
                     <h4 className="font-semibold mb-2">Next Competition</h4>
                     <p className="text-white/80 text-sm mb-3">
-                      December 2024 - Registration opens in September
+                      December 2025 - Registration opens in September
                     </p>
                     <div className="flex items-center space-x-2 text-sm text-white/80">
                       <Clock className="h-4 w-4" />

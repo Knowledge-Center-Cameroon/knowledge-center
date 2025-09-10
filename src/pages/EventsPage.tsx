@@ -104,7 +104,8 @@ const EventsPage: React.FC = () => {
         <StemBackground opacity={0.08} density={44} lineDistance={120} speed={0.4} showIcons={true} />
       </div>
       <motion.div variants={fadeUp} className="mb-8 text-center">
-        <h1 className="text-4xl font-heading font-bold">
+      <div className="h-1 w-28 mx-auto mb-3 bg-kc-blue rounded-full" />
+        <h1 className="heading-2 mb-6">
           <span className="text-kc-blue">KC</span> <span className="text-kc-red">Events</span>
         </h1>
         <p className="text-muted-foreground mt-3 max-w-2xl mx-auto">

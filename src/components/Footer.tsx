@@ -155,7 +155,7 @@ const Footer = () => {
               <ul className="space-y-3">
                 <li>
                   <Link
-                    to="/stem-registration"
+                    to="/projects/stem-education"
                     className="text-white hover:text-primary transition-smooth"
                   >
                     National STEM Competition
@@ -163,7 +163,7 @@ const Footer = () => {
                 </li>
                 <li>
                   <Link
-                    to="/projects"
+                    to="/projects/summer-education"
                     className="text-white hover:text-primary transition-smooth"
                   >
                     Summer Education Program
@@ -171,7 +171,7 @@ const Footer = () => {
                 </li>
                 <li>
                   <Link
-                    to="/projects"
+                    to="/projects/weekend-shool"
                     className="text-white hover:text-primary transition-smooth"
                   >
                     Weekend School
@@ -182,7 +182,7 @@ const Footer = () => {
                     to="/projects"
                     className="text-white hover:text-primary transition-smooth"
                   >
-                    STEM Competition
+                    Global Scholars Program
                   </Link>
                 </li>
               </ul>

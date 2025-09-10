@@ -12,7 +12,7 @@ const PrivacyPage: React.FC = () => {
       <div className="max-w-3xl space-y-4">
         <h1 className="text-4xl font-heading font-bold">Privacy Policy</h1>
         <p className="text-muted-foreground">
-          This is a placeholder for the Privacy Policy. Replace with your real policy content.
+          This is a placeholder for the Privacy Policy. Currently in development..
         </p>
       </div>
     </motion.section>

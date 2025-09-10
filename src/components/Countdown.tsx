@@ -56,7 +56,7 @@ const Countdown: React.FC = () => {
             <div className="flex flex-col items-center text-center text-neutral-900">
               <div className="inline-flex items-center gap-2 bg-white text-kc-black rounded-full px-3 py-1 text-xs font-semibold mb-4">
                 <Sparkles className="h-3.5 w-3.5" />
-                KC STEM Competition
+                National STEM Competition
               </div>
               <h2 className="text-2xl sm:text-3xl font-heading font-bold">
                 Countdown to <span className="text-kc-blue">December 29</span>, <span className="text-kc-red">2025</span>
@@ -82,7 +82,7 @@ const Countdown: React.FC = () => {
               {/* CTA */}
               <div className="mt-7 sm:mt-9">
                 <a
-                  href="/events"
+                  href="/projects/stem-education"
                   className="inline-flex items-center gap-2 rounded-full px-5 py-2.5 bg-kc-blue text-white font-semibold shadow hover:bg-kc-red transition-colors"
                 >
                   <CalendarDays className="h-4 w-4" />

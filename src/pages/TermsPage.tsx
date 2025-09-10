@@ -12,7 +12,7 @@ const TermsPage: React.FC = () => {
       <div className="max-w-3xl space-y-4">
         <h1 className="text-4xl font-heading font-bold">Terms of Service</h1>
         <p className="text-muted-foreground">
-          This is a placeholder for the Terms of Service. Replace with your real terms.
+          This is a placeholder for the Terms of Service. Currently in development.
         </p>
       </div>
     </motion.section>

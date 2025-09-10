@@ -137,6 +137,7 @@ const Contact = () => {
       <div className="container mx-auto px-4 lg:px-8 max-w-6xl">
         {/* Header */}
         <div className="text-center mb-16">
+        <div className="h-1 w-28 mx-auto mb-3 bg-kc-blue rounded-full" />
           <h2 className="heading-2 mb-6">
             <span className="text-kc-blue">Contact</span> <span className="text-kc-red">Us</span>
           </h2>
@@ -282,8 +283,8 @@ const Contact = () => {
                     loading={isSubmitting}
                     text="Send"
                     width={30}
-                    primaryCol="red"
-                    gradientCol="blue"
+                    primaryCol="#e90000"
+                    gradientCol="#014dbb"
                     className="w-full rounded-full gap-2 text-white py-3"
                   />
                 </form>

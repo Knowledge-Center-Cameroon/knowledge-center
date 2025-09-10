@@ -60,7 +60,7 @@ const AnimatedLogo: React.FC<AnimatedLogoProps> = ({ size = 140, className }) =>
         />
 
         {/* Outer ring draw */}
-        <motion.circle
+        {/* <motion.circle
           cx={center}
           cy={center}
           r={radiusOuter}
@@ -73,7 +73,7 @@ const AnimatedLogo: React.FC<AnimatedLogoProps> = ({ size = 140, className }) =>
           initial={{ pathLength: 0 }}
           animate={{ pathLength: 1, strokeDashoffset: 0 }}
           transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
-        />
+        /> */}
 
         {/* Inner ring draw, delayed */}
         <motion.circle
@@ -92,7 +92,7 @@ const AnimatedLogo: React.FC<AnimatedLogoProps> = ({ size = 140, className }) =>
         />
 
         {/* Rotating accent ring with dashes */}
-        <motion.circle
+        {/* <motion.circle
           cx={center}
           cy={center}
           r={radiusOuter - 10}
@@ -104,17 +104,17 @@ const AnimatedLogo: React.FC<AnimatedLogoProps> = ({ size = 140, className }) =>
           style={{ originX: center, originY: center }}
           animate={{ rotate: 360 }}
           transition={{ repeat: Infinity, duration: 12, ease: "linear", delay: 1 }}
-        />
+        /> */}
 
         {/* Orbiting dots */}
-        <motion.g
+        {/* <motion.g
           style={{ originX: center, originY: center }}
           animate={{ rotate: 360 }}
           transition={{ repeat: Infinity, duration: 8, ease: "linear", delay: 0.8 }}
         >
           <circle cx={center + radiusInner} cy={center} r={2.8} fill="hsl(var(--kc-blue))" />
           <circle cx={center - radiusInner} cy={center} r={2.4} fill="hsl(var(--kc-red))" />
-        </motion.g>
+        </motion.g> */}
 
         {/* Rotating sweep arc in brand gradient */}
         <motion.g

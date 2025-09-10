@@ -25,6 +25,7 @@ const ProjectsPage: React.FC = () => {
         <div className="container mx-auto px-4 lg:px-8 max-w-6xl">
           {/* Header */}
           <div className="text-center mb-10 md:mb-12">
+          <div className="h-1 w-28 mx-auto mb-3 bg-kc-blue rounded-full" />
             <h2 className="heading-2 mb-6">
               Explore Our Projects
             </h2>

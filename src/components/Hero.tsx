@@ -133,13 +133,13 @@ const Hero = () => {
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center">
             <ArrowButton
-              text="Join Our STEM Program"
+              text="What We Do?"
               bgPrimaryColor="#FFFFFF"
               bgSecondaryColor="#3498db"
               textPrimaryColor="#3498db"
               textSecondaryColor="#FFFFFF"
               className="rounded-full"
-              href="/stem-registration"
+              href="/projects"
             />
 
             <ArrowButton
