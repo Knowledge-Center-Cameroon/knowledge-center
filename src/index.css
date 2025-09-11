@@ -1,3 +1,33 @@
+/* Self-hosted Aptos webfonts */
+@font-face {
+  font-family: 'Aptos';
+  src: local('Aptos'), local('Aptos Regular'),
+       url('/fonts/aptos/Aptos-Variable.woff2') format('woff2');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Aptos';
+  src: local('Aptos Italic'), local('Aptos-Italic'),
+       url('/fonts/aptos/Aptos-Italic-Variable.woff2') format('woff2');
+  font-weight: 100 900;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* If you only have static fonts, replace the src above with your available files.
+   Example:
+   @font-face {
+     font-family: 'Aptos';
+     src: url('/fonts/aptos/Aptos-Regular.woff2') format('woff2');
+     font-weight: 400;
+     font-style: normal;
+     font-display: swap;
+   }
+*/
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
