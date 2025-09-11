@@ -20,7 +20,8 @@ const AnimatedLogo: React.FC<AnimatedLogoProps> = ({ size = 140, className }) =>
       className={className}
       style={{ width: size, height: size }}
       whileHover={{ scale: 1.03 }}
-      transition={{ type: "spring", stiffness: 260, damping: 18 }}
+      animate={{ y: [0, -4, 0] }}
+      transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut" }}
     >
       <svg
         viewBox="0 0 160 160"
