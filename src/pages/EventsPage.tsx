@@ -1,4 +1,5 @@
 import React from "react";
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { CalendarDays, MapPin, Clock, Sparkles, ArrowRight } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
@@ -51,11 +52,28 @@ const fadeUp = {
   show: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] } },
 };
 
+const toGCalUrl = (title: string, date: string, time?: string, details?: string, location?: string) => {
+  // Parse basic date/time like "Dec 28, 2025" and "09:00 - 18:00"
+  const [startStr, endStr] = (time || "00:00 - 00:00").split("-").map((s) => s.trim());
+  const start = new Date(`${date} ${startStr}`);
+  const end = new Date(`${date} ${endStr}`);
+  const fmt = (d: Date) => d.toISOString().replace(/[-:]/g, "").split(".")[0] + "Z";
+  const dates = `${fmt(start)}/${fmt(end)}`;
+  const params = new URLSearchParams({
+    action: "TEMPLATE",
+    text: title,
+    dates,
+    details: details || "",
+    location: location || "",
+  });
+  return `https://calendar.google.com/calendar/render?${params.toString()}`;
+};
+
 const EventsGrid: React.FC<{ items: typeof UPCOMING }> = ({ items }) => (
   <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
     {items.map((e, i) => (
       <motion.div key={i} variants={fadeUp} whileHover={{ y: -4 }}>
-        <Card className="relative h-full border-border/60 shadow-sm transition-all hover:shadow-xl">
+        <Card className="relative h-full border-border/60 shadow-sm transition-all hover:shadow-2xl hover:border-border">
           {e.badge && (
             <span className="absolute right-3 top-3 z-10 inline-flex items-center gap-1 rounded-full bg-kc-red text-white px-3 py-1 text-xs font-semibold shadow">
               <Sparkles className="h-3.5 w-3.5" /> {e.badge}
@@ -79,10 +97,15 @@ const EventsGrid: React.FC<{ items: typeof UPCOMING }> = ({ items }) => (
                 className="rounded-full"
                 href="#"
               />
-              <button className="group inline-flex items-center text-sm font-semibold text-kc-blue hover:text-kc-red transition-colors">
+              <a
+                className="group inline-flex items-center text-sm font-semibold text-kc-blue hover:text-kc-red transition-colors"
+                href={toGCalUrl(e.title, e.date, e.time, e.description, e.location)}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 Add to calendar
                 <ArrowRight className="ml-1 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-              </button>
+              </a>
             </div>
           </CardContent>
         </Card>
@@ -116,23 +139,33 @@ const EventsPage: React.FC = () => {
       <motion.div variants={fadeUp}>
         <div className="grid lg:grid-cols-12 gap-8">
           <div className="lg:col-span-8">
-            <Tabs defaultValue="upcoming" className="w-full">
-              <TabsList className="relative w-full mb-8 p-2 rounded-2xl bg-white/40 backdrop-blur-md border border-white/40 shadow-elegant grid grid-cols-2 gap-2">
-                <TabsTrigger value="upcoming" className="font-semibold rounded-xl data-[state=active]:bg-kc-blue data-[state=active]:text-white data-[state=inactive]:text-foreground/80 data-[state=inactive]:hover:bg-white/50">
+            {(() => {
+              const [activeTab, setActiveTab] = useState("upcoming");
+              return (
+                <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+                  <TabsList className="relative w-full mb-8 p-2 rounded-2xl bg-white/40 backdrop-blur-md border border-white/40 shadow-elegant grid grid-cols-2 gap-2">
+                    {/* Animated indicator */}
+                    <div
+                      className="absolute bottom-2 left-2 h-1 rounded-full bg-neutral-900/60 transition-transform duration-300 ease-out"
+                      style={{ width: 'calc((100% - 1rem) / 2)', transform: `translateX(${activeTab === 'upcoming' ? 0 : 100}%)` }}
+                    />
+                    <TabsTrigger value="upcoming" className="font-semibold rounded-xl data-[state=active]:bg-kc-blue data-[state=active]:text-white data-[state=inactive]:text-foreground/80 data-[state=inactive]:hover:bg-white/50">
                   Upcoming
-                </TabsTrigger>
-                <TabsTrigger value="past" className="font-semibold rounded-xl data-[state=active]:bg-kc-red data-[state=active]:text-white data-[state=inactive]:text-foreground/80 data-[state=inactive]:hover:bg-white/50">
+                    </TabsTrigger>
+                    <TabsTrigger value="past" className="font-semibold rounded-xl data-[state=active]:bg-kc-red data-[state=active]:text-white data-[state=inactive]:text-foreground/80 data-[state=inactive]:hover:bg-white/50">
                   Past
-                </TabsTrigger>
-              </TabsList>
+                    </TabsTrigger>
+                  </TabsList>
 
-              <TabsContent value="upcoming">
-                <EventsGrid items={UPCOMING} />
-              </TabsContent>
-              <TabsContent value="past">
-                <EventsGrid items={PAST} />
-              </TabsContent>
-            </Tabs>
+                  <TabsContent value="upcoming">
+                    <EventsGrid items={UPCOMING} />
+                  </TabsContent>
+                  <TabsContent value="past">
+                    <EventsGrid items={PAST} />
+                  </TabsContent>
+                </Tabs>
+              );
+            })()}
           </div>
           <div className="lg:col-span-4">
             {(() => {

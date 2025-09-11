@@ -60,20 +60,7 @@ const AnimatedLogo: React.FC<AnimatedLogoProps> = ({ size = 140, className }) =>
         />
 
         {/* Outer ring draw */}
-        {/* <motion.circle
-          cx={center}
-          cy={center}
-          r={radiusOuter}
-          fill="none"
-          style={{ stroke: 'hsl(var(--kc-blue))' }}
-          strokeWidth={6}
-          strokeLinecap="round"
-          strokeDasharray={Math.PI * 2 * radiusOuter}
-          strokeDashoffset={Math.PI * 2 * radiusOuter}
-          initial={{ pathLength: 0 }}
-          animate={{ pathLength: 1, strokeDashoffset: 0 }}
-          transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
-        /> */}
+        {/* kept disabled for a cleaner look */}
 
         {/* Inner ring draw, delayed */}
         <motion.circle
@@ -92,7 +79,7 @@ const AnimatedLogo: React.FC<AnimatedLogoProps> = ({ size = 140, className }) =>
         />
 
         {/* Rotating accent ring with dashes */}
-        {/* <motion.circle
+        <motion.circle
           cx={center}
           cy={center}
           r={radiusOuter - 10}
@@ -104,17 +91,17 @@ const AnimatedLogo: React.FC<AnimatedLogoProps> = ({ size = 140, className }) =>
           style={{ originX: center, originY: center }}
           animate={{ rotate: 360 }}
           transition={{ repeat: Infinity, duration: 12, ease: "linear", delay: 1 }}
-        /> */}
+        />
 
         {/* Orbiting dots */}
-        {/* <motion.g
+        <motion.g
           style={{ originX: center, originY: center }}
           animate={{ rotate: 360 }}
           transition={{ repeat: Infinity, duration: 8, ease: "linear", delay: 0.8 }}
         >
           <circle cx={center + radiusInner} cy={center} r={2.8} fill="hsl(var(--kc-blue))" />
           <circle cx={center - radiusInner} cy={center} r={2.4} fill="hsl(var(--kc-red))" />
-        </motion.g> */}
+        </motion.g>
 
         {/* Rotating sweep arc in brand gradient */}
         <motion.g
@@ -134,7 +121,7 @@ const AnimatedLogo: React.FC<AnimatedLogoProps> = ({ size = 140, className }) =>
           />
         </motion.g>
 
-        {/* Center logo image fade/scale in */}
+        {/* Center logo image fade/scale in with gentle pulse */}
         <motion.image
           href="/logo.png"
           x={center - 36}
@@ -143,8 +130,8 @@ const AnimatedLogo: React.FC<AnimatedLogoProps> = ({ size = 140, className }) =>
           height={72}
           preserveAspectRatio="xMidYMid meet"
           initial={{ opacity: 0, scale: 0.86, originX: center, originY: center }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.6, delay: 0.65 }}
+          animate={{ opacity: 1, scale: [1, 1.03, 1] }}
+          transition={{ duration: 0.6, delay: 0.65, repeat: Infinity, repeatDelay: 3.2 }}
         />
       </svg>
     </motion.div>

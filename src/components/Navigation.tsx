@@ -137,34 +137,45 @@ const Navigation = () => {
 
         {/* Mobile Menu */}
         {isMobileMenuOpen && (
-          <div className="lg:hidden absolute top-full left-0 right-0 bg-white/95 backdrop-blur-md border-b border-border shadow-lg animate-slide-up">
-            <div className="container mx-auto px-4 py-6 space-y-4">
-              {navItems.map((item) => (
-                <NavLink
-                  key={item.to}
-                  to={item.to}
-                  onClick={(e) => handleNavClick(e, item.to)}
-                  end={item.to === "/" ? true : undefined}
-                  className={({ isActive }) =>
-                    cn(
-                      "block w-full text-left py-2 transition-smooth font-medium",
-                      "relative rounded-lg px-3",
-                      isActive ? "bg-neutral-900 text-white" : "text-foreground hover:bg-black/5"
-                    )
-                  }
-                >
-                  {item.label}
-                </NavLink>
-              ))}
-              <div className="flex flex-col space-y-3 pt-4 border-t border-border">
+          <div className="lg:hidden absolute top-full left-0 right-0 px-3 pb-3">
+            <motion.div
+              initial={{ opacity: 0, y: -8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.18, ease: [0.22, 1, 0.36, 1] }}
+              className="bg-white/95 backdrop-blur-md border border-border shadow-xl rounded-2xl overflow-hidden"
+            >
+              <div className="px-4 py-3 border-b border-border/70">
+                <span className="text-sm font-semibold text-foreground/80">Menu</span>
+              </div>
+              <div className="py-2">
+                {navItems.map((item, idx) => (
+                  <NavLink
+                    key={item.to}
+                    to={item.to}
+                    onClick={(e) => handleNavClick(e, item.to)}
+                    end={item.to === "/" ? true : undefined}
+                    className={({ isActive }) =>
+                      cn(
+                        "block w-full text-left py-3 transition-smooth font-medium",
+                        "px-5",
+                        isActive ? "bg-neutral-900 text-white" : "text-foreground hover:bg-black/5"
+                      )
+                    }
+                  >
+                    {item.label}
+                  </NavLink>
+                ))}
+              </div>
+              <div className="px-4 py-4 border-t border-border/70 grid grid-cols-2 gap-3">
                 <Button asChild variant="blackOutline" className="w-full" onClick={closeMobile}>
                   <Link to="/donate">Donate</Link>
                 </Button>
                 <Button asChild variant="blue" className="w-full" onClick={closeMobile}>
-                  <Link to="/stem-registration">STEM Registration</Link>
+                  <Link to="/stem-registration">Register</Link>
                 </Button>
               </div>
-            </div>
+            </motion.div>
           </div>
         )}
       </nav>

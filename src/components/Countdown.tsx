@@ -26,15 +26,21 @@ const useCountdown = (to: Date) => {
 };
 
 const CountdownCard: React.FC<{ label: string; value: number; variant: "blue" | "red" }> = ({ label, value, variant }) => {
-  const bg = variant === "blue" ? "bg-kc-blue" : "bg-kc-red";
+  const base = variant === "blue" ? "bg-kc-blue" : "bg-kc-red";
+  const val = pad(value);
   return (
     <motion.div
-      className={`relative rounded-xl sm:rounded-2xl p-3 sm:p-5 ${bg} text-white min-w-[72px] sm:min-w-[96px] shadow-lg`}
-      whileHover={{ y: -4, scale: 1.02 }}
-      transition={{ type: "spring", stiffness: 260, damping: 20 }}
+      className={`relative rounded-xl sm:rounded-2xl ${base} text-white min-w-[76px] sm:min-w-[104px] shadow-lg overflow-hidden`}
+      whileHover={{ y: -2 }}
+      transition={{ duration: 0.15 }}
     >
-      <div className="text-2xl sm:text-4xl font-bold leading-none text-center tabular-nums">{pad(value)}</div>
-      <div className="mt-1 text-[10px] sm:text-xs uppercase tracking-wider text-center/90 opacity-95">{label}</div>
+      {/* Darker top band */}
+      <div className="h-3 sm:h-3.5 w-full bg-black/20" />
+      {/* Value */}
+      <div className="px-4 sm:px-5 py-3 sm:py-4">
+        <div className="text-3xl sm:text-4xl font-bold leading-none text-center tabular-nums select-none">{val}</div>
+        <div className="mt-1 text-[10px] sm:text-xs uppercase tracking-wider text-center/90 opacity-95 select-none">{label}</div>
+      </div>
     </motion.div>
   );
 };

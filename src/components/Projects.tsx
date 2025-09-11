@@ -14,7 +14,7 @@ import {
   ArrowRight,
   CheckCircle
 } from "lucide-react";
-import { Menu, ChevronDown } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 import Stem from "@/assets/stem.jpg";
 import weekend from "@/assets/weekend.jpeg";
 import summer2 from "@/assets/summer2.jpeg"
