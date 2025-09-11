@@ -63,7 +63,7 @@ const ProjectDetailPage: React.FC = () => {
           <Card className="overflow-hidden shadow-elegant">
             <CardContent className="p-0">
               <div className="relative aspect-[16/10] bg-muted">
-                <img src={project.images[0]} alt={`${project.title} overview`} className="w-full h-full object-cover" />
+                <img src={project.images[0]} alt={`${project.title} overview`} className="w-full h-full object-cover" loading="lazy" decoding="async" sizes="(min-width: 1024px) 50vw, 100vw" />
               </div>
             </CardContent>
           </Card>
@@ -88,7 +88,7 @@ const ProjectDetailPage: React.FC = () => {
                   <Card className="overflow-hidden">
                     <CardContent className="p-0">
                       <div className="relative aspect-[16/10] bg-muted">
-                        <img src={project.images[(i + 1) % project.images.length]} alt={`${project.title} benefit ${i + 1}`} className="w-full h-full object-cover" />
+                        <img src={project.images[(i + 1) % project.images.length]} alt={`${project.title} benefit ${i + 1}`} className="w-full h-full object-cover" loading="lazy" decoding="async" sizes="(min-width: 768px) 40vw, 100vw" />
                         <div className="absolute top-2 left-2 bg-black/50 text-white text-xs px-2 py-1 rounded flex items-center gap-1">
                           <ImageIcon className="h-3 w-3" />
                           Benefit {i + 1}

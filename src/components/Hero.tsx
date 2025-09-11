@@ -54,6 +54,13 @@ const Hero = () => {
     return () => clearInterval(timer);
   }, [slides.length]);
 
+  // Preload the next slide image to smooth transitions without loading all upfront
+  useEffect(() => {
+    const nextIndex = (currentSlide + 1) % slides.length;
+    const img = new Image();
+    img.src = slides[nextIndex].image;
+  }, [currentSlide]);
+
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId);
     if (element) {
@@ -71,24 +78,26 @@ const Hero = () => {
 
   return (
     <section id="home" className="relative min-h-[70vh] sm:min-h-[75vh] md:min-h-[80vh] lg:min-h-[88vh] flex items-center justify-center overflow-hidden">
-      {/* Background Images */}
+      {/* Background Image (only render current to reduce network work) */}
       <div className="absolute inset-0">
-        {slides.map((slide, index) => (
-          <div
-            key={index}
-            className={`absolute inset-0 transition-opacity duration-1000 ${
-              index === currentSlide ? "opacity-100" : "opacity-0"
-            }`}
-          >
-            <img
-              src={slide.image}
-              alt={slide.title}
-              className="w-full h-full object-cover object-center"
-            />
-            {/* Solid overlay for better text contrast */}
-            <div className="absolute inset-0 bg-black/65" />
-          </div>
-        ))}
+        {(() => {
+          const slide = slides[currentSlide];
+          return (
+            <div className="absolute inset-0 transition-opacity duration-1000 opacity-100">
+              <img
+                src={slide.image}
+                alt={slide.title}
+                className="w-full h-full object-cover object-center"
+                loading="eager"
+                fetchPriority="high"
+                decoding="async"
+                sizes="100vw"
+              />
+              {/* Solid overlay for better text contrast */}
+              <div className="absolute inset-0 bg-black/65" />
+            </div>
+          );
+        })()}
       </div>
 
       {/* Content */}

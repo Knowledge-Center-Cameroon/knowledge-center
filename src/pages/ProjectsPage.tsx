@@ -55,7 +55,7 @@ const ProjectsPage: React.FC = () => {
                 <Card className="group overflow-hidden bg-white/10 backdrop-blur-md border border-white/20 shadow-elegant rounded-2xl">
                   <CardContent className="p-0">
                     <div className="relative aspect-[4/3] w-full overflow-hidden">
-                      <img src={p.images[0]} alt={p.title} className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" />
+                      <img src={p.images[0]} alt={p.title} className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" loading="lazy" decoding="async" sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw" />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
                     </div>
                     <div className="p-5">

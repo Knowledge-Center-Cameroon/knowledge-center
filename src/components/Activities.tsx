@@ -88,6 +88,9 @@ const Activities = () => {
                       src={activity.image} 
                       alt={activity.title}
                       className="w-full h-full object-cover transition-transform hover:scale-110 duration-700"
+                      loading="lazy"
+                      decoding="async"
+                      sizes="(min-width: 1024px) 50vw, 100vw"
                     />
                     <div className="absolute inset-0 bg-black/30" />
                   </div>
