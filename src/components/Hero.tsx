@@ -70,7 +70,7 @@ const Hero = () => {
   };
 
   return (
-    <section id="home" className="relative h-[88vh] md:h-[95vh] min-h-[600px] md:min-h-[680px] lg:min-h-[760px] flex items-center justify-center overflow-hidden">
+    <section id="home" className="relative min-h-[70vh] sm:min-h-[75vh] md:min-h-[80vh] lg:min-h-[88vh] flex items-center justify-center overflow-hidden">
       {/* Background Images */}
       <div className="absolute inset-0">
         {slides.map((slide, index) => (
@@ -83,7 +83,7 @@ const Hero = () => {
             <img
               src={slide.image}
               alt={slide.title}
-              className="w-full h-full object-cover"
+              className="w-full h-full object-cover object-center"
             />
             {/* Solid overlay for better text contrast */}
             <div className="absolute inset-0 bg-black/65" />

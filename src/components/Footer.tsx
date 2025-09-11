@@ -139,10 +139,14 @@ const Footer = () => {
                     <NavLink
                       to={link.to}
                       className={({ isActive }) =>
-                        `transition-smooth ${isActive ? 'text-white underline underline-offset-4' : 'hover:text-white'}`
+                        `group inline-flex items-center gap-2 transition-smooth focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 rounded ${isActive ? 'text-white underline underline-offset-4' : 'text-white/90 hover:text-white'}`
                       }
                     >
-                      {link.label}
+                      <span className="relative">
+                        {link.label}
+                        <span className="block max-w-0 group-hover:max-w-full transition-all duration-300 h-[2px] bg-white/80"></span>
+                      </span>
+                      <span className="translate-x-0 group-hover:translate-x-0.5 transition-transform">→</span>
                     </NavLink>
                   </li>
                 ))}
@@ -156,33 +160,49 @@ const Footer = () => {
                 <li>
                   <Link
                     to="/projects/stem-education"
-                    className="text-white hover:text-primary transition-smooth"
+                    className="group inline-flex items-center gap-2 text-white/90 hover:text-white transition-smooth focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 rounded"
                   >
-                    National STEM Competition
+                    <span className="relative">
+                      National STEM Competition
+                      <span className="block max-w-0 group-hover:max-w-full transition-all duration-300 h-[2px] bg-white/80"></span>
+                    </span>
+                    <span className="translate-x-0 group-hover:translate-x-0.5 transition-transform">→</span>
                   </Link>
                 </li>
                 <li>
                   <Link
                     to="/projects/summer-education"
-                    className="text-white hover:text-primary transition-smooth"
+                    className="group inline-flex items-center gap-2 text-white/90 hover:text-white transition-smooth focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 rounded"
                   >
-                    Summer Education Program
+                    <span className="relative">
+                      Summer Education Program
+                      <span className="block max-w-0 group-hover:max-w-full transition-all duration-300 h-[2px] bg-white/80"></span>
+                    </span>
+                    <span className="translate-x-0 group-hover:translate-x-0.5 transition-transform">→</span>
                   </Link>
                 </li>
                 <li>
                   <Link
                     to="/projects/weekend-shool"
-                    className="text-white hover:text-primary transition-smooth"
+                    className="group inline-flex items-center gap-2 text-white/90 hover:text-white transition-smooth focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 rounded"
                   >
-                    Weekend School
+                    <span className="relative">
+                      Weekend School
+                      <span className="block max-w-0 group-hover:max-w-full transition-all duration-300 h-[2px] bg-white/80"></span>
+                    </span>
+                    <span className="translate-x-0 group-hover:translate-x-0.5 transition-transform">→</span>
                   </Link>
                 </li>
                 <li>
                   <Link
                     to="/projects"
-                    className="text-white hover:text-primary transition-smooth"
+                    className="group inline-flex items-center gap-2 text-white/90 hover:text-white transition-smooth focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 rounded"
                   >
-                    Global Scholars Program
+                    <span className="relative">
+                      Global Scholars Program
+                      <span className="block max-w-0 group-hover:max-w-full transition-all duration-300 h-[2px] bg-white/80"></span>
+                    </span>
+                    <span className="translate-x-0 group-hover:translate-x-0.5 transition-transform">→</span>
                   </Link>
                 </li>
               </ul>
@@ -237,15 +257,14 @@ const Footer = () => {
             <p className="text-white/80 text-center md:text-left">
               &copy; {new Date().getFullYear()} Knowledge Center. All rights reserved.
             </p>
-            
             <div className="flex space-x-6 text-sm">
-              <Link to="/privacy" className="text-white/80 hover:text-white transition-smooth">
+              <Link to="/privacy" className="text-white/80 hover:text-white transition-smooth underline decoration-transparent hover:decoration-white/70 underline-offset-4">
                 Privacy Policy
               </Link>
-              <Link to="/terms" className="text-white/80 hover:text-white transition-smooth">
+              <Link to="/terms" className="text-white/80 hover:text-white transition-smooth underline decoration-transparent hover:decoration-white/70 underline-offset-4">
                 Terms of Service
               </Link>
-              <Link to="/donate" className="text-white hover:text-accent transition-smooth">
+              <Link to="/donate" className="text-white hover:text-accent transition-smooth underline decoration-transparent hover:decoration-accent/70 underline-offset-4">
                 Donate
               </Link>
             </div>

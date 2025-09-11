@@ -192,9 +192,9 @@ const Projects = () => {
             <motion.div whileHover={{ scale: 1.005 }} transition={{ duration: 0.2 }}>
               <Card className="shadow-elegant overflow-hidden">
                 <CardContent className="p-0">
-                  <div className="grid lg:grid-cols-2 min-h-[420px] md:min-h-[520px] lg:min-h-[600px]">
+                  <div className="grid lg:grid-cols-2 min-h-[360px] md:min-h-[520px] lg:min-h-[600px]">
                     {/* Image Section */}
-                    <div className="relative">
+                    <div className="relative aspect-[16/10] lg:aspect-auto">
                       <motion.img 
                         src={currentProject.image} 
                         alt={currentProject.title}

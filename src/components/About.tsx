@@ -21,6 +21,7 @@ import hero7 from "@/assets/hero7.jpeg";
 import hero8 from "@/assets/hero8.jpeg";
 import hero9 from "@/assets/hero9.jpeg";
 import hero10 from "@/assets/hero10.jpeg";
+import hero12 from "@/assets/hero12.jpeg"
 
 import { type CarouselApi, Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 import {
@@ -244,7 +245,7 @@ const About = () => {
           <div className="animate-slide-up">
             <Carousel setApi={setPhiloApi} className="rounded-2xl shadow-elegant bg-white/5 backdrop-blur-sm p-2">
               <CarouselContent>
-                {[hero6, hero7, hero8, hero9, hero10].map((img, i) => (
+                {[hero6, hero7, hero8, hero9, hero10, hero12].map((img, i) => (
                   <CarouselItem key={i}>
                     <div className="relative overflow-hidden rounded-xl">
                       <img src={img} alt={`KC philosophy ${i + 1}`} className="w-full h-[360px] object-cover" />
@@ -364,7 +365,7 @@ const About = () => {
               <div className="mt-8">
                 <div className="relative">
                   <div className="absolute left-4 right-4 top-1/2 -translate-y-1/2 h-px bg-gradient-to-r from-kc-blue/30 via-transparent to-kc-red/30" />
-                  <div className="overflow-x-auto no-scrollbar" ref={hubsTrackRef}>
+                  <div className="overflow-x-auto no-scrollbar snap-x snap-mandatory" ref={hubsTrackRef}>
                     <div className="flex items-stretch gap-4 px-4 py-4">
                       {hubs.map((city, i) => (
                         <motion.div
@@ -372,13 +373,13 @@ const About = () => {
                           whileHover={{ y: -4, scale: 1.03 }}
                           whileTap={{ scale: 0.97 }}
                         >
-                          <div className="group relative rounded-full px-6 py-3.5 bg-kc-black text-white shadow-elegant border border-white/10">
+                          <div className="group relative rounded-full px-6 py-3.5 bg-kc-black text-white shadow-elegant border border-white/10 snap-start focus-within:ring-2 focus-within:ring-white/40">
                             <div className="absolute -inset-[1.5px] rounded-full bg-gradient-to-r from-kc-blue to-kc-red opacity-0 group-hover:opacity-50 blur-sm transition-opacity" />
                             <div className="relative flex items-center gap-2.5">
                               <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-white/10">
                                 <MapPin className="h-4 w-4" />
                               </span>
-                              <span className="font-semibold tracking-tight whitespace-nowrap">{i + 1}. {city}</span>
+                              <button className="font-semibold tracking-tight whitespace-nowrap focus:outline-none">{i + 1}. {city}</button>
                             </div>
                           </div>
                         </motion.div>

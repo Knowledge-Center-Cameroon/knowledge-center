@@ -25,17 +25,16 @@ const useCountdown = (to: Date) => {
   }, [now, to]);
 };
 
-const CountdownCard: React.FC<{ label: string; value: number }> = ({ label, value }) => {
+const CountdownCard: React.FC<{ label: string; value: number; variant: "blue" | "red" }> = ({ label, value, variant }) => {
+  const bg = variant === "blue" ? "bg-kc-blue" : "bg-kc-red";
   return (
     <motion.div
-      className="relative rounded-2xl p-4 sm:p-5 bg-white/10 backdrop-blur-md border border-white/20 text-white min-w-[80px] sm:min-w-[100px]"
-      whileHover={{ y: -4 }}
+      className={`relative rounded-xl sm:rounded-2xl p-3 sm:p-5 ${bg} text-white min-w-[72px] sm:min-w-[96px] shadow-lg`}
+      whileHover={{ y: -4, scale: 1.02 }}
       transition={{ type: "spring", stiffness: 260, damping: 20 }}
     >
-      <div className="absolute inset-0 rounded-2xl -z-10 opacity-40"
-           style={{ background: "linear-gradient(135deg, hsl(var(--kc-blue)), hsl(var(--kc-red)))" }} />
-      <div className="text-3xl sm:text-4xl font-bold leading-none text-center">{pad(value)}</div>
-      <div className="mt-1 text-[10px] sm:text-xs uppercase tracking-wider text-center opacity-90">{label}</div>
+      <div className="text-2xl sm:text-4xl font-bold leading-none text-center tabular-nums">{pad(value)}</div>
+      <div className="mt-1 text-[10px] sm:text-xs uppercase tracking-wider text-center/90 opacity-95">{label}</div>
     </motion.div>
   );
 };
@@ -47,12 +46,12 @@ const Countdown: React.FC = () => {
   return (
     <section className="relative">
       <div className="container mx-auto px-4 lg:px-8">
-        <div className="relative overflow-hidden rounded-3xl shadow-2xl border border-white/20 bg-gradient-to-br from-white/60 via-white/30 to-white/20 backdrop-blur-xl">
-          {/* Decorative orbs */}
-          <div className="pointer-events-none absolute -top-24 -left-16 h-64 w-64 rounded-full bg-gradient-to-br from-kc-blue/35 to-kc-red/25 blur-3xl" />
-          <div className="pointer-events-none absolute -bottom-24 -right-16 h-64 w-64 rounded-full bg-gradient-to-tr from-kc-red/35 to-kc-blue/25 blur-3xl" />
+        <div className="relative overflow-hidden rounded-3xl shadow-2xl border border-white/20 bg-white/60 backdrop-blur-xl">
+          {/* Decorative accents */}
+          <div className="pointer-events-none absolute -top-24 -left-16 h-64 w-64 rounded-full bg-kc-blue/15 blur-3xl" />
+          <div className="pointer-events-none absolute -bottom-24 -right-16 h-64 w-64 rounded-full bg-kc-red/15 blur-3xl" />
 
-          <div className="relative px-6 py-8 sm:px-10 sm:py-12">
+          <div className="relative px-5 py-7 sm:px-10 sm:py-12">
             <div className="flex flex-col items-center text-center text-neutral-900">
               <div className="inline-flex items-center gap-2 bg-white text-kc-black rounded-full px-3 py-1 text-xs font-semibold mb-4">
                 <Sparkles className="h-3.5 w-3.5" />
@@ -67,11 +66,11 @@ const Countdown: React.FC = () => {
 
               {/* Countdown Row */}
               {!over ? (
-                <div className="mt-6 sm:mt-8 flex items-stretch gap-3 sm:gap-4">
-                  <CountdownCard label="Days" value={days} />
-                  <CountdownCard label="Hours" value={hours} />
-                  <CountdownCard label="Minutes" value={minutes} />
-                  <CountdownCard label="Seconds" value={seconds} />
+                <div className="mt-6 sm:mt-8 flex flex-wrap items-stretch justify-center gap-2.5 sm:gap-4" role="timer" aria-live="polite">
+                  <CountdownCard label="Days" value={days} variant="blue" />
+                  <CountdownCard label="Hours" value={hours} variant="red" />
+                  <CountdownCard label="Minutes" value={minutes} variant="blue" />
+                  <CountdownCard label="Seconds" value={seconds} variant="red" />
                 </div>
               ) : (
                 <div className="mt-6 sm:mt-8 text-lg font-semibold text-kc-blue">
