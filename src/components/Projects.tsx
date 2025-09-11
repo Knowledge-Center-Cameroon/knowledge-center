@@ -14,12 +14,19 @@ import {
   ArrowRight,
   CheckCircle
 } from "lucide-react";
+import { Menu, ChevronDown } from "lucide-react";
 import Stem from "@/assets/stem.jpg";
 import weekend from "@/assets/weekend.jpeg";
 import summer2 from "@/assets/summer2.jpeg"
 import { motion } from "framer-motion";
 import StemBackground from "@/components/StemBackground";
 import { Link } from "react-router-dom";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const Projects = () => {
   const [activeTab, setActiveTab] = useState("stem");
@@ -144,9 +151,37 @@ const Projects = () => {
           </motion.div>
         </div>
 
+        {/* Mobile Menu (Navbar-style) */}
+        <div className="md:hidden mb-6">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="blackOutline" className="w-full justify-between">
+                <span className="flex items-center gap-2">
+                  {activeTab === 'stem' && <FlaskConical className="h-4 w-4" />}
+                  {activeTab === 'summer' && <GraduationCap className="h-4 w-4" />}
+                  {activeTab === 'weekend' && <Calendar className="h-4 w-4" />}
+                  {projects[activeTab as 'stem'|'summer'|'weekend'].title}
+                </span>
+                <ChevronDown className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="start" className="w-[--radix-dropdown-menu-trigger-width]">
+              <DropdownMenuItem onSelect={() => setActiveTab('stem')} className="flex items-center gap-2">
+                <FlaskConical className="h-4 w-4" /> STEM Program
+              </DropdownMenuItem>
+              <DropdownMenuItem onSelect={() => setActiveTab('summer')} className="flex items-center gap-2">
+                <GraduationCap className="h-4 w-4" /> Summer Education
+              </DropdownMenuItem>
+              <DropdownMenuItem onSelect={() => setActiveTab('weekend')} className="flex items-center gap-2">
+                <Calendar className="h-4 w-4" /> Weekend School
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+
         {/* Tabs Navigation */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="relative w-full mb-12 p-2 rounded-2xl bg-white/20 backdrop-blur-md border border-white/25 shadow-elegant overflow-x-auto md:overflow-visible flex md:grid md:grid-cols-3 gap-2 scroll-px-2 snap-x snap-mandatory">
+          <TabsList className="relative w-full mb-12 p-2 rounded-2xl bg-white/20 backdrop-blur-md border border-white/25 shadow-elegant overflow-x-auto md:overflow-visible hidden md:grid md:grid-cols-3 gap-2">
             {/* Animated indicator */}
             <div
               className="hidden md:block absolute bottom-2 left-2 h-1 rounded-full bg-white/40 transition-transform duration-300 ease-out"

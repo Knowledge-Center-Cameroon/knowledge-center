@@ -310,15 +310,15 @@ const About = () => {
             <div className="h-1 w-28 mx-auto mb-3 bg-kc-blue rounded-full" />
             <h3 className="text-3xl font-heading font-bold text-center mb-12"><span className="text-kc-blue">KC</span> <span className="text-kc-red">Core Values</span></h3>
           </div>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
             {values.map((value, index) => (
-              <Card key={index} className="shadow-elegant transition-all hover:shadow-2xl hover:-translate-y-1 bg-white/40 backdrop-blur-sm border-white/50">
-                <CardContent className="p-6">
+              <Card key={index} className="h-full shadow-elegant transition-all hover:shadow-2xl hover:-translate-y-1 bg-white/40 backdrop-blur-sm border-white/50">
+                <CardContent className="p-6 flex flex-col h-full">
                   <div className="w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4 bg-kc-black text-white">
                     <value.icon className="h-6 w-6" />
                   </div>
                   <h4 className="text-lg font-heading font-semibold mb-3 text-center">{value.title}</h4>
-                  <p className="text-muted-foreground text-sm leading-relaxed text-center">{value.description}</p>
+                  <p className="text-muted-foreground text-sm leading-relaxed text-center flex-1">{value.description}</p>
                 </CardContent>
               </Card>
             ))}

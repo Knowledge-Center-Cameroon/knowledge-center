@@ -57,7 +57,7 @@ const Countdown: React.FC = () => {
                 <Sparkles className="h-3.5 w-3.5" />
                 National STEM Competition
               </div>
-              <h2 className="text-2xl sm:text-3xl font-heading font-bold">
+              <h2 className="text-2xl sm:text-3xl font-heading font-bold leading-tight">
                 Countdown to <span className="text-kc-blue">December 29</span>, <span className="text-kc-red">2025</span>
               </h2>
               <p className="mt-2 text-sm sm:text-base text-foreground/80 max-w-2xl">
@@ -66,12 +66,24 @@ const Countdown: React.FC = () => {
 
               {/* Countdown Row */}
               {!over ? (
-                <div className="mt-6 sm:mt-8 flex flex-wrap items-stretch justify-center gap-2.5 sm:gap-4" role="timer" aria-live="polite">
-                  <CountdownCard label="Days" value={days} variant="blue" />
-                  <CountdownCard label="Hours" value={hours} variant="red" />
-                  <CountdownCard label="Minutes" value={minutes} variant="blue" />
-                  <CountdownCard label="Seconds" value={seconds} variant="red" />
-                </div>
+                <>
+                  <div className="mt-6 sm:mt-8 flex flex-wrap items-stretch justify-center gap-2.5 sm:gap-4" role="timer" aria-live="polite">
+                    <CountdownCard label="Days" value={days} variant="blue" />
+                    <CountdownCard label="Hours" value={hours} variant="red" />
+                    <CountdownCard label="Minutes" value={minutes} variant="blue" />
+                    <CountdownCard label="Seconds" value={seconds} variant="red" />
+                  </div>
+                  {/* Seconds progress */}
+                  <div className="mt-4 w-full max-w-md">
+                    <div className="h-1.5 w-full rounded bg-black/10 overflow-hidden">
+                      <div
+                        className="h-full bg-kc-blue transition-all"
+                        style={{ width: `${(seconds / 60) * 100}%` }}
+                      />
+                    </div>
+                    <div className="mt-1 text-[11px] text-foreground/70">Next minute in {pad(60 - seconds)}s</div>
+                  </div>
+                </>
               ) : (
                 <div className="mt-6 sm:mt-8 text-lg font-semibold text-kc-blue">
                   The competition is live today!

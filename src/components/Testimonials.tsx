@@ -4,46 +4,46 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { motion } from "framer-motion";
 
-// Replace these with real images in `src/assets/` or served from `public/`
+// Stories focused on science education impact at KC
 const TESTIMONIALS = [
   {
-    name: "Amara N.",
-    role: "STEM Scholar",
-    company: "Cohort '24",
+    name: "Martha A.",
+    role: "Upper Sixth – Physics",
+    company: "Buea Hub",
     quote:
-      "Knowledge Center transformed my confidence. I shipped my first data app and landed a summer internship!",
+      "KC taught me how to think through a physics problem, not just memorize formulas. My grades improved, but more importantly I now understand why the answers work.",
     image: "/image1.jpg",
-    initials: "AN",
+    initials: "MA",
     rating: 5,
   },
   {
-    name: "Kofi B.",
-    role: "Robotics Lead",
-    company: "TechStars Club",
+    name: "Junior T.",
+    role: "Form 5 – Chemistry",
+    company: "Limbe Hub",
     quote:
-      "The mentorship was world-class. The workshops felt practical and industry-ready—no fluff, just value.",
+      "Our tutor would always ask: 'What is the principle here?' That question changed how I study. KC’s experiments made abstract ideas real for me.",
     image: "/logo.jpeg",
-    initials: "KB",
+    initials: "JT",
     rating: 5,
   },
   {
-    name: "Zara I.",
-    role: "Software Fellow",
-    company: "Open Source",
+    name: "Sally N.",
+    role: "Lower Sixth – Biology",
+    company: "Douala Hub",
     quote:
-      "From zero to contributing to open-source in weeks. The community support is unmatched.",
-    image: "/logo_trans.png",
-    initials: "ZI",
+      "I used to fear structured questions. KC broke them into steps, gave me feedback weekly, and now I score confidently in past papers.",
+    image: "/kc_round_trans.png",
+    initials: "SN",
     rating: 5,
   },
   {
-    name: "David O.",
-    role: "AI Enthusiast",
-    company: "ML Guild",
+    name: "Brian K.",
+    role: "O/L – Mathematics",
+    company: "Yaoundé Hub",
     quote:
-      "Clear path, great peers, and hands-on learning. I finally built my first end‑to‑end ML project.",
+      "KC’s method made me enjoy proofs. The mentors don’t give answers—they guide you to find them. That habit changed my results across subjects.",
     image: "/logo.jpeg",
-    initials: "DO",
+    initials: "BK",
     rating: 5,
   },
 ];
@@ -87,7 +87,7 @@ const Testimonials: React.FC = () => {
             Success Stories
           </h2>
           <p className="mt-4 text-lg text-muted-foreground">
-            Real voices from our community—students, mentors, and builders who turned ambition into outcomes.
+            Real voices from students across KC hubs—how our approach to science education builds confidence, clarity, and results.
           </p>
         </div>
 
@@ -186,6 +186,13 @@ const Testimonials: React.FC = () => {
               <AvatarFallback>{t.initials}</AvatarFallback>
             </Avatar>
           ))}
+        </div>
+
+        {/* View more */}
+        <div className="mt-10 text-center">
+          <a href="/blog" className="inline-flex items-center gap-2 rounded-full px-5 py-2.5 bg-kc-blue text-white font-semibold shadow hover:bg-kc-red transition-colors">
+            View more stories
+          </a>
         </div>
       </div>
     </section>
