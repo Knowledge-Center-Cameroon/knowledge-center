@@ -70,7 +70,7 @@ const Contact = () => {
         if (res.ok && data?.success) {
           toast({
             title: "Message Sent Successfully!",
-            description: "We'll get back to you within 24 hours. Thank you for contacting KC!",
+            description: "We'll get back to you soon. Thank you for contacting KC!",
           });
           setFormData({ name: "", email: "", subject: "", message: "" });
           setMessageCount(0);
@@ -179,26 +179,7 @@ const Contact = () => {
               ))}
             </div>
 
-            {/* Quick Actions */}
-            <div className="bg-kc-black rounded-xl p-6 text-white">
-              <h4 className="font-semibold mb-4">Need Immediate Help?</h4>
-              <div className="space-y-3">
-                <Button 
-                  variant="red"
-                  className="w-full"
-                >
-                  <MessageSquare className="h-4 w-4 mr-2" />
-                  Live Chat Support
-                </Button>
-                <Button 
-                  variant="blackOutline"
-                  className="w-full border-white text-white hover:bg-white hover:text-kc-black"
-                >
-                  <HelpCircle className="h-4 w-4 mr-2" />
-                  FAQ Section
-                </Button>
-              </div>
-            </div>
+            {/* Quick Actions removed as requested */}
           </div>
 
           {/* Contact Form */}
