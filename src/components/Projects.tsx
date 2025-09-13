@@ -338,7 +338,7 @@ const Projects = () => {
                     <div className="w-12 h-12 bg-kc-red rounded-full flex items-center justify-center">
                       <Trophy className="h-6 w-6 text-white" />
                     </div>
-                    <h3 className="text-2xl font-heading font-bold">STEM Competition</h3>
+                    <h3 className="text-2xl font-heading font-bold">National STEM Competition</h3>
                   </div>
                   
                   <p className="text-white/90 leading-relaxed mb-6">

@@ -77,7 +77,7 @@ const Hero = () => {
   };
 
   return (
-    <section id="home" className="relative pt-16 md:pt-20 lg:pt-20 min-h-[70vh] sm:min-h-[75vh] md:min-h-[80vh] lg:min-h-[88vh] flex items-center justify-center overflow-hidden">
+    <section id="home" className="relative pt-16 md:pt-20 lg:pt-20 min-h-[70svh] sm:min-h-[75svh] md:min-h-[80svh] lg:min-h-[88svh] flex items-center justify-center overflow-hidden">
       {/* Background Image (only render current to reduce network work) */}
       <div className="absolute inset-0">
         {(() => {
