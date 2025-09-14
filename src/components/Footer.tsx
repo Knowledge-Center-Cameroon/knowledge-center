@@ -10,29 +10,34 @@ import {
   Twitter, 
   Youtube,
   Linkedin,
-
-  Send
+  Send,
+  ArrowRight
 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { Link, NavLink } from "react-router-dom";
+import { subscribeEmail } from "@/services/api";
 import StemBackground from "@/components/StemBackground";
 
 const Footer = () => {
   const [email, setEmail] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
-  const handleNewsletterSubmit = (e: React.FormEvent) => {
+  const handleNewsletterSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email) return;
     setSubmitting(true);
-    setTimeout(() => {
+    try {
+      await subscribeEmail(email);
       toast({
         title: "Thank you for subscribing!",
         description: "You'll receive updates about our STEM programs and activities.",
       });
-      setSubmitting(false);
       setEmail("");
-    }, 650);
+    } catch (err) {
+      toast({ title: "Subscription failed", description: "Please try again.", });
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -81,8 +86,12 @@ const Footer = () => {
                     type="submit"
                     variant="secondary"
                     disabled={submitting}
-                    className={`h-9 px-3 bg-white text-black hover:bg-white/90 transition-smooth ${submitting ? 'opacity-80' : ''}`}
+                    className={`group relative overflow-hidden h-9 px-3 bg-white text-black hover:bg-white/90 transition-smooth ${submitting ? 'opacity-80' : ''}`}
                   >
+                    {/* shine effect */}
+                    <span className="pointer-events-none absolute -inset-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <span className="absolute -inset-1 bg-gradient-to-r from-transparent via-white/40 to-transparent translate-x-[-120%] group-hover:translate-x-[120%] transition-transform duration-700" />
+                    </span>
                     {submitting ? (
                       <span className="inline-flex items-center gap-2">
                         <span className="h-3.5 w-3.5 rounded-full border-2 border-black/70 border-t-transparent animate-spin" />
@@ -92,6 +101,7 @@ const Footer = () => {
                       <span className="inline-flex items-center gap-2">
                         <Send className="h-4 w-4" />
                         Subscribe
+                        <ArrowRight className="h-4 w-4 transition-transform duration-300 translate-x-0 group-hover:translate-x-1.5" />
                       </span>
                     )}
                   </Button>

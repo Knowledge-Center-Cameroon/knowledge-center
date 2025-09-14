@@ -19,21 +19,22 @@ export const projects: Project[] = [
     slug: "stem-education",
     title: "National STEM Competition",
     summary:
-      "Our flagship program focusing on Science, Technology, Engineering, and Mathematics education for young Cameroonians.",
+      "Annual country‑wide contest that rewards clear thinking over memorization. Students tackle authentic, multi‑step STEM problems—testing ideas, defending methods, and connecting classroom theory to real‑world impact.",
     images: [StemImg, SummerImg, WeekendImg],
     features: [
-      "National exam, across the country",
-      "Problem solving, innovation and creativity skills",
-      "Mentorship and academic guidance",
-      "Preparation for GCE examinations and beyond",
-      "Project-based learning with real-world applications",
-      "Global opportunities"
+      "National qualifiers leading to a December grand final",
+      "Multi‑disciplinary problems (Math, Physics, Chemistry, Biology, Computing)",
+      "Emphasis on reasoning, method, and communication",
+      "Team challenges that reward collaboration and creativity",
+      "Mentor clinics and exam‑prep sessions built into the calendar",
+      "Prizes, recognition, and follow‑on mentorship opportunities"
     ],
     details: [
-      "Audience: Form 4–Upper Sixth (O/L & A/L)",
-      "Schedule: Annually, every December",
-      "Support: Mentorship + exam-prep clinics",
-      "Outcomes: Improved GCE performance and deeper STEM literacy"
+      "Eligibility: Form 4 – Upper Sixth (O/L & A/L)",
+      "Teams: 3–5 students (solo entries allowed where needed)",
+      "Format: Regional qualifiers (Oct–Nov), National finals (December)",
+      "Judging: Clarity of thought, defensible methods, teamwork, innovation",
+      "Outcomes: Deeper STEM literacy and real‑world problem‑solving confidence"
     ]
   },
   {
