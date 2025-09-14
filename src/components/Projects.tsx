@@ -300,25 +300,45 @@ const Projects = () => {
 
                       {/* CTA Buttons */}
                       <div className="flex flex-col sm:flex-row gap-4">
-                        <motion.div whileHover={{ y: -2 }} whileTap={{ scale: 0.98 }}>
-                          <Button 
-                            variant="blue"
-                            size="lg"
-                            className="group font-semibold w-full sm:w-auto"
-                          >
-                            <a href="/stem-registration" target="_blank" rel="noopener noreferrer">Enroll Now</a>
-                            <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
-                          </Button>
-                        </motion.div>
-                        <motion.div whileHover={{ y: -2 }} whileTap={{ scale: 0.98 }}>
-                          <Button 
-                            variant="blackOutline"
-                            size="lg"
-                            className="w-full sm:w-auto"
-                          >
-                            <a href="projects/stem-education" target="_blank" rel="noopener noreferrer">Learn More</a>
-                          </Button>
-                        </motion.div>
+                        {(() => {
+                          const enrollHref = activeTab === 'stem'
+                            ? '/stem-registration'
+                            : activeTab === 'summer'
+                              ? '/projects/summer-education'
+                              : '/projects/weekend-school';
+                          const learnHref = activeTab === 'stem'
+                            ? '/projects/stem-education'
+                            : activeTab === 'summer'
+                              ? '/projects/summer-education'
+                              : '/projects/weekend-school';
+                          return (
+                            <>
+                              <motion.div whileHover={{ y: -2 }} whileTap={{ scale: 0.98 }}>
+                                <Button 
+                                  variant="blue"
+                                  size="lg"
+                                  className="group font-semibold w-full sm:w-auto"
+                                  asChild
+                                >
+                                  <Link to={enrollHref}>
+                                    Enroll Now
+                                    <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                                  </Link>
+                                </Button>
+                              </motion.div>
+                              <motion.div whileHover={{ y: -2 }} whileTap={{ scale: 0.98 }}>
+                                <Button 
+                                  variant="blackOutline"
+                                  size="lg"
+                                  className="w-full sm:w-auto"
+                                  asChild
+                                >
+                                  <Link to={learnHref}>Learn More</Link>
+                                </Button>
+                              </motion.div>
+                            </>
+                          );
+                        })()}
                       </div>
                     </div>
                   </div>

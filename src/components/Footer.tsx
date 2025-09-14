@@ -19,16 +19,20 @@ import StemBackground from "@/components/StemBackground";
 
 const Footer = () => {
   const [email, setEmail] = useState("");
+  const [submitting, setSubmitting] = useState(false);
 
   const handleNewsletterSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (email) {
+    if (!email) return;
+    setSubmitting(true);
+    setTimeout(() => {
       toast({
         title: "Thank you for subscribing!",
         description: "You'll receive updates about our STEM programs and activities.",
       });
+      setSubmitting(false);
       setEmail("");
-    }
+    }, 650);
   };
 
   return (
@@ -73,12 +77,23 @@ const Footer = () => {
                     className="flex-1 h-9 bg-white/10 border-white/20 text-white placeholder:text-white/60"
                     required
                   />
-                  <Button 
-                    type="submit" 
+                  <Button
+                    type="submit"
                     variant="secondary"
-                    className="h-9 px-3 bg-white text-black hover:bg-white/90"
+                    disabled={submitting}
+                    className={`h-9 px-3 bg-white text-black hover:bg-white/90 transition-smooth ${submitting ? 'opacity-80' : ''}`}
                   >
-                    <Send className="h-4 w-4" />
+                    {submitting ? (
+                      <span className="inline-flex items-center gap-2">
+                        <span className="h-3.5 w-3.5 rounded-full border-2 border-black/70 border-t-transparent animate-spin" />
+                        Sending
+                      </span>
+                    ) : (
+                      <span className="inline-flex items-center gap-2">
+                        <Send className="h-4 w-4" />
+                        Subscribe
+                      </span>
+                    )}
                   </Button>
                 </form>
               </div>
@@ -139,13 +154,10 @@ const Footer = () => {
                     <NavLink
                       to={link.to}
                       className={({ isActive }) =>
-                        `group inline-flex items-center gap-2 transition-smooth focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 rounded ${isActive ? 'text-white underline underline-offset-4' : 'text-white/90 hover:text-white'}`
+                        `group inline-flex items-center gap-2 transition-smooth focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 rounded ${isActive ? 'text-white' : 'text-white/90 hover:text-primary'}`
                       }
                     >
-                      <span className="relative">
-                        {link.label}
-                        <span className="block max-w-0 group-hover:max-w-full transition-all duration-300 h-[2px] bg-white/80"></span>
-                      </span>
+                      <span className="relative">{link.label}</span>
                       <span className="translate-x-0 group-hover:translate-x-0.5 transition-transform">→</span>
                     </NavLink>
                   </li>
@@ -160,48 +172,36 @@ const Footer = () => {
                 <li>
                   <Link
                     to="/projects/stem-education"
-                    className="group inline-flex items-center gap-2 text-white/90 hover:text-white transition-smooth focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 rounded"
+                    className="group inline-flex items-center gap-2 text-white/90 hover:text-primary transition-smooth focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 rounded"
                   >
-                    <span className="relative">
-                      National STEM Competition
-                      <span className="block max-w-0 group-hover:max-w-full transition-all duration-300 h-[2px] bg-white/80"></span>
-                    </span>
+                    <span className="relative">National STEM Competition</span>
                     <span className="translate-x-0 group-hover:translate-x-0.5 transition-transform">→</span>
                   </Link>
                 </li>
                 <li>
                   <Link
                     to="/projects/summer-education"
-                    className="group inline-flex items-center gap-2 text-white/90 hover:text-white transition-smooth focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 rounded"
+                    className="group inline-flex items-center gap-2 text-white/90 hover:text-primary transition-smooth focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 rounded"
                   >
-                    <span className="relative">
-                      Summer Education Program
-                      <span className="block max-w-0 group-hover:max-w-full transition-all duration-300 h-[2px] bg-white/80"></span>
-                    </span>
+                    <span className="relative">Summer Education Program</span>
                     <span className="translate-x-0 group-hover:translate-x-0.5 transition-transform">→</span>
                   </Link>
                 </li>
                 <li>
                   <Link
-                    to="/projects/weekend-shool"
-                    className="group inline-flex items-center gap-2 text-white/90 hover:text-white transition-smooth focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 rounded"
+                    to="/projects/weekend-school"
+                    className="group inline-flex items-center gap-2 text-white/90 hover:text-primary transition-smooth focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 rounded"
                   >
-                    <span className="relative">
-                      Weekend School
-                      <span className="block max-w-0 group-hover:max-w-full transition-all duration-300 h-[2px] bg-white/80"></span>
-                    </span>
+                    <span className="relative">Weekend School</span>
                     <span className="translate-x-0 group-hover:translate-x-0.5 transition-transform">→</span>
                   </Link>
                 </li>
                 <li>
                   <Link
                     to="/projects"
-                    className="group inline-flex items-center gap-2 text-white/90 hover:text-white transition-smooth focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 rounded"
+                    className="group inline-flex items-center gap-2 text-white/90 hover:text-primary transition-smooth focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 rounded"
                   >
-                    <span className="relative">
-                      Global Scholars Program
-                      <span className="block max-w-0 group-hover:max-w-full transition-all duration-300 h-[2px] bg-white/80"></span>
-                    </span>
+                    <span className="relative">Global Scholars Program</span>
                     <span className="translate-x-0 group-hover:translate-x-0.5 transition-transform">→</span>
                   </Link>
                 </li>
@@ -258,13 +258,13 @@ const Footer = () => {
               &copy; {new Date().getFullYear()} Knowledge Center. All rights reserved.
             </p>
             <div className="flex space-x-6 text-sm">
-              <Link to="/privacy" className="text-white/80 hover:text-white transition-smooth underline decoration-transparent hover:decoration-white/70 underline-offset-4">
+              <Link to="/privacy" className="text-white/80 hover:text-primary transition-smooth underline decoration-transparent hover:decoration-primary/70 underline-offset-4">
                 Privacy Policy
               </Link>
-              <Link to="/terms" className="text-white/80 hover:text-white transition-smooth underline decoration-transparent hover:decoration-white/70 underline-offset-4">
+              <Link to="/terms" className="text-white/80 hover:text-primary transition-smooth underline decoration-transparent hover:decoration-primary/70 underline-offset-4">
                 Terms of Service
               </Link>
-              <Link to="/donate" className="text-white hover:text-accent transition-smooth underline decoration-transparent hover:decoration-accent/70 underline-offset-4">
+              <Link to="/donate" className="text-white/80 hover:text-primary transition-smooth underline decoration-transparent hover:decoration-primary/70 underline-offset-4">
                 Donate
               </Link>
             </div>

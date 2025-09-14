@@ -160,6 +160,19 @@
     scroll-behavior: smooth;
   }
 
+  /* Ensure in-page anchors aren't covered by fixed navbar */
+  html {
+    scroll-padding-top: 5.5rem; /* ~h-16 + spacing */
+  }
+  /* Any element with an id (section anchors) will offset when scrolled into view */
+  [id] {
+    scroll-margin-top: 5.5rem;
+  }
+  @media (min-width: 1024px) {
+    html { scroll-padding-top: 6.5rem; } /* ~h-20 + spacing on lg */
+    [id] { scroll-margin-top: 6.5rem; }
+  }
+
   h1, h2, h3, h4, h5, h6 {
     @apply font-heading;
   }
