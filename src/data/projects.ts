@@ -13,6 +13,9 @@ import WeekendImg from "@/assets/weekend.jpeg";
 import AboutImg from "@/assets/about.jpeg";
 import HeroImg from "@/assets/hero-image.jpeg";
 import ExtraImg from "@/assets/1747611530465.jpeg";
+import Summer from "@/assets/summer5.jpeg"
+import Prepa from "@/assets/prepa.jpeg"
+import Prepa2 from "@/assets/prepa2.jpeg"
 
 export const projects: Project[] = [
   {
@@ -42,7 +45,7 @@ export const projects: Project[] = [
     title: "Summer Education Program",
     summary:
       "Intensive summer sessions designed to accelerate learning and provide enrichment and useful skills during school breaks.",
-    images: [SummerImg, AboutImg, HeroImg],
+    images: [SummerImg, Summer, HeroImg],
     features: [
       "2-month intensive learning program",
       "Interactive audio-visual lectures",
@@ -78,6 +81,27 @@ export const projects: Project[] = [
     ],
     details: [
       "When: Sat–Sun blocks",
+      "Focus: Reinforcement + revision + mock tests",
+      "Support: 1:1 feedback and study plans",
+      "Outcome: Consistent weekly progress"
+    ]
+  },
+  {
+    slug: "KC Prepa",
+    title: "KC Prepa",
+    summary:
+      "The Knowledge Center Prepa for Competitive Entrance Exams",
+    images: [Prepa, AboutImg, ExtraImg],
+    features: [
+      "Audio-visual lectures from passionate tutors",
+      "Most distinguisehd scholarly community across the nation",
+      "Ubbelievable success rates",
+      "Career-defining experiences",
+      "Engineering, Medicine, Agriculture",
+      "Progress tracking and regular assessments"
+    ],
+    details: [
+      "When: Summer before entarnce exams",
       "Focus: Reinforcement + revision + mock tests",
       "Support: 1:1 feedback and study plans",
       "Outcome: Consistent weekly progress"

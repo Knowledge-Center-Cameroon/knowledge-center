@@ -13,6 +13,7 @@ const BlogPage = React.lazy(() => import("./pages/BlogPage"));
 const ContactPage = React.lazy(() => import("./pages/ContactPage"));
 const DonatePage = React.lazy(() => import("./pages/DonatePage"));
 const StemRegistrationPage = React.lazy(() => import("./pages/StemRegistrationPage"));
+const StemRegistrationApplyPage = React.lazy(() => import("./pages/StemRegistrationApplyPage"));
 const PrivacyPage = React.lazy(() => import("./pages/PrivacyPage"));
 const TermsPage = React.lazy(() => import("./pages/TermsPage"));
 const EventsPage = React.lazy(() => import("./pages/EventsPage"));
@@ -48,6 +49,7 @@ const App = () => (
               <Route path="contact" element={<ContactPage />} />
               <Route path="donate" element={<DonatePage />} />
               <Route path="stem-registration" element={<StemRegistrationPage />} />
+              <Route path="stem-registration/apply" element={<StemRegistrationApplyPage />} />
               <Route path="privacy" element={<PrivacyPage />} />
               <Route path="terms" element={<TermsPage />} />
             </Route>

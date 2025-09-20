@@ -11,7 +11,6 @@ import {
   Youtube,
   Linkedin,
   Send,
-  ArrowRight
 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { Link, NavLink } from "react-router-dom";
@@ -101,7 +100,7 @@ const Footer = () => {
                       <span className="inline-flex items-center gap-2">
                         <Send className="h-4 w-4" />
                         Subscribe
-                        <ArrowRight className="h-4 w-4 transition-transform duration-300 translate-x-0 group-hover:translate-x-1.5" />
+                        {/* <ArrowRight className="h-4 w-4 transition-transform duration-300 translate-x-0 group-hover:translate-x-1.5" /> */}
                       </span>
                     )}
                   </Button>
@@ -111,22 +110,13 @@ const Footer = () => {
               {/* Social Links */}
               <div className="flex space-x-4 mt-4">
                 <a 
-                  href="https://web.facebook.com/share/g/1YeC5UgLSP/" 
+                  href="https://www.linkedin.com/company/knowledge-centercmr/" 
                   target="_blank" 
                   rel="noopener noreferrer"
                   className="w-10 h-10 bg-white/10 hover:bg-white/20 text-white rounded-full flex items-center justify-center transition-smooth border border-white/10"
-                  aria-label="Facebook"
+                  aria-label="LinkedIn"
                 >
-                  <Facebook className="h-5 w-5" />
-                </a>
-                <a 
-                  href="https://x.com/KCCameroon" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="w-10 h-10 bg-white/10 hover:bg-white/20 text-white rounded-full flex items-center justify-center transition-smooth border border-white/10"
-                  aria-label="X"
-                >
-                  <Twitter className="h-5 w-5" />
+                  <Linkedin className="h-5 w-5" />
                 </a>
                 <a 
                   href="https://youtube.com/@knowledgecentercameroon-bz8dt?si=LVdBwRFkRBY2M79c" 
@@ -138,13 +128,22 @@ const Footer = () => {
                   <Youtube className="h-5 w-5" />
                 </a>
                 <a 
-                  href="https://www.linkedin.com/company/knowledge-centercmr/" 
+                  href="https://x.com/KCCameroon" 
                   target="_blank" 
                   rel="noopener noreferrer"
                   className="w-10 h-10 bg-white/10 hover:bg-white/20 text-white rounded-full flex items-center justify-center transition-smooth border border-white/10"
-                  aria-label="LinkedIn"
+                  aria-label="X"
                 >
-                  <Linkedin className="h-5 w-5" />
+                  <Twitter className="h-5 w-5" />
+                </a>
+                <a 
+                  href="https://web.facebook.com/share/g/1YeC5UgLSP/" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="w-10 h-10 bg-white/10 hover:bg-white/20 text-white rounded-full flex items-center justify-center transition-smooth border border-white/10"
+                  aria-label="Facebook"
+                >
+                  <Facebook className="h-5 w-5" />
                 </a>
               </div>
             </div>
@@ -164,11 +163,10 @@ const Footer = () => {
                     <NavLink
                       to={link.to}
                       className={({ isActive }) =>
-                        `group inline-flex items-center gap-2 transition-smooth focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 rounded ${isActive ? 'text-white' : 'text-white/90 hover:text-primary'}`
+                        `group inline-flex items-center gap-2 transition-smooth focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 rounded ${isActive ? 'text-kc-red' : 'text-white/90 hover:text-primary'}`
                       }
                     >
                       <span className="relative">{link.label}</span>
-                      <span className="translate-x-0 group-hover:translate-x-0.5 transition-transform">→</span>
                     </NavLink>
                   </li>
                 ))}
@@ -185,7 +183,6 @@ const Footer = () => {
                     className="group inline-flex items-center gap-2 text-white/90 hover:text-primary transition-smooth focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 rounded"
                   >
                     <span className="relative">National STEM Competition</span>
-                    <span className="translate-x-0 group-hover:translate-x-0.5 transition-transform">→</span>
                   </Link>
                 </li>
                 <li>
@@ -194,7 +191,6 @@ const Footer = () => {
                     className="group inline-flex items-center gap-2 text-white/90 hover:text-primary transition-smooth focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 rounded"
                   >
                     <span className="relative">Summer Education Program</span>
-                    <span className="translate-x-0 group-hover:translate-x-0.5 transition-transform">→</span>
                   </Link>
                 </li>
                 <li>
@@ -203,7 +199,6 @@ const Footer = () => {
                     className="group inline-flex items-center gap-2 text-white/90 hover:text-primary transition-smooth focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 rounded"
                   >
                     <span className="relative">Weekend School</span>
-                    <span className="translate-x-0 group-hover:translate-x-0.5 transition-transform">→</span>
                   </Link>
                 </li>
                 <li>
@@ -212,7 +207,6 @@ const Footer = () => {
                     className="group inline-flex items-center gap-2 text-white/90 hover:text-primary transition-smooth focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 rounded"
                   >
                     <span className="relative">Global Scholars Program</span>
-                    <span className="translate-x-0 group-hover:translate-x-0.5 transition-transform">→</span>
                   </Link>
                 </li>
               </ul>

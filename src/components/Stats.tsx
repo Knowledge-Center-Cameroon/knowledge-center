@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Card, CardContent } from "@/components/ui/card";
-import { Users, GraduationCap, School, Hand, Library, Link, Landmark, Handshake } from "lucide-react";
+import { Users, GraduationCap, Landmark, Hand, Library, Link, Handshake } from "lucide-react";
 
 const Stats = () => {
   const [isVisible, setIsVisible] = useState(false);
