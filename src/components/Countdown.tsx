@@ -25,25 +25,34 @@ const useCountdown = (to: Date) => {
   }, [now, to]);
 };
 
+const Digit: React.FC<{ d: string }> = ({ d }) => (
+  <motion.span
+    key={d}
+    initial={{ y: -12, opacity: 0 }}
+    animate={{ y: 0, opacity: 1 }}
+    transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
+    className="inline-block"
+  >
+    {d}
+  </motion.span>
+);
+
 const CountdownCard: React.FC<{ label: string; value: number; variant: "blue" | "red" }> = ({ label, value, variant }) => {
   const base = variant === "blue" ? "bg-kc-blue" : "bg-kc-red";
   const val = pad(value);
+  const tens = val[0];
+  const ones = val[1];
   return (
     <div className={`relative rounded-xl sm:rounded-2xl ${base} text-white min-w-[76px] sm:min-w-[104px] shadow-lg overflow-hidden`}
          style={{ height: '104px' }}>
       {/* Top darker half (50%) */}
       <div className="absolute top-0 left-0 right-0 h-1/2 bg-black/25" />
-      {/* Number slide-down on change */}
+      {/* Number, animate digits independently */}
       <div className="absolute inset-0 flex items-center justify-center">
-        <motion.span
-          key={val}
-          initial={{ y: -14, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
-          className="text-3xl sm:text-4xl font-bold leading-none tabular-nums select-none"
-        >
-          {val}
-        </motion.span>
+        <span className="text-3xl sm:text-4xl font-bold leading-none tabular-nums select-none tracking-tight">
+          <Digit d={tens} />
+          <Digit d={ones} />
+        </span>
       </div>
       {/* Label */}
       <div className="absolute bottom-1 left-1/2 -translate-x-1/2 text-[10px] sm:text-xs uppercase tracking-wider opacity-95 select-none">
