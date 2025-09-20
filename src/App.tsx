@@ -36,7 +36,7 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <ScrollToTop />
-        <Suspense fallback={<div className="container mx-auto px-4 lg:px-8 py-12 text-center text-muted-foreground">Loading…</div>}>
+        <Suspense fallback={null}>
           <Routes>
             <Route element={<Layout />}>
               <Route index element={<Home />} />
