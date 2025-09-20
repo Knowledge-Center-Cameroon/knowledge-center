@@ -174,11 +174,11 @@ const About = () => {
         </div>
 
         {/* What is Knowledge Center with Carousel */}
-        <div className="grid lg:grid-cols-2 gap-8 md:gap-12 items-center mb-16 md:mb-20">
+        <div className="grid lg:grid-cols-2 gap-6 sm:gap-8 md:gap-12 items-center mb-14 md:mb-20">
           <div className="animate-slide-up">
             <div className="h-1 w-20 mb-3 bg-kc-blue rounded-full" />
             <h3 className="text-2xl md:text-3xl font-heading font-bold mb-4 md:mb-6">What is Knowledge Center</h3>
-            <div className="prose prose-lg max-w-none">
+            <div className="prose md:prose-lg max-w-none">
               <p className="text-muted-foreground leading-relaxed mb-4 md:mb-6">
                 There is a violence being done to young minds across large parts of Africa: education reduced to regurgitation,
                 curiosity stamped out for the sake of a grade. Knowledge Center exists to end that quiet violence. We are a youth-led
@@ -195,7 +195,7 @@ const About = () => {
             </div>
           </div>
 
-          <div className="animate-slide-up">
+          <div className="animate-slide-up mt-4 lg:mt-0">
             <Carousel setApi={setIntroApi} className="rounded-2xl shadow-elegant bg-white/5 backdrop-blur-sm p-2">
               <CarouselContent>
                 {[about, hero2, hero3, hero4, hero5].map((img, i) => (
@@ -214,12 +214,12 @@ const About = () => {
         </div>
 
         {/* Philosophy Sections with Side Carousel */}
-        <div className="grid lg:grid-cols-2 gap-8 md:gap-12 items-start mb-16 md:mb-20">
+        <div className="grid lg:grid-cols-2 gap-6 sm:gap-8 md:gap-12 items-start mb-14 md:mb-20">
           <div className="space-y-12 animate-slide-up">
             <div>
               <div className="h-1 w-20 mb-3 bg-kc-blue rounded-full" />
               <h3 className="text-2xl md:text-3xl font-heading font-bold mb-3 md:mb-4">What we teach that school forgets</h3>
-              <div className="prose prose-lg max-w-none">
+              <div className="prose md:prose-lg max-w-none">
                 <p className="text-muted-foreground leading-relaxed">
                   We teach the courage to ask the wrong question until the right one appears. We value process over an answer and craft
                   problems that expand the mind rather than narrow it. We are architects of intellectual habit: skepticism,
@@ -232,7 +232,7 @@ const About = () => {
             <div>
               <div className="h-1 w-20 mb-3 bg-kc-blue rounded-full" />
               <h3 className="text-2xl md:text-3xl font-heading font-bold mb-3 md:mb-4">Why this matters now</h3>
-              <div className="prose prose-lg max-w-none">
+              <div className="prose md:prose-lg max-w-none">
                 <p className="text-muted-foreground leading-relaxed">
                   The global economy no longer prizes the person who remembers or knows the most. It rewards the person who sees a
                   problem nobody else sees and makes a solution. Africa’s future will be written by those trained to ask, test, and invent.
@@ -242,7 +242,7 @@ const About = () => {
             </div>
           </div>
 
-          <div className="animate-slide-up">
+          <div className="animate-slide-up mt-4 lg:mt-0">
             <Carousel setApi={setPhiloApi} className="rounded-2xl shadow-elegant bg-white/5 backdrop-blur-sm p-2">
               <CarouselContent>
                 {[hero6, hero7, hero8, hero9, hero10, hero12].map((img, i) => (
