@@ -2,6 +2,7 @@
 @font-face {
   font-family: 'Aptos';
   src: local('Aptos'), local('Aptos Regular'),
+       url('/fonts/aptos/Aptos-Variable.woff2') format('woff2-variations'),
        url('/fonts/aptos/Aptos-Variable.woff2') format('woff2');
   font-weight: 100 900;
   font-style: normal;
@@ -11,6 +12,7 @@
 @font-face {
   font-family: 'Aptos';
   src: local('Aptos Italic'), local('Aptos-Italic'),
+       url('/fonts/aptos/Aptos-Italic-Variable.woff2') format('woff2-variations'),
        url('/fonts/aptos/Aptos-Italic-Variable.woff2') format('woff2');
   font-weight: 100 900;
   font-style: italic;
@@ -157,6 +159,11 @@
 
   body {
     @apply bg-background text-foreground font-body antialiased;
+    /* Force Aptos as primary on all devices */
+    font-family: 'Aptos', ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica Neue, Arial, "Noto Sans", "Liberation Sans", sans-serif !important;
+    -webkit-text-size-adjust: 100%;
+    text-rendering: optimizeLegibility;
+    font-synthesis-weight: none;
     scroll-behavior: smooth;
   }
 
