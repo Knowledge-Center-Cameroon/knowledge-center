@@ -12,6 +12,8 @@ type ArrowButtonProps = {
   className?: string;
   href?: string;
   onClick?: () => void;
+  type?: "button" | "submit" | "reset";
+  disabled?: boolean;
 };
 
 /**
@@ -28,6 +30,8 @@ export const ArrowButton: React.FC<ArrowButtonProps> = ({
   className,
   href,
   onClick,
+  type = "button",
+  disabled = false,
 }) => {
   const base = (
     <span
@@ -35,19 +39,24 @@ export const ArrowButton: React.FC<ArrowButtonProps> = ({
         "group relative inline-flex items-center justify-center overflow-hidden rounded-full px-6 py-3 sm:px-7 sm:py-3.5 font-semibold transition-[transform,box-shadow] duration-300",
         "shadow-[0_8px_24px_-8px_rgba(0,0,0,0.35)] hover:shadow-[0_12px_28px_-10px_rgba(0,0,0,0.45)]",
         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent",
+        disabled ? "opacity-70 cursor-not-allowed" : "",
         className
       )}
       style={{ color: textPrimaryColor }}
+      aria-disabled={disabled}
     >
       {/* Base background */}
       <span
         className="absolute inset-0 rounded-full transition-opacity duration-300"
-        style={{ backgroundColor: bgPrimaryColor, opacity: 1 }}
+        style={{ backgroundColor: bgPrimaryColor, opacity: disabled ? 0.6 : 1 }}
         aria-hidden
       />
       {/* Sweep overlay */}
       <span
-        className="absolute inset-0 origin-left scale-x-0 rounded-full transition-transform duration-300 ease-out group-hover:scale-x-100 group-active:scale-x-100"
+        className={cn(
+          "absolute inset-0 origin-left scale-x-0 rounded-full transition-transform duration-300 ease-out group-hover:scale-x-100 group-active:scale-x-100",
+          disabled ? "pointer-events-none" : ""
+        )}
         style={{ backgroundColor: bgSecondaryColor }}
         aria-hidden
       />
@@ -86,7 +95,7 @@ export const ArrowButton: React.FC<ArrowButtonProps> = ({
   }
 
   return (
-    <button type="button" onClick={onClick} className="focus-visible:outline-none">
+    <button type={type} onClick={onClick} disabled={disabled} className="focus-visible:outline-none">
       {base}
     </button>
   );

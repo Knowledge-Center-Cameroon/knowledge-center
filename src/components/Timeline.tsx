@@ -14,7 +14,7 @@ export type TimelineItem = {
 const Item: React.FC<{ item: TimelineItem; index: number }> = ({ item, index }) => {
   return (
     <motion.li
-      className="relative pl-6"
+      className="relative pl-5 sm:pl-6"
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.35, delay: index * 0.05, ease: [0.22, 1, 0.36, 1] }}
@@ -26,21 +26,21 @@ const Item: React.FC<{ item: TimelineItem; index: number }> = ({ item, index }) 
         <span className="h-2.5 w-2.5 rounded-full bg-gradient-to-br from-kc-blue to-kc-red" />
       </span>
 
-      <div className="mb-1 text-xs uppercase tracking-wider text-foreground/60 flex items-center gap-1">
+      <div className="mb-1 text-[11px] sm:text-xs uppercase tracking-wider text-foreground/60 flex items-center gap-1">
         <CalendarDays className="h-3.5 w-3.5" />
         {item.date || ""}
       </div>
-      <div className="font-semibold text-foreground leading-tight">{item.title}</div>
+      <div className="font-semibold text-foreground leading-snug sm:leading-tight text-sm sm:text-base">{item.title}</div>
       {item.subtitle && (
-        <div className="text-sm text-foreground/80 leading-snug">{item.subtitle}</div>
+        <div className="text-[13px] sm:text-sm text-foreground/80 leading-snug">{item.subtitle}</div>
       )}
       {item.description && (
-        <p className="mt-1 text-sm text-foreground/70 leading-relaxed">{item.description}</p>
+        <p className="mt-1 text-[13px] sm:text-sm text-foreground/70 leading-relaxed">{item.description}</p>
       )}
       {item.href && (
         <a
           href={item.href}
-          className="mt-2 inline-block text-sm font-semibold text-kc-blue hover:text-kc-red transition-colors"
+          className="mt-2 inline-block text-sm font-semibold text-kc-blue hover:text-kc-red transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-kc-blue rounded"
         >
           Learn more →
         </a>
@@ -53,9 +53,9 @@ const Timeline: React.FC<{ items: TimelineItem[]; title?: string; className?: st
   return (
     <div className={className}>
       {title && (
-        <h3 className="text-lg font-heading font-bold mb-3"><span className="text-kc-blue">{title}</span></h3>
+        <h3 className="text-base sm:text-lg font-heading font-bold mb-3"><span className="text-kc-blue">{title}</span></h3>
       )}
-      <ul className="relative space-y-5">
+      <ul className="relative space-y-4 sm:space-y-5">
         {items.map((it, i) => (
           <Item key={it.id ?? i} item={it} index={i} />
         ))}

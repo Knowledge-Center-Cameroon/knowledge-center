@@ -7,6 +7,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { ArrowButton } from "@/components/arrowbtn";
 import StemBackground from "@/components/StemBackground";
 import Timeline, { type TimelineItem } from "@/components/Timeline";
+import { getTimeline } from "@/services/api";
 
 const UPCOMING = [
   {
@@ -137,7 +138,7 @@ const EventsPage: React.FC = () => {
       </motion.div>
 
       <motion.div variants={fadeUp}>
-        <div className="grid lg:grid-cols-12 gap-8">
+        <div className="grid lg:grid-cols-12 gap-6 lg:gap-8">
           <div className="lg:col-span-8">
             {(() => {
               const [activeTab, setActiveTab] = useState("upcoming");
@@ -169,23 +170,32 @@ const EventsPage: React.FC = () => {
           </div>
           <div className="lg:col-span-4">
             {(() => {
-              const timeItems: TimelineItem[] = [
-                ...UPCOMING.map((e) => ({
-                  title: e.title,
-                  date: `${e.date} • ${e.time}`,
-                  subtitle: e.location,
-                  description: e.description,
-                  href: "#",
-                })),
-                ...PAST.map((e) => ({
-                  title: e.title,
-                  date: `${e.date} • ${e.time}`,
-                  subtitle: e.location,
-                  description: e.description,
-                  href: "#",
-                })),
+              const [items, setItems] = useState<TimelineItem[] | null>(null);
+              React.useEffect(() => {
+                (async () => {
+                  try {
+                    const data = await getTimeline();
+                    const mapped: TimelineItem[] = data
+                      .sort((a, b) => new Date(a.dateISO).getTime() - new Date(b.dateISO).getTime())
+                      .map((t) => ({
+                        id: t.id,
+                        title: t.title,
+                        date: new Date(t.dateISO).toLocaleString(undefined, { year: 'numeric', month: 'short', day: '2-digit' }),
+                        description: t.description,
+                        href: t.linkUrl,
+                        subtitle: t.tag,
+                      }));
+                    setItems(mapped);
+                  } catch {
+                    setItems([]);
+                  }
+                })();
+              }, []);
+              const fallback: TimelineItem[] = [
+                ...UPCOMING.map((e) => ({ title: e.title, date: `${e.date} • ${e.time}`, subtitle: e.location, description: e.description, href: '#' })),
+                ...PAST.map((e) => ({ title: e.title, date: `${e.date} • ${e.time}`, subtitle: e.location, description: e.description, href: '#' })),
               ];
-              return <Timeline title="Event Timeline" items={timeItems} />;
+              return <Timeline title="Event Timeline" items={items ?? fallback} />;
             })()}
           </div>
         </div>

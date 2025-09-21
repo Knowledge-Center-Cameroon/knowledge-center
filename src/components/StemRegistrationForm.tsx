@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import { format } from "date-fns";
 import { motion } from "framer-motion";
 import { Calendar as CalendarIcon, Loader2 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
@@ -18,6 +19,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { useToast } from "@/components/ui/use-toast";
 import { cn } from "@/lib/utils";
 import { initiateStemPayment, type StemRegistrationPayload } from "@/services/api";
+import { ArrowButton } from "@/components/arrowbtn";
 
 const cmPhone = z
   .string()
@@ -43,7 +45,9 @@ const schema = z.object({
   paymentMethod: z.enum(["mtn", "orange"], { required_error: "Select a payment method" }),
   subjects: z.array(z.enum(["math", "physics", "chemistry", "biology"])).min(1, "Select at least one subject"),
   payerPhone: cmPhone,
-  paymentScreenshot: z.any().optional(),
+  paymentScreenshot: z
+    .any()
+    .refine((f) => !!f && typeof f === 'object', { message: "Payment screenshot is required" }),
 });
 
 export type StemRegistrationData = z.infer<typeof schema>;
@@ -54,8 +58,7 @@ const steps: Array<{ key: string; title: string; fields: (keyof StemRegistration
   { key: "school", title: "School", fields: ["school", "schoolClass"] },
   { key: "motiv", title: "Your Goals", fields: ["motivation", "level"] },
   { key: "subjects", title: "Subjects", fields: ["subjects"] },
-  { key: "payment", title: "Payment", fields: ["paymentMethod", "payerPhone"] },
-  { key: "review", title: "Review & Submit", fields: [] },
+  { key: "payment", title: "Payment", fields: ["paymentMethod", "payerPhone", "paymentScreenshot"] },
 ];
 
 type Props = {
@@ -65,6 +68,7 @@ type Props = {
 const StemRegistrationForm: React.FC<Props> = ({ onSubmitted }) => {
   const { toast } = useToast();
   const [submitting, setSubmitting] = useState(false);
+  const navigate = useNavigate();
   const form = useForm<StemRegistrationData>({
     resolver: zodResolver(schema),
     defaultValues: {
@@ -102,36 +106,18 @@ const StemRegistrationForm: React.FC<Props> = ({ onSubmitted }) => {
 
   const prev = () => setStepIndex((s) => Math.max(s - 1, 0));
 
+  // Final submit: allowed only if payment was initiated and screenshot provided
   const onSubmit = async (data: StemRegistrationData) => {
-    setSubmitting(true);
-    try {
-      const payload: StemRegistrationPayload = {
-        fullName: data.fullName,
-        phone: data.phone,
-        guardianPhone: data.guardianPhone,
-        dobISO: data.dob.toISOString(),
-        gender: data.gender,
-        school: data.school,
-        schoolClass: data.schoolClass,
-        motivation: data.motivation,
-        level: data.level,
-        paymentMethod: data.paymentMethod,
-      };
-      // Final submission: include paymentRef and optionally screenshot (kept on client side for now)
-      if (!paymentRef) {
-        toast({ title: "Payment not initiated", description: "Please use the Register button in the Payment step first.", variant: "destructive" as any });
-        setSubmitting(false);
-        return;
-      }
-      onSubmitted?.(data);
-      form.reset();
-      setStepIndex(0);
-      setPaymentRef(null);
-    } catch (e) {
-      toast({ title: "Submission failed", description: "Please try again.", variant: "destructive" as any });
-    } finally {
-      setSubmitting(false);
+    if (!paymentRef) {
+      toast({ title: "Payment not initiated", description: "Please tap Initiate Payment first.", variant: "destructive" as any });
+      return;
     }
+    // data.paymentScreenshot is required by schema; proceed
+    onSubmitted?.(data);
+    navigate("/stem-registration/success", { state: { reference: paymentRef, amount: subjectsAmount, method: form.getValues("paymentMethod") } });
+    form.reset();
+    setStepIndex(0);
+    setPaymentRef(null);
   };
 
   return (
@@ -218,8 +204,8 @@ const StemRegistrationForm: React.FC<Props> = ({ onSubmitted }) => {
                               checked={selectedSubjects?.includes(s.key as any)}
                               onCheckedChange={(v) => {
                                 const set = new Set(selectedSubjects);
-                                if (v) set.add(s.key);
-                                else set.delete(s.key);
+                                if (v) set.add(s.key as any);
+                                else set.delete(s.key as any);
                                 form.setValue("subjects", Array.from(set) as any, { shouldValidate: true });
                               }}
                             />
@@ -440,14 +426,22 @@ const StemRegistrationForm: React.FC<Props> = ({ onSubmitted }) => {
                   )}
                 />
 
-                <div className="flex gap-3">
-                  <Button
-                    type="button"
-                    variant="secondary"
-                    disabled={!form.getValues("paymentMethod") || !form.getValues("payerPhone") || subjectsAmount <= 0}
+                <div className="flex flex-wrap gap-3 items-center">
+                  <ArrowButton
+                    text={submitting ? "Initiating…" : "Initiate Payment"}
+                    bgPrimaryColor="#ffffff"
+                    bgSecondaryColor="#e11d48"
+                    textPrimaryColor="#e11d48"
+                    textSecondaryColor="#ffffff"
+                    className="rounded-full shadow-lg shadow-kc-red/30 animate-pulse hover:animate-none"
                     onClick={async () => {
-                      const valid = await form.trigger(["paymentMethod", "payerPhone", "subjects"] as any);
-                      if (!valid) return;
+                      if (submitting) return;
+                      setSubmitting(true);
+                      const allFields: (keyof StemRegistrationData)[] = [
+                        "fullName","phone","guardianPhone","dob","gender","school","schoolClass","motivation","level","subjects","paymentMethod","payerPhone"
+                      ];
+                      const valid = await form.trigger(allFields as any, { shouldFocus: true });
+                      if (!valid) { setSubmitting(false); return; }
                       const payload: StemRegistrationPayload = {
                         fullName: form.getValues("fullName"),
                         phone: form.getValues("phone"),
@@ -460,15 +454,19 @@ const StemRegistrationForm: React.FC<Props> = ({ onSubmitted }) => {
                         level: form.getValues("level") as any,
                         paymentMethod: form.getValues("paymentMethod") as any,
                       } as StemRegistrationPayload;
-                      const resp = await initiateStemPayment(payload, subjectsAmount);
-                      setPaymentRef(resp.reference);
-                      toast({ title: "Payment initiated", description: `Ref: ${resp.reference} • Amount: ${subjectsAmount.toLocaleString()} XAF` });
+                      try {
+                        const resp = await initiateStemPayment(payload, subjectsAmount);
+                        setPaymentRef(resp.reference);
+                        toast({ title: "Payment initiated", description: `Ref: ${resp.reference} • Amount: ${subjectsAmount.toLocaleString()} XAF` });
+                      } catch (e) {
+                        toast({ title: "Failed to initiate", description: "Please try again.", variant: "destructive" as any });
+                      } finally {
+                        setSubmitting(false);
+                      }
                     }}
-                  >
-                    Register (initiate payment)
-                  </Button>
+                  />
                   {paymentRef && (
-                    <div className="text-sm text-muted-foreground self-center">Ref: {paymentRef}</div>
+                    <div className="text-sm text-muted-foreground">Ref: {paymentRef}</div>
                   )}
                 </div>
 
@@ -499,7 +497,7 @@ const StemRegistrationForm: React.FC<Props> = ({ onSubmitted }) => {
               ) : (
                 <Button type="submit" disabled={submitting}>
                   {submitting ? (
-                    <span className="inline-flex items-center gap-2"><Loader2 className="h-4 w-4 animate-spin" /> Registering...</span>
+                    <span className="inline-flex items-center gap-2"><Loader2 className="h-4 w-4 animate-spin" /> Submitting...</span>
                   ) : (
                     "Submit"
                   )}

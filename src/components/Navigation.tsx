@@ -4,6 +4,7 @@ import { Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Link, NavLink, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
+import { prefetchRoute } from "@/route-prefetch";
 
 const Navigation = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -31,6 +32,8 @@ const Navigation = () => {
     }
     closeMobile();
   };
+
+  const handlePrefetch = (to: string) => () => prefetchRoute(to);
 
   const navItems = [
     { label: "Home", to: "/" },
@@ -93,6 +96,8 @@ const Navigation = () => {
                   key={item.to}
                   to={item.to}
                   onClick={(e) => handleNavClick(e, item.to)}
+                  onMouseEnter={handlePrefetch(item.to)}
+                  onFocus={handlePrefetch(item.to)}
                   end={item.to === "/" ? true : undefined}
                   className={({ isActive }) =>
                     cn(
@@ -113,10 +118,12 @@ const Navigation = () => {
           {/* CTA Buttons */}
           <div className="hidden lg:flex items-center space-x-3">
             <Button asChild variant="blackOutline" size="sm">
-              <Link to="/donate">Donate</Link>
+              <Link to="/donate" onMouseEnter={handlePrefetch("/donate")} onFocus={handlePrefetch("/donate")}>Donate</Link>
             </Button>
             <Button asChild variant="blue" size="sm">
-              <Link to="/stem-registration">STEM Registration</Link>
+              <Link to="/stem-registration" onMouseEnter={handlePrefetch("/stem-registration")} onFocus={handlePrefetch("/stem-registration")}>
+                STEM Registration
+              </Link>
             </Button>
           </div>
 
@@ -169,10 +176,10 @@ const Navigation = () => {
               </div>
               <div className="px-4 py-4 border-t border-border/70 grid grid-cols-2 gap-3">
                 <Button asChild variant="blackOutline" className="w-full" onClick={closeMobile}>
-                  <Link to="/donate">Donate</Link>
+                  <Link to="/donate" onMouseEnter={handlePrefetch("/donate")} onFocus={handlePrefetch("/donate")}>Donate</Link>
                 </Button>
                 <Button asChild variant="blue" className="w-full" onClick={closeMobile}>
-                  <Link to="/stem-registration">Register</Link>
+                  <Link to="/stem-registration" onMouseEnter={handlePrefetch("/stem-registration")} onFocus={handlePrefetch("/stem-registration")}>Register</Link>
                 </Button>
               </div>
             </motion.div>

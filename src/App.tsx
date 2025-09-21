@@ -1,4 +1,5 @@
 import React, { Suspense } from "react";
+import EngagingLoader from "@/components/EngagingLoader";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -14,6 +15,7 @@ const ContactPage = React.lazy(() => import("./pages/ContactPage"));
 const DonatePage = React.lazy(() => import("./pages/DonatePage"));
 const StemRegistrationPage = React.lazy(() => import("./pages/StemRegistrationPage"));
 const StemRegistrationApplyPage = React.lazy(() => import("./pages/StemRegistrationApplyPage"));
+const StemRegistrationSuccessPage = React.lazy(() => import("./pages/StemRegistrationSuccessPage"));
 const PrivacyPage = React.lazy(() => import("./pages/PrivacyPage"));
 const TermsPage = React.lazy(() => import("./pages/TermsPage"));
 const EventsPage = React.lazy(() => import("./pages/EventsPage"));
@@ -36,7 +38,7 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <ScrollToTop />
-        <Suspense fallback={null}>
+        <Suspense fallback={<EngagingLoader />}>
           <Routes>
             <Route element={<Layout />}>
               <Route index element={<Home />} />
@@ -50,6 +52,7 @@ const App = () => (
               <Route path="donate" element={<DonatePage />} />
               <Route path="stem-registration" element={<StemRegistrationPage />} />
               <Route path="stem-registration/apply" element={<StemRegistrationApplyPage />} />
+              <Route path="stem-registration/success" element={<StemRegistrationSuccessPage />} />
               <Route path="privacy" element={<PrivacyPage />} />
               <Route path="terms" element={<TermsPage />} />
             </Route>
