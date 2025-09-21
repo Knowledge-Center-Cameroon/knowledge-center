@@ -101,7 +101,7 @@ app.post('/api/stem/register', async (req: Request, res: Response) => {
 });
 
 // Nkwa webhook (adjust middleware to use raw body if signature verification requires it)
-app.post('/api/nkwa/webhook', express.json({ type: '*/*' }), (req: Request, res: Response) => {
+app.post('/api/nkwa/webhook', express.json({ type: '*/*' }), async (req: Request, res: Response) => {
   try {
     const event = req.body as any; // { reference, status, ... }
     const { reference, status } = event || {};
