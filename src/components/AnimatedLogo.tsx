@@ -122,17 +122,14 @@ const AnimatedLogo: React.FC<AnimatedLogoProps> = ({ size = 140, className }) =>
           />
         </motion.g>
 
-        {/* Center logo image fade/scale in with gentle pulse */}
-        <motion.image
+        {/* Center logo image (no entrance animation, static with crisp render) */}
+        <image
           href="/logo.png"
           x={center - 36}
           y={center - 36}
           width={72}
           height={72}
           preserveAspectRatio="xMidYMid meet"
-          initial={{ opacity: 0, scale: 0.86, originX: center, originY: center }}
-          animate={{ opacity: 1, scale: [1, 1.03, 1] }}
-          transition={{ duration: 0.6, delay: 0.65, repeat: Infinity, repeatDelay: 3.2 }}
         />
       </svg>
     </motion.div>

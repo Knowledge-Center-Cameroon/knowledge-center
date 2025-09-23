@@ -9,9 +9,9 @@ export const routePrefetchers: Record<string, () => Promise<unknown>> = {
   "/blog": () => import("./pages/BlogPage"),
   "/contact": () => import("./pages/ContactPage"),
   "/donate": () => import("./pages/DonatePage"),
-  "/stem-registration": () => import("./pages/StemRegistrationPage"),
-  "/stem-registration/apply": () => import("./pages/StemRegistrationApplyPage"),
-  "/stem-registration/success": () => import("./pages/StemRegistrationSuccessPage"),
+  "/stem": () => import("./pages/StemRegistrationPage"),
+  "/stem/register": () => import("./pages/StemRegistrationApplyPage"),
+  "/stem/success": () => import("./pages/StemRegistrationSuccessPage"),
   "/privacy": () => import("./pages/PrivacyPage"),
   "/terms": () => import("./pages/TermsPage"),
 };

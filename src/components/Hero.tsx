@@ -12,6 +12,7 @@ import { ArrowButton } from "@/components/arrowbtn";
 
 const Hero = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [phraseIndex, setPhraseIndex] = useState(0);
 
   const slides = [
     {
@@ -76,6 +77,20 @@ const Hero = () => {
     setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length);
   };
 
+  // Provided short phrases for the main heading
+  const phrases = [
+    "Learning Today, Leading Tomorrow",
+    "Turning Potential Into Impact",
+    "Igniting the Spark of Curiosity",
+    "Inspiring Young Minds to Rise",
+    "Nurturing Creativity, Driving Change."
+  ];
+
+  useEffect(() => {
+    const id = setInterval(() => setPhraseIndex((i) => (i + 1) % phrases.length), 3200);
+    return () => clearInterval(id);
+  }, []);
+
   return (
     <section id="home" className="relative pt-16 md:pt-20 lg:pt-20 min-h-[70svh] sm:min-h-[75svh] md:min-h-[80svh] lg:min-h-[88svh] flex items-center justify-center overflow-hidden">
       {/* Background Image (only render current to reduce network work) */}
@@ -125,17 +140,24 @@ const Hero = () => {
               <div className="h-20 w-64 md:h-24 md:w-96 rounded-full blur-2xl"
                    style={{ background: "linear-gradient(90deg, hsl(var(--kc-blue)), hsl(var(--kc-red)))" }} />
             </motion.div>
-            <h1 className="heading-1 bg-clip-text text-white"
-                style={{ backgroundImage: "linear-gradient(90deg, hsl(var(--kc-blue)), hsl(var(--kc-red)))" }}>
-              Empowering Young Scientists
-            </h1>
+            <motion.h1
+              key={phraseIndex}
+              className="heading-1 bg-clip-text text-white max-w-[22ch] sm:max-w-[28ch] mx-auto leading-tight sm:leading-tight break-words"
+              style={{ backgroundImage: "linear-gradient(90deg, hsl(var(--kc-blue)), hsl(var(--kc-red)))" }}
+              initial={{ opacity: 0, y: 6 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -6 }}
+              transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+            >
+              {phrases[phraseIndex]}
+            </motion.h1>
           </div>
-          <div className="subheading text-white/90 mb-6 md:mb-7">
+          <div className="subheading text-white/90 mb-6 md:mb-7 max-w-2xl mx-auto px-2">
             {slides[currentSlide].subtitle}
           </div>
 
           {/* Description */}
-          <p className="text-base md:text-lg font-body text-white/85 leading-relaxed mb-6 md:mb-8">
+          <p className="text-sm sm:text-base md:text-lg font-body text-white/85 leading-relaxed mb-6 md:mb-8 max-w-3xl mx-auto px-2">
             {slides[currentSlide].description}
           </p>
 
@@ -167,7 +189,7 @@ const Hero = () => {
       {/* Navigation Controls */}
       <button
         onClick={prevSlide}
-        className="absolute left-4 lg:left-8 top-1/2 transform -translate-y-1/2 bg-white/20 backdrop-blur-sm text-white p-3 rounded-full hover:bg-white/30 transition-smooth"
+        className="hidden sm:flex absolute left-4 lg:left-8 top-1/2 transform -translate-y-1/2 bg-white/20 backdrop-blur-sm text-white p-3 rounded-full hover:bg-white/30 transition-smooth"
         aria-label="Previous slide"
       >
         <ChevronLeft className="h-6 w-6" />
@@ -175,7 +197,7 @@ const Hero = () => {
 
       <button
         onClick={nextSlide}
-        className="absolute right-4 lg:right-8 top-1/2 transform -translate-y-1/2 bg-white/20 backdrop-blur-sm text-white p-3 rounded-full hover:bg-white/30 transition-smooth"
+        className="hidden sm:flex absolute right-4 lg:right-8 top-1/2 transform -translate-y-1/2 bg-white/20 backdrop-blur-sm text-white p-3 rounded-full hover:bg-white/30 transition-smooth"
         aria-label="Next slide"
       >
         <ChevronRight className="h-6 w-6" />

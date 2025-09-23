@@ -302,7 +302,7 @@ const Projects = () => {
                       <div className="flex flex-col sm:flex-row gap-4">
                         {(() => {
                           const enrollHref = activeTab === 'stem'
-                            ? '/stem-registration'
+                            ? '/stem'
                             : activeTab === 'summer'
                               ? '/projects/summer-education'
                               : '/projects/weekend-school';
@@ -377,7 +377,7 @@ const Projects = () => {
 
                   <motion.div whileHover={{ y: -2 }} whileTap={{ scale: 0.98 }}>
                     <Button variant="red" size="lg" className="font-semibold" asChild>
-                      <Link to="/stem-registration">
+                      <Link to="/stem">
                         Join Competition
                         <Trophy className="ml-2 h-4 w-4" />
                       </Link>

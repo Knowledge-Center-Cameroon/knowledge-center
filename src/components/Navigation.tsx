@@ -121,7 +121,7 @@ const Navigation = () => {
               <Link to="/donate" onMouseEnter={handlePrefetch("/donate")} onFocus={handlePrefetch("/donate")}>Donate</Link>
             </Button>
             <Button asChild variant="blue" size="sm">
-              <Link to="/stem-registration" onMouseEnter={handlePrefetch("/stem-registration")} onFocus={handlePrefetch("/stem-registration")}>
+              <Link to="/stem" onMouseEnter={handlePrefetch("/stem")} onFocus={handlePrefetch("/stem")}>
                 STEM Registration
               </Link>
             </Button>
@@ -179,7 +179,7 @@ const Navigation = () => {
                   <Link to="/donate" onMouseEnter={handlePrefetch("/donate")} onFocus={handlePrefetch("/donate")}>Donate</Link>
                 </Button>
                 <Button asChild variant="blue" className="w-full" onClick={closeMobile}>
-                  <Link to="/stem-registration" onMouseEnter={handlePrefetch("/stem-registration")} onFocus={handlePrefetch("/stem-registration")}>Register</Link>
+                  <Link to="/stem" onMouseEnter={handlePrefetch("/stem")} onFocus={handlePrefetch("/stem")}>STEM Olympiad</Link>
                 </Button>
               </div>
             </motion.div>

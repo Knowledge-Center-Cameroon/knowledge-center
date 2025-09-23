@@ -53,7 +53,7 @@ Optionally, you can also add site metadata overrides, e.g. `VITE_SITE_NAME` and 
 
 - Hero with autoplay slides and smooth CTA buttons.
 - Projects section with responsive tabs (mobile scroll + snap, auto-center active tab).
-- STEM Competition CTA linking to registration at `/stem-registration`.
+- STEM Competition CTA linking to registration at `/stem`.
 - Contact form with validation, character counter, constrained width, and Web3Forms submission.
 - Blog listing page that renders posts from `src/data/blogs.ts`, sorted by date (newest first).
 - Team section integrated under the About page; the `/team` route redirects to About.
@@ -112,7 +112,7 @@ If `VITE_WEB3FORMS_ACCESS_KEY` is missing, the form will show a demo toast and n
 - `/projects/:slug` Project details
 - `/blog` Blog
 - `/contact` Contact
-- `/stem-registration` STEM registration
+- `/stem` STEM registration
 
 ## Contributing
 

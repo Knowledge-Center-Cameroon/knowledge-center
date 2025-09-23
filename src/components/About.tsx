@@ -207,8 +207,8 @@ const About = () => {
                   </CarouselItem>
                 ))}
               </CarouselContent>
-              <CarouselPrevious className="bg-kc-blue text-white border-0 hover:bg-kc-red" />
-              <CarouselNext className="bg-kc-blue text-white border-0 hover:bg-kc-red" />
+              <CarouselPrevious className="hidden sm:flex bg-kc-blue text-white border-0 hover:bg-kc-red" />
+              <CarouselNext className="hidden sm:flex bg-kc-blue text-white border-0 hover:bg-kc-red" />
             </Carousel>
           </div>
         </div>
@@ -254,8 +254,8 @@ const About = () => {
                   </CarouselItem>
                 ))}
               </CarouselContent>
-              <CarouselPrevious className="bg-kc-red text-white border-0 hover:bg-kc-blue" />
-              <CarouselNext className="bg-kc-red text-white border-0 hover:bg-kc-blue" />
+              <CarouselPrevious className="hidden sm:flex bg-kc-red text-white border-0 hover:bg-kc-blue" />
+              <CarouselNext className="hidden sm:flex bg-kc-red text-white border-0 hover:bg-kc-blue" />
             </Carousel>
           </div>
         </div>

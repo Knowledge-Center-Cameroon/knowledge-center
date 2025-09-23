@@ -50,9 +50,9 @@ const App = () => (
               
               <Route path="contact" element={<ContactPage />} />
               <Route path="donate" element={<DonatePage />} />
-              <Route path="stem-registration" element={<StemRegistrationPage />} />
-              <Route path="stem-registration/apply" element={<StemRegistrationApplyPage />} />
-              <Route path="stem-registration/success" element={<StemRegistrationSuccessPage />} />
+              <Route path="stem" element={<StemRegistrationPage />} />
+              <Route path="stem/register" element={<StemRegistrationApplyPage />} />
+              <Route path="stem/success" element={<StemRegistrationSuccessPage />} />
               <Route path="privacy" element={<PrivacyPage />} />
               <Route path="terms" element={<TermsPage />} />
             </Route>

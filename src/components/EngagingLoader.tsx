@@ -2,20 +2,48 @@ import React from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Atom, FlaskConical, Rocket, Brain } from "lucide-react";
 
-const facts = [
-  "Did you know? The speed of light is about 300,000 km/s.",
-  "Fun fact: Water expands when it freezes.",
-  "STEM tip: Break problems into smaller experiments.",
-  "Physics nugget: Gravity is 9.81 m/s² on Earth.",
+const providedFacts = [
+  "Bananas are naturally radioactive — proof science hides in everyday life.",
+  "Sharks are older than trees — nature shows true resilience.",
+  "Octopuses have three hearts — efficiency comes in unexpected forms.",
+  "The first computer bug was a moth — small flaws can spark big lessons.",
+  "Most internet traffic runs under the sea — solutions are often unseen.",
+  "Your phone outpowers the Apollo 11 computer — constraints drive innovation.",
+  "The Eiffel Tower grows taller in heat — designs should adapt, not resist.",
+  "Velcro came from burrs — nature is the best engineer.",
+  "Bridges can wobble with rhythm — harmony and imbalance shape systems.",
+  "Zero changed civilization — sometimes nothing is everything.",
+  "Prime numbers protect the internet — randomness can be strength.",
+  "The golden ratio appears in shells and galaxies — math is nature’s design.",
 ];
 
+function shuffle<T>(arr: T[]): T[] {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.random() * (i + 1) | 0;
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
 const useRotatingFact = (intervalMs = 2400) => {
+  const [order, setOrder] = React.useState<string[]>(() => shuffle(providedFacts));
   const [index, setIndex] = React.useState(0);
   React.useEffect(() => {
-    const id = setInterval(() => setIndex((i) => (i + 1) % facts.length), intervalMs);
+    const id = setInterval(() => {
+      setIndex((i) => {
+        const next = i + 1;
+        if (next >= order.length) {
+          // Reshuffle for the next cycle with no repetition within a cycle
+          setOrder(shuffle(providedFacts));
+          return 0;
+        }
+        return next;
+      });
+    }, intervalMs);
     return () => clearInterval(id);
-  }, [intervalMs]);
-  return facts[index];
+  }, [intervalMs, order.length]);
+  return order[index];
 };
 
 const Dot: React.FC<{ delay: number }> = ({ delay }) => (

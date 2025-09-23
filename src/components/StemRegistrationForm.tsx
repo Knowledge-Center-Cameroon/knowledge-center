@@ -114,7 +114,7 @@ const StemRegistrationForm: React.FC<Props> = ({ onSubmitted }) => {
     }
     // data.paymentScreenshot is required by schema; proceed
     onSubmitted?.(data);
-    navigate("/stem-registration/success", { state: { reference: paymentRef, amount: subjectsAmount, method: form.getValues("paymentMethod") } });
+    navigate("/stem/success", { state: { reference: paymentRef, amount: subjectsAmount, method: form.getValues("paymentMethod") } });
     form.reset();
     setStepIndex(0);
     setPaymentRef(null);

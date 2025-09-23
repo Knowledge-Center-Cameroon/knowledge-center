@@ -5,6 +5,7 @@ import Countdown from "@/components/Countdown";
 import Stats from "@/components/Stats";
 import Projects from "@/components/Projects";
 import Testimonials from "@/components/Testimonials";
+ 
 
 const fadeUp = {
   initial: { opacity: 0, y: 16 },
@@ -27,6 +28,7 @@ const Home: React.FC = () => {
       <motion.section {...fadeUp}>
         <Projects />
       </motion.section>
+ 
       <motion.section {...fadeUp}>
         <Testimonials />
       </motion.section>

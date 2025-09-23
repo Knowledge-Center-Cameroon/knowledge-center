@@ -68,7 +68,7 @@ const StemRegistrationSuccessPage: React.FC = () => {
             textPrimaryColor="#111827"
             textSecondaryColor="#ffffff"
             className="rounded-full"
-            href="/stem-registration"
+            href="/stem"
           />
           <ArrowButton
             text="Go Home"

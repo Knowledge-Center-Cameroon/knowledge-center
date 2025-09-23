@@ -40,7 +40,7 @@ const Layout: React.FC = () => {
           animate="in"
           exit="out"
           transition={pageTransition}
-          className={`flex-1 ${location.pathname === '/' ? 'pt-0' : 'pt-20 lg:pt-24'}`}
+          className={`flex-1 ${location.pathname === '/' ? 'pt-0' : 'pt-24 lg:pt-28'}`}
         >
           <Outlet />
         </motion.main>

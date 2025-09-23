@@ -8,7 +8,7 @@ import { MousePointerClick, MapPin, Phone } from "lucide-react";
 const StemRegistrationPage: React.FC = () => {
   const navigate = useNavigate();
   const handleStart = () => {
-    navigate("/stem-registration/apply");
+    navigate("/stem/register");
   };
   return (
     <motion.section
