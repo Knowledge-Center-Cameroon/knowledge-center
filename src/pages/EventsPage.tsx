@@ -8,6 +8,7 @@ import { ArrowButton } from "@/components/arrowbtn";
 import StemBackground from "@/components/StemBackground";
 import Timeline, { type TimelineItem } from "@/components/Timeline";
 import { getTimeline } from "@/services/api";
+import { useParallax, Parallax } from "@/hooks/use-parallax";
 
 const UPCOMING = [
   {
@@ -116,6 +117,7 @@ const EventsGrid: React.FC<{ items: typeof UPCOMING }> = ({ items }) => (
 );
 
 const EventsPage: React.FC = () => {
+  const { ref, y } = useParallax(40);
   return (
     <motion.section
       initial="hidden"
@@ -127,15 +129,15 @@ const EventsPage: React.FC = () => {
       <div className="absolute inset-0 -z-10">
         <StemBackground opacity={0.08} density={44} lineDistance={120} speed={0.4} showIcons={true} />
       </div>
-      <motion.div variants={fadeUp} className="mb-8 text-center">
-      <div className="h-1 w-28 mx-auto mb-3 bg-kc-blue rounded-full" />
+      <Parallax ref={ref as any} style={{ y }} className="mb-8 text-center">
+        <div className="h-1 w-28 mx-auto mb-3 bg-kc-blue rounded-full" />
         <h1 className="heading-2 mb-6">
           <span className="text-kc-blue">KC</span> <span className="text-kc-red">Events</span>
         </h1>
         <p className="text-muted-foreground mt-3 max-w-2xl mx-auto">
           Join our upcoming events, hackathons, and community days. Save the dates and be part of the action.
         </p>
-      </motion.div>
+      </Parallax>
 
       <motion.div variants={fadeUp}>
         <div className="grid lg:grid-cols-12 gap-6 lg:gap-8">

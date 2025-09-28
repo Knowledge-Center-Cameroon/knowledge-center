@@ -7,10 +7,12 @@ import { projects } from "@/data/projects";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ArrowRight } from "lucide-react";
 import StemBackground from "@/components/StemBackground";
+import { useParallax, Parallax } from "@/hooks/use-parallax";
 
 const ProjectsPage: React.FC = () => {
   const navigate = useNavigate();
 
+  const { ref, y } = useParallax(40);
   return (
     <motion.div
       initial={{ opacity: 0, y: 12 }}
@@ -24,7 +26,7 @@ const ProjectsPage: React.FC = () => {
       <section id="projects" className="py-16 lg:py-24">
         <div className="container mx-auto px-4 lg:px-8 max-w-6xl">
           {/* Header */}
-          <div className="text-center mb-10 md:mb-12">
+          <Parallax ref={ref as any} style={{ y }} className="text-center mb-10 md:mb-12">
             <div className="h-1 w-28 mx-auto mb-3 bg-kc-blue rounded-full" />
             <h2 className="heading-2 mb-6">
               Explore Our Projects
@@ -32,7 +34,7 @@ const ProjectsPage: React.FC = () => {
             <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
               Dive deeper into each of our programs. Browse highlights below or jump straight into a project page.
             </p>
-          </div>
+          </Parallax>
 
 
           {/* Quick Jump Dropdown */}

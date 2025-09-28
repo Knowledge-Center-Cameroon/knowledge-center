@@ -31,6 +31,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import StemBackground from "@/components/StemBackground";
+import { useParallax, Parallax } from "@/hooks/use-parallax";
 
 const About = () => {
   const [openFaq, setOpenFaq] = useState<string | undefined>("item-0");
@@ -155,11 +156,12 @@ const About = () => {
     }
   ];
 
+  const { ref, y } = useParallax(40);
   return (
     <section id="about" className="py-14 md:py-20 lg:py-32">
       <div className="container mx-auto px-4 lg:px-8 max-w-6xl">
         {/* Header */}
-        <div className="relative overflow-hidden rounded-2xl mb-16">
+        <Parallax ref={ref as any} style={{ y }} className="relative overflow-hidden rounded-2xl mb-16">
           <StemBackground opacity={0.15} density={36} lineDistance={120} speed={0.45} showIcons={true} />
           <div className="relative z-10 text-center py-8">
             <div className="h-1 w-28 mx-auto mb-3 bg-kc-blue rounded-full" />
@@ -171,7 +173,7 @@ const About = () => {
               of scientific and humanitarian engagement.
             </p>
           </div>
-        </div>
+        </Parallax>
 
         {/* What is Knowledge Center with Carousel */}
         <div className="grid lg:grid-cols-2 gap-6 sm:gap-8 md:gap-12 items-center mb-14 md:mb-20">

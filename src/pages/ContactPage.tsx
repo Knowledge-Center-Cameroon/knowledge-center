@@ -2,8 +2,10 @@ import React from "react";
 import { motion } from "framer-motion";
 import Contact from "@/components/Contact";
 import StemBackground from "@/components/StemBackground";
+import { useParallax, Parallax } from "@/hooks/use-parallax";
 
 const ContactPage: React.FC = () => {
+  const { ref, y } = useParallax(30);
   return (
     <motion.div
       initial={{ opacity: 0, y: 12 }}
@@ -15,7 +17,9 @@ const ContactPage: React.FC = () => {
       <div className="absolute inset-0 -z-10">
         <StemBackground opacity={0.1} density={40} lineDistance={120} speed={0.4} showIcons={true} />
       </div>
-      <Contact />
+      <Parallax ref={ref as any} style={{ y }}>
+        <Contact />
+      </Parallax>
     </motion.div>
   );
 };

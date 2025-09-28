@@ -6,6 +6,7 @@ import heroImage3 from "@/assets/weekend.jpeg";
 import heroImage4 from "@/assets/hero-image4.jpeg";
 import heroImage5 from "@/assets/hero-image5.jpeg";
 import { motion, AnimatePresence } from "framer-motion";
+import { useParallax } from "@/hooks/use-parallax";
 import AnimatedLogo from "@/components/AnimatedLogo";
 import { Link } from "react-router-dom";
 import { ArrowButton } from "@/components/arrowbtn";
@@ -91,14 +92,17 @@ const Hero = () => {
     return () => clearInterval(id);
   }, []);
 
+  const { ref: parRef, y: yBack } = useParallax(60);
+  const { y: yOverlay } = useParallax(30);
   return (
-    <section id="home" className="relative pt-16 md:pt-20 lg:pt-20 min-h-[70svh] sm:min-h-[75svh] md:min-h-[80svh] lg:min-h-[88svh] flex items-center justify-center overflow-hidden">
+    <section ref={parRef as any} id="home" className="relative pt-16 md:pt-20 lg:pt-20 min-h-[70svh] sm:min-h-[75svh] md:min-h-[80svh] lg:min-h-[88svh] flex items-center justify-center overflow-hidden">
       {/* Background Images with crossfade */}
       <div className="absolute inset-0">
         {slides.map((s, idx) => (
-          <div
+          <motion.div
             key={idx}
             className={`absolute inset-0 transition-opacity duration-700 ease-out ${idx === currentSlide ? "opacity-100" : "opacity-0"}`}
+            style={{ y: yBack }}
           >
             <img
               src={s.image}
@@ -108,8 +112,8 @@ const Hero = () => {
               decoding="async"
               sizes="100vw"
             />
-            <div className="absolute inset-0 bg-black/60" />
-          </div>
+            <motion.div className="absolute inset-0 bg-black/60" style={{ y: yOverlay }} />
+          </motion.div>
         ))}
       </div>
 

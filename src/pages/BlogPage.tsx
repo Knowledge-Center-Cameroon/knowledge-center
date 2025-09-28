@@ -7,6 +7,7 @@ import { blogPosts } from "@/data/blogs";
 import { Link } from "react-router-dom";
 import Timeline, { type TimelineItem } from "@/components/Timeline";
 import StemBackground from "@/components/StemBackground";
+import { useParallax, Parallax } from "@/hooks/use-parallax";
 import { Input } from "@/components/ui/input";
 import { Heart, MessageSquare } from "lucide-react";
 
@@ -28,6 +29,7 @@ const BlogPage: React.FC = () => {
     return matchesQuery && matchesTag;
   });
 
+  const { ref, y } = useParallax(40);
   return (
     <motion.section
       initial={{ opacity: 0, y: 12 }}
@@ -38,13 +40,13 @@ const BlogPage: React.FC = () => {
         <div className="absolute inset-0 -z-10">
               <StemBackground opacity={0.08} density={44} lineDistance={120} speed={0.4} showIcons={true} />
             </div>
-      <div className="max-w-3xl mb-10">
+      <Parallax ref={ref as any} style={{ y }} className="max-w-3xl mb-10">
         <div className="h-1 w-20 mb-3 bg-kc-blue rounded-full" />
         <h2 className="heading-2 mb-6">Blog</h2>
         <p className="text-muted-foreground">
           Stories, updates, and insights from Knowledge Center.
         </p>
-      </div>
+      </Parallax>
 
       {/* Toolbar: search + tag filters */}
       <div className="mb-8 flex flex-col gap-3">

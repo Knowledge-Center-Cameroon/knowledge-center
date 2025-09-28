@@ -1,9 +1,11 @@
 import React from "react";
 import { motion } from "framer-motion";
+import { useParallax, Parallax } from "@/hooks/use-parallax";
 import { Button } from "@/components/ui/button";
 import { Heart, Users, BookOpen } from "lucide-react";
 
 const DonatePage: React.FC = () => {
+  const { ref, y } = useParallax(40);
   return (
     <motion.section
       initial={{ opacity: 0, y: 12 }}
@@ -13,7 +15,7 @@ const DonatePage: React.FC = () => {
     >
       <div className="max-w-6xl mx-auto">
         {/* Hero Section */}
-        <div className="text-center mb-16">
+        <Parallax ref={ref as any} style={{ y }} className="text-center mb-16">
           <div className="inline-flex items-center justify-center w-16 h-16 bg-kc-red/10 rounded-full mb-6">
             <Heart className="w-8 h-8 text-kc-red" />
           </div>
@@ -23,7 +25,7 @@ const DonatePage: React.FC = () => {
           <p className="subheading max-w-3xl mx-auto leading-relaxed">
             Your donation today will shape the minds of tomorrow. By supporting our educational initiative, you're not just contributing to a cause—you are investing in the limitless potential of young learners, empowering them to explore their creativity and build a brighter future.
           </p>
-        </div>
+        </Parallax>
 
         {/* Impact Cards */}
         <div className="grid md:grid-cols-3 gap-8 mb-16">
