@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -40,6 +40,10 @@ const CM_REGIONS = [
   "South",
   "South West",
 ] as const;
+
+// helpers
+const normalizePhone = (v: string) => v.replace(/\D/g, "");
+const DRAFT_KEY = "kc_stem_form_draft";
 
 const schema = z.object({
   fullName: z.string().min(2, "Full name is required"),
@@ -108,6 +112,67 @@ const StemRegistrationForm: React.FC<Props> = ({ onSubmitted, initialValues, mod
     mode: "onTouched",
   });
 
+  // Autosave draft (debounced) and restore on mount
+  const saveTimer = useRef<number | null>(null);
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem(DRAFT_KEY);
+      if (raw && !initialValues) {
+        const parsed = JSON.parse(raw);
+        // Only reset known fields
+        form.reset({
+          fullName: parsed.fullName || "",
+          phone: parsed.phone || "",
+          guardianPhone: parsed.guardianPhone || "",
+          dob: parsed.dob ? new Date(parsed.dob) : (undefined as unknown as Date),
+          gender: parsed.gender,
+          school: parsed.school || "",
+          schoolClass: parsed.schoolClass || "",
+          region: parsed.region,
+          motivation: parsed.motivation || "",
+          level: parsed.level,
+          subjects: parsed.subjects || [],
+          payerPhone: parsed.payerPhone || "",
+          paymentScreenshot: undefined as any,
+        });
+      }
+    } catch {}
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    const sub = form.watch((value) => {
+      window.clearTimeout(saveTimer.current as any);
+      saveTimer.current = window.setTimeout(() => {
+        try {
+          const toSave = {
+            ...value,
+            dob: value.dob ? (value.dob as unknown as Date)?.toISOString?.() : undefined,
+            paymentScreenshot: undefined,
+          };
+          localStorage.setItem(DRAFT_KEY, JSON.stringify(toSave));
+        } catch {}
+      }, 400);
+    });
+    return () => {
+      sub.unsubscribe?.();
+      window.clearTimeout(saveTimer.current as any);
+    };
+  }, [form]);
+
+  // Warn before unload if draft not submitted
+  useEffect(() => {
+    const handler = (e: BeforeUnloadEvent) => {
+      const hasDraft = !!localStorage.getItem(DRAFT_KEY);
+      if (hasDraft && !paymentRef) {
+        e.preventDefault();
+        e.returnValue = "You have unsaved changes. Are you sure you want to leave?";
+      }
+    };
+    window.addEventListener("beforeunload", handler);
+    return () => window.removeEventListener("beforeunload", handler);
+  }, [paymentRef]);
+
   const [stepIndex, setStepIndex] = useState(0);
   const effectiveSteps = useMemo(() => {
     if (mode === "edit") {
@@ -144,6 +209,8 @@ const StemRegistrationForm: React.FC<Props> = ({ onSubmitted, initialValues, mod
       form.reset();
       setStepIndex(0);
       setPaymentRef(null);
+      // clear draft after successful flow
+      try { localStorage.removeItem(DRAFT_KEY); } catch {}
     } else {
       try {
         const key = "kc_stem_regs";
@@ -216,7 +283,7 @@ const StemRegistrationForm: React.FC<Props> = ({ onSubmitted, initialValues, mod
                     <FormItem>
                       <FormLabel>Provide your Phone Number <span className="text-xs text-muted-foreground">(optional)</span></FormLabel>
                       <FormControl>
-                        <Input placeholder="6XXXXXXXX" inputMode="tel" {...field} />
+                        <Input placeholder="6XXXXXXXX" inputMode="tel" {...field} onBlur={(e) => form.setValue("phone", normalizePhone(e.target.value))} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -229,7 +296,7 @@ const StemRegistrationForm: React.FC<Props> = ({ onSubmitted, initialValues, mod
                     <FormItem>
                       <FormLabel>Provide your Parent or guardian's Phone number</FormLabel>
                       <FormControl>
-                        <Input placeholder="6XXXXXXXX" inputMode="tel" {...field} />
+                        <Input placeholder="6XXXXXXXX" inputMode="tel" {...field} onBlur={(e) => form.setValue("guardianPhone", normalizePhone(e.target.value))} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -467,7 +534,7 @@ const StemRegistrationForm: React.FC<Props> = ({ onSubmitted, initialValues, mod
                     <FormItem>
                       <FormLabel>Mobile money number to pay from</FormLabel>
                       <FormControl>
-                        <Input placeholder="e.g., 6XXXXXXXX" inputMode="tel" {...field} />
+                        <Input placeholder="e.g., 6XXXXXXXX" inputMode="tel" {...field} onBlur={(e) => form.setValue("payerPhone", normalizePhone(e.target.value))} />
                       </FormControl>
                       <p className="text-xs text-muted-foreground mt-1">
                         Carrier: {(() => {
