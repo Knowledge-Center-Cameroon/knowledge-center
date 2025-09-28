@@ -3,18 +3,18 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Atom, FlaskConical, Rocket, Brain } from "lucide-react";
 
 const providedFacts = [
-  "Bananas are naturally radioactive — proof science hides in everyday life.",
-  "Sharks are older than trees — nature shows true resilience.",
-  "Octopuses have three hearts — efficiency comes in unexpected forms.",
-  "The first computer bug was a moth — small flaws can spark big lessons.",
-  "Most internet traffic runs under the sea — solutions are often unseen.",
-  "Your phone outpowers the Apollo 11 computer — constraints drive innovation.",
-  "The Eiffel Tower grows taller in heat — designs should adapt, not resist.",
-  "Velcro came from burrs — nature is the best engineer.",
-  "Bridges can wobble with rhythm — harmony and imbalance shape systems.",
-  "Zero changed civilization — sometimes nothing is everything.",
-  "Prime numbers protect the internet — randomness can be strength.",
-  "The golden ratio appears in shells and galaxies — math is nature’s design.",
+  "Fun fact: Bananas are naturally radioactive — proof science hides in everyday life.",
+  "Fun fact: Sharks are older than trees — nature shows true resilience.",
+  "Fun fact: Octopuses have three hearts — efficiency comes in unexpected forms.",
+  "Fun fact: The first computer bug was a moth — small flaws can spark big lessons.",
+  "Fun fact: Most internet traffic runs under the sea — solutions are often unseen.",
+  "Fun fact: Your phone outpowers the Apollo 11 computer — constraints drive innovation.",
+  "Fun fact: The Eiffel Tower grows taller in heat — designs should adapt, not resist.",
+  "Fun fact: Velcro came from burrs — nature is the best engineer.",
+  "Fun fact: Bridges can wobble with rhythm — harmony and imbalance shape systems.",
+  "Fun fact: Zero changed civilization — sometimes nothing is everything.",
+  "Fun fact: Prime numbers protect the internet — randomness can be strength.",
+  "Fun fact: The golden ratio appears in shells and galaxies — math is nature’s design.",
 ];
 
 function shuffle<T>(arr: T[]): T[] {

@@ -1,4 +1,5 @@
 import React from "react";
+import { motion } from "framer-motion";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { projects } from "@/data/projects";
 import { Card, CardContent } from "@/components/ui/card";
@@ -24,8 +25,8 @@ const ProjectDetailPage: React.FC = () => {
 
   // Simple per-project stats (fallbacks) for the statistics band
   const statsBySlug: Record<string, { label: string; value: string }[]> = {
-    "stem-education": [
-      { label: "Students Impacted", value: "500+" },
+    "stem": [
+      { label: "Students Impacted", value: "2000+" },
       { label: "Success Rate", value: "95%" },
       { label: "Projects Completed", value: "50+" },
     ],
@@ -74,7 +75,7 @@ const ProjectDetailPage: React.FC = () => {
     },
     {
       title: `What impact has the STEM had?`,
-      body: `500+ students reached so far with 95% reporting improved problem‑solving confidence. Alumni have gone on to lead school clubs, win regional fairs, and secure scholarships after demonstrating rigorous thinking.`,
+      body: `2000+ students reached so far with 95% reporting improved problem‑solving confidence. Alumni have gone on to lead school clubs, win regional fairs, and secure scholarships after demonstrating rigorous thinking.`,
     },
     {
       title: `What we ask students and how questions look like?`,
@@ -104,13 +105,18 @@ const ProjectDetailPage: React.FC = () => {
       body: project.details.join(" · "),
     },
   ];
-  const sections = project.slug === "stem-education" ? stemSections : defaultSections;
+  const sections = project.slug === "stem" ? stemSections : defaultSections;
 
   return (
     <section className="py-12 md:py-16 lg:py-20">
       <div className="container mx-auto px-4 lg:px-8 max-w-6xl">
         {/* Header */}
-        <div className="mb-8">
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+          className="mb-8"
+        >
           <div className="flex items-center justify-between mb-4">
             <Button variant="ghost" onClick={() => navigate(-1)}>
               <ArrowLeft className="h-4 w-4 mr-2" /> Back
@@ -121,56 +127,63 @@ const ProjectDetailPage: React.FC = () => {
             {project.title}
           </h1>
           <p className="text-lg text-muted-foreground max-w-3xl">{project.summary}</p>
-        </div>
+        </motion.div>
 
-        {/* Media + Content split */
-        }
+        {/* Media + Content split */}
         <div className="grid lg:grid-cols-2 gap-6 md:gap-8 mb-12">
           {/* Carousel using shared UI */}
-          <Card className="overflow-hidden shadow-elegant">
-            <CardContent className="p-0">
-              <Carousel setApi={setApi} className="rounded-2xl shadow-elegant bg-white/5 backdrop-blur-sm p-2">
-                <CarouselContent>
-                  {project.images.map((src, i) => (
-                    <CarouselItem key={i}>
-                      <div className="relative overflow-hidden rounded-xl aspect-[16/10] w-full">
-                        <img
-                          src={src}
-                          alt={`${project.title} image ${i + 1}`}
-                          className="w-full h-full object-cover"
-                          loading="eager"
-                          decoding="async"
-                          sizes="(min-width: 1024px) 50vw, 100vw"
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-tr from-kc-blue/20 via-transparent to-kc-red/20" />
-                      </div>
-                    </CarouselItem>
-                  ))}
-                </CarouselContent>
-                <CarouselPrevious className="hidden sm:flex bg-kc-blue text-white border-0 hover:bg-kc-red" />
-                <CarouselNext className="hidden sm:flex bg-kc-blue text-white border-0 hover:bg-kc-red" />
-                {/* Dots */}
-                <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-2 z-10">
-                  {project.images.map((_, idx) => (
-                    <button
-                      key={idx}
-                      onClick={() => api?.scrollTo(idx)}
-                      aria-label={`Go to image ${idx + 1}`}
-                      className={`w-2.5 h-2.5 rounded-full ${idx === activeIndex ? "bg-white" : "bg-white/60 hover:bg-white/80"}`}
-                    />
-                  ))}
-                </div>
-              </Carousel>
-            </CardContent>
-          </Card>
+          <motion.div initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.2 }} transition={{ duration: 0.45 }}>
+            <Card className="overflow-hidden shadow-elegant">
+              <CardContent className="p-0">
+                <Carousel setApi={setApi} className="rounded-2xl shadow-elegant bg-white/5 backdrop-blur-sm p-2">
+                  <CarouselContent>
+                    {project.images.map((src, i) => (
+                      <CarouselItem key={i}>
+                        <div className="relative overflow-hidden rounded-xl aspect-[16/10] w-full">
+                          <img
+                            src={src}
+                            alt={`${project.title} image ${i + 1}`}
+                            className="w-full h-full object-cover"
+                            loading="eager"
+                            decoding="async"
+                            sizes="(min-width: 1024px) 50vw, 100vw"
+                          />
+                          <div className="absolute inset-0 bg-gradient-to-tr from-kc-blue/20 via-transparent to-kc-red/20" />
+                        </div>
+                      </CarouselItem>
+                    ))}
+                  </CarouselContent>
+                  <CarouselPrevious className="hidden sm:flex bg-kc-blue text-white border-0 hover:bg-kc-red" />
+                  <CarouselNext className="hidden sm:flex bg-kc-blue text-white border-0 hover:bg-kc-red" />
+                  {/* Dots */}
+                  <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-2 z-10">
+                    {project.images.map((_, idx) => (
+                      <button
+                        key={idx}
+                        onClick={() => api?.scrollTo(idx)}
+                        aria-label={`Go to image ${idx + 1}`}
+                        className={`w-2.5 h-2.5 rounded-full ${idx === activeIndex ? "bg-white" : "bg-white/60 hover:bg-white/80"}`}
+                      />
+                    ))}
+                  </div>
+                </Carousel>
+              </CardContent>
+            </Card>
+          </motion.div>
 
           {/* Content sections */}
           <div className="self-center space-y-5">
             {sections.map((s, i) => (
-              <div key={i}>
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 8 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.2 }}
+                transition={{ duration: 0.35, delay: i * 0.05 }}
+              >
                 <h2 className="text-xl md:text-2xl font-heading font-semibold mb-2">{s.title}</h2>
                 <p className="text-foreground/85 leading-relaxed">{s.body}</p>
-              </div>
+              </motion.div>
             ))}
           </div>
         </div>
@@ -180,8 +193,12 @@ const ProjectDetailPage: React.FC = () => {
           <h2 className="text-2xl font-heading font-semibold mb-4">Why take {project.title}?</h2>
           <div className="grid sm:grid-cols-2 gap-4 md:gap-6">
             {project.features.map((f, i) => (
-              <button
+              <motion.button
                 key={i}
+                initial={{ opacity: 0, y: 8 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.2 }}
+                transition={{ duration: 0.3, delay: i * 0.05 }}
                 className="group text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/60 focus-visible:ring-offset-2 focus-visible:ring-offset-background rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 transition-all p-4 md:p-5 shadow-sm hover:shadow-md"
               >
                 <div className="flex items-start gap-3">
@@ -191,7 +208,7 @@ const ProjectDetailPage: React.FC = () => {
                     <p className="text-sm text-foreground/80">Built through expert mentoring, hands‑on sessions, and teamwork to turn curiosity into capability.</p>
                   </div>
                 </div>
-              </button>
+              </motion.button>
             ))}
           </div>
         </div>
@@ -203,7 +220,16 @@ const ProjectDetailPage: React.FC = () => {
               <h2 className="text-xl font-heading font-semibold mb-4">Additional Details</h2>
               <ul className="space-y-2">
                 {project.details.map((d, i) => (
-                  <li key={i} className="text-foreground/90">{d}</li>
+                  <motion.li
+                    key={i}
+                    initial={{ opacity: 0, y: 6 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true, amount: 0.2 }}
+                    transition={{ duration: 0.25, delay: i * 0.03 }}
+                    className="text-foreground/90"
+                  >
+                    {d}
+                  </motion.li>
                 ))}
               </ul>
             </CardContent>
@@ -212,22 +238,36 @@ const ProjectDetailPage: React.FC = () => {
           {stats.length > 0 && (
             <div className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-1 gap-4">
               {stats.map((s, idx) => (
-                <Card key={idx} className="bg-white/5 backdrop-blur-sm border border-white/10">
-                  <CardContent className="p-6 text-center">
-                    <div className="text-3xl font-heading font-bold">{s.value}</div>
-                    <div className="text-sm text-foreground/80">{s.label}</div>
-                  </CardContent>
-                </Card>
+                <motion.div
+                  key={idx}
+                  initial={{ opacity: 0, y: 8 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, amount: 0.2 }}
+                  transition={{ duration: 0.35, delay: idx * 0.05 }}
+                >
+                  <Card className="bg-white/5 backdrop-blur-sm border border-white/10">
+                    <CardContent className="p-6 text-center">
+                      <div className="text-3xl font-heading font-bold">{s.value}</div>
+                      <div className="text-sm text-foreground/80">{s.label}</div>
+                    </CardContent>
+                  </Card>
+                </motion.div>
               ))}
             </div>
           )}
         </div>
 
         {/* Call to action */}
-        <div className="mt-10 md:mt-12 flex items-center justify-between gap-4 flex-wrap">
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.2 }}
+          transition={{ duration: 0.4 }}
+          className="mt-10 md:mt-12 flex items-center justify-between gap-4 flex-wrap"
+        >
           <div className="text-muted-foreground">Take the next step with {project.title}.</div>
           <div className="flex gap-3">
-            {project.slug === "stem-education" && (
+            {project.slug === "stem" && (
               <Button asChild variant="blue">
                 <Link to="/stem">Get Registered</Link>
               </Button>
@@ -236,7 +276,7 @@ const ProjectDetailPage: React.FC = () => {
               <Link to="/donate">Support the mission</Link>
             </Button>
           </div>
-        </div>
+        </motion.div>
       </div>
     </section>
   );

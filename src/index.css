@@ -243,9 +243,9 @@
   /* Glassmorphism utility */
   .glass {
     /* From https://css.glass */
-    background: rgba(0, 0, 0, 0.547);
+    background: rgba(0, 0, 0, 0.271);
     border-radius: 26px;
-    box-shadow: 0 4px 30px rgba(71, 49, 49, 0.719);
+    box-shadow: 0 4px 30px rgba(10, 5, 75, 0.719);
     backdrop-filter: blur(6.3px);
     -webkit-backdrop-filter: blur(6.3px);
     border: 1px solid rgb(15, 64, 200);

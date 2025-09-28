@@ -19,13 +19,13 @@ const ProjectsPage: React.FC = () => {
       className="min-h-[60vh] relative"
     >
       <div className="absolute inset-0 -z-10">
-        <StemBackground opacity={0.08} density={44} lineDistance={120} speed={0.4} showIcons={true} />
+        <StemBackground opacity={0.1} density={50} lineDistance={130} speed={0.45} showIcons={true} />
       </div>
       <section id="projects" className="py-16 lg:py-24">
         <div className="container mx-auto px-4 lg:px-8 max-w-6xl">
           {/* Header */}
           <div className="text-center mb-10 md:mb-12">
-          <div className="h-1 w-28 mx-auto mb-3 bg-kc-blue rounded-full" />
+            <div className="h-1 w-28 mx-auto mb-3 bg-kc-blue rounded-full" />
             <h2 className="heading-2 mb-6">
               Explore Our Projects
             </h2>
@@ -33,6 +33,7 @@ const ProjectsPage: React.FC = () => {
               Dive deeper into each of our programs. Browse highlights below or jump straight into a project page.
             </p>
           </div>
+
 
           {/* Quick Jump Dropdown */}
           <div className="mb-8 md:mb-10 max-w-md mx-auto">
@@ -51,11 +52,11 @@ const ProjectsPage: React.FC = () => {
           {/* Project Cards */}
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
             {projects.map((p) => (
-              <motion.div key={p.slug} whileHover={{ y: -6 }} transition={{ type: 'spring', stiffness: 260, damping: 18 }}>
+              <motion.div key={p.slug} whileHover={{ y: -6, scale: 1.01 }} transition={{ type: 'spring', stiffness: 260, damping: 18 }}>
                 <Card className="group overflow-hidden bg-white/10 backdrop-blur-md border border-white/20 shadow-elegant rounded-2xl">
                   <CardContent className="p-0">
                     <div className="relative aspect-[4/3] w-full overflow-hidden">
-                      <img src={p.images[0]} alt={p.title} className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" loading="lazy" decoding="async" sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw" />
+                      <img src={p.images[0]} alt={p.title} className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105 will-change-transform" loading="lazy" decoding="async" sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw" />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
                     </div>
                     <div className="p-5">

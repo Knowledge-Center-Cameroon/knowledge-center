@@ -149,6 +149,14 @@ const StemBackground: React.FC<StemBackgroundProps> = ({
   return (
     <div ref={parentRef} className={`pointer-events-none absolute inset-0 ${className}`} style={{ opacity }}>
       <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" />
+      {/* Soft radial gradient overlay for depth */}
+      <div
+        className="absolute inset-0"
+        style={{
+          background:
+            "radial-gradient(1200px 600px at 20% 10%, rgba(255,255,255,0.08), transparent 60%), radial-gradient(1000px 600px at 80% 90%, rgba(255,255,255,0.06), transparent 55%)",
+        }}
+      />
       {/** Hide icons on small screens for performance */}
       {showIcons && (
         <div className="absolute inset-0 hidden sm:block">

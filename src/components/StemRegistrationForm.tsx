@@ -23,31 +23,47 @@ import { ArrowButton } from "@/components/arrowbtn";
 
 const cmPhone = z
   .string()
-  .regex(/^(\+237)?6\d{8}$/i, "Enter a valid Cameroonian mobile (e.g., +2376XXXXXXXX)");
+  .regex(/^(\+237)?6\d{8}$/i, "Enter a valid Cameroonian mobile (e.g., 6XXXXXXXX)");
 
-const minDOB = new Date(2000, 0, 1);
-const maxDOB = new Date(2015, 11, 31);
+const minDOB = new Date(1900, 0, 1);
+const maxDOB = new Date(2025, 11, 31);
+
+const CM_REGIONS = [
+  "Adamawa",
+  "Centre",
+  "East",
+  "Far North",
+  "Littoral",
+  "North",
+  "North West",
+  "West",
+  "South",
+  "South West",
+] as const;
 
 const schema = z.object({
   fullName: z.string().min(2, "Full name is required"),
-  phone: cmPhone,
+  // student's own phone is optional
+  phone: z.union([cmPhone, z.literal("")]).optional().default(""),
   guardianPhone: cmPhone,
   dob: z
     .date({ required_error: "Date of birth is required" })
     .refine((d) => d >= minDOB && d <= maxDOB, {
-      message: "DOB must be between 2000 and 2015",
+      message: "DOB must be between 1900 and 2025",
     }),
   gender: z.enum(["male", "female"], { required_error: "Select a gender" }),
   school: z.string().min(2, "School name is required"),
   schoolClass: z.string().min(1, "Current class is required"),
-  motivation: z.string().min(10, "Please tell us more (min 10 chars)"),
+  region: z.enum(CM_REGIONS, { required_error: "Select your region" }),
+  // goals/motivation is optional; if provided, enforce minimum length 10
+  motivation: z.union([z.string().min(10, "Please tell us more (min 10 chars)"), z.literal("")]).optional().default(""),
   level: z.enum(["olevel", "alevel"], { required_error: "Select your level" }),
-  paymentMethod: z.enum(["mtn", "orange"], { required_error: "Select a payment method" }),
-  subjects: z.array(z.enum(["math", "physics", "chemistry", "biology"])).min(1, "Select at least one subject"),
+  subjects: z.array(z.enum(["math", "physics", "chemistry", "biology"]))
+    .min(1, "Select at least one subject"),
   payerPhone: cmPhone,
   paymentScreenshot: z
     .any()
-    .refine((f) => !!f && typeof f === 'object', { message: "Payment screenshot is required" }),
+    .optional(),
 });
 
 export type StemRegistrationData = z.infer<typeof schema>;
@@ -55,17 +71,19 @@ export type StemRegistrationData = z.infer<typeof schema>;
 const steps: Array<{ key: string; title: string; fields: (keyof StemRegistrationData)[] }> = [
   { key: "personal", title: "Personal Details", fields: ["fullName", "phone", "guardianPhone"] },
   { key: "profile", title: "Profile", fields: ["dob", "gender"] },
-  { key: "school", title: "School", fields: ["school", "schoolClass"] },
+  { key: "school", title: "School", fields: ["school", "schoolClass", "region"] },
   { key: "motiv", title: "Your Goals", fields: ["motivation", "level"] },
   { key: "subjects", title: "Subjects", fields: ["subjects"] },
-  { key: "payment", title: "Payment", fields: ["paymentMethod", "payerPhone", "paymentScreenshot"] },
+  { key: "payment", title: "Payment", fields: ["payerPhone", "paymentScreenshot"] },
 ];
 
 type Props = {
   onSubmitted?: (data: StemRegistrationData) => void;
+  initialValues?: Partial<StemRegistrationData>;
+  mode?: "create" | "edit";
 };
 
-const StemRegistrationForm: React.FC<Props> = ({ onSubmitted }) => {
+const StemRegistrationForm: React.FC<Props> = ({ onSubmitted, initialValues, mode = "create" }) => {
   const { toast } = useToast();
   const [submitting, setSubmitting] = useState(false);
   const navigate = useNavigate();
@@ -79,20 +97,27 @@ const StemRegistrationForm: React.FC<Props> = ({ onSubmitted }) => {
       gender: undefined as unknown as "male" | "female",
       school: "",
       schoolClass: "",
+      region: undefined as unknown as typeof CM_REGIONS[number],
       motivation: "",
       level: undefined as unknown as "olevel" | "alevel",
-      paymentMethod: undefined as unknown as "mtn" | "orange",
       subjects: [],
       payerPhone: "",
       paymentScreenshot: undefined as any,
+      ...(initialValues || {}),
     },
     mode: "onTouched",
   });
 
   const [stepIndex, setStepIndex] = useState(0);
-  const current = steps[stepIndex];
-  const isLast = stepIndex === steps.length - 1;
-  const progress = useMemo(() => Math.round(((stepIndex + 1) / steps.length) * 100), [stepIndex]);
+  const effectiveSteps = useMemo(() => {
+    if (mode === "edit") {
+      return steps.filter((s) => s.key !== "payment");
+    }
+    return steps;
+  }, [mode]);
+  const current = effectiveSteps[stepIndex];
+  const isLast = stepIndex === effectiveSteps.length - 1;
+  const progress = useMemo(() => Math.round(((stepIndex + 1) / effectiveSteps.length) * 100), [stepIndex, effectiveSteps.length]);
   const selectedSubjects = form.watch("subjects") || [];
   const subjectsCount = selectedSubjects.length;
   const subjectsAmount = subjectsCount === 4 ? 3000 : subjectsCount * 1000;
@@ -101,31 +126,60 @@ const StemRegistrationForm: React.FC<Props> = ({ onSubmitted }) => {
   const next = async () => {
     const valid = await form.trigger(current.fields as any, { shouldFocus: true });
     if (!valid) return;
-    setStepIndex((s) => Math.min(s + 1, steps.length - 1));
+    setStepIndex((s) => Math.min(s + 1, effectiveSteps.length - 1));
   };
 
   const prev = () => setStepIndex((s) => Math.max(s - 1, 0));
 
-  // Final submit: allowed only if payment was initiated and screenshot provided
+  // Final submit
   const onSubmit = async (data: StemRegistrationData) => {
-    if (!paymentRef) {
-      toast({ title: "Payment not initiated", description: "Please tap Initiate Payment first.", variant: "destructive" as any });
-      return;
+    if (mode === "create") {
+      if (!paymentRef) {
+        toast({ title: "Payment not initiated", description: "Please tap Initiate Payment first.", variant: "destructive" as any });
+        return;
+      }
+      // proceed
+      onSubmitted?.(data);
+      navigate("/stem/success", { state: { reference: paymentRef, amount: subjectsAmount } });
+      form.reset();
+      setStepIndex(0);
+      setPaymentRef(null);
+    } else {
+      try {
+        const key = "kc_stem_regs";
+        const list = JSON.parse(localStorage.getItem(key) || "[]");
+        if (Array.isArray(list) && list.length > 0) {
+          // Update the last record by default (or you could match by a stored reference in initialValues if provided)
+          const last = list[list.length - 1];
+          const updated = {
+            ...last,
+            fullName: data.fullName,
+            phone: data.phone,
+            guardianPhone: data.guardianPhone,
+            dobISO: data.dob?.toISOString?.(),
+            gender: data.gender,
+            school: data.school,
+            schoolClass: data.schoolClass,
+            region: data.region,
+            motivation: data.motivation,
+            level: data.level,
+            subjects: data.subjects,
+            payerPhone: data.payerPhone,
+          };
+          list[list.length - 1] = updated;
+          localStorage.setItem(key, JSON.stringify(list));
+          toast({ title: "Details updated", description: "Your registration details were saved." });
+        }
+      } catch {}
     }
-    // data.paymentScreenshot is required by schema; proceed
-    onSubmitted?.(data);
-    navigate("/stem/success", { state: { reference: paymentRef, amount: subjectsAmount, method: form.getValues("paymentMethod") } });
-    form.reset();
-    setStepIndex(0);
-    setPaymentRef(null);
   };
 
   return (
     <div className="max-w-3xl mx-auto">
       <div className="flex items-center gap-3 mb-6">
-        <div className="h-2 flex-1 bg-gray-200 rounded-full overflow-hidden">
+        <div className="h-2 flex-1 rounded-full overflow-hidden bg-gradient-to-r from-neutral-200 via-neutral-100 to-neutral-200">
           <motion.div
-            className="h-full bg-kc-blue"
+            className="h-full bg-gradient-to-r from-kc-blue to-kc-red"
             initial={{ width: 0 }}
             animate={{ width: `${progress}%` }}
             transition={{ duration: 0.3 }}
@@ -136,7 +190,7 @@ const StemRegistrationForm: React.FC<Props> = ({ onSubmitted }) => {
 
       <div className="bg-gradient-subtle rounded-2xl p-6 shadow-elegant">
         <h3 className="heading-3 mb-1">{current.title}</h3>
-        <p className="text-sm text-muted-foreground mb-6">Step {stepIndex + 1} of {steps.length}</p>
+        <p className="text-sm text-muted-foreground mb-6">Step {stepIndex + 1} of {effectiveSteps.length}</p>
 
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
@@ -160,9 +214,9 @@ const StemRegistrationForm: React.FC<Props> = ({ onSubmitted }) => {
                   name="phone"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Provide your Phone Number</FormLabel>
+                      <FormLabel>Provide your Phone Number <span className="text-xs text-muted-foreground">(optional)</span></FormLabel>
                       <FormControl>
-                        <Input placeholder="+2376XXXXXXXX" inputMode="tel" {...field} />
+                        <Input placeholder="6XXXXXXXX" inputMode="tel" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -175,7 +229,7 @@ const StemRegistrationForm: React.FC<Props> = ({ onSubmitted }) => {
                     <FormItem>
                       <FormLabel>Provide your Parent or guardian's Phone number</FormLabel>
                       <FormControl>
-                        <Input placeholder="+2376XXXXXXXX" inputMode="tel" {...field} />
+                        <Input placeholder="6XXXXXXXX" inputMode="tel" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -255,8 +309,8 @@ const StemRegistrationForm: React.FC<Props> = ({ onSubmitted }) => {
                             selected={field.value}
                             onSelect={field.onChange}
                             captionLayout="dropdown-buttons"
-                            fromYear={2000}
-                            toYear={2015}
+                            fromYear={1900}
+                            toYear={2025}
                             initialFocus
                           />
                         </PopoverContent>
@@ -335,6 +389,28 @@ const StemRegistrationForm: React.FC<Props> = ({ onSubmitted }) => {
                     </FormItem>
                   )}
                 />
+                <FormField
+                  control={form.control}
+                  name="region"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Your region in Cameroon</FormLabel>
+                      <Select value={field.value} onValueChange={field.onChange}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select region" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {CM_REGIONS.map((r) => (
+                            <SelectItem key={r} value={r}>{r}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
               </div>
             )}
 
@@ -345,7 +421,7 @@ const StemRegistrationForm: React.FC<Props> = ({ onSubmitted }) => {
                   name="motivation"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Now let's hear from you, future scientist. What are you hoping to gain or experience during the STEM competition?</FormLabel>
+                      <FormLabel>Now let's hear from you, future scientist. What are you hoping to gain or experience during the STEM competition? <span className="text-xs text-muted-foreground">(optional)</span></FormLabel>
                       <FormControl>
                         <Textarea rows={5} placeholder="Share your goals and expectations" {...field} />
                       </FormControl>
@@ -378,39 +454,11 @@ const StemRegistrationForm: React.FC<Props> = ({ onSubmitted }) => {
               </div>
             )}
 
-            {current.key === "payment" && (
+            {current.key === "payment" && mode === "create" && (
               <div className="grid gap-4">
-                <FormField
-                  control={form.control}
-                  name="paymentMethod"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Payment (MTN MoMo or Orange Money)</FormLabel>
-                      <RadioGroup value={field.value} onValueChange={field.onChange} className="grid grid-cols-2 gap-3">
-                        <FormItem className="border rounded-xl px-4 py-3 flex items-center gap-3 hover:shadow-sm transition">
-                          <FormControl>
-                            <RadioGroupItem value="mtn" />
-                          </FormControl>
-                          <div className="flex items-center gap-2">
-                            <span className="inline-block w-6 h-6 rounded-sm" style={{ backgroundColor: '#FFCB05' }} />
-                            <FormLabel className="m-0">MTN MoMo</FormLabel>
-                          </div>
-                        </FormItem>
-                        <FormItem className="border rounded-xl px-4 py-3 flex items-center gap-3 hover:shadow-sm transition">
-                          <FormControl>
-                            <RadioGroupItem value="orange" />
-                          </FormControl>
-                          <div className="flex items-center gap-2">
-                            <span className="inline-block w-6 h-6 rounded-sm bg-orange-500" />
-                            <FormLabel className="m-0">Orange Money</FormLabel>
-                          </div>
-                        </FormItem>
-                      </RadioGroup>
-                      <p className="text-xs text-muted-foreground mt-1">We will send you payment instructions after you submit.</p>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                <div className="text-sm text-muted-foreground">
+                  Registration can be paid via MTN MoMo or Orange Money. We'll auto-detect the carrier from your number.
+                </div>
 
                 <FormField
                   control={form.control}
@@ -419,8 +467,21 @@ const StemRegistrationForm: React.FC<Props> = ({ onSubmitted }) => {
                     <FormItem>
                       <FormLabel>Mobile money number to pay from</FormLabel>
                       <FormControl>
-                        <Input placeholder="e.g., +2376XXXXXXXX" inputMode="tel" {...field} />
+                        <Input placeholder="e.g., 6XXXXXXXX" inputMode="tel" {...field} />
                       </FormControl>
+                      <p className="text-xs text-muted-foreground mt-1">
+                        Carrier: {(() => {
+                          const v = form.watch("payerPhone") || "";
+                          const m = v.replace(/\D/g, "");
+                          const prefix = m.slice(0, 3);
+                          const carrier = /^(650|651|652|653|670|671|672|673|674|675|676|677|678|679)$/.test(prefix)
+                            ? "MTN MoMo"
+                            : /^(655|656|657|658|659|690|691|692|693|694|695|696|697|698|699)$/.test(prefix)
+                            ? "Orange Money"
+                            : v ? "Unknown" : "—";
+                          return carrier;
+                        })()}
+                      </p>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -438,7 +499,7 @@ const StemRegistrationForm: React.FC<Props> = ({ onSubmitted }) => {
                       if (submitting) return;
                       setSubmitting(true);
                       const allFields: (keyof StemRegistrationData)[] = [
-                        "fullName","phone","guardianPhone","dob","gender","school","schoolClass","motivation","level","subjects","paymentMethod","payerPhone"
+                        "fullName","phone","guardianPhone","dob","gender","school","schoolClass","region","motivation","level","subjects","payerPhone"
                       ];
                       const valid = await form.trigger(allFields as any, { shouldFocus: true });
                       if (!valid) { setSubmitting(false); return; }
@@ -452,12 +513,28 @@ const StemRegistrationForm: React.FC<Props> = ({ onSubmitted }) => {
                         schoolClass: form.getValues("schoolClass"),
                         motivation: form.getValues("motivation"),
                         level: form.getValues("level") as any,
-                        paymentMethod: form.getValues("paymentMethod") as any,
                       } as StemRegistrationPayload;
                       try {
                         const resp = await initiateStemPayment(payload, subjectsAmount);
                         setPaymentRef(resp.reference);
                         toast({ title: "Payment initiated", description: `Ref: ${resp.reference} • Amount: ${subjectsAmount.toLocaleString()} XAF` });
+                        // enrich saved record with extra fields for future edits
+                        try {
+                          const key = "kc_stem_regs";
+                          const list = JSON.parse(localStorage.getItem(key) || "[]");
+                          if (Array.isArray(list) && list.length > 0) {
+                            const lastIdx = list.findIndex((x: any) => x.reference === resp.reference) ?? (list.length - 1);
+                            const idx = lastIdx >= 0 ? lastIdx : (list.length - 1);
+                            const existing = list[idx];
+                            list[idx] = {
+                              ...existing,
+                              region: form.getValues("region"),
+                              subjects: form.getValues("subjects"),
+                              payerPhone: form.getValues("payerPhone"),
+                            };
+                            localStorage.setItem(key, JSON.stringify(list));
+                          }
+                        } catch {}
                       } catch (e) {
                         toast({ title: "Failed to initiate", description: "Please try again.", variant: "destructive" as any });
                       } finally {

@@ -116,7 +116,7 @@ const Countdown: React.FC = () => {
               {/* CTA */}
               <div className="mt-7 sm:mt-9">
                 <a
-                  href="/projects/stem-education"
+                  href="/projects/stem"
                   className="inline-flex items-center gap-2 rounded-full px-5 py-2.5 bg-kc-blue text-white font-semibold shadow hover:bg-kc-red transition-colors"
                 >
                   <CalendarDays className="h-4 w-4" />

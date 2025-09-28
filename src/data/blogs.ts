@@ -1,3 +1,6 @@
+import coverStem from "@/assets/stem.jpg";
+import coverSummer from "@/assets/summer2.jpeg";
+import coverWhy from "@/assets/hero-image.jpeg";
 export type BlogPost = {
   id: string;
   title: string;
@@ -18,6 +21,7 @@ export const blogPosts: BlogPost[] = [
       "A recap of the KC STEM Competition 2024: projects, winners, and lessons learned.",
     date: "2024-12-20T10:00:00.000Z",
     author: "KC Editorial Team",
+    cover: coverStem,
     tags: ["STEM", "Competition", "Education"],
   },
   {
@@ -27,6 +31,7 @@ export const blogPosts: BlogPost[] = [
       "Hands-on learning, leadership classes, and tech bootcamps—here's what students achieved this summer.",
     date: "2024-09-01T09:00:00.000Z",
     author: "KC Editorial Team",
+    cover: coverSummer,
     tags: ["Summer Program", "Skills", "Bootcamp"],
   },
   {
@@ -36,6 +41,7 @@ export const blogPosts: BlogPost[] = [
       "How STEM education empowers youth, fosters innovation, and drives national development.",
     date: "2024-05-12T08:30:00.000Z",
     author: "KC Editorial Team",
+    cover: coverWhy,
     tags: ["STEM", "Cameroon", "Innovation"],
   },
 ];

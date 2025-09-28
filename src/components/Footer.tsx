@@ -11,12 +11,13 @@ import {
   Youtube,
   Linkedin,
   Send,
+  Bell
 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { Link, NavLink } from "react-router-dom";
 import { subscribeEmail } from "@/services/api";
 import StemBackground from "@/components/StemBackground";
-import { ArrowButton } from "@/components/arrowbtn";
+import { AeroButton } from "@/components/aerobutton";
 
 const Footer = () => {
   const [email, setEmail] = useState("");
@@ -44,10 +45,7 @@ const Footer = () => {
     <footer className="border-t border-border">
       {/* Main Footer Content */}
       <div className="pt-8 pb-16 bg-kc-black relative overflow-visible">
-        {/* Wave flush with footer top */}
-        <svg className="absolute top-0 left-0 w-full h-10 text-background -translate-y-full z-20" viewBox="0 0 1440 80" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M0,64 C240,32 480,0 720,0 C960,0 1200,32 1440,64 L1440,80 L0,80 Z" fill="currentColor" />
-        </svg>
+    
         <StemBackground opacity={0.18} density={50} lineDistance={120} speed={0.45} showIcons={true} />
         <div className="container mx-auto px-4 lg:px-8 max-w-6xl relative z-10">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -82,58 +80,22 @@ const Footer = () => {
                     className="flex-1 h-9 bg-white/10 border-white/20 text-white placeholder:text-white/60"
                     required
                   />
-                  <ArrowButton
-                    text={submitting ? "Sending…" : "Subscribe"}
-                    bgPrimaryColor="#ffffff"
-                    bgSecondaryColor="#f5f5f5"
-                    textPrimaryColor="#000000"
-                    textSecondaryColor="#000000"
-                    className="h-9"
+                  <AeroButton
                     type="submit"
                     disabled={submitting}
+                    loading={submitting}
+                    text={""}
+                    width={24}
+                    primaryCol="#ffffff"
+                    gradientCol="#000000"
+                    className="h-9 text-black"
+                    icon={<Bell className="h-4 w-4 text-black" />}
+                    iconAlways
                   />
                 </form>
               </div>
 
-              {/* Social Links */}
-              <div className="flex space-x-4 mt-4">
-                <a 
-                  href="https://www.linkedin.com/company/knowledge-centercmr/" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="w-10 h-10 bg-white/10 hover:bg-white/20 text-white rounded-full flex items-center justify-center transition-smooth border border-white/10"
-                  aria-label="LinkedIn"
-                >
-                  <Linkedin className="h-5 w-5" />
-                </a>
-                <a 
-                  href="https://youtube.com/@knowledgecentercameroon-bz8dt?si=LVdBwRFkRBY2M79c" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="w-10 h-10 bg-white/10 hover:bg-white/20 text-white rounded-full flex items-center justify-center transition-smooth border border-white/10"
-                  aria-label="YouTube"
-                >
-                  <Youtube className="h-5 w-5" />
-                </a>
-                <a 
-                  href="https://x.com/KCCameroon" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="w-10 h-10 bg-white/10 hover:bg-white/20 text-white rounded-full flex items-center justify-center transition-smooth border border-white/10"
-                  aria-label="X"
-                >
-                  <Twitter className="h-5 w-5" />
-                </a>
-                <a 
-                  href="https://web.facebook.com/share/g/1YeC5UgLSP/" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="w-10 h-10 bg-white/10 hover:bg-white/20 text-white rounded-full flex items-center justify-center transition-smooth border border-white/10"
-                  aria-label="Facebook"
-                >
-                  <Facebook className="h-5 w-5" />
-                </a>
-              </div>
+              
             </div>
 
             {/* Quick Links */}
@@ -167,7 +129,7 @@ const Footer = () => {
               <ul className="space-y-3">
                 <li>
                   <Link
-                    to="/projects/stem-education"
+                    to="/projects/stem"
                     className="group inline-flex items-center gap-2 text-white/90 hover:text-primary transition-smooth focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 rounded"
                   >
                     <span className="relative">National STEM Competition</span>
@@ -239,7 +201,7 @@ const Footer = () => {
       </div>
 
       {/* Bottom Bar */}
-      <div className="relative bg-black text-white border-t border-border py-8">
+      <div className="relative bg-black text-white border-t border-border py-6">
         {/* Wave separator between main footer and bottom bar */}
         <svg className="absolute -top-10 left-0 w-full h-10 text-kc-black" viewBox="0 0 1440 80" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M0,64 C240,32 480,0 720,0 C960,0 1200,32 1440,64 L1440,80 L0,80 Z" fill="currentColor" />
@@ -249,16 +211,44 @@ const Footer = () => {
             <p className="text-white/80 text-center md:text-left">
               &copy; {new Date().getFullYear()} Knowledge Center. All rights reserved.
             </p>
-            <div className="flex space-x-6 text-sm">
-              <Link to="/privacy" className="text-white/80 hover:text-primary transition-smooth underline decoration-transparent hover:decoration-primary/70 underline-offset-4">
-                Privacy Policy
-              </Link>
-              <Link to="/terms" className="text-white/80 hover:text-primary transition-smooth underline decoration-transparent hover:decoration-primary/70 underline-offset-4">
-                Terms of Service
-              </Link>
-              <Link to="/donate" className="text-white/80 hover:text-primary transition-smooth underline decoration-transparent hover:decoration-primary/70 underline-offset-4">
-                Donate
-              </Link>
+            {/* Social links moved here for a compact footer */}
+            <div className="flex space-x-4">
+              <a 
+                href="https://www.linkedin.com/company/knowledge-centercmr/" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="w-10 h-10 bg-white/10 hover:bg-white/20 text-white rounded-full flex items-center justify-center transition-smooth border border-white/10"
+                aria-label="LinkedIn"
+              >
+                <Linkedin className="h-5 w-5" />
+              </a>
+              <a 
+                href="https://youtube.com/@knowledgecentercameroon-bz8dt?si=LVdBwRFkRBY2M79c" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="w-10 h-10 bg-white/10 hover:bg-white/20 text-white rounded-full flex items-center justify-center transition-smooth border border-white/10"
+                aria-label="YouTube"
+              >
+                <Youtube className="h-5 w-5" />
+              </a>
+              <a 
+                href="https://x.com/KCCameroon" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="w-10 h-10 bg-white/10 hover:bg-white/20 text-white rounded-full flex items-center justify-center transition-smooth border border-white/10"
+                aria-label="X"
+              >
+                <Twitter className="h-5 w-5" />
+              </a>
+              <a 
+                href="https://web.facebook.com/share/g/1YeC5UgLSP/" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="w-10 h-10 bg-white/10 hover:bg-white/20 text-white rounded-full flex items-center justify-center transition-smooth border border-white/10"
+                aria-label="Facebook"
+              >
+                <Facebook className="h-5 w-5" />
+              </a>
             </div>
           </div>
         </div>

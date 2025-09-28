@@ -51,7 +51,7 @@ export async function getTimeline(): Promise<TimelineEvent[]> {
           description: "Kick-off for the National STEM Competition.",
           dateISO: new Date().toISOString(),
           tag: "competition",
-          linkUrl: "/projects/stem-education",
+          linkUrl: "/projects/stem",
         },
         {
           id: crypto.randomUUID(),
@@ -97,9 +97,9 @@ export type StemRegistrationPayload = {
   gender: "male" | "female" | "other";
   school: string;
   schoolClass: string;
-  motivation: string;
+  motivation?: string;
   level: "olevel" | "alevel";
-  paymentMethod: "mtn" | "orange";
+  paymentMethod?: "mtn" | "orange";
 };
 
 export type PaymentInitResponse = {
@@ -128,7 +128,7 @@ export async function initiateStemPayment(
     const list = JSON.parse(localStorage.getItem(key) || "[]");
     list.push({ ...payload, amount, reference, createdAt: new Date().toISOString(), paymentMethod: payload.paymentMethod });
     localStorage.setItem(key, JSON.stringify(list));
-    return { reference, paymentMethod: payload.paymentMethod, amount, status: "pending" };
+    return { reference, paymentMethod: (payload.paymentMethod as any), amount, status: "pending" };
   } catch {
     // Fallback (dev only)
     await delay(400);
@@ -137,6 +137,6 @@ export async function initiateStemPayment(
     const list = JSON.parse(localStorage.getItem(key) || "[]");
     list.push({ ...payload, amount, reference, createdAt: new Date().toISOString(), paymentMethod: payload.paymentMethod });
     localStorage.setItem(key, JSON.stringify(list));
-    return { reference, paymentMethod: payload.paymentMethod, amount, status: "pending" };
+    return { reference, paymentMethod: (payload.paymentMethod as any), amount, status: "pending" };
   }
 }

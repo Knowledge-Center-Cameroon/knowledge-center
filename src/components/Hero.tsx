@@ -5,7 +5,7 @@ import heroImage2 from "@/assets/hero-image2.jpeg";
 import heroImage3 from "@/assets/weekend.jpeg";
 import heroImage4 from "@/assets/hero-image4.jpeg";
 import heroImage5 from "@/assets/hero-image5.jpeg";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import AnimatedLogo from "@/components/AnimatedLogo";
 import { Link } from "react-router-dom";
 import { ArrowButton } from "@/components/arrowbtn";
@@ -93,26 +93,24 @@ const Hero = () => {
 
   return (
     <section id="home" className="relative pt-16 md:pt-20 lg:pt-20 min-h-[70svh] sm:min-h-[75svh] md:min-h-[80svh] lg:min-h-[88svh] flex items-center justify-center overflow-hidden">
-      {/* Background Image (only render current to reduce network work) */}
+      {/* Background Images with crossfade */}
       <div className="absolute inset-0">
-        {(() => {
-          const slide = slides[currentSlide];
-          return (
-            <div className="absolute inset-0 transition-opacity duration-1000 opacity-100">
-              <img
-                src={slide.image}
-                alt={slide.title}
-                className="w-full h-full object-cover object-center"
-                loading="eager"
-                fetchPriority="high"
-                decoding="async"
-                sizes="100vw"
-              />
-              {/* Solid overlay for better text contrast */}
-              <div className="absolute inset-0 bg-black/65" />
-            </div>
-          );
-        })()}
+        {slides.map((s, idx) => (
+          <div
+            key={idx}
+            className={`absolute inset-0 transition-opacity duration-700 ease-out ${idx === currentSlide ? "opacity-100" : "opacity-0"}`}
+          >
+            <img
+              src={s.image}
+              alt={s.title}
+              className="w-full h-full object-cover object-center will-change-transform"
+              loading={idx === 0 ? "eager" : "lazy"}
+              decoding="async"
+              sizes="100vw"
+            />
+            <div className="absolute inset-0 bg-black/60" />
+          </div>
+        ))}
       </div>
 
       {/* Content */}
@@ -140,26 +138,46 @@ const Hero = () => {
               <div className="h-20 w-64 md:h-24 md:w-96 rounded-full blur-2xl"
                    style={{ background: "linear-gradient(90deg, hsl(var(--kc-blue)), hsl(var(--kc-red)))" }} />
             </motion.div>
-            <motion.h1
-              key={phraseIndex}
-              className="heading-1 bg-clip-text text-white max-w-[22ch] sm:max-w-[28ch] mx-auto leading-tight sm:leading-tight break-words"
-              style={{ backgroundImage: "linear-gradient(90deg, hsl(var(--kc-blue)), hsl(var(--kc-red)))" }}
+            <AnimatePresence mode="wait">
+              <motion.h1
+                key={phraseIndex}
+                className="heading-1 bg-clip-text text-white max-w-[22ch] sm:max-w-[28ch] mx-auto leading-tight sm:leading-tight break-words"
+                style={{ backgroundImage: "linear-gradient(90deg, hsl(var(--kc-blue)), hsl(var(--kc-red)))" }}
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -8 }}
+                transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+              >
+                <span className="font-extrabold">{phrases[phraseIndex]}</span>
+              </motion.h1>
+            </AnimatePresence>
+          </div>
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={`subtitle-${currentSlide}`}
+              className="subheading text-white/90 mb-6 md:mb-7 max-w-2xl mx-auto px-2"
               initial={{ opacity: 0, y: 6 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -6 }}
               transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
             >
-              {phrases[phraseIndex]}
-            </motion.h1>
-          </div>
-          <div className="subheading text-white/90 mb-6 md:mb-7 max-w-2xl mx-auto px-2">
-            {slides[currentSlide].subtitle}
-          </div>
+              {slides[currentSlide].subtitle}
+            </motion.div>
+          </AnimatePresence>
 
           {/* Description */}
-          <p className="text-sm sm:text-base md:text-lg font-body text-white/85 leading-relaxed mb-6 md:mb-8 max-w-3xl mx-auto px-2">
-            {slides[currentSlide].description}
-          </p>
+          <AnimatePresence mode="wait">
+            <motion.p
+              key={`desc-${currentSlide}`}
+              className="text-sm sm:text-base md:text-lg font-body text-white/85 leading-relaxed mb-6 md:mb-8 max-w-3xl mx-auto px-2"
+              initial={{ opacity: 0, y: 6 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -6 }}
+              transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+            >
+              {slides[currentSlide].description}
+            </motion.p>
+          </AnimatePresence>
 
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center">

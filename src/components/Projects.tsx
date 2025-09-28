@@ -52,7 +52,7 @@ const Projects = () => {
         "Outcomes: Improved GCE performance and deeper STEM literacy"
       ],
       stats: [
-        { number: "500+", label: "Students Enrolled" },
+        { number: "2000+", label: "Students Enrolled" },
         { number: "95%", label: "Success Rate" },
         { number: "50+", label: "Projects Completed" }
       ]
@@ -307,7 +307,7 @@ const Projects = () => {
                               ? '/projects/summer-education'
                               : '/projects/weekend-school';
                           const learnHref = activeTab === 'stem'
-                            ? '/projects/stem-education'
+                            ? '/projects/stem'
                             : activeTab === 'summer'
                               ? '/projects/summer-education'
                               : '/projects/weekend-school';

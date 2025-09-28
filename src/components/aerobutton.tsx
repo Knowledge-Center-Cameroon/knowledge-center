@@ -14,6 +14,7 @@ type AeroButtonProps = {
   loading?: boolean;
   onClick?: () => void;
   icon?: React.ReactNode;
+  iconAlways?: boolean; // if true, show icon without hover animation (for icon-only buttons)
 };
 
 /**
@@ -30,6 +31,7 @@ export const AeroButton: React.FC<AeroButtonProps> = ({
   loading,
   onClick,
   icon,
+  iconAlways = false,
 }) => {
   const sweepWidth = Math.max(0, Math.min(100, width));
   const [hovered, setHovered] = useState(false);
@@ -84,18 +86,24 @@ export const AeroButton: React.FC<AeroButtonProps> = ({
           </>
         ) : (
           <>
-            <span>{text}</span>
-            <motion.span
-              className="inline-flex overflow-hidden"
-              animate={{
-                x: hovered ? 0 : 50,
-                width: hovered ? 24 : 0,
-                y: clicked ? -12 : 0,
-              }}
-              transition={{ duration: 0.22, type: "spring", damping: 16 }}
-            >
-              {icon ?? <Send className="h-4 w-4" />}
-            </motion.span>
+            {text && <span>{text}</span>}
+            {iconAlways ? (
+              <span className="inline-flex" aria-hidden>
+                {icon ?? <Send className="h-4 w-4" />}
+              </span>
+            ) : (
+              <motion.span
+                className="inline-flex overflow-hidden"
+                animate={{
+                  x: hovered ? 0 : 50,
+                  width: hovered ? 24 : 0,
+                  y: clicked ? -12 : 0,
+                }}
+                transition={{ duration: 0.22, type: "spring", damping: 16 }}
+              >
+                {icon ?? <Send className="h-4 w-4" />}
+              </motion.span>
+            )}
           </>
         )}
       </span>

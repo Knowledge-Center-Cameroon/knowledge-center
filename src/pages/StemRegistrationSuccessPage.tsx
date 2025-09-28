@@ -80,6 +80,26 @@ const StemRegistrationSuccessPage: React.FC = () => {
             href="/"
           />
         </div>
+
+        {/* Post-registration management hint */}
+        <div className="mt-6">
+          <div className="max-w-xl mx-auto rounded-2xl bg-white/70 backdrop-blur-md border border-white/50 p-4 text-left">
+            <div className="text-sm text-foreground/80">
+              You can view and edit your registration details later if needed.
+            </div>
+            <div className="mt-3 flex justify-center">
+              <ArrowButton
+                text="Manage Registration"
+                bgPrimaryColor="#ffffff"
+                bgSecondaryColor="#111827"
+                textPrimaryColor="#111827"
+                textSecondaryColor="#ffffff"
+                className="rounded-full"
+                href="/stem/manage"
+              />
+            </div>
+          </div>
+        </div>
       </div>
     </motion.section>
   );

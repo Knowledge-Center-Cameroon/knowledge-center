@@ -21,48 +21,47 @@ import KC from "@/assets/logo.png";
 
 export const projects: Project[] = [
   {
-    slug: "stem-education",
+    slug: "stem",
     title: "National STEM Competition",
     summary:
       "A country‑wide contest that rewards clear thinking over memorization. Students tackle authentic, multi‑step STEM problems—testing ideas, defending methods, and connecting classroom theory to real‑world impact.",
     images: [StemImg, SummerImg, WeekendImg],
     features: [
-      "National qualifiers leading to a December grand final",
-      "Multi‑disciplinary problems (Math, Physics, Chemistry, Biology, Computing)",
+      "Drive for problem solving critical thinking and innovation.",
+      "Multi‑disciplinary problems (Math, Physics, Chemistry, Biology)",
       "Emphasis on reasoning, method, and communication",
-      "Team challenges that reward collaboration and creativity",
+      "Cerificates of participation to all participant",
       "Mentor clinics and exam‑prep sessions built into the calendar",
-      "Prizes, recognition, and follow‑on mentorship opportunities"
+      "Cash Prizes, Awards, recognition, for top studens"
     ],
     details: [
       "Eligibility: Form 4 – Upper Sixth (O/L & A/L)",
       "Teams: 3–5 students (solo entries allowed where needed)",
-      "Format: Regional qualifiers (Oct–Nov), National finals (December)",
-      "Judging: Clarity of thought, defensible methods, teamwork, innovation",
-      "Outcomes: Deeper STEM literacy, presentation confidence, and real‑world problem‑solving"
+      "Format: Every December",
+      "Outcomes: Deeper STEM literacy, critical thinking, and real‑world problem‑solving"
     ]
   },
   {
     slug: "summer-education",
     title: "Summer Education Program",
     summary:
-      "Intensive summer sessions designed to accelerate learning, build portfolios, and grow practical skills during school breaks.",
+      "Intensive summer sessions designed to help students get access to quality education, that inspires a nexus for change makers in society and grow practical skills during school breaks.",
     images: [SummerImg, Summer, HeroImg],
     features: [
       "2‑month intensive learning blocks (July–August)",
-      "Interactive audio‑visual lectures with hands‑on labs",
+      "Interactive audio‑visual lectures from passionate educators",
       "Mentorship, orientation, and study planning",
-      "Leadership masterclass and public speaking",
-      "Tech Boot Camp (coding, data, engineering demos)",
-      "Clubs, hack‑days, and project showcases",
+      "Leadership masterclass and creative writing",
+      "Tech Boot Camp (Python and AI)",
+      "Clubs Activities: Music, Engineering, Creative writing",
       "Sports, recreation, and wellness days",
       "Global Scholars prep: essays, SATs, scholarships"
     ],
     details: [
       "Duration: 2 months (July–August)",
       "Format: Modern classrooms with audio-visual lectures",
-      "Extras: Industry talks and campus tours",
-      "Outcomes: Portfolio‑ready projects, confidence, and networks"
+      "Extras: Additional Tshirts for all registered students",
+      "Outcomes: Academic excellence, Skill acquistion, global stage scholars"
     ]
   },
   {
@@ -95,8 +94,8 @@ export const projects: Project[] = [
     features: [
       "Audio‑visual lectures from expert tutors",
       "Distinguished scholarly community across the nation",
-      "Exceptional success rates with alumni mentorship",
-      "Career orientation and interview prep",
+      "Exceptional success rates with alumni",
+      "Career orientation",
       "Career‑defining experiences and field seminars",
       "Tracks: Engineering, Medicine, Agriculture, ICT",
       "Progress tracking and targeted assessments"
