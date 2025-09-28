@@ -97,16 +97,16 @@ const StemRegistrationForm: React.FC<Props> = ({ onSubmitted, initialValues, mod
       fullName: "",
       phone: "",
       guardianPhone: "",
-      dob: undefined as unknown as Date,
-      gender: undefined as unknown as "male" | "female",
+      dob: undefined,
+      gender: undefined as any,
       school: "",
       schoolClass: "",
-      region: undefined as unknown as typeof CM_REGIONS[number],
+      region: undefined as any,
       motivation: "",
-      level: undefined as unknown as "olevel" | "alevel",
+      level: undefined as any,
       subjects: [],
       payerPhone: "",
-      paymentScreenshot: undefined as any,
+      paymentScreenshot: undefined,
       ...(initialValues || {}),
     },
     mode: "onTouched",
@@ -115,16 +115,23 @@ const StemRegistrationForm: React.FC<Props> = ({ onSubmitted, initialValues, mod
   // Autosave draft (debounced) and restore on mount
   const saveTimer = useRef<number | null>(null);
   useEffect(() => {
-    try {
+    const restore = () => {
       const raw = localStorage.getItem(DRAFT_KEY);
-      if (raw && !initialValues) {
+      if (!raw || initialValues) return;
+      try {
         const parsed = JSON.parse(raw);
-        // Only reset known fields
+        if (!parsed || typeof parsed !== 'object') throw new Error('bad_draft');
+        // Only reset known fields; guard invalid date
+        let dob: Date | undefined = undefined as unknown as Date;
+        if (parsed.dob) {
+          const d = new Date(parsed.dob);
+          if (!isNaN(d.getTime())) dob = d;
+        }
         form.reset({
           fullName: parsed.fullName || "",
           phone: parsed.phone || "",
           guardianPhone: parsed.guardianPhone || "",
-          dob: parsed.dob ? new Date(parsed.dob) : (undefined as unknown as Date),
+          dob,
           gender: parsed.gender,
           school: parsed.school || "",
           schoolClass: parsed.schoolClass || "",
@@ -133,10 +140,13 @@ const StemRegistrationForm: React.FC<Props> = ({ onSubmitted, initialValues, mod
           level: parsed.level,
           subjects: parsed.subjects || [],
           payerPhone: parsed.payerPhone || "",
-          paymentScreenshot: undefined as any,
+          paymentScreenshot: undefined,
         });
+      } catch (e) {
+        try { localStorage.removeItem(DRAFT_KEY); } catch {}
       }
-    } catch {}
+    };
+    restore();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -147,7 +157,10 @@ const StemRegistrationForm: React.FC<Props> = ({ onSubmitted, initialValues, mod
         try {
           const toSave = {
             ...value,
-            dob: value.dob ? (value.dob as unknown as Date)?.toISOString?.() : undefined,
+            dob:
+              value?.dob && value.dob instanceof Date && !isNaN((value.dob as Date).getTime())
+                ? (value.dob as Date).toISOString()
+                : undefined,
             paymentScreenshot: undefined,
           };
           localStorage.setItem(DRAFT_KEY, JSON.stringify(toSave));
@@ -159,19 +172,6 @@ const StemRegistrationForm: React.FC<Props> = ({ onSubmitted, initialValues, mod
       window.clearTimeout(saveTimer.current as any);
     };
   }, [form]);
-
-  // Warn before unload if draft not submitted
-  useEffect(() => {
-    const handler = (e: BeforeUnloadEvent) => {
-      const hasDraft = !!localStorage.getItem(DRAFT_KEY);
-      if (hasDraft && !paymentRef) {
-        e.preventDefault();
-        e.returnValue = "You have unsaved changes. Are you sure you want to leave?";
-      }
-    };
-    window.addEventListener("beforeunload", handler);
-    return () => window.removeEventListener("beforeunload", handler);
-  }, [paymentRef]);
 
   const [stepIndex, setStepIndex] = useState(0);
   const effectiveSteps = useMemo(() => {
@@ -187,6 +187,19 @@ const StemRegistrationForm: React.FC<Props> = ({ onSubmitted, initialValues, mod
   const subjectsCount = selectedSubjects.length;
   const subjectsAmount = subjectsCount === 4 ? 3000 : subjectsCount * 1000;
   const [paymentRef, setPaymentRef] = useState<string | null>(null);
+
+  // Warn before unload if draft not submitted (must run after paymentRef is declared)
+  useEffect(() => {
+    const handler = (e: BeforeUnloadEvent) => {
+      const hasDraft = !!localStorage.getItem(DRAFT_KEY);
+      if (hasDraft && !paymentRef) {
+        e.preventDefault();
+        e.returnValue = "You have unsaved changes. Are you sure you want to leave?";
+      }
+    };
+    window.addEventListener("beforeunload", handler);
+    return () => window.removeEventListener("beforeunload", handler);
+  }, [paymentRef]);
 
   const next = async () => {
     const valid = await form.trigger(current.fields as any, { shouldFocus: true });
@@ -253,6 +266,19 @@ const StemRegistrationForm: React.FC<Props> = ({ onSubmitted, initialValues, mod
           />
         </div>
         <span className="text-sm text-muted-foreground">{progress}%</span>
+        <Button
+          type="button"
+          variant="ghost"
+          className="ml-auto"
+          onClick={() => {
+            try { localStorage.removeItem(DRAFT_KEY); } catch {}
+            form.reset();
+            setStepIndex(0);
+            toast({ title: "Draft discarded", description: "Your form was reset." });
+          }}
+        >
+          Discard draft
+        </Button>
       </div>
 
       <div className="bg-gradient-subtle rounded-2xl p-6 shadow-elegant">
@@ -361,11 +387,10 @@ const StemRegistrationForm: React.FC<Props> = ({ onSubmitted, initialValues, mod
                                 !field.value && "text-muted-foreground"
                               )}
                             >
-                              {field.value ? (
-                                format(field.value, "PPP")
-                              ) : (
-                                <span>Select date</span>
-                              )}
+                              {field.value && field.value instanceof Date && !isNaN(field.value.getTime())
+                                ? format(field.value, "PPP")
+                                : <span>Select date</span>
+                              }
                               <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                             </Button>
                           </FormControl>
@@ -373,7 +398,7 @@ const StemRegistrationForm: React.FC<Props> = ({ onSubmitted, initialValues, mod
                         <PopoverContent className="w-auto p-0" align="start">
                           <Calendar
                             mode="single"
-                            selected={field.value}
+                            selected={field.value && field.value instanceof Date && !isNaN(field.value.getTime()) ? field.value : undefined}
                             onSelect={field.onChange}
                             captionLayout="dropdown-buttons"
                             fromYear={1900}
