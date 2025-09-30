@@ -11,7 +11,8 @@ import {
   Youtube,
   Linkedin,
   Send,
-  Bell
+  Bell,
+  ArrowRight
 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { Link, NavLink } from "react-router-dom";
@@ -84,10 +85,10 @@ const Footer = () => {
                     type="submit"
                     disabled={submitting}
                     loading={submitting}
-                    text={""}
-                    width={24}
-                    primaryCol="#ffffff"
-                    gradientCol="#000000"
+                    text=""
+                    width={150}
+                    primaryCol="hsl(180, 1.30%, 84.50%)"
+                    gradientCol="#ffffff"
                     className="h-9 text-black"
                     icon={<Bell className="h-4 w-4 text-black" />}
                     iconAlways
