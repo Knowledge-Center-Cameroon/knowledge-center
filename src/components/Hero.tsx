@@ -96,7 +96,7 @@ const Hero = () => {
   const { y: yOverlay } = useParallax(30);
   return (
     <section ref={parRef as any} id="home" className="relative pt-16 md:pt-20 lg:pt-20 min-h-[70svh] sm:min-h-[75svh] md:min-h-[80svh] lg:min-h-[88svh] flex items-center justify-center overflow-hidden">
-      {/* Background Images with crossfade */}
+      {/* Background Images with parallax and crossfade */}
       <div className="absolute inset-0">
         {slides.map((s, idx) => (
           <motion.div
@@ -104,26 +104,37 @@ const Hero = () => {
             className={`absolute inset-0 transition-opacity duration-700 ease-out ${idx === currentSlide ? "opacity-100" : "opacity-0"}`}
             style={{ y: yBack }}
           >
-            <img
-              src={s.image}
-              alt={s.title}
-              className="w-full h-full object-cover object-center will-change-transform"
-              loading={idx === 0 ? "eager" : "lazy"}
-              decoding="async"
-              sizes="100vw"
+            <motion.div 
+              className="absolute inset-0 scale-110"
+              style={{ y: yBack }}
+            >
+              <img
+                src={s.image}
+                alt={s.title}
+                className="w-full h-full object-cover object-center will-change-transform transition-transform duration-700"
+                loading={idx === 0 ? "eager" : "lazy"}
+                decoding="async"
+                sizes="100vw"
+              />
+            </motion.div>
+            <motion.div 
+              className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/60 to-black/80" 
+              style={{ y: yOverlay }} 
             />
-            <motion.div className="absolute inset-0 bg-black/60" style={{ y: yOverlay }} />
           </motion.div>
         ))}
       </div>
 
-      {/* Content */}
-      <div className="relative z-10 container mx-auto px-4 lg:px-8 text-center text-white">
+      {/* Content with parallax */}
+      <motion.div 
+        className="relative z-10 container mx-auto px-4 lg:px-8 text-center text-white"
+        style={{ y: yOverlay }}
+      >
         <motion.div
           initial={{ opacity: 0, y: 18 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-          className="max-w-3xl md:max-w-4xl mx-auto glass rounded-2xl shadow-elegant px-5 py-6 sm:px-8 sm:py-8 md:px-10 md:py-10"
+          className="max-w-3xl md:max-w-4xl mx-auto glass rounded-2xl shadow-elegant px-5 py-6 sm:px-8 sm:py-8 md:px-10 md:py-10 bg-black/40 border border-white/10 backdrop-blur-md"
         >
           {/* Animated Logo */}
           <div className="flex justify-center mb-4 md:mb-6">

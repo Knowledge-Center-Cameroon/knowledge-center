@@ -178,22 +178,40 @@ const About = () => {
         {/* What is Knowledge Center with Carousel */}
         <div className="grid lg:grid-cols-2 gap-6 sm:gap-8 md:gap-12 items-center mb-14 md:mb-20">
           <div className="animate-slide-up">
-            <div className="h-1 w-20 mb-3 bg-kc-blue rounded-full" />
+<motion.div 
+                initial={{ width: 0 }}
+                whileInView={{ width: 80 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6 }}
+                className="h-1 mb-3 bg-kc-blue rounded-full"
+              />
             <h3 className="text-2xl md:text-3xl font-heading font-bold mb-4 md:mb-6">What is Knowledge Center</h3>
-            <div className="prose md:prose-lg max-w-none">
-              <p className="text-muted-foreground leading-relaxed mb-4 md:mb-6">
+        <div className="prose md:prose-lg max-w-none">
+              <motion.p 
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6 }}
+                className="text-muted-foreground leading-relaxed mb-4 md:mb-6"
+              >
                 There is a violence being done to young minds across large parts of Africa: education reduced to regurgitation,
                 curiosity stamped out for the sake of a grade. Knowledge Center exists to end that quiet violence. We are a youth-led
                 movement that refuses the belief that school must be a factory of memorized answers. KC is where young people relearn
                 how to wonder, how to reason, and how to turn knowledge into power.
-              </p>
+              </motion.p>
 
-              <p className="text-muted-foreground leading-relaxed">
+              <motion.p 
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: 0.2 }}
+                className="text-muted-foreground leading-relaxed"
+              >
                 We build learning that looks like life. Experiences that demand imagination, refuse easy answers, and teach students
                 how to wield ideas as tools to remake their communities. Our work spans rigorous national assessments recast as
                 laboratories for thought, mentorship that elevates aspiration into skill, and an innovation pipeline that turns classroom
                 insight into community solutions. We do this with intention, regional reach, and relentless care.
-              </p>
+              </motion.p>
             </div>
           </div>
 
@@ -221,14 +239,20 @@ const About = () => {
             <div>
               <div className="h-1 w-20 mb-3 bg-kc-blue rounded-full" />
               <h3 className="text-2xl md:text-3xl font-heading font-bold mb-3 md:mb-4">What we teach that school forgets</h3>
-              <div className="prose md:prose-lg max-w-none">
-                <p className="text-muted-foreground leading-relaxed">
-                  We teach the courage to ask the wrong question until the right one appears. We value process over an answer and craft
-                  problems that expand the mind rather than narrow it. We are architects of intellectual habit: skepticism,
-                  cross-disciplinary synthesis, craftsmanship in reasoning, and fierce curiosity. KC’s students know how to make things
-                  that matter.
-                </p>
-              </div>
+                <div className="prose md:prose-lg max-w-none">
+                  <motion.p 
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.6 }}
+                    className="text-muted-foreground leading-relaxed"
+                  >
+                    We teach the courage to ask the wrong question until the right one appears. We value process over an answer and craft
+                    problems that expand the mind rather than narrow it. We are architects of intellectual habit: skepticism,
+                    cross-disciplinary synthesis, craftsmanship in reasoning, and fierce curiosity. KC's students know how to make things
+                    that matter.
+                  </motion.p>
+                </div>
             </div>
 
             <div>
@@ -314,7 +338,15 @@ const About = () => {
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
             {values.map((value, index) => (
-              <Card key={index} className="h-full shadow-elegant transition-all hover:shadow-2xl hover:-translate-y-1 bg-white/40 backdrop-blur-sm border-white/50">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
+                whileHover={{ y: -8, scale: 1.02 }}
+                key={index}
+              >
+                <Card className="h-full shadow-elegant transition-all hover:shadow-2xl bg-white/40 backdrop-blur-sm border-white/50">
                 <CardContent className="p-5 md:p-6 flex flex-col h-full">
                   <div className="w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4 bg-kc-black text-white">
                     <value.icon className="h-6 w-6" />
@@ -322,7 +354,8 @@ const About = () => {
                   <h4 className="text-base md:text-lg font-heading font-semibold mb-2 md:mb-3 text-center">{value.title}</h4>
                   <p className="text-muted-foreground text-sm leading-relaxed text-center flex-1">{value.description}</p>
                 </CardContent>
-              </Card>
+                </Card>
+              </motion.div>
             ))}
           </div>
         </div>
@@ -332,7 +365,17 @@ const About = () => {
           <h3 className="text-2xl md:text-3xl font-heading font-bold text-center mb-6 md:mb-10">Frequently Asked Questions</h3>
           <Accordion type="single" collapsible value={openFaq} onValueChange={setOpenFaq} className="max-w-3xl mx-auto">
             {faqs.map((faq, index) => (
-              <AccordionItem key={index} value={`item-${index}`} className="border border-border rounded-xl mb-3 md:mb-4 overflow-hidden bg-white/5 backdrop-blur-sm">
+              <motion.div
+                initial={{ opacity: 0, x: -20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
+                key={index}
+              >
+                <AccordionItem 
+                  value={`item-${index}`} 
+                  className="border border-border rounded-xl mb-3 md:mb-4 overflow-hidden bg-white/5 backdrop-blur-sm transition-all duration-300 hover:border-kc-blue/40"
+                >
                 <AccordionTrigger className="px-4 md:px-6 py-3.5 md:py-5 text-left font-semibold hover:no-underline">
                   <div className="flex items-center justify-between w-full">
                     <span>{faq.question}</span>
@@ -341,7 +384,8 @@ const About = () => {
                 <AccordionContent className="px-4 md:px-6 pb-4 md:pb-6 text-muted-foreground">
                   {faq.answer}
                 </AccordionContent>
-              </AccordionItem>
+                </AccordionItem>
+              </motion.div>
             ))}
           </Accordion>
         </div>
