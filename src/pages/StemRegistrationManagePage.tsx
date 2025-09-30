@@ -21,7 +21,6 @@ const StemRegistrationManagePage: React.FC = () => {
         region: (last.region as any) || (undefined as any),
         motivation: last.motivation || "",
         level: last.level as any,
-        paymentMethod: last.paymentMethod as any,
         subjects: (last.subjects as any) || [],
         payerPhone: (last.payerPhone as any) || "",
         paymentScreenshot: undefined as any,
