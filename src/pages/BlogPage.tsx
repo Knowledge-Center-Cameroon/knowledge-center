@@ -14,6 +14,10 @@ import { Heart, MessageSquare } from "lucide-react";
 const BlogPage: React.FC = () => {
   const [query, setQuery] = React.useState("");
   const [activeTag, setActiveTag] = React.useState<string | null>(null);
+  const [likedPosts, setLikedPosts] = React.useState<Record<string, boolean>>({});
+  const [likeCounts, setLikeCounts] = React.useState<Record<string, number>>({});
+  const [commentCounts, setCommentCounts] = React.useState<Record<string, number>>({});
+
   const posts = React.useMemo(() => (
     [...blogPosts].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
   ), []);
@@ -22,12 +26,72 @@ const BlogPage: React.FC = () => {
     posts.forEach(p => (p.tags || []).forEach(t => s.add(t)));
     return Array.from(s).sort();
   }, [posts]);
+
   const filtered = posts.filter(p => {
     const q = query.trim().toLowerCase();
     const matchesQuery = !q || p.title.toLowerCase().includes(q) || (p.excerpt?.toLowerCase().includes(q));
     const matchesTag = !activeTag || (p.tags || []).includes(activeTag);
     return matchesQuery && matchesTag;
   });
+
+  // LocalStorage-backed like/comment state
+  React.useEffect(() => {
+    try {
+      const liked = JSON.parse(localStorage.getItem('kc_liked_posts_v1') || '{}');
+      const likes = JSON.parse(localStorage.getItem('kc_like_counts_v1') || '{}');
+      const comments = JSON.parse(localStorage.getItem('kc_comment_counts_v1') || '{}');
+      // Ensure keys exist for current posts
+      const likedInit: Record<string, boolean> = { ...liked };
+      const likeCountsInit: Record<string, number> = { ...likes };
+      const commentCountsInit: Record<string, number> = { ...comments };
+      posts.forEach(p => {
+        if (likedInit[p.id] === undefined) likedInit[p.id] = false;
+        if (typeof likeCountsInit[p.id] !== 'number') likeCountsInit[p.id] = 0;
+        if (typeof commentCountsInit[p.id] !== 'number') commentCountsInit[p.id] = 0;
+      });
+      setLikedPosts(likedInit);
+      setLikeCounts(likeCountsInit);
+      setCommentCounts(commentCountsInit);
+    } catch {
+      // Fallback defaults
+      const likedInit: Record<string, boolean> = {};
+      const likeCountsInit: Record<string, number> = {};
+      const commentCountsInit: Record<string, number> = {};
+      posts.forEach(p => {
+        likedInit[p.id] = false;
+        likeCountsInit[p.id] = 0;
+        commentCountsInit[p.id] = 0;
+      });
+      setLikedPosts(likedInit);
+      setLikeCounts(likeCountsInit);
+      setCommentCounts(commentCountsInit);
+    }
+    // Only run on mount/posts (posts stable due to memo)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [posts]);
+
+  React.useEffect(() => {
+    try { localStorage.setItem('kc_liked_posts_v1', JSON.stringify(likedPosts)); } catch {}
+  }, [likedPosts]);
+  React.useEffect(() => {
+    try { localStorage.setItem('kc_like_counts_v1', JSON.stringify(likeCounts)); } catch {}
+  }, [likeCounts]);
+  React.useEffect(() => {
+    try { localStorage.setItem('kc_comment_counts_v1', JSON.stringify(commentCounts)); } catch {}
+  }, [commentCounts]);
+
+  const handleLike = (postId: string) => {
+    setLikedPosts((prev) => {
+      if (prev[postId]) return prev; // already liked on this device
+      const next = { ...prev, [postId]: true };
+      return next;
+    });
+    setLikeCounts((prev) => ({ ...prev, [postId]: (prev[postId] || 0) + 1 }));
+  };
+
+  const handleComment = (postId: string) => {
+    setCommentCounts((prev) => ({ ...prev, [postId]: (prev[postId] || 0) + 1 }));
+  };
 
   const { ref, y } = useParallax(40);
   return (
@@ -49,15 +113,20 @@ const BlogPage: React.FC = () => {
       </Parallax>
 
       {/* Toolbar: search + tag filters */}
-      <div className="mb-8 flex flex-col gap-3">
-        <div className="max-w-lg">
-          <Input placeholder="Search posts..." value={query} onChange={(e) => setQuery(e.target.value)} />
+      <div className="mb-8 flex flex-col sm:flex-row sm:items-center gap-4">
+        <div className="w-full sm:max-w-md">
+          <Input 
+            placeholder="Search posts..." 
+            value={query} 
+            onChange={(e) => setQuery(e.target.value)} 
+            className="shadow-sm transition-all duration-300 focus-visible:shadow-md"
+          />
         </div>
         {allTags.length > 0 && (
           <div className="flex flex-wrap gap-2">
             <button
               onClick={() => setActiveTag(null)}
-              className={`px-3 py-1.5 rounded-full text-sm border ${activeTag === null ? 'bg-black text-white border-black' : 'bg-white/70 text-foreground border-border hover:bg-white'}`}
+              className={`px-3 py-1.5 rounded-full text-sm border transition-all duration-300 ${activeTag === null ? 'bg-kc-blue text-white border-kc-blue shadow-md' : 'bg-white/70 text-foreground border-border hover:bg-white hover:shadow-sm'}`}
             >
               All
             </button>
@@ -65,7 +134,7 @@ const BlogPage: React.FC = () => {
               <button
                 key={t}
                 onClick={() => setActiveTag(t)}
-                className={`px-3 py-1.5 rounded-full text-sm border ${activeTag === t ? 'bg-black text-white border-black' : 'bg-white/70 text-foreground border-border hover:bg-white'}`}
+                className={`px-3 py-1.5 rounded-full text-sm border transition-all duration-300 ${activeTag === t ? 'bg-kc-blue text-white border-kc-blue shadow-md' : 'bg-white/70 text-foreground border-border hover:bg-white hover:shadow-sm'}`}
               >
                 {t}
               </button>
@@ -77,47 +146,61 @@ const BlogPage: React.FC = () => {
       {posts.length === 0 ? (
         <div className="text-muted-foreground">No posts yet. Check back soon.</div>
       ) : (
-        <div className="grid lg:grid-cols-12 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8">
           {/* Feed */}
-          <div className="lg:col-span-8 space-y-6">
+          <div className="lg:col-span-8 space-y-8">
             {filtered.map((post, idx) => {
               const dt = new Date(post.date);
               const date = dt.toLocaleDateString(undefined, { year: "numeric", month: "short", day: "2-digit" });
               const initials = (post.author || "KC").split(" ").map(s => s[0]).slice(0,2).join("").toUpperCase();
-              const [likes, setLikes] = React.useState(0);
-              const [comments, setComments] = React.useState(0);
+              const pid = post.id;
+              const isLiked = likedPosts[pid] === true;
+              const likeCount = likeCounts[pid] || 0;
+              const commentCount = commentCounts[pid] || 0;
               return (
-                <motion.div key={post.id} initial={{ opacity: 0, y: 8 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.2 }} transition={{ duration: 0.35, delay: idx * 0.03 }}>
-                  <Card className="group relative overflow-hidden border-border/60 bg-white/70 backdrop-blur-md shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:border-primary/40">
+                <motion.div key={post.id} initial={{ opacity: 0, y: 8 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.2 }} transition={{ duration: 0.35, delay: idx * 0.05 }}>
+                  <Card className="group relative overflow-hidden border-border/60 bg-white/80 backdrop-blur-md shadow-sm transition-all duration-300 hover:-translate-y-1.5 hover:shadow-xl hover:border-kc-blue/40">
                     {post.cover && (
-                      <img src={post.cover} alt={post.title} className="w-full h-52 object-cover" loading="lazy" decoding="async" />
+                      <div className="relative overflow-hidden">
+                        <img 
+                          src={post.cover} 
+                          alt={post.title} 
+                          className="w-full h-52 sm:h-64 object-cover transform transition-transform duration-700 group-hover:scale-105" 
+                          loading="lazy" 
+                          decoding="async" 
+                        />
+                      </div>
                     )}
-                    <CardContent className="p-6">
+                    <CardContent className="p-5 sm:p-6 md:p-8">
                       {/* Header: avatar, title, meta */}
-                      <div className="flex items-start gap-3">
-                        <Avatar className="h-12 w-12 ring-2 ring-primary/20">
+                      <div className="flex items-start gap-4">
+                        <Avatar className="h-12 w-12 ring-2 ring-kc-blue/20 transition-all duration-300 group-hover:ring-kc-blue/40 group-hover:shadow-md">
                           <AvatarImage src={post.cover} alt={post.author || post.title} />
-                          <AvatarFallback>{initials}</AvatarFallback>
+                          <AvatarFallback className="bg-kc-blue/10">{initials}</AvatarFallback>
                         </Avatar>
                         <div className="flex-1 min-w-0">
-                          <div className="flex flex-wrap items-baseline gap-x-2">
-                            <h3 className="text-base sm:text-lg font-semibold truncate">{post.title}</h3>
-                            <span className="text-xs text-muted-foreground">• {date}</span>
+                          <div className="flex flex-wrap items-baseline gap-x-3">
+                            <h3 className="text-lg sm:text-xl font-semibold truncate">{post.title}</h3>
+                            <span className="text-sm text-muted-foreground">• {date}</span>
                           </div>
                           {post.author && (
-                            <div className="text-xs text-muted-foreground mt-0.5">By {post.author}</div>
+                            <div className="text-sm text-muted-foreground mt-1">By {post.author}</div>
                           )}
                         </div>
                       </div>
 
                       {/* Body/excerpt */}
-                      <p className="mt-3 text-sm text-foreground/85 leading-relaxed">{post.excerpt}</p>
+                      <p className="mt-4 sm:mt-6 text-base text-foreground/85 leading-relaxed">{post.excerpt}</p>
 
                       {/* Tags */}
                       {post.tags && post.tags.length > 0 && (
-                        <div className="mt-3 flex flex-wrap gap-2">
+                        <div className="mt-4 sm:mt-6 flex flex-wrap gap-2">
                           {post.tags.map((t) => (
-                            <span key={t} className="text-xs px-2 py-1 rounded-full bg-black/80 text-white">
+                            <span 
+                              key={t} 
+                              className="text-xs px-3 py-1.5 rounded-full bg-kc-blue/10 text-kc-blue font-medium transition-all duration-300 hover:bg-kc-blue hover:text-white cursor-pointer"
+                              onClick={() => setActiveTag(t)}
+                            >
                               {t}
                             </span>
                           ))}
@@ -125,16 +208,31 @@ const BlogPage: React.FC = () => {
                       )}
 
                       {/* Footer actions */}
-                      <div className="mt-4 flex gap-3 items-center">
-                        <Button variant="blackOutline" asChild className="rounded-full">
+                      <div className="mt-6 sm:mt-8 flex flex-wrap gap-4 items-center">
+                        <Button 
+                          variant="blue" 
+                          asChild 
+                          className="rounded-full text-base px-6"
+                        >
                           <Link to="#" onClick={(e) => e.preventDefault()}>Read more</Link>
                         </Button>
-                        <button onClick={() => setLikes((n) => n + 1)} className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground">
-                          <Heart className="h-4 w-4" /> {likes}
-                        </button>
-                        <button onClick={() => setComments((n) => n + 1)} className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground">
-                          <MessageSquare className="h-4 w-4" /> {comments}
-                        </button>
+                        <div className="flex gap-4">
+                          <button
+                            onClick={() => handleLike(pid)}
+                            disabled={isLiked}
+                            aria-pressed={isLiked}
+                            className={`inline-flex items-center gap-1.5 text-sm transition-colors duration-300 ${isLiked ? 'text-kc-blue cursor-default' : 'text-muted-foreground hover:text-kc-blue'}`}
+                            title={isLiked ? 'You already liked this post' : 'Like this post'}
+                          >
+                            <Heart className={`h-5 w-5 ${isLiked ? 'fill-kc-blue text-kc-blue' : ''}`} /> {likeCount}
+                          </button>
+                          <button
+                            onClick={() => handleComment(pid)}
+                            className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-kc-blue transition-colors duration-300"
+                          >
+                            <MessageSquare className="h-5 w-5" /> {commentCount}
+                          </button>
+                        </div>
                       </div>
                     </CardContent>
                   </Card>
@@ -143,17 +241,19 @@ const BlogPage: React.FC = () => {
             })}
           </div>
 
-          {/* Sidebar timeline */}
+          {/* Sticky sidebar timeline */}
           <div className="lg:col-span-4">
-            {(() => {
-              const items: TimelineItem[] = posts.map((p) => ({
-                title: p.title,
-                date: new Date(p.date).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: '2-digit' }),
-                description: p.excerpt,
-                href: '#',
-              }));
-              return <Timeline title="Recent Posts" items={items} />;
-            })()}
+            <div className="lg:sticky lg:top-8">
+              {(() => {
+                const items: TimelineItem[] = posts.map((p) => ({
+                  title: p.title,
+                  date: new Date(p.date).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: '2-digit' }),
+                  description: p.excerpt,
+                  href: '#',
+                }));
+                return <Timeline title="Recent Posts" items={items} />;
+              })()}
+            </div>
           </div>
         </div>
       )}
