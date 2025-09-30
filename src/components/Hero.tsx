@@ -217,7 +217,7 @@ const Hero = () => {
             />
           </div>
         </motion.div>
-      </div>
+      </motion.div>
 
       {/* Navigation Controls */}
       <button

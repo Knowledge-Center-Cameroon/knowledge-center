@@ -244,7 +244,6 @@ const ProjectsPage: React.FC = () => {
               </Button>
             </motion.div>
           )}
-          </div>
         </div>
       </section>
     </motion.div>

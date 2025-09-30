@@ -5,6 +5,9 @@ export type Project = {
   images: string[];
   features: string[];
   details: string[];
+  categories?: string[];
+  featured?: boolean;
+  externalUrl?: string;
 };
 
 import StemImg from "@/assets/stem.jpg";
@@ -18,6 +21,7 @@ import Prepa from "@/assets/prepa.jpeg"
 import Prepa2 from "@/assets/prepa2.jpeg"
 import image from "@/assets/placeholder.svg";
 import KC from "@/assets/logo.png";
+import global from "@/assets/global.png"
 
 export const projects: Project[] = [
   {
@@ -112,7 +116,7 @@ export const projects: Project[] = [
     title: "Global Scholars Program",
     summary:
       "We prepare scholars for opportunities beyond borders—competitive scholarships, exchange programs, and global leadership.",
-    images: [image, KC, KC],
+    images: [global, KC, KC],
     features: [
       "Mentorship from seasoned staff and alumni",
       "Application strategy for global opportunities",

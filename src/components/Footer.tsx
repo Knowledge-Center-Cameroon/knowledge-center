@@ -11,7 +11,6 @@ import {
   Youtube,
   Linkedin,
   Send,
-  Bell,
   ArrowRight
 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
@@ -87,10 +86,10 @@ const Footer = () => {
                     loading={submitting}
                     text=""
                     width={150}
-                    primaryCol="hsl(180, 1.30%, 84.50%)"
-                    gradientCol="#ffffff"
+                    primaryCol="#ffffff"
+                    gradientCol="hsl(240, 0.60%, 31.20%)"
                     className="h-9 text-black"
-                    icon={<Bell className="h-4 w-4 text-black" />}
+                    icon={<Send className="h-4 w-4 text-black" />}
                     iconAlways
                   />
                 </form>

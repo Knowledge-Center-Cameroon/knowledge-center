@@ -109,24 +109,51 @@ const ProjectDetailPage: React.FC = () => {
 
   return (
     <section className="py-12 md:py-16 lg:py-20">
-      <div className="container mx-auto px-4 lg:px-8 max-w-6xl">
+      <div className="relative container mx-auto px-4 lg:px-8 max-w-6xl">
+        {/* Background decor */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none -z-10">
+          <div className="absolute -top-40 -right-40 w-96 h-96 bg-gradient-to-br from-kc-blue/20 via-transparent to-kc-red/20 rounded-full blur-3xl opacity-50" />
+          <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-gradient-to-tr from-kc-red/20 via-transparent to-kc-blue/20 rounded-full blur-3xl opacity-50" />
+        </div>
+        
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-          className="mb-8"
+          className="relative mb-12"
         >
-          <div className="flex items-center justify-between mb-4">
-            <Button variant="ghost" onClick={() => navigate(-1)}>
-              <ArrowLeft className="h-4 w-4 mr-2" /> Back
+          <div className="flex items-center justify-between mb-6">
+            <Button 
+              variant="ghost" 
+              onClick={() => navigate(-1)}
+              className="group hover:bg-kc-blue/10"
+            >
+              <ArrowLeft className="h-4 w-4 mr-2 group-hover:text-kc-blue transition-colors" /> 
+              <span className="group-hover:text-kc-blue transition-colors">Back</span>
             </Button>
-            <Link to="/projects" className="text-sm text-primary hover:underline">All projects</Link>
+            <Button 
+              asChild 
+              variant="outline"
+              className="hover:border-kc-blue hover:text-kc-blue transition-colors"
+            >
+              <Link to="/projects">All projects</Link>
+            </Button>
           </div>
-          <h1 className="text-3xl md:text-4xl font-heading font-bold mb-3">
-            {project.title}
-          </h1>
-          <p className="text-lg text-muted-foreground max-w-3xl">{project.summary}</p>
+
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.1 }}
+            className="text-center max-w-4xl mx-auto"
+          >
+            <h1 className="text-3xl md:text-4xl lg:text-5xl font-heading font-bold mb-4">
+              {project.title}
+            </h1>
+            <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
+              {project.summary}
+            </p>
+          </motion.div>
         </motion.div>
 
         {/* Media + Content split */}
@@ -158,12 +185,14 @@ const ProjectDetailPage: React.FC = () => {
                   {/* Dots */}
                   <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-2 z-10">
                     {project.images.map((_, idx) => (
-                      <button
-                        key={idx}
-                        onClick={() => api?.scrollTo(idx)}
-                        aria-label={`Go to image ${idx + 1}`}
-                        className={`w-2.5 h-2.5 rounded-full ${idx === activeIndex ? "bg-white" : "bg-white/60 hover:bg-white/80"}`}
-                      />
+              <motion.button
+                key={idx}
+                onClick={() => api?.scrollTo(idx)}
+                aria-label={`Go to image ${idx + 1}`}
+                className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${idx === activeIndex ? "bg-white scale-125" : "bg-white/60 hover:bg-white/80"}`}
+                whileHover={{ scale: 1.2 }}
+                whileTap={{ scale: 0.9 }}
+              />
                     ))}
                   </div>
                 </Carousel>
@@ -199,7 +228,7 @@ const ProjectDetailPage: React.FC = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, amount: 0.2 }}
                 transition={{ duration: 0.3, delay: i * 0.05 }}
-                className="group text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/60 focus-visible:ring-offset-2 focus-visible:ring-offset-background rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 transition-all p-4 md:p-5 shadow-sm hover:shadow-md"
+                className="group text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-kc-blue/60 focus-visible:ring-offset-2 focus-visible:ring-offset-background rounded-xl border border-white/20 bg-white/5 backdrop-blur-sm hover:bg-white/10 transition-all p-5 md:p-6 shadow-elegant hover:shadow-2xl hover:-translate-y-1"
               >
                 <div className="flex items-start gap-3">
                   <CheckCircle className="h-5 w-5 text-primary mt-0.5 flex-shrink-0 group-hover:scale-110 transition-transform" />
@@ -215,9 +244,12 @@ const ProjectDetailPage: React.FC = () => {
 
         {/* Additional Details only (avoid redundancy) */}
         <div className="grid md:grid-cols-2 gap-8">
-          <Card className="shadow-elegant">
-            <CardContent className="p-6">
-              <h2 className="text-xl font-heading font-semibold mb-4">Additional Details</h2>
+          <Card className="shadow-elegant bg-white/5 backdrop-blur-sm border-white/20 transition-all duration-300 hover:shadow-2xl">
+            <CardContent className="p-6 md:p-8">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="h-8 w-1 bg-gradient-to-b from-kc-blue to-kc-red rounded-full" />
+                <h2 className="text-xl md:text-2xl font-heading font-semibold">Additional Details</h2>
+              </div>
               <ul className="space-y-2">
                 {project.details.map((d, i) => (
                   <motion.li
@@ -245,10 +277,13 @@ const ProjectDetailPage: React.FC = () => {
                   viewport={{ once: true, amount: 0.2 }}
                   transition={{ duration: 0.35, delay: idx * 0.05 }}
                 >
-                  <Card className="bg-white/5 backdrop-blur-sm border border-white/10">
-                    <CardContent className="p-6 text-center">
-                      <div className="text-3xl font-heading font-bold">{s.value}</div>
-                      <div className="text-sm text-foreground/80">{s.label}</div>
+                  <Card className="bg-white/5 backdrop-blur-sm border border-white/20 transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 group">
+                    <CardContent className="p-6 text-center relative overflow-hidden">
+                      <div className="absolute inset-0 bg-gradient-to-br from-kc-blue/5 to-kc-red/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                      <div className="relative">
+                        <div className="text-3xl md:text-4xl font-heading font-bold mb-1 group-hover:text-kc-blue transition-colors">{s.value}</div>
+                        <div className="text-sm md:text-base text-foreground/80">{s.label}</div>
+                      </div>
                     </CardContent>
                   </Card>
                 </motion.div>
@@ -259,22 +294,47 @@ const ProjectDetailPage: React.FC = () => {
 
         {/* Call to action */}
         <motion.div
-          initial={{ opacity: 0, y: 10 }}
+          initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.2 }}
-          transition={{ duration: 0.4 }}
-          className="mt-10 md:mt-12 flex items-center justify-between gap-4 flex-wrap"
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+          className="relative mt-16 md:mt-20"
         >
-          <div className="text-muted-foreground">Take the next step with {project.title}.</div>
-          <div className="flex gap-3">
-            {project.slug === "stem" && (
-              <Button asChild variant="blue">
-                <Link to="/stem">Get Registered</Link>
-              </Button>
-            )}
-            <Button asChild variant="blackOutline">
-              <Link to="/donate">Support the mission</Link>
-            </Button>
+          <div className="absolute inset-0 bg-gradient-to-r from-kc-blue/20 via-transparent to-kc-red/20 rounded-3xl blur-2xl" />
+          <div className="relative bg-white/10 backdrop-blur-md border border-white/20 rounded-3xl p-8 md:p-10 lg:p-12 overflow-hidden shadow-2xl">
+            <div className="absolute top-0 right-0 w-full h-full bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.12),transparent_50%)]" />
+            
+            <div className="flex flex-col md:flex-row items-center justify-between gap-6 md:gap-8">
+              <div className="text-center md:text-left">
+                <h3 className="text-2xl md:text-3xl font-heading font-bold mb-3">
+                  Ready to Get Started?
+                </h3>
+                <p className="text-lg text-muted-foreground">
+                  Take the next step with {project.title} and be part of something extraordinary.
+                </p>
+              </div>
+              
+              <div className="flex flex-col sm:flex-row gap-4">
+                {project.slug === "stem" && (
+                  <Button 
+                    asChild 
+                    variant="blue" 
+                    size="lg"
+                    className="px-8 text-base rounded-full"
+                  >
+                    <Link to="/stem">Get Registered</Link>
+                  </Button>
+                )}
+                <Button 
+                  asChild 
+                  variant="blackOutline" 
+                  size="lg"
+                  className="px-8 text-base rounded-full"
+                >
+                  <Link to="/donate">Support the mission</Link>
+                </Button>
+              </div>
+            </div>
           </div>
         </motion.div>
       </div>

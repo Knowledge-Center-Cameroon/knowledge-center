@@ -89,10 +89,6 @@ const BlogPage: React.FC = () => {
     setLikeCounts((prev) => ({ ...prev, [postId]: (prev[postId] || 0) + 1 }));
   };
 
-  const handleComment = (postId: string) => {
-    setCommentCounts((prev) => ({ ...prev, [postId]: (prev[postId] || 0) + 1 }));
-  };
-
   const { ref, y } = useParallax(40);
   return (
     <motion.section
@@ -227,8 +223,7 @@ const BlogPage: React.FC = () => {
                             <Heart className={`h-5 w-5 ${isLiked ? 'fill-kc-blue text-kc-blue' : ''}`} /> {likeCount}
                           </button>
                           <button
-                            onClick={() => handleComment(pid)}
-                            className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-kc-blue transition-colors duration-300"
+                            className="inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors duration-300"
                           >
                             <MessageSquare className="h-5 w-5" /> {commentCount}
                           </button>
