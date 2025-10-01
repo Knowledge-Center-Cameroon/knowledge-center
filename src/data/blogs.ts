@@ -1,6 +1,7 @@
 import coverStem from "@/assets/stem.jpg";
 import coverSummer from "@/assets/summer2.jpeg";
 import coverWhy from "@/assets/hero-image.jpeg";
+import  logo from "@/assets/kc_round_trans.png"
 export type BlogPost = {
   id: string;
   title: string;
@@ -9,6 +10,7 @@ export type BlogPost = {
   date: string; // ISO string
   author?: string;
   cover?: string;
+  dp?: string;
   tags?: string[];
 };
 
@@ -23,6 +25,7 @@ export const blogPosts: BlogPost[] = [
     author: "KC Editorial Team",
     cover: coverStem,
     tags: ["STEM", "Competition", "Education"],
+    dp: logo,
   },
   {
     id: "summer-program-2024-wrap",
@@ -33,6 +36,7 @@ export const blogPosts: BlogPost[] = [
     author: "KC Editorial Team",
     cover: coverSummer,
     tags: ["Summer Program", "Skills", "Bootcamp"],
+    dp: logo,
   },
   {
     id: "why-stem-matters",
@@ -43,5 +47,6 @@ export const blogPosts: BlogPost[] = [
     author: "KC Editorial Team",
     cover: coverWhy,
     tags: ["STEM", "Cameroon", "Innovation"],
+    dp: logo,
   },
 ];

@@ -171,7 +171,7 @@ const BlogPage: React.FC = () => {
                       {/* Header: avatar, title, meta */}
                       <div className="flex items-start gap-4">
                         <Avatar className="h-12 w-12 ring-2 ring-kc-blue/20 transition-all duration-300 group-hover:ring-kc-blue/40 group-hover:shadow-md">
-                          <AvatarImage src={post.cover} alt={post.author || post.title} />
+                          <AvatarImage src={post.dp} alt={post.author || post.title} />
                           <AvatarFallback className="bg-kc-blue/10">{initials}</AvatarFallback>
                         </Avatar>
                         <div className="flex-1 min-w-0">
