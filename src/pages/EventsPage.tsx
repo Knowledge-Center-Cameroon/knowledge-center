@@ -56,28 +56,54 @@ const fadeUp = {
 };
 
 const tabVariants = {
-  hidden: { opacity: 0, y: 10 },
-  show: { opacity: 1, y: 0 },
+  hidden: { opacity: 0, y: 10, scale: 0.95 },
+  show: {
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    transition: {
+      duration: 0.4,
+      ease: [0.22, 1, 0.36, 1]
+    }
+  },
+  active: {
+    scale: 1.02,
+    transition: { duration: 0.2 }
+  }
 };
 
 const cardVariants = {
-  hidden: { opacity: 0, y: 20 },
-  show: { 
-    opacity: 1, 
+  hidden: {
+    opacity: 0,
+    y: 30,
+    scale: 0.9,
+    rotateX: -15
+  },
+  show: {
+    opacity: 1,
     y: 0,
-    transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] }
+    scale: 1,
+    rotateX: 0,
+    transition: {
+      duration: 0.6,
+      ease: [0.22, 1, 0.36, 1]
+    }
   },
   hover: {
-    y: -8,
-    transition: { 
+    y: -12,
+    scale: 1.02,
+    rotateX: 2,
+    transition: {
       type: 'spring',
       stiffness: 260,
       damping: 20
     }
   },
-  exit: { 
+  exit: {
     opacity: 0,
+    scale: 0.95,
     y: 20,
+    rotateX: 15,
     transition: { duration: 0.3 }
   }
 };
@@ -100,229 +126,124 @@ const toGCalUrl = (title: string, date: string, time?: string, details?: string,
 };
 
 const EventsGrid: React.FC<{ items: typeof UPCOMING }> = ({ items }) => (
-  <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+  <motion.div
+    className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8"
+    initial={{ opacity: 0 }}
+    animate={{ opacity: 1 }}
+    transition={{ duration: 0.5, delay: 0.2 }}
+  >
     <AnimatePresence mode="popLayout">
       {items.map((e, i) => (
-        <motion.div 
-          key={e.title} 
+        <motion.div
+          key={e.title}
           variants={cardVariants}
           initial="hidden"
           animate="show"
           exit="exit"
           whileHover="hover"
           layoutId={e.title}
+          style={{ transformOrigin: "center" }}
         >
-          <Card className="group relative h-full overflow-hidden bg-white/80 backdrop-blur-md border border-white/20 shadow-elegant rounded-2xl transition-all duration-500 hover:border-kc-blue/40">
+          <Card className="group relative h-full overflow-hidden bg-white/90 backdrop-blur-xl border border-white/30 shadow-xl hover:shadow-2xl rounded-3xl transition-all duration-500 hover:border-kc-blue/50 hover:bg-white/95">
+            {/* Animated border gradient */}
+            <div className="absolute inset-0 bg-gradient-to-br from-kc-blue/20 via-transparent to-kc-red/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
             {e.badge && (
-              <motion.div 
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.2 }}
-                className="absolute right-4 top-4 z-10 inline-flex items-center gap-1.5 rounded-full bg-kc-red/90 text-white px-3 py-1.5 text-sm font-medium shadow-md backdrop-blur-sm"
+              <motion.div
+                initial={{ opacity: 0, scale: 0.8, y: -10 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                transition={{ delay: 0.3 + (i * 0.1), type: "spring", stiffness: 260 }}
+                className="absolute right-4 top-4 z-10 inline-flex items-center gap-1.5 rounded-full bg-gradient-to-r from-kc-red to-kc-red/90 text-white px-3 py-1.5 text-sm font-medium shadow-lg backdrop-blur-sm border border-white/20"
               >
-                <Sparkles className="h-4 w-4" /> {e.badge}
+                <Sparkles className="h-4 w-4" />
+                {e.badge}
               </motion.div>
             )}
-            
-            <CardHeader className="p-6 pb-0">
+            <CardHeader className="p-6 pb-0 relative">
               <div className="flex items-start justify-between gap-4">
                 <div className="flex-1">
-                  <h3 className="text-xl font-semibold leading-tight mb-2 group-hover:text-kc-blue transition-colors duration-300">
+                  <motion.h3
+                    className="text-xl font-bold leading-tight mb-2 group-hover:text-kc-blue transition-colors duration-300"
+                    initial={{ opacity: 0, x: -10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.4 + (i * 0.1) }}
+                  >
                     {e.title}
-                  </h3>
-                  <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
+                  </motion.h3>
+                  <motion.div
+                    className="flex flex-wrap gap-4 text-sm text-muted-foreground"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.5 + (i * 0.1) }}
+                  >
                     <div className="flex items-center gap-1.5 transition-colors duration-300 group-hover:text-kc-blue/80">
-                      <CalendarDays className="h-4 w-4" /> {e.date}
+                      <CalendarDays className="h-4 w-4" />
+                      {e.date}
                     </div>
                     <div className="flex items-center gap-1.5 transition-colors duration-300 group-hover:text-kc-blue/80">
-                      <Clock className="h-4 w-4" /> {e.time}
+                      <Clock className="h-4 w-4" />
+                      {e.time}
                     </div>
-                  </div>
+                  </motion.div>
                 </div>
               </div>
             </CardHeader>
-            
             <CardContent className="p-6">
-              <div className="flex items-center gap-1.5 text-sm text-muted-foreground mb-4 transition-colors duration-300 group-hover:text-kc-blue/80">
-                <MapPin className="h-4 w-4" /> {e.location}
-              </div>
-              
-              <p className="text-base leading-relaxed text-foreground/80">
+              <motion.div
+                className="flex items-center gap-1.5 text-sm text-muted-foreground mb-4 transition-colors duration-300 group-hover:text-kc-blue/80"
+                initial={{ opacity: 0, y: 5 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.6 + (i * 0.1) }}
+              >
+                <MapPin className="h-4 w-4" />
+                {e.location}
+              </motion.div>
+              <motion.p
+                className="text-base leading-relaxed text-foreground/80 mb-6"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.7 + (i * 0.1) }}
+              >
                 {e.description}
-              </p>
-              
-              <div className="mt-6 flex flex-wrap items-center gap-4">
-                <ArrowButton
-                  text="Learn More"
-                  bgPrimaryColor="#2563eb"
-                  bgSecondaryColor="#1d4ed8"
-                  textPrimaryColor="#ffffff"
-                  textSecondaryColor="#ffffff"
-                  className="rounded-full text-base"
-                  href="#"
-                />
-                <a
+              </motion.p>
+              <motion.div
+                className="flex flex-wrap items-center gap-4 mt-auto"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.8 + (i * 0.1) }}
+              >
+                <motion.div
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  <ArrowButton
+                    text="Learn More"
+                    bgPrimaryColor="#2563eb"
+                    bgSecondaryColor="#1d4ed8"
+                    textPrimaryColor="#ffffff"
+                    textSecondaryColor="#ffffff"
+                    className="rounded-full text-base"
+                    href="#"
+                  />
+                </motion.div>
+                <motion.a
                   className="group inline-flex items-center text-sm font-medium text-muted-foreground hover:text-kc-blue transition-colors duration-300"
                   href={toGCalUrl(e.title, e.date, e.time, e.description, e.location)}
                   target="_blank"
                   rel="noopener noreferrer"
+                  whileHover={{ scale: 1.05, x: 2 }}
+                  whileTap={{ scale: 0.95 }}
                 >
                   <Calendar className="mr-1.5 h-4 w-4" />
                   Add to Calendar
                   <ArrowRight className="ml-1 h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
-                </a>
-              </div>
+                </motion.a>
+              </motion.div>
             </CardContent>
           </Card>
         </motion.div>
       ))}
     </AnimatePresence>
-  </div>
+  </motion.div>
 );
-
-const EventsPage: React.FC = () => {
-  const { ref, y } = useParallax(40);
-  return (
-    <motion.section
-      initial="hidden"
-      animate="show"
-      variants={{ show: { transition: { staggerChildren: 0.08 } } }}
-      className="container mx-auto px-4 lg:px-8 py-12 relative"
-    >
-      {/* Stem Background */}
-      <div className="absolute inset-0 -z-10">
-        <StemBackground opacity={0.08} density={44} lineDistance={120} speed={0.4} showIcons={true} />
-      </div>
-      <Parallax ref={ref as any} style={{ y }} className="mb-8 text-center">
-        <div className="h-1 w-28 mx-auto mb-3 bg-kc-blue rounded-full" />
-        <h1 className="heading-2 mb-6">
-          <span className="text-kc-blue">KC</span> <span className="text-kc-red">Events</span>
-        </h1>
-        <p className="text-muted-foreground mt-3 max-w-2xl mx-auto">
-          Join our upcoming events, hackathons, and community days. Save the dates and be part of the action.
-        </p>
-      </Parallax>
-
-      <motion.div variants={fadeUp}>
-        <div className="grid lg:grid-cols-12 gap-6 lg:gap-8">
-          <div className="lg:col-span-8">
-            {(() => {
-              const [activeTab, setActiveTab] = useState("upcoming");
-              return (
-                <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-                  <div className="relative overflow-hidden rounded-3xl p-1 bg-white/40 backdrop-blur-md border border-white/40 shadow-elegant mb-12">
-                    <TabsList className="relative w-full grid grid-cols-2 gap-2 p-1">
-                      {/* Animated background */}
-                      <motion.div
-                        className="absolute inset-1 rounded-2xl bg-gradient-to-r from-kc-blue to-kc-blue/90"
-                        initial={false}
-                        animate={{
-                          x: activeTab === 'upcoming' ? '0%' : '100%',
-                          opacity: 1
-                        }}
-                        transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
-                        style={{ width: '50%' }}
-                      />
-                      
-                      {/* Tab Triggers */}
-                      <TabsTrigger 
-                        value="upcoming"
-                        className={cn(
-                          "relative py-3 font-medium text-base rounded-2xl transition-all duration-300",
-                          activeTab === 'upcoming' 
-                            ? 'text-white shadow-sm' 
-                            : 'text-foreground/80 hover:text-foreground hover:bg-white/50'
-                        )}
-                      >
-                        <motion.div
-                          variants={tabVariants}
-                          initial="hidden"
-                          animate="show"
-                          transition={{ delay: 0.1 }}
-                          className="flex items-center justify-center gap-2"
-                        >
-                          <Calendar className="h-4 w-4" />
-                          Upcoming Events
-                        </motion.div>
-                      </TabsTrigger>
-                      
-                      <TabsTrigger 
-                        value="past"
-                        className={cn(
-                          "relative py-3 font-medium text-base rounded-2xl transition-all duration-300",
-                          activeTab === 'past' 
-                            ? 'text-white shadow-sm' 
-                            : 'text-foreground/80 hover:text-foreground hover:bg-white/50'
-                        )}
-                      >
-                        <motion.div
-                          variants={tabVariants}
-                          initial="hidden"
-                          animate="show"
-                          transition={{ delay: 0.2 }}
-                          className="flex items-center justify-center gap-2"
-                        >
-                          <Info className="h-4 w-4" />
-                          Past Events
-                        </motion.div>
-                      </TabsTrigger>
-                    </TabsList>
-                  </div>
-
-                  <AnimatePresence mode="wait">
-                    <motion.div
-                      key={activeTab}
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -10 }}
-                      transition={{ duration: 0.3 }}
-                    >
-                      <TabsContent value="upcoming">
-                        <EventsGrid items={UPCOMING} />
-                      </TabsContent>
-                      <TabsContent value="past">
-                        <EventsGrid items={PAST} />
-                      </TabsContent>
-                    </motion.div>
-                  </AnimatePresence>
-                </Tabs>
-              );
-            })()}
-          </div>
-          <div className="lg:col-span-4">
-            {(() => {
-              const [items, setItems] = useState<TimelineItem[] | null>(null);
-              React.useEffect(() => {
-                (async () => {
-                  try {
-                    const data = await getTimeline();
-                    const mapped: TimelineItem[] = data
-                      .sort((a, b) => new Date(a.dateISO).getTime() - new Date(b.dateISO).getTime())
-                      .map((t) => ({
-                        id: t.id,
-                        title: t.title,
-                        date: new Date(t.dateISO).toLocaleString(undefined, { year: 'numeric', month: 'short', day: '2-digit' }),
-                        description: t.description,
-                        href: t.linkUrl,
-                        subtitle: t.tag,
-                      }));
-                    setItems(mapped);
-                  } catch {
-                    setItems([]);
-                  }
-                })();
-              }, []);
-              const fallback: TimelineItem[] = [
-                ...UPCOMING.map((e) => ({ title: e.title, date: `${e.date} • ${e.time}`, subtitle: e.location, description: e.description, href: '#' })),
-                ...PAST.map((e) => ({ title: e.title, date: `${e.date} • ${e.time}`, subtitle: e.location, description: e.description, href: '#' })),
-              ];
-              return <Timeline title="Event Timeline" items={items ?? fallback} />;
-            })()}
-          </div>
-        </div>
-      </motion.div>
-    </motion.section>
-  );
-};
 
 export default EventsPage;

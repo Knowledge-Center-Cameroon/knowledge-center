@@ -1,6 +1,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 import Hero from "@/components/Hero";
+import AboutKC from "@/components/AboutKC";
 import Countdown from "@/components/Countdown";
 import Stats from "@/components/Stats";
 import Projects from "@/components/Projects";
@@ -23,12 +24,15 @@ const Home: React.FC = () => {
         <Hero />
       </motion.section>
       <motion.section {...fadeUp}>
+        <AboutKC />
+      </motion.section>
+      <motion.section {...fadeUp}>
         <Stats />
       </motion.section>
       <motion.section {...fadeUp}>
         <Projects />
       </motion.section>
- 
+
       <motion.section {...fadeUp}>
         <Testimonials />
       </motion.section>

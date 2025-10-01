@@ -42,7 +42,26 @@ const Footer = () => {
   };
 
   return (
-    <footer className="border-t border-border">
+    <footer className="border-t border-border relative">
+      {/* Enhanced wave separator at the very top */}
+      <svg className="absolute -top-12 left-0 w-full h-12 overflow-visible" viewBox="0 0 1440 96" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="waveGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stopColor="hsl(var(--kc-blue))" stopOpacity="0.3" />
+            <stop offset="50%" stopColor="hsl(var(--kc-red))" stopOpacity="0.2" />
+            <stop offset="100%" stopColor="hsl(var(--kc-blue))" stopOpacity="0.3" />
+          </linearGradient>
+        </defs>
+        <path
+          d="M0,48 C144,24 288,0 432,12 C576,24 720,48 864,36 C1008,24 1152,0 1296,12 C1440,24 1584,48 1728,36 C1872,24 2016,0 2160,12 L2160,96 L0,96 Z"
+          fill="url(#waveGradient)"
+        />
+        <path
+          d="M0,64 C240,40 480,24 720,24 C960,24 1200,40 1440,64 L1440,96 L0,96 Z"
+          fill="hsl(var(--kc-black))"
+        />
+      </svg>
+
       {/* Main Footer Content */}
       <div className="pt-8 pb-16 bg-kc-black relative overflow-visible">
     
@@ -202,11 +221,7 @@ const Footer = () => {
 
       {/* Bottom Bar */}
       <div className="relative bg-black text-white border-t border-border py-6">
-        {/* Wave separator between main footer and bottom bar */}
-        <svg className="absolute -top-10 left-0 w-full h-10 text-kc-black" viewBox="0 0 1440 80" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M0,64 C240,32 480,0 720,0 C960,0 1200,32 1440,64 L1440,80 L0,80 Z" fill="currentColor" />
-        </svg>
-        <div className="container mx-auto px-4 lg:px-8 max-w-6xl">
+        <div className="container mx-auto px-4 lg:px-8 max-w-6xl relative z-10">
           <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
             <p className="text-white/80 text-center md:text-left">
               &copy; {new Date().getFullYear()} Knowledge Center. All rights reserved.

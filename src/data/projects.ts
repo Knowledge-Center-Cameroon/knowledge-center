@@ -13,15 +13,19 @@ export type Project = {
 import StemImg from "@/assets/stem.jpg";
 import SummerImg from "@/assets/summer2.jpeg";
 import WeekendImg from "@/assets/weekend.jpeg";
+import weekend from "@/assets/weekend_school.jpeg"
 import AboutImg from "@/assets/about.jpeg";
 import HeroImg from "@/assets/hero-image.jpeg";
 import ExtraImg from "@/assets/1747611530465.jpeg";
 import Summer from "@/assets/summer5.jpeg"
 import Prepa from "@/assets/prepa.jpeg"
-import Prepa2 from "@/assets/prepa2.jpeg"
+import Prepa2 from "@/assets/prepa1.jpeg"
+import Prepa3 from "@/assets/prepa3.jpeg"
 import image from "@/assets/placeholder.svg";
 import KC from "@/assets/logo.png";
 import global from "@/assets/global.png"
+import stem1 from "@/assets/stem3.jpeg"
+import summer3 from "@/assets/summer3.jpg"
 
 export const projects: Project[] = [
   {
@@ -29,7 +33,7 @@ export const projects: Project[] = [
     title: "National STEM Competition",
     summary:
       "A country‑wide contest that rewards clear thinking over memorization. Students tackle authentic, multi‑step STEM problems—testing ideas, defending methods, and connecting classroom theory to real‑world impact.",
-    images: [StemImg, SummerImg, WeekendImg],
+    images: [StemImg, SummerImg, WeekendImg, stem1],
     features: [
       "Drive for problem solving critical thinking and innovation.",
       "Multi‑disciplinary problems (Math, Physics, Chemistry, Biology)",
@@ -50,7 +54,7 @@ export const projects: Project[] = [
     title: "Summer Education Program",
     summary:
       "Intensive summer sessions designed to help students get access to quality education, that inspires a nexus for change makers in society and grow practical skills during school breaks.",
-    images: [SummerImg, Summer, HeroImg],
+    images: [HeroImg, Summer, SummerImg, ExtraImg, summer3],
     features: [
       "2‑month intensive learning blocks (July–August)",
       "Interactive audio‑visual lectures from passionate educators",
@@ -73,7 +77,7 @@ export const projects: Project[] = [
     title: "Weekend School",
     summary:
       "Flexible weekend classes for reinforcement, acceleration, and exam mastery with personalized coaching.",
-    images: [WeekendImg, AboutImg, ExtraImg],
+    images: [weekend, WeekendImg, AboutImg, ExtraImg],
     features: [
       "Saturday and Sunday options that fit school schedules",
       "Audio‑visual lectures from passionate tutors",
@@ -94,7 +98,7 @@ export const projects: Project[] = [
     title: "KC Prepa",
     summary:
       "Focused preparation for competitive entrance exams with elite mentoring and proven results.",
-    images: [Prepa, AboutImg, ExtraImg],
+    images: [Prepa, Prepa3, Prepa2],
     features: [
       "Audio‑visual lectures from expert tutors",
       "Distinguished scholarly community across the nation",

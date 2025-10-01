@@ -118,41 +118,66 @@ const ProjectDetailPage: React.FC = () => {
         
         {/* Header */}
         <motion.div
-          initial={{ opacity: 0, y: 12 }}
+          initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
           className="relative mb-12"
         >
-          <div className="flex items-center justify-between mb-6">
-            <Button 
-              variant="ghost" 
-              onClick={() => navigate(-1)}
-              className="group hover:bg-kc-blue/10"
-            >
-              <ArrowLeft className="h-4 w-4 mr-2 group-hover:text-kc-blue transition-colors" /> 
-              <span className="group-hover:text-kc-blue transition-colors">Back</span>
-            </Button>
-            <Button 
-              asChild 
-              variant="outline"
-              className="hover:border-kc-blue hover:text-kc-blue transition-colors"
-            >
-              <Link to="/projects">All projects</Link>
-            </Button>
-          </div>
-
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
+          <motion.div
+            className="flex items-center justify-between mb-6"
+            initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.1 }}
+          >
+            <motion.div
+              whileHover={{ scale: 1.05, x: -2 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <Button
+                variant="ghost"
+                onClick={() => navigate(-1)}
+                className="group hover:bg-kc-blue/10 transition-all duration-300"
+              >
+                <ArrowLeft className="h-4 w-4 mr-2 group-hover:text-kc-blue transition-colors duration-300" />
+                <span className="group-hover:text-kc-blue transition-colors duration-300">Back</span>
+              </Button>
+            </motion.div>
+            <motion.div
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <Button
+                asChild
+                variant="outline"
+                className="hover:border-kc-blue hover:text-kc-blue transition-all duration-300"
+              >
+                <Link to="/projects">All projects</Link>
+              </Button>
+            </motion.div>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.2 }}
             className="text-center max-w-4xl mx-auto"
           >
-            <h1 className="text-3xl md:text-4xl lg:text-5xl font-heading font-bold mb-4">
+            <motion.h1
+              className="text-3xl md:text-4xl lg:text-5xl font-heading font-bold mb-4"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.3 }}
+            >
               {project.title}
-            </h1>
-            <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
+            </motion.h1>
+            <motion.p
+              className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed"
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.4 }}
+            >
               {project.summary}
-            </p>
+            </motion.p>
           </motion.div>
         </motion.div>
 
@@ -201,46 +226,112 @@ const ProjectDetailPage: React.FC = () => {
           </motion.div>
 
           {/* Content sections */}
-          <div className="self-center space-y-5">
+          <motion.div
+            className="self-center space-y-5"
+            initial={{ opacity: 0, x: 20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true, amount: 0.2 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+          >
             {sections.map((s, i) => (
               <motion.div
                 key={i}
-                initial={{ opacity: 0, y: 8 }}
+                initial={{ opacity: 0, y: 15 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, amount: 0.2 }}
-                transition={{ duration: 0.35, delay: i * 0.05 }}
+                transition={{
+                  duration: 0.4,
+                  delay: 0.3 + (i * 0.1),
+                  ease: [0.22, 1, 0.36, 1]
+                }}
+                className="group"
               >
-                <h2 className="text-xl md:text-2xl font-heading font-semibold mb-2">{s.title}</h2>
-                <p className="text-foreground/85 leading-relaxed">{s.body}</p>
+                <motion.h2
+                  className="text-xl md:text-2xl font-heading font-semibold mb-2 group-hover:text-kc-blue transition-colors duration-300"
+                  whileHover={{ x: 5 }}
+                >
+                  {s.title}
+                </motion.h2>
+                <motion.p
+                  className="text-foreground/85 leading-relaxed"
+                  initial={{ opacity: 0.8 }}
+                  whileHover={{ opacity: 1 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  {s.body}
+                </motion.p>
               </motion.div>
             ))}
-          </div>
+          </motion.div>
         </div>
 
         {/* Why take this project? */}
-        <div className="mb-12">
-          <h2 className="text-2xl font-heading font-semibold mb-4">Why take {project.title}?</h2>
+        <motion.div
+          className="mb-12"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, delay: 0.1 }}
+        >
+          <motion.h2
+            className="text-2xl font-heading font-semibold mb-4"
+            initial={{ opacity: 0, x: -10 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+          >
+            Why take {project.title}?
+          </motion.h2>
           <div className="grid sm:grid-cols-2 gap-4 md:gap-6">
             {project.features.map((f, i) => (
-              <motion.button
+              <motion.div
                 key={i}
-                initial={{ opacity: 0, y: 8 }}
+                initial={{ opacity: 0, y: 15 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, amount: 0.2 }}
-                transition={{ duration: 0.3, delay: i * 0.05 }}
-                className="group text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-kc-blue/60 focus-visible:ring-offset-2 focus-visible:ring-offset-background rounded-xl border border-white/20 bg-white/5 backdrop-blur-sm hover:bg-white/10 transition-all p-5 md:p-6 shadow-elegant hover:shadow-2xl hover:-translate-y-1"
+                transition={{
+                  duration: 0.4,
+                  delay: 0.2 + (i * 0.08),
+                  ease: [0.22, 1, 0.36, 1]
+                }}
+                whileHover={{
+                  scale: 1.02,
+                  y: -3,
+                  transition: { duration: 0.2 }
+                }}
+                className="group"
               >
-                <div className="flex items-start gap-3">
-                  <CheckCircle className="h-5 w-5 text-primary mt-0.5 flex-shrink-0 group-hover:scale-110 transition-transform" />
-                  <div>
-                    <div className="font-medium text-foreground">{f}</div>
-                    <p className="text-sm text-foreground/80">Built through expert mentoring, hands‑on sessions, and teamwork to turn curiosity into capability.</p>
+                <div className="focus:outline-none focus-visible:ring-2 focus-visible:ring-kc-blue/60 focus-visible:ring-offset-2 focus-visible:ring-offset-background rounded-xl border border-white/20 bg-white/5 backdrop-blur-sm hover:bg-white/10 transition-all p-5 md:p-6 shadow-elegant hover:shadow-2xl">
+                  <div className="flex items-start gap-3">
+                    <motion.div
+                      whileHover={{ scale: 1.1, rotate: 5 }}
+                      transition={{ duration: 0.2 }}
+                    >
+                      <CheckCircle className="h-5 w-5 text-kc-blue mt-0.5 flex-shrink-0 group-hover:text-kc-red transition-colors duration-300" />
+                    </motion.div>
+                    <div className="flex-1">
+                      <motion.div
+                        className="font-medium text-foreground group-hover:text-kc-blue transition-colors duration-300"
+                        initial={{ opacity: 0.9 }}
+                        whileHover={{ opacity: 1 }}
+                      >
+                        {f}
+                      </motion.div>
+                      <motion.p
+                        className="text-sm text-foreground/80 mt-1"
+                        initial={{ opacity: 0.7 }}
+                        whileHover={{ opacity: 0.9 }}
+                        transition={{ duration: 0.2 }}
+                      >
+                        Built through expert mentoring, hands‑on sessions, and teamwork to turn curiosity into capability.
+                      </motion.p>
+                    </div>
                   </div>
                 </div>
-              </motion.button>
+              </motion.div>
             ))}
           </div>
-        </div>
+        </motion.div>
 
         {/* Additional Details only (avoid redundancy) */}
         <div className="grid md:grid-cols-2 gap-8">

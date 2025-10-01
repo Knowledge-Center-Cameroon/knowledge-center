@@ -11,6 +11,7 @@ import {
   ShieldCheck,
   MapPin
 } from "lucide-react";
+import about1 from "@/assets/kc_about.jpg"
 import about from "@/assets/about.jpeg";
 import hero2 from "@/assets/hero-image2.jpeg";
 import hero3 from "@/assets/hero-image3.jpeg";
@@ -218,7 +219,7 @@ const About = () => {
           <div className="animate-slide-up mt-4 lg:mt-0">
             <Carousel setApi={setIntroApi} className="rounded-2xl shadow-elegant bg-white/5 backdrop-blur-sm p-2">
               <CarouselContent>
-                {[about, hero2, hero3, hero4, hero5].map((img, i) => (
+                {[about1, about, hero2, hero4, hero5].map((img, i) => (
                   <CarouselItem key={i}>
                     <div className="relative overflow-hidden rounded-xl">
                       <img src={img} alt={`KC slide ${i + 1}`} className="w-full h-48 sm:h-60 md:h-72 lg:h-[360px] object-cover" loading="lazy" decoding="async" sizes="(min-width: 1024px) 50vw, 100vw" />

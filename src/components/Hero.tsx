@@ -94,8 +94,9 @@ const Hero = () => {
 
   const { ref: parRef, y: yBack } = useParallax(60);
   const { y: yOverlay } = useParallax(30);
+  const { y: yImage } = useParallax(45); // Enhanced parallax for individual images
   return (
-    <section ref={parRef as any} id="home" className="relative pt-16 md:pt-20 lg:pt-20 min-h-[70svh] sm:min-h-[75svh] md:min-h-[80svh] lg:min-h-[88svh] flex items-center justify-center overflow-hidden">
+    <section ref={parRef as any} id="home" className="relative pt-4 md:pt-8 lg:pt-8 min-h-[70svh] sm:min-h-[75svh] md:min-h-[80svh] lg:min-h-[88svh] flex items-center justify-center overflow-hidden">
       {/* Background Images with parallax and crossfade */}
       <div className="absolute inset-0">
         {slides.map((s, idx) => (
@@ -106,7 +107,7 @@ const Hero = () => {
           >
             <motion.div 
               className="absolute inset-0 scale-110"
-              style={{ y: yBack }}
+              style={{ y: yImage }}
             >
               <img
                 src={s.image}

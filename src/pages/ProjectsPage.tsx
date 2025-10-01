@@ -12,19 +12,24 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 
 const cardVariants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: { 
-    opacity: 1, 
+  hidden: {
+    opacity: 0,
+    y: 30,
+    scale: 0.95
+  },
+  visible: {
+    opacity: 1,
     y: 0,
-    transition: { 
-      duration: 0.5,
+    scale: 1,
+    transition: {
+      duration: 0.6,
       ease: [0.22, 1, 0.36, 1]
     }
   },
-  hover: { 
-    y: -8,
-    scale: 1.02,
-    transition: { 
+  hover: {
+    y: -12,
+    scale: 1.03,
+    transition: {
       type: 'spring',
       stiffness: 260,
       damping: 20
@@ -79,45 +84,69 @@ const ProjectsPage: React.FC = () => {
 
 
           {/* Search and Filters */}
-          <motion.div 
-            initial={{ opacity: 0, y: 10 }}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2, duration: 0.4 }}
+            transition={{ delay: 0.2, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
             className="mb-12 space-y-6"
           >
             {/* Search Bar */}
-            <div className="max-w-2xl mx-auto relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.3, duration: 0.4 }}
+              className="max-w-2xl mx-auto relative"
+            >
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground transition-colors duration-300" />
               <Input
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search projects..."
-                className="pl-10 py-6 text-lg shadow-sm transition-all duration-300 focus-visible:shadow-md"
+                className="pl-10 py-6 text-lg shadow-sm transition-all duration-300 focus-visible:shadow-md focus-visible:ring-2 focus-visible:ring-kc-blue/50"
               />
-            </div>
+            </motion.div>
 
             {/* Category Pills */}
-            <div className="flex flex-wrap justify-center gap-3">
-              {categories.map((category) => (
-                <button
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4, duration: 0.5 }}
+              className="flex flex-wrap justify-center gap-3"
+            >
+              {categories.map((category, index) => (
+                <motion.button
                   key={category}
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{
+                    delay: 0.5 + (index * 0.05),
+                    duration: 0.3,
+                    ease: [0.22, 1, 0.36, 1]
+                  }}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
                   onClick={() => setSelectedCategory(category)}
                   className={`
-                    px-4 py-2 rounded-full text-sm font-medium transition-all duration-300
-                    ${selectedCategory === category 
-                      ? 'bg-kc-blue text-white shadow-md transform scale-105' 
+                    px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 relative overflow-hidden
+                    ${selectedCategory === category
+                      ? 'bg-kc-blue text-white shadow-md transform scale-105'
                       : 'bg-white/70 text-foreground hover:bg-white hover:shadow-sm'}
                   `}
                 >
                   {category.charAt(0).toUpperCase() + category.slice(1)}
-                </button>
+                </motion.button>
               ))}
-            </div>
+            </motion.div>
 
             {/* Quick Jump */}
-            <div className="max-w-md mx-auto">
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.6, duration: 0.4 }}
+              className="max-w-md mx-auto"
+            >
               <Select onValueChange={(slug) => navigate(`/projects/${slug}`)}>
-                <SelectTrigger>
+                <SelectTrigger className="transition-all duration-300 hover:shadow-md focus:ring-2 focus:ring-kc-blue/50">
                   <SelectValue placeholder="Or jump directly to a project..." />
                 </SelectTrigger>
                 <SelectContent>
@@ -126,94 +155,150 @@ const ProjectsPage: React.FC = () => {
                   ))}
                 </SelectContent>
               </Select>
-            </div>
+            </motion.div>
           </motion.div>
 
           {/* Project Cards */}
-          <motion.div 
+          <motion.div
             className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8"
-            variants={{ visible: { transition: { staggerChildren: 0.1 } } }}
+            variants={{
+              visible: {
+                transition: {
+                  staggerChildren: 0.08,
+                  delayChildren: 0.1
+                }
+              }
+            }}
             initial="hidden"
             animate="visible"
           >
-            <AnimatePresence>
-              {filteredProjects.map((p) => (
-                <motion.div 
-                  key={p.slug} 
+            <AnimatePresence mode="wait">
+              {filteredProjects.map((p, index) => (
+                <motion.div
+                  key={p.slug}
                   variants={cardVariants}
                   whileHover="hover"
-                  layoutId={p.slug}
+                  layout
+                  exit={{
+                    opacity: 0,
+                    scale: 0.95,
+                    y: 20,
+                    transition: { duration: 0.3 }
+                  }}
                 >
-                  <Card className="group h-full overflow-hidden bg-white/80 backdrop-blur-md border border-white/20 shadow-elegant rounded-2xl transition-all duration-500 hover:border-kc-blue/40">
+                  <Card className="group h-full overflow-hidden bg-white/80 backdrop-blur-md border border-white/20 shadow-elegant rounded-2xl transition-all duration-500 hover:border-kc-blue/40 hover:shadow-2xl">
                     <CardContent className="p-0 h-full flex flex-col">
                       <div className="relative aspect-[4/3] w-full overflow-hidden">
-                        <img 
-                          src={p.images[0]} 
-                          alt={p.title} 
-                          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 will-change-transform" 
-                          loading="lazy" 
-                          decoding="async" 
-                          sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw" 
+                        <motion.img
+                          src={p.images[0]}
+                          alt={p.title}
+                          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 will-change-transform"
+                          loading="lazy"
+                          decoding="async"
+                          sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+                          whileHover={{ scale: 1.05 }}
+                          transition={{ duration: 0.4 }}
                         />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                        
+                        <motion.div
+                          className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+                          initial={{ opacity: 0 }}
+                          whileHover={{ opacity: 1 }}
+                        />
+
                         {/* Featured Badge */}
                         {p.featured && (
-                          <div className="absolute top-4 right-4 flex items-center gap-1 bg-kc-red/90 text-white px-3 py-1.5 rounded-full text-sm font-medium backdrop-blur-sm">
+                          <motion.div
+                            className="absolute top-4 right-4 flex items-center gap-1 bg-kc-red/90 text-white px-3 py-1.5 rounded-full text-sm font-medium backdrop-blur-sm"
+                            initial={{ scale: 0, rotate: -10 }}
+                            animate={{ scale: 1, rotate: 0 }}
+                            transition={{ delay: 0.2 + (index * 0.05), type: "spring", stiffness: 260 }}
+                          >
                             <Star className="h-4 w-4" />
                             Featured
-                          </div>
+                          </motion.div>
                         )}
                       </div>
-                      
+
                       <div className="flex-1 p-6 flex flex-col">
                         {/* Categories */}
                         {p.categories && (
-                          <div className="flex flex-wrap gap-2 mb-3">
-                            {p.categories.map((cat) => (
-                              <Badge 
-                                key={cat} 
-                                variant="secondary" 
-                                className="bg-kc-blue/10 text-kc-blue hover:bg-kc-blue hover:text-white transition-colors duration-300 cursor-pointer"
-                                onClick={() => setSelectedCategory(cat)}
-                              >
-                                {cat}
-                              </Badge>
-                            ))}
-                          </div>
-                        )}
-                        
-                        <h3 className="text-xl font-heading font-semibold mb-3 group-hover:text-kc-blue transition-colors duration-300">
-                          {p.title}
-                        </h3>
-                        <p className="text-foreground/80 text-base mb-6 line-clamp-3 flex-1">
-                          {p.summary}
-                        </p>
-                        
-                        <div className="flex flex-wrap items-center gap-4 mt-auto">
-                          <Button 
-                            asChild 
-                            variant="blue" 
-                            className="rounded-full gap-2 text-base"
+                          <motion.div
+                            className="flex flex-wrap gap-2 mb-3"
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            transition={{ delay: 0.3 + (index * 0.05) }}
                           >
-                            <Link to={`/projects/${p.slug}`}>
-                              View Project
-                              <ArrowRight className="h-4 w-4" />
-                            </Link>
-                          </Button>
-                          
+                            {p.categories.map((cat) => (
+                              <motion.div
+                                key={cat}
+                                whileHover={{ scale: 1.05 }}
+                                whileTap={{ scale: 0.95 }}
+                              >
+                                <Badge
+                                  variant="secondary"
+                                  className="bg-kc-blue/10 text-kc-blue hover:bg-kc-blue hover:text-white transition-colors duration-300 cursor-pointer"
+                                  onClick={() => setSelectedCategory(cat)}
+                                >
+                                  {cat}
+                                </Badge>
+                              </motion.div>
+                            ))}
+                          </motion.div>
+                        )}
+
+                        <motion.h3
+                          className="text-xl font-heading font-semibold mb-3 group-hover:text-kc-blue transition-colors duration-300"
+                          initial={{ opacity: 0, x: -10 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ delay: 0.4 + (index * 0.05) }}
+                        >
+                          {p.title}
+                        </motion.h3>
+                        <motion.p
+                          className="text-foreground/80 text-base mb-6 line-clamp-3 flex-1"
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          transition={{ delay: 0.5 + (index * 0.05) }}
+                        >
+                          {p.summary}
+                        </motion.p>
+
+                        <motion.div
+                          className="flex flex-wrap items-center gap-4 mt-auto"
+                          initial={{ opacity: 0, y: 10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ delay: 0.6 + (index * 0.05) }}
+                        >
+                          <motion.div
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
+                          >
+                            <Button
+                              asChild
+                              variant="blue"
+                              className="rounded-full gap-2 text-base"
+                            >
+                              <Link to={`/projects/${p.slug}`}>
+                                View Project
+                                <ArrowRight className="h-4 w-4" />
+                              </Link>
+                            </Button>
+                          </motion.div>
+
                           {p.externalUrl && (
-                            <a 
+                            <motion.a
                               href={p.externalUrl}
                               target="_blank"
                               rel="noopener noreferrer"
                               className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-kc-blue transition-colors duration-300"
+                              whileHover={{ scale: 1.05, x: 2 }}
+                              whileTap={{ scale: 0.95 }}
                             >
                               <ExternalLink className="h-4 w-4" />
                               Visit Site
-                            </a>
+                            </motion.a>
                           )}
-                        </div>
+                        </motion.div>
                       </div>
                     </CardContent>
                   </Card>
