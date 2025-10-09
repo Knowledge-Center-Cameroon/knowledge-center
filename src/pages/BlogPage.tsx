@@ -9,14 +9,18 @@ import Timeline, { type TimelineItem } from "@/components/Timeline";
 import StemBackground from "@/components/StemBackground";
 import { useParallax, Parallax } from "@/hooks/use-parallax";
 import { Input } from "@/components/ui/input";
-import { Heart, MessageSquare } from "lucide-react";
+import { Heart, MessageSquare, Loader2 } from "lucide-react";
+import { useUser } from "@/contexts/UserContext";
+import { toggleBlogLike, getBlogLikeStatus } from "@/services/blogApi";
 
 const BlogPage: React.FC = () => {
+  const { user } = useUser();
   const [query, setQuery] = React.useState("");
   const [activeTag, setActiveTag] = React.useState<string | null>(null);
   const [likedPosts, setLikedPosts] = React.useState<Record<string, boolean>>({});
   const [likeCounts, setLikeCounts] = React.useState<Record<string, number>>({});
   const [commentCounts, setCommentCounts] = React.useState<Record<string, number>>({});
+  const [loadingLikes, setLoadingLikes] = React.useState<Record<string, boolean>>({});
 
   const posts = React.useMemo(() => (
     [...blogPosts].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
@@ -80,13 +84,45 @@ const BlogPage: React.FC = () => {
     try { localStorage.setItem('kc_comment_counts_v1', JSON.stringify(commentCounts)); } catch {}
   }, [commentCounts]);
 
-  const handleLike = (postId: string) => {
-    setLikedPosts((prev) => {
-      if (prev[postId]) return prev; // already liked on this device
-      const next = { ...prev, [postId]: true };
-      return next;
-    });
-    setLikeCounts((prev) => ({ ...prev, [postId]: (prev[postId] || 0) + 1 }));
+  // Load like statuses for all posts when component mounts or user changes
+  React.useEffect(() => {
+    const loadLikeStatuses = async () => {
+      if (!user?.id) return;
+
+      for (const post of posts) {
+        try {
+          const likeStatus = await getBlogLikeStatus(post.id, user.id);
+          setLikedPosts(prev => ({ ...prev, [post.id]: likeStatus.isLiked }));
+          setLikeCounts(prev => ({ ...prev, [post.id]: likeStatus.likeCount }));
+        } catch (error) {
+          console.error(`Error loading like status for post ${post.id}:`, error);
+        }
+      }
+    };
+
+    loadLikeStatuses();
+  }, [user?.id, posts]);
+
+  const handleLike = async (postId: string) => {
+    if (!user?.id) {
+      alert('Please wait for user identification...');
+      return;
+    }
+
+    const isCurrentlyLiked = likedPosts[postId] || false;
+    setLoadingLikes(prev => ({ ...prev, [postId]: true }));
+
+    try {
+      const response = await toggleBlogLike(postId, user.id, isCurrentlyLiked);
+
+      setLikedPosts(prev => ({ ...prev, [postId]: response.liked }));
+      setLikeCounts(prev => ({ ...prev, [postId]: response.likeCount }));
+    } catch (error) {
+      console.error('Error toggling like:', error);
+      alert('Failed to update like. Please try again.');
+    } finally {
+      setLoadingLikes(prev => ({ ...prev, [postId]: false }));
+    }
   };
 
   const { ref, y } = useParallax(40);
@@ -215,12 +251,17 @@ const BlogPage: React.FC = () => {
                         <div className="flex gap-4">
                           <button
                             onClick={() => handleLike(pid)}
-                            disabled={isLiked}
+                            disabled={loadingLikes[pid] || !user?.id}
                             aria-pressed={isLiked}
                             className={`inline-flex items-center gap-1.5 text-sm transition-colors duration-300 ${isLiked ? 'text-kc-blue cursor-default' : 'text-muted-foreground hover:text-kc-blue'}`}
                             title={isLiked ? 'You already liked this post' : 'Like this post'}
                           >
-                            <Heart className={`h-5 w-5 ${isLiked ? 'fill-kc-blue text-kc-blue' : ''}`} /> {likeCount}
+                            {loadingLikes[pid] ? (
+                              <Loader2 className="h-5 w-5 animate-spin" />
+                            ) : (
+                              <Heart className={`h-5 w-5 ${isLiked ? 'fill-kc-blue text-kc-blue' : ''}`} />
+                            )}
+                            {likeCount}
                           </button>
                           <button
                             className="inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors duration-300"

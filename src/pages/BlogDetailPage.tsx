@@ -5,16 +5,128 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { blogPosts } from "@/data/blogs";
 import { useParams, Link, useNavigate } from "react-router-dom";
-import { ArrowLeft, Calendar, User, Tag, Heart, MessageSquare } from "lucide-react";
+import { ArrowLeft, Calendar, User, Tag, Heart, MessageSquare, Loader2, Send, Edit, Trash2 } from "lucide-react";
 import StemBackground from "@/components/StemBackground";
 import { useParallax, Parallax } from "@/hooks/use-parallax";
+import { useUser } from "@/contexts/UserContext";
+import { toggleBlogLike, getBlogLikeStatus, getBlogComments, addBlogComment, updateBlogComment, deleteBlogComment, type BlogComment } from "@/services/blogApi";
+import { Textarea } from "@/components/ui/textarea";
 
 const BlogDetailPage: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
+  const { user } = useUser();
   const { ref, y } = useParallax(40);
 
+  const [isLiked, setIsLiked] = React.useState(false);
+  const [likeCount, setLikeCount] = React.useState(0);
+  const [comments, setComments] = React.useState<BlogComment[]>([]);
+  const [commentText, setCommentText] = React.useState("");
+  const [editingCommentId, setEditingCommentId] = React.useState<string | null>(null);
+  const [editingText, setEditingText] = React.useState("");
+  const [loading, setLoading] = React.useState(false);
+  const [submittingComment, setSubmittingComment] = React.useState(false);
+
   const post = blogPosts.find(p => p.id === slug);
+
+  // Load like status and comments when component mounts
+  React.useEffect(() => {
+    if (!post || !user?.id) return;
+
+    const loadInteractions = async () => {
+      try {
+        // Load like status
+        const likeStatus = await getBlogLikeStatus(post.id, user.id);
+        setIsLiked(likeStatus.isLiked);
+        setLikeCount(likeStatus.likeCount);
+
+        // Load comments
+        const commentsData = await getBlogComments(post.id);
+        setComments(commentsData.comments);
+      } catch (error) {
+        console.error('Error loading interactions:', error);
+      }
+    };
+
+    loadInteractions();
+  }, [post, user?.id]);
+
+  const handleLike = async () => {
+    if (!post || !user?.id) return;
+
+    setLoading(true);
+    try {
+      const response = await toggleBlogLike(post.id, user.id, isLiked);
+      setIsLiked(response.liked);
+      setLikeCount(response.likeCount);
+    } catch (error) {
+      console.error('Error toggling like:', error);
+      alert('Failed to update like. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSubmitComment = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!post || !user?.id || !commentText.trim()) return;
+
+    setSubmittingComment(true);
+    try {
+      const newComment = await addBlogComment(
+        post.id,
+        user.id,
+        user.name || 'Anonymous',
+        commentText.trim()
+      );
+
+      setComments(prev => [newComment, ...prev]);
+      setCommentText("");
+    } catch (error) {
+      console.error('Error adding comment:', error);
+      alert('Failed to add comment. Please try again.');
+    } finally {
+      setSubmittingComment(false);
+    }
+  };
+
+  const handleEditComment = (comment: BlogComment) => {
+    setEditingCommentId(comment._id);
+    setEditingText(comment.content);
+  };
+
+  const handleUpdateComment = async (commentId: string) => {
+    if (!user?.id || !editingText.trim()) return;
+
+    try {
+      const updatedComment = await updateBlogComment(commentId, user.id, editingText.trim());
+
+      setComments(prev => prev.map(c =>
+        c._id === commentId ? updatedComment : c
+      ));
+
+      setEditingCommentId(null);
+      setEditingText("");
+    } catch (error) {
+      console.error('Error updating comment:', error);
+      alert('Failed to update comment. Please try again.');
+    }
+  };
+
+  const handleDeleteComment = async (commentId: string) => {
+    if (!user?.id) return;
+
+    if (!confirm('Are you sure you want to delete this comment?')) return;
+
+    try {
+      await deleteBlogComment(commentId, user.id);
+
+      setComments(prev => prev.filter(c => c._id !== commentId));
+    } catch (error) {
+      console.error('Error deleting comment:', error);
+      alert('Failed to delete comment. Please try again.');
+    }
+  };
 
   if (!post) {
     return (
@@ -162,13 +274,22 @@ const BlogDetailPage: React.FC = () => {
         >
           <div className="flex flex-wrap gap-4 items-center justify-between">
             <div className="flex gap-4">
-              <Button variant="outline" className="gap-2">
-                <Heart className="h-4 w-4" />
-                Like
+              <Button
+                variant="outline"
+                onClick={handleLike}
+                disabled={loading || !user?.id}
+                className="gap-2"
+              >
+                {loading ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  <Heart className={`h-4 w-4 ${isLiked ? 'fill-kc-blue text-kc-blue' : ''}`} />
+                )}
+                {isLiked ? 'Liked' : 'Like'} ({likeCount})
               </Button>
               <Button variant="outline" className="gap-2">
                 <MessageSquare className="h-4 w-4" />
-                Comment
+                Comments ({comments.length})
               </Button>
             </div>
             <div className="flex gap-2">
@@ -178,16 +299,146 @@ const BlogDetailPage: React.FC = () => {
           </div>
         </motion.div>
 
-        {/* Related posts or back to blog */}
+        {/* Comments Section */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.5 }}
-          className="mt-12 pt-8 border-t border-border/50 text-center"
+          className="mt-12 pt-8 border-t border-border/50"
         >
-          <Button asChild variant="blue" className="rounded-full">
-            <Link to="/blog">Back to All Posts</Link>
-          </Button>
+          <h3 className="text-2xl font-bold mb-6">Comments ({comments.length})</h3>
+
+          {/* Comment Form */}
+          {user?.id ? (
+            <form onSubmit={handleSubmitComment} className="mb-8">
+              <div className="flex gap-4">
+                <Avatar className="h-10 w-10 flex-shrink-0">
+                  <AvatarFallback className="bg-kc-blue/10 text-kc-blue">
+                    {(user.name || 'A').charAt(0).toUpperCase()}
+                  </AvatarFallback>
+                </Avatar>
+                <div className="flex-1">
+                  <Textarea
+                    value={commentText}
+                    onChange={(e) => setCommentText(e.target.value)}
+                    placeholder="Share your thoughts..."
+                    className="min-h-[100px] resize-none"
+                    maxLength={1000}
+                  />
+                  <div className="flex justify-between items-center mt-2">
+                    <span className="text-sm text-muted-foreground">
+                      {commentText.length}/1000 characters
+                    </span>
+                    <Button
+                      type="submit"
+                      disabled={!commentText.trim() || submittingComment}
+                      className="gap-2"
+                    >
+                      {submittingComment ? (
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                      ) : (
+                        <Send className="h-4 w-4" />
+                      )}
+                      Comment
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </form>
+          ) : (
+            <div className="mb-8 p-4 bg-muted/50 rounded-lg text-center">
+              <p className="text-muted-foreground mb-2">Sign in to join the conversation</p>
+              <Button variant="outline" onClick={() => alert('User identification in progress...')}>
+                Continue as Guest
+              </Button>
+            </div>
+          )}
+
+          {/* Comments List */}
+          <div className="space-y-6">
+            {comments.length === 0 ? (
+              <p className="text-muted-foreground text-center py-8">
+                No comments yet. Be the first to share your thoughts!
+              </p>
+            ) : (
+              comments.map((comment) => (
+                <motion.div
+                  key={comment._id}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="flex gap-4 group"
+                >
+                  <Avatar className="h-10 w-10 flex-shrink-0">
+                    <AvatarFallback className="bg-kc-blue/10 text-kc-blue">
+                      {comment.author.charAt(0).toUpperCase()}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 mb-2">
+                      <span className="font-semibold">{comment.author}</span>
+                      <span className="text-sm text-muted-foreground">
+                        {new Date(comment.created_at).toLocaleDateString()}
+                      </span>
+                      {user?.id === comment.userId && (
+                        <div className="opacity-0 group-hover:opacity-100 transition-opacity flex gap-1">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleEditComment(comment)}
+                            className="h-6 w-6 p-0"
+                          >
+                            <Edit className="h-3 w-3" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleDeleteComment(comment._id)}
+                            className="h-6 w-6 p-0 text-destructive hover:text-destructive"
+                          >
+                            <Trash2 className="h-3 w-3" />
+                          </Button>
+                        </div>
+                      )}
+                    </div>
+
+                    {editingCommentId === comment._id ? (
+                      <div className="space-y-2">
+                        <Textarea
+                          value={editingText}
+                          onChange={(e) => setEditingText(e.target.value)}
+                          className="min-h-[80px]"
+                          maxLength={1000}
+                        />
+                        <div className="flex gap-2">
+                          <Button
+                            size="sm"
+                            onClick={() => handleUpdateComment(comment._id)}
+                            disabled={!editingText.trim()}
+                          >
+                            Save
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => {
+                              setEditingCommentId(null);
+                              setEditingText("");
+                            }}
+                          >
+                            Cancel
+                          </Button>
+                        </div>
+                      </div>
+                    ) : (
+                      <p className="text-foreground/90 leading-relaxed">{comment.content}</p>
+                    )}
+
+                    {/* Replies would go here - simplified for now */}
+                  </div>
+                </motion.div>
+              ))
+            )}
+          </div>
         </motion.div>
       </article>
     </motion.section>
