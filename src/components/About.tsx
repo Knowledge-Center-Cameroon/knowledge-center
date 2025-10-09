@@ -391,42 +391,59 @@ const About = () => {
           </Accordion>
         </div>
 
-        {/* KC STEM Hubs - Directly before footer (no grid) */}
+        {/* KC STEM Hubs - Enhanced Design with better visual hierarchy and interactivity */}
         <div className="mt-16 md:mt-24">
-          <div className="relative overflow-hidden rounded-3xl shadow-2xl border border-white/30 bg-gradient-to-br from-white/70 via-white/40 to-white/30 backdrop-blur-xl">
-            {/* Decorative orbs */}
-            <div className="pointer-events-none absolute -top-24 -left-24 h-80 w-80 rounded-full bg-gradient-to-br from-kc-blue/35 to-kc-red/25 blur-3xl" />
-            <div className="pointer-events-none absolute -bottom-28 -right-20 h-72 w-72 rounded-full bg-gradient-to-tr from-kc-red/35 to-kc-blue/25 blur-3xl" />
+          <div className="relative overflow-hidden rounded-3xl shadow-2xl border border-white/30 bg-gradient-to-br from-white/80 via-white/50 to-white/30 backdrop-blur-xl">
+            {/* Enhanced decorative orbs with better positioning */}
+            <div className="pointer-events-none absolute -top-20 -left-20 h-72 w-72 rounded-full bg-gradient-to-br from-kc-blue/40 to-kc-red/30 blur-3xl animate-pulse" />
+            <div className="pointer-events-none absolute -bottom-24 -right-16 h-64 w-64 rounded-full bg-gradient-to-tr from-kc-red/40 to-kc-blue/30 blur-3xl animate-pulse" />
+            <div className="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-96 w-96 rounded-full bg-gradient-to-r from-kc-blue/10 to-kc-red/10 blur-3xl" />
 
             <div className="relative p-6 md:p-8 lg:p-12">
-              <div className="text-center">
-                <h3 className="text-2xl md:text-3xl lg:text-4xl font-heading font-bold">
-                  <span className="text-kc-blue">KC STEM Hubs</span> <span className="text-kc-red">across Cameroon</span>
+              {/* Enhanced header with better typography hierarchy */}
+              <div className="text-center mb-8">
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.6 }}
+                  className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-kc-blue/10 backdrop-blur-sm border border-kc-blue/20 mb-4"
+                >
+                  <MapPin className="h-4 w-4 text-kc-blue" />
+                  <span className="text-sm font-semibold text-kc-blue">Locations Across Cameroon</span>
+                </motion.div>
+                <h3 className="text-2xl md:text-3xl lg:text-4xl font-heading font-bold mb-3">
+                  <span className="bg-gradient-to-r from-kc-blue to-kc-red bg-clip-text text-transparent">KC STEM Hubs</span> <span className="text-foreground">Across Cameroon</span>
                 </h3>
-                <p className="text-foreground/80 max-w-2xl mx-auto mt-3">
-                  Inquiry-driven learning, within reach. Explore our centers and find the one closest to you.
+                <p className="text-foreground/80 max-w-2xl mx-auto text-lg leading-relaxed">
+                  Discover inquiry-driven learning centers nationwide. Find the hub closest to you and join our community of innovators.
                 </p>
               </div>
 
-              {/* Chips rail */}
+              {/* Enhanced city chips with better styling and animations */}
               <div className="mt-8">
                 <div className="relative">
                   <div className="absolute left-4 right-4 top-1/2 -translate-y-1/2 h-px bg-gradient-to-r from-kc-blue/30 via-transparent to-kc-red/30" />
                   <div className="overflow-x-auto no-scrollbar snap-x snap-mandatory" ref={hubsTrackRef}>
-                    <div className="flex items-stretch gap-4 px-4 py-4">
+                    <div className="flex items-stretch gap-3 md:gap-4 px-4 py-4">
                       {hubs.map((city, i) => (
                         <motion.div
                           key={city}
-                          whileHover={{ y: -4, scale: 1.03 }}
-                          whileTap={{ scale: 0.97 }}
+                          initial={{ opacity: 0, scale: 0.8 }}
+                          whileInView={{ opacity: 1, scale: 1 }}
+                          viewport={{ once: true }}
+                          transition={{ duration: 0.5, delay: i * 0.05 }}
+                          whileHover={{ y: -6, scale: 1.05 }}
+                          whileTap={{ scale: 0.95 }}
+                          className="snap-start"
                         >
-                          <div className="group relative rounded-full px-5 md:px-6 py-3 bg-kc-black text-white shadow-elegant border border-white/10 snap-start focus-within:ring-2 focus-within:ring-white/40">
-                            <div className="absolute -inset-[1.5px] rounded-full bg-gradient-to-r from-kc-blue to-kc-red opacity-0 group-hover:opacity-50 blur-sm transition-opacity" />
+                          <div className="group relative rounded-full px-4 md:px-5 py-3 bg-gradient-to-r from-kc-blue/90 to-kc-red/90 text-white shadow-lg border border-white/20 hover:shadow-xl transition-all duration-300 hover:border-white/40">
+                            <div className="absolute -inset-[1px] rounded-full bg-gradient-to-r from-kc-blue to-kc-red opacity-0 group-hover:opacity-100 blur-sm transition-opacity duration-300" />
                             <div className="relative flex items-center gap-2.5">
-                              <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-white/10">
-                                <MapPin className="h-4 w-4" />
+                              <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-white/20 backdrop-blur-sm">
+                                <MapPin className="h-3.5 w-3.5" />
                               </span>
-                              <button className="text-sm md:text-base font-semibold tracking-tight whitespace-nowrap focus:outline-none">{i + 1}. {city}</button>
+                              <span className="text-sm md:text-base font-semibold tracking-tight whitespace-nowrap">{city}</span>
                             </div>
                           </div>
                         </motion.div>
@@ -436,11 +453,35 @@ const About = () => {
                 </div>
               </div>
 
-              <div className="mt-8 text-center">
-                <button className="inline-flex items-center gap-2 rounded-full px-5 md:px-6 py-3 bg-kc-blue text-white font-semibold shadow-lg hover:bg-kc-red transition-colors">
-                  Explore programs near you
-                </button>
-              </div>
+              {/* Enhanced CTA section */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: 0.3 }}
+                className="mt-10 text-center"
+              >
+                <motion.button
+                  whileHover={{ scale: 1.05, y: -2 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="group relative inline-flex items-center gap-3 rounded-full px-6 md:px-8 py-3 md:py-4 bg-gradient-to-r from-kc-blue to-kc-red text-white font-semibold text-base md:text-lg shadow-xl hover:shadow-2xl transition-all duration-300 border border-white/20 hover:border-white/40"
+                >
+                  <div className="absolute -inset-[1px] rounded-full bg-gradient-to-r from-kc-blue to-kc-red opacity-0 group-hover:opacity-100 blur-sm transition-opacity duration-300" />
+                  <span className="relative">Explore Programs Near You</span>
+                  <motion.div
+                    className="relative"
+                    animate={{ x: [0, 4, 0] }}
+                    transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+                  >
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                    </svg>
+                  </motion.div>
+                </motion.button>
+                <p className="text-sm text-muted-foreground mt-3 max-w-md mx-auto">
+                  Ready to start your STEM journey? Find programs, schedules, and opportunities in your city.
+                </p>
+              </motion.div>
             </div>
           </div>
         </div>

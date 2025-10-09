@@ -210,7 +210,7 @@ const BlogPage: React.FC = () => {
                           asChild 
                           className="rounded-full text-base px-6"
                         >
-                          <Link to="#" onClick={(e) => e.preventDefault()}>Read more</Link>
+                          <Link to={`/blog/${post.id}`}>Read more</Link>
                         </Button>
                         <div className="flex gap-4">
                           <button
