@@ -246,4 +246,39 @@ const EventsGrid: React.FC<{ items: typeof UPCOMING }> = ({ items }) => (
   </motion.div>
 );
 
+const EventsPage = () => {
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
+      <div className="container mx-auto px-4 py-8">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="text-center mb-12"
+        >
+          <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-kc-blue to-kc-red bg-clip-text text-transparent mb-4">
+            Events
+          </h1>
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+            Join us for exciting STEM events, competitions, and workshops designed to inspire and educate.
+          </p>
+        </motion.div>
+
+        <Tabs defaultValue="upcoming" className="w-full">
+          <TabsList className="grid w-full grid-cols-2 mb-8">
+            <TabsTrigger value="upcoming" className="text-lg">Upcoming Events</TabsTrigger>
+            <TabsTrigger value="past" className="text-lg">Past Events</TabsTrigger>
+          </TabsList>
+          <TabsContent value="upcoming">
+            <EventsGrid items={UPCOMING} />
+          </TabsContent>
+          <TabsContent value="past">
+            <EventsGrid items={PAST} />
+          </TabsContent>
+        </Tabs>
+      </div>
+    </div>
+  );
+};
+
 export default EventsPage;
