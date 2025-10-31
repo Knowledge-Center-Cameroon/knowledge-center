@@ -1,4 +1,3 @@
-import React from "react";
 import { motion } from "framer-motion";
 import StemRegistrationForm from "@/components/StemRegistrationForm";
 
@@ -19,8 +18,7 @@ const StemRegistrationApplyPage: React.FC = () => {
             Please provide accurate information. Payments are processed via MTN MoMo or Orange Money.
           </p>
         </div>
-        <StemRegistrationForm />
-      </div>
+              </div>
     </motion.section>
   );
 };

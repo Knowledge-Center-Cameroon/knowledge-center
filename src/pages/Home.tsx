@@ -23,7 +23,7 @@ const Home: React.FC = () => {
       <motion.section {...fadeUp}>
         <Hero />
       </motion.section>
-      <motion.section {...fadeUp}>
+      <motion.section {...fadeUp} className="bg-gray-100 p-8 rounded-lg shadow-md">
         <AboutKC />
       </motion.section>
       <motion.section {...fadeUp}>

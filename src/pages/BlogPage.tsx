@@ -61,14 +61,17 @@ const BlogPage: React.FC = () => {
       const likedInit: Record<string, boolean> = {};
       const likeCountsInit: Record<string, number> = {};
       const commentCountsInit: Record<string, number> = {};
+      const commentsInit: Record<string, string[]> = {};
       posts.forEach(p => {
         likedInit[p.id] = false;
         likeCountsInit[p.id] = 0;
         commentCountsInit[p.id] = 0;
+        commentsInit[p.id] = [];
       });
       setLikedPosts(likedInit);
       setLikeCounts(likeCountsInit);
       setCommentCounts(commentCountsInit);
+      setComments(commentsInit);
     }
     // Only run on mount/posts (posts stable due to memo)
     // eslint-disable-next-line react-hooks/exhaustive-deps
