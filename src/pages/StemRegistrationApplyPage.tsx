@@ -18,7 +18,8 @@ const StemRegistrationApplyPage: React.FC = () => {
             Please provide accurate information. Payments are processed via MTN MoMo or Orange Money.
           </p>
         </div>
-              </div>
+        <StemRegistrationForm />
+      </div>
     </motion.section>
   );
 };
