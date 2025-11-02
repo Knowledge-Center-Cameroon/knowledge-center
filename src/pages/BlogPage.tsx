@@ -44,7 +44,6 @@ const BlogPage: React.FC = () => {
       const liked = JSON.parse(localStorage.getItem('kc_liked_posts_v1') || '{}');
       const likes = JSON.parse(localStorage.getItem('kc_like_counts_v1') || '{}');
       const comments = JSON.parse(localStorage.getItem('kc_comment_counts_v1') || '{}');
-      // Ensure keys exist for current posts
       const likedInit: Record<string, boolean> = { ...liked };
       const likeCountsInit: Record<string, number> = { ...likes };
       const commentCountsInit: Record<string, number> = { ...comments };
@@ -126,6 +125,10 @@ const BlogPage: React.FC = () => {
     } finally {
       setLoadingLikes(prev => ({ ...prev, [postId]: false }));
     }
+  };
+
+  const handleDiscardDraft = () => {
+    setDiscardDraft(true);
   };
 
   const { ref, y } = useParallax(40);
@@ -270,6 +273,12 @@ const BlogPage: React.FC = () => {
                             className="inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors duration-300"
                           >
                             <MessageSquare className="h-5 w-5" /> {commentCount}
+                          </button>
+                          <button
+                            onClick={handleDiscardDraft}
+                            className="inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors duration-300"
+                          >
+                            <Trash2 className="h-5 w-5" />
                           </button>
                         </div>
                       </div>
