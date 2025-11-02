@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import StemRegistrationForm from "../components/StemRegistrationForm";
+import StemRegistrationForm from "@/components/StemRegistrationForm";
 
 const StemRegistrationApplyPage: React.FC = () => {
   return (
