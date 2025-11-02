@@ -9,7 +9,7 @@ import StemBackground from "@/components/StemBackground";
 import { useParallax, Parallax } from "@/hooks/use-parallax";
 import { Input } from "@/components/ui/input";
 import { Heart, MessageSquare, Loader2, Trash2, Share2 } from "lucide-react";
-import { useState, useMemo, useEffect } from "react"; 
+import React, { useState, useMemo, useEffect } from "react"; 
 import { useUser } from "@/contexts/UserContext";
 import { useToast } from "@/components/ui/use-toast";
 import { toggleBlogLike, getBlogLikeStatus } from "@/services/blogApi";
