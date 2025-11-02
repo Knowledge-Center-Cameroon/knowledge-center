@@ -8,9 +8,10 @@ import Timeline, { type TimelineItem } from "@/components/Timeline";
 import StemBackground from "@/components/StemBackground";
 import { useParallax, Parallax } from "@/hooks/use-parallax";
 import { Input } from "@/components/ui/input";
-import { Heart, MessageSquare, Loader2, Trash2 } from "lucide-react";
+import { Heart, MessageSquare, Loader2, Trash2, Share2 } from "lucide-react";
 import { useState, useMemo, useEffect } from "react"; 
 import { useUser } from "@/contexts/UserContext";
+import { useToast } from "@/components/ui/use-toast";
 import { toggleBlogLike, getBlogLikeStatus } from "@/services/blogApi";
 
 interface Post {
@@ -30,6 +31,7 @@ interface LikeStatus {
 
 const BlogPage: React.FC = () => {
   const { user } = useUser();
+  const { toast } = useToast();
   const [query, setQuery] = useState("");
   const [activeTag, setActiveTag] = useState<string | null>(null);
   const [likedPosts, setLikedPosts] = useState<Record<string, boolean>>({});
@@ -141,6 +143,40 @@ const BlogPage: React.FC = () => {
       alert('Failed to update like. Please try again.');
     } finally {
       setLoadingLikes(prev => ({ ...prev, [postId]: false }));
+    }
+  };
+
+  const handleShare = async (postId: string, postTitle: string) => {
+    const shareUrl = `${window.location.origin}/blog/${postId}`;
+    const shareData = {
+      title: postTitle,
+      text: `Check out this article from Knowledge Center: "${postTitle}"`,
+      url: shareUrl,
+    };
+
+    if (navigator.share) {
+      try {
+        await navigator.share(shareData);
+      } catch (err) {
+        if ((err as Error).name !== 'AbortError') {
+          console.error('Error sharing:', err);
+        }
+      }
+    } else {
+      try {
+        await navigator.clipboard.writeText(shareUrl);
+        toast({
+          title: "Link Copied!",
+          description: "The link to the post has been copied to your clipboard.",
+        });
+      } catch (err) {
+        console.error('Failed to copy link:', err);
+        toast({
+          title: "Failed to Copy Link",
+          description: "Could not copy the link to your clipboard.",
+          variant: "destructive" as any,
+        });
+      }
     }
   };
 
@@ -296,6 +332,13 @@ const BlogPage: React.FC = () => {
                             className="inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors duration-300"
                           >
                             <Trash2 className="h-5 w-5" />
+                          </button>
+                          <button
+                            onClick={() => handleShare(post.id, post.title)}
+                            className="inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors duration-300 hover:text-kc-blue"
+                            title="Share this post"
+                          >
+                            <Share2 className="h-5 w-5" />
                           </button>
                         </div>
                       </div>
