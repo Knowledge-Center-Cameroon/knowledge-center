@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { useForm, useFormContext, UseFormReturn, useFormState } from "react-hook-form";
 import { format } from "date-fns";
 import { motion } from "framer-motion";
 import { Calendar as CalendarIcon, Loader2 } from "lucide-react";
@@ -20,6 +20,16 @@ import { useToast } from "@/components/ui/use-toast";
 import { cn } from "@/lib/utils";
 import { initiateStemPayment, type StemRegistrationPayload } from "@/services/api";
 import { ArrowButton } from "@/components/arrowbtn";
+import { X } from 'lucide-react'; 
+ 
+
+type StemRegistrationData = z.infer<typeof schema>;
+
+interface Props {
+  onSubmitted: (data: StemRegistrationData) => void;
+  initialValues?: Partial<StemRegistrationData>;
+  mode?: "create" | "edit";
+}
 
 const cmPhone = z
   .string()

@@ -1,4 +1,3 @@
-import React from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -9,23 +8,41 @@ import Timeline, { type TimelineItem } from "@/components/Timeline";
 import StemBackground from "@/components/StemBackground";
 import { useParallax, Parallax } from "@/hooks/use-parallax";
 import { Input } from "@/components/ui/input";
-import { Heart, MessageSquare, Loader2 } from "lucide-react";
+import { Heart, MessageSquare, Loader2, Trash2 } from "lucide-react";
+import { useState, useMemo, useEffect } from "react"; 
 import { useUser } from "@/contexts/UserContext";
 import { toggleBlogLike, getBlogLikeStatus } from "@/services/blogApi";
 
+interface Post {
+  id: string;
+  title: string;
+  date: string;
+  author: string;
+  dp: string;
+  cover: string;
+  tags: string[];
+}
+
+interface LikeStatus {
+  isLiked: boolean;
+  likeCount: number;
+}
+
 const BlogPage: React.FC = () => {
   const { user } = useUser();
-  const [query, setQuery] = React.useState("");
-  const [activeTag, setActiveTag] = React.useState<string | null>(null);
-  const [likedPosts, setLikedPosts] = React.useState<Record<string, boolean>>({});
-  const [likeCounts, setLikeCounts] = React.useState<Record<string, number>>({});
-  const [commentCounts, setCommentCounts] = React.useState<Record<string, number>>({});
-  const [loadingLikes, setLoadingLikes] = React.useState<Record<string, boolean>>({});
+  const [query, setQuery] = useState("");
+  const [activeTag, setActiveTag] = useState<string | null>(null);
+  const [likedPosts, setLikedPosts] = useState<Record<string, boolean>>({});
+  const [likeCounts, setLikeCounts] = useState<Record<string, number>>({});
+  const [commentCounts, setCommentCounts] = useState<Record<string, number>>({});
+  const [loadingLikes, setLoadingLikes] = useState<Record<string, boolean>>({});
+  const [discardDraft, setDiscardDraft] = useState(false);
+  const [comments, setComments] = useState<Record<string, string[]>>({});
 
-  const posts = React.useMemo(() => (
+  const posts = useMemo(() => (
     [...blogPosts].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
   ), []);
-  const allTags = React.useMemo(() => {
+  const allTags = useMemo(() => {
     const s = new Set<string>();
     posts.forEach(p => (p.tags || []).forEach(t => s.add(t)));
     return Array.from(s).sort();
