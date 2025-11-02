@@ -261,22 +261,6 @@ const StemRegistrationForm: React.FC<Props> = ({ onSubmitted, initialValues, mod
           <motion.div
             className="h-full bg-gradient-to-r from-kc-blue to-kc-red"
             initial={{ width: 0 }}
-            animate={{ width: `${progress}%` }}
-            transition={{ duration: 0.3 }}
-          />
-        </div>
-        <span className="text-sm text-muted-foreground">{progress}%</span>
-        <Button
-          type="button"
-          variant="ghost"
-          className="ml-auto"
-          onClick={() => {
-            try { localStorage.removeItem(DRAFT_KEY); } catch {}
-            form.reset();
-            setStepIndex(0);
-            toast({ title: "Draft discarded", description: "Your form was reset." });
-          }}
-        >
           Discard draft
         </Button>
       </div>
@@ -599,7 +583,7 @@ const StemRegistrationForm: React.FC<Props> = ({ onSubmitted, initialValues, mod
                         fullName: form.getValues("fullName"),
                         phone: form.getValues("phone"),
                         guardianPhone: form.getValues("guardianPhone"),
-                        dobISO: form.getValues("dob")?.toISOString(),
+                        dobISO: form.getValues("dob")?.toISOString,
                         gender: form.getValues("gender") as any,
                         school: form.getValues("school"),
                         schoolClass: form.getValues("schoolClass"),
