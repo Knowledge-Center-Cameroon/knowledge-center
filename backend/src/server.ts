@@ -65,7 +65,7 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 app.use(cors({
-  origin: function (origin, callback) {
+  origin: function (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) {
     // Allow requests with no origin (mobile apps, etc.)
     if (!origin) return callback(null, true);
 
@@ -611,7 +611,7 @@ app.get('/api/blog/:postId/comments', async (req: Request, res: Response) => {
 
     // Get replies for each comment
     const commentsWithReplies = await Promise.all(
-      comments.map(async (comment) => {
+      comments.map(async (comment: any) => {
         const replies = await BlogComment
           .find({ parentId: comment._id.toString() })
           .sort({ created_at: 1 })

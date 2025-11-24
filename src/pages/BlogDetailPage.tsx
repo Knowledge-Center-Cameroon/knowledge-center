@@ -10,12 +10,13 @@ import StemBackground from "@/components/StemBackground";
 import { useParallax, Parallax } from "@/hooks/use-parallax";
 import { useUser } from "@/contexts/UserContext";
 import { toggleBlogLike, getBlogLikeStatus, getBlogComments, addBlogComment, updateBlogComment, deleteBlogComment, type BlogComment } from "@/services/blogApi";
+import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 
 const BlogDetailPage: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
-  const { user } = useUser();
+  const { user, setUserName } = useUser();
   const { ref, y } = useParallax(40);
 
   const [isLiked, setIsLiked] = React.useState(false);
@@ -26,6 +27,7 @@ const BlogDetailPage: React.FC = () => {
   const [editingText, setEditingText] = React.useState("");
   const [loading, setLoading] = React.useState(false);
   const [submittingComment, setSubmittingComment] = React.useState(false);
+  const [displayName, setDisplayName] = React.useState<string>(user?.name || "");
 
   const post = blogPosts.find(p => p.id === slug);
 
@@ -69,14 +71,19 @@ const BlogDetailPage: React.FC = () => {
 
   const handleSubmitComment = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!post || !user?.id || !commentText.trim()) return;
+    if (!post || !user?.id || !commentText.trim() || !displayName.trim()) return;
+
+    // Persist the chosen display name in user context/localStorage
+    if (displayName.trim() && displayName.trim() !== user.name) {
+      setUserName(displayName.trim());
+    }
 
     setSubmittingComment(true);
     try {
       const newComment = await addBlogComment(
         post.id,
         user.id,
-        user.name || 'Anonymous',
+        displayName.trim(),
         commentText.trim()
       );
 
@@ -310,14 +317,22 @@ const BlogDetailPage: React.FC = () => {
 
           {/* Comment Form */}
           {user?.id ? (
-            <form onSubmit={handleSubmitComment} className="mb-8">
+            <form onSubmit={handleSubmitComment} className="mb-8 space-y-4">
               <div className="flex gap-4">
                 <Avatar className="h-10 w-10 flex-shrink-0">
                   <AvatarFallback className="bg-kc-blue/10 text-kc-blue">
-                    {(user.name || 'A').charAt(0).toUpperCase()}
+                    {(displayName || user.name || 'A').charAt(0).toUpperCase()}
                   </AvatarFallback>
                 </Avatar>
-                <div className="flex-1">
+                <div className="flex-1 space-y-3">
+                  <div className="flex flex-col sm:flex-row gap-2 sm:items-center">
+                    <Input
+                      value={displayName}
+                      onChange={(e) => setDisplayName(e.target.value)}
+                      placeholder="Your name (required)"
+                      className="sm:max-w-xs"
+                    />
+                  </div>
                   <Textarea
                     value={commentText}
                     onChange={(e) => setCommentText(e.target.value)}
@@ -325,13 +340,13 @@ const BlogDetailPage: React.FC = () => {
                     className="min-h-[100px] resize-none"
                     maxLength={1000}
                   />
-                  <div className="flex justify-between items-center mt-2">
+                  <div className="flex justify-between items-center mt-2 gap-2 flex-wrap">
                     <span className="text-sm text-muted-foreground">
                       {commentText.length}/1000 characters
                     </span>
                     <Button
                       type="submit"
-                      disabled={!commentText.trim() || submittingComment}
+                      disabled={!commentText.trim() || !displayName.trim() || submittingComment}
                       className="gap-2"
                     >
                       {submittingComment ? (

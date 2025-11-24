@@ -12,7 +12,7 @@ import { Heart, MessageSquare, Loader2, Trash2, Share2 } from "lucide-react";
 import React, { useState, useMemo, useEffect } from "react"; 
 import { useUser } from "@/contexts/UserContext";
 import { useToast } from "@/components/ui/use-toast";
-import { toggleBlogLike, getBlogLikeStatus } from "@/services/blogApi";
+import { toggleBlogLike, getBlogLikeStatus, getBlogComments } from "@/services/blogApi";
 
 interface Post {
   id: string;
@@ -105,23 +105,28 @@ const BlogPage: React.FC = () => {
     try { localStorage.setItem('kc_comment_counts_v1', JSON.stringify(commentCounts)); } catch {}
   }, [commentCounts]);
 
-  // Load like statuses for all posts when component mounts or user changes
+  // Load like statuses and comment counts for all posts when component mounts or user changes
   React.useEffect(() => {
-    const loadLikeStatuses = async () => {
+    const loadInteractions = async () => {
       if (!user?.id) return;
 
       for (const post of posts) {
         try {
-          const likeStatus = await getBlogLikeStatus(post.id, user.id);
+          const [likeStatus, commentsData] = await Promise.all([
+            getBlogLikeStatus(post.id, user.id),
+            getBlogComments(post.id, 1, 1),
+          ]);
+
           setLikedPosts(prev => ({ ...prev, [post.id]: likeStatus.isLiked }));
           setLikeCounts(prev => ({ ...prev, [post.id]: likeStatus.likeCount }));
+          setCommentCounts(prev => ({ ...prev, [post.id]: commentsData.pagination.total }));
         } catch (error) {
-          console.error(`Error loading like status for post ${post.id}:`, error);
+          console.error(`Error loading interactions for post ${post.id}:`, error);
         }
       }
     };
 
-    loadLikeStatuses();
+    loadInteractions();
   }, [user?.id, posts]);
 
   const handleLike = async (postId: string) => {
