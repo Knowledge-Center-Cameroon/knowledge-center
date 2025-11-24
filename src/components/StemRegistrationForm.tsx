@@ -18,6 +18,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Calendar } from "@/components/ui/calendar";
 import { useToast } from "@/components/ui/use-toast";
 import { cn } from "@/lib/utils";
+import { initiateStemPayment, type StemRegistrationPayload } from "@/services/api";
 
 const cmPhone = z
   .string()
@@ -149,16 +150,55 @@ const StemRegistrationForm: React.FC<Props> = ({ onSubmitted, initialValues, mod
 
   async function onSubmit(data: StemRegistrationData) {
     setSubmitting(true);
-    console.log(data);
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    setSubmitting(false);
-    toast({ title: "Registration Submitted!", description: "We will get back to you shortly." });
-    if (onSubmitted) {
-      onSubmitted(data);
+    try {
+      const payload: StemRegistrationPayload = {
+        fullName: data.fullName,
+        phone: data.phone,
+        guardianPhone: data.guardianPhone,
+        dobISO: data.dob.toISOString(),
+        gender: data.gender,
+        school: data.school,
+        schoolClass: data.schoolClass,
+        motivation: data.expectations,
+        level: data.educationLevel,
+        paymentMethod: data.paymentMethod,
+      };
+
+      const amount = totalAmount;
+
+      const { reference, paymentMethod, amount: confirmedAmount } = await initiateStemPayment(
+        payload,
+        amount
+      );
+
+      toast({
+        title: "Payment Initiated",
+        description: `Reference ${reference}. Approve the ${paymentMethod?.toUpperCase()} prompt on your phone.`,
+      });
+
+      if (onSubmitted) {
+        onSubmitted(data);
+      }
+
+      form.reset();
+      setStepIndex(0);
+      navigate('/stem/success', {
+        state: {
+          reference,
+          amount: confirmedAmount,
+          method: paymentMethod,
+        },
+      });
+    } catch (error) {
+      console.error('STEM payment initiation failed:', error);
+      toast({
+        title: "Payment Failed",
+        description: "We could not initiate your mobile money payment. Please try again.",
+        variant: "destructive" as any,
+      });
+    } finally {
+      setSubmitting(false);
     }
-    form.reset();
-    setStepIndex(0);
-    navigate('/stem/success');
   }
 
   const fileRef = form.register("paymentScreenshot");
