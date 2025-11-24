@@ -249,14 +249,14 @@ const EventsGrid: React.FC<{ items: typeof UPCOMING }> = ({ items }) => (
 const EventsPage = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-4 pt-28 pb-12">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
           className="text-center mb-12"
         >
-          <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-kc-blue to-kc-red bg-clip-text text-transparent mb-4">
+          <h1 className="heading-2 mb-6 text-4xl md:text-5xl font-bold bg-gradient-to-r from-kc-blue to-kc-red bg-clip-text text-transparent mb-4">
             Events
           </h1>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
