@@ -21,6 +21,9 @@ const Home: React.FC = () => {
     description:
       "Knowledge Center Cameroon is a non-profit STEM hub in Buea helping young Cameroonians fall in love with science through tutoring, competitions, and hands-on programs.",
   });
+  React.useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "auto" });
+  }, []);
   return (
     <div className="space-y-10 lg:space-y-16">
       <motion.section {...fadeUp}>

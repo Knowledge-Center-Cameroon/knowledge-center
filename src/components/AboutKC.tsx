@@ -32,7 +32,11 @@ const AboutKC: React.FC = () => {
   ];
 
   return (
-    <section ref={ref as any} className="py-16 lg:py-24 bg-slate-50 relative overflow-hidden">
+    <section
+      id="about-home"
+      ref={ref as any}
+      className="py-16 lg:py-24 bg-slate-50 relative overflow-hidden"
+    >
       <Parallax style={{ y }} className="container mx-auto px-4 lg:px-8 relative z-10">
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
           <div className="lg:text-left">

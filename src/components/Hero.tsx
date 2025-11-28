@@ -292,8 +292,8 @@ const Hero = () => {
                 {/* Scroll circle */}
                 <button
                   type="button"
-                  onClick={() => scrollToSection("about")}
-                  aria-label="Scroll to about section"
+                  onClick={() => scrollToSection("about-home")}
+                  aria-label="Scroll to about section on home page"
                   className="relative inline-flex items-center justify-center rounded-full border border-slate-200/90 w-24 h-24 text-[0.65rem] uppercase tracking-[0.18em] text-slate-500 hover:border-slate-300 hover:text-slate-700 transition-colors"
                 >
                   <span className="absolute inset-[18%] rounded-full border border-dashed border-slate-200" />
