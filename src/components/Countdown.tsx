@@ -28,9 +28,10 @@ const useCountdown = (to: Date) => {
 const Digit: React.FC<{ d: string }> = ({ d }) => (
   <motion.span
     key={d}
-    initial={{ y: -12, opacity: 0 }}
+    initial={{ y: -6, opacity: 0 }}
     animate={{ y: 0, opacity: 1 }}
-    transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
+    exit={{ y: 6, opacity: 0 }}
+    transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
     className="inline-block"
   >
     {d}
@@ -100,7 +101,7 @@ const Countdown: React.FC = () => {
                   <div className="mt-4 w-full max-w-md">
                     <div className="h-1.5 w-full rounded bg-black/10 overflow-hidden">
                       <div
-                        className="h-full bg-kc-blue transition-all"
+                        className="h-full bg-kc-blue transition-[width] duration-500 ease-out"
                         style={{ width: `${(seconds / 60) * 100}%` }}
                       />
                     </div>

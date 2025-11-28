@@ -19,7 +19,7 @@ const Home: React.FC = () => {
     window.scrollTo({ top: 0, behavior: "auto" });
   }, []);
   return (
-    <div className="space-y-16 lg:space-y-24">
+    <div className="space-y-10 lg:space-y-16">
       <motion.section {...fadeUp}>
         <Hero />
       </motion.section>

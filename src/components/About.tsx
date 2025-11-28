@@ -391,15 +391,11 @@ const About = () => {
           </Accordion>
         </div>
 
-        {/* KC STEM Hubs - Enhanced Design with better visual hierarchy and interactivity */}
+        {/* KC STEM Hubs - solid accent colors */}
         <div className="mt-16 md:mt-24">
-          <div className="relative overflow-hidden rounded-3xl shadow-2xl border border-white/30 bg-gradient-to-br from-white/80 via-white/50 to-white/30 backdrop-blur-xl">
-            {/* Enhanced decorative orbs with better positioning */}
-            <div className="pointer-events-none absolute -top-20 -left-20 h-72 w-72 rounded-full bg-gradient-to-br from-kc-blue/40 to-kc-red/30 blur-3xl animate-pulse" />
-            <div className="pointer-events-none absolute -bottom-24 -right-16 h-64 w-64 rounded-full bg-gradient-to-tr from-kc-red/40 to-kc-blue/30 blur-3xl animate-pulse" />
-            <div className="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-96 w-96 rounded-full bg-gradient-to-r from-kc-blue/10 to-kc-red/10 blur-3xl" />
+          <div className="relative overflow-hidden rounded-3xl shadow-xl border border-slate-200 bg-white">
+            <div className="relative p-6 md:p-8 lg:p-10">
 
-            <div className="relative p-6 md:p-8 lg:p-12">
               {/* Enhanced header with better typography hierarchy */}
               <div className="text-center mb-8">
                 <motion.div
@@ -407,14 +403,15 @@ const About = () => {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.6 }}
-                  className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-kc-blue/10 backdrop-blur-sm border border-kc-blue/20 mb-4"
+                  className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white border border-kc-blue/40 mb-4"
                 >
                   <MapPin className="h-4 w-4 text-kc-blue" />
                   <span className="text-sm font-semibold text-kc-blue">Locations Across Cameroon</span>
                 </motion.div>
                 <h3 className="text-2xl md:text-3xl lg:text-4xl font-heading font-bold mb-3">
-                  <span className="bg-gradient-to-r from-kc-blue to-kc-red bg-clip-text text-transparent">KC STEM Hubs</span> <span className="text-foreground">Across Cameroon</span>
+                  <span className="text-kc-blue">KC STEM Hubs</span> <span className="text-foreground">Across Cameroon</span>
                 </h3>
+
                 <p className="text-foreground/80 max-w-2xl mx-auto text-lg leading-relaxed">
                   Discover inquiry-driven learning centers nationwide. Find the hub closest to you and join our community of innovators.
                 </p>
@@ -423,7 +420,8 @@ const About = () => {
               {/* Enhanced city chips with better styling and animations */}
               <div className="mt-8">
                 <div className="relative">
-                  <div className="absolute left-4 right-4 top-1/2 -translate-y-1/2 h-px bg-gradient-to-r from-kc-blue/30 via-transparent to-kc-red/30" />
+                  <div className="absolute left-4 right-4 top-1/2 -translate-y-1/2 h-px bg-slate-200" />
+
                   <div className="overflow-x-auto no-scrollbar snap-x snap-mandatory" ref={hubsTrackRef}>
                     <div className="flex items-stretch gap-3 md:gap-4 px-4 py-4">
                       {hubs.map((city, i) => (
@@ -437,15 +435,15 @@ const About = () => {
                           whileTap={{ scale: 0.95 }}
                           className="snap-start"
                         >
-                          <div className="group relative rounded-full px-4 md:px-5 py-3 bg-gradient-to-r from-kc-blue/90 to-kc-red/90 text-white shadow-lg border border-white/20 hover:shadow-xl transition-all duration-300 hover:border-white/40">
-                            <div className="absolute -inset-[1px] rounded-full bg-gradient-to-r from-kc-blue to-kc-red opacity-0 group-hover:opacity-100 blur-sm transition-opacity duration-300" />
+                          <div className="group relative rounded-full px-4 md:px-5 py-2.5 bg-kc-blue text-white shadow-md hover:shadow-lg transition-all duration-200">
                             <div className="relative flex items-center gap-2.5">
-                              <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-white/20 backdrop-blur-sm">
+                              <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-white/15">
                                 <MapPin className="h-3.5 w-3.5" />
                               </span>
                               <span className="text-sm md:text-base font-semibold tracking-tight whitespace-nowrap">{city}</span>
                             </div>
                           </div>
+
                         </motion.div>
                       ))}
                     </div>
@@ -464,10 +462,10 @@ const About = () => {
                 <motion.button
                   whileHover={{ scale: 1.05, y: -2 }}
                   whileTap={{ scale: 0.95 }}
-                  className="group relative inline-flex items-center gap-3 rounded-full px-6 md:px-8 py-3 md:py-4 bg-gradient-to-r from-kc-blue to-kc-red text-white font-semibold text-base md:text-lg shadow-xl hover:shadow-2xl transition-all duration-300 border border-white/20 hover:border-white/40"
+                  className="group relative inline-flex items-center gap-3 rounded-full px-6 md:px-8 py-3 md:py-3.5 bg-kc-blue text-white font-semibold text-base md:text-lg shadow-md hover:shadow-lg transition-all duration-200 border border-kc-blue/70 hover:bg-kc-red hover:border-kc-red"
                 >
-                  <div className="absolute -inset-[1px] rounded-full bg-gradient-to-r from-kc-blue to-kc-red opacity-0 group-hover:opacity-100 blur-sm transition-opacity duration-300" />
                   <span className="relative">Explore Programs Near You</span>
+
                   <motion.div
                     className="relative"
                     animate={{ x: [0, 4, 0] }}

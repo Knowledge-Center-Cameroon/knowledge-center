@@ -96,16 +96,22 @@ const Hero = () => {
   const { y: yOverlay } = useParallax(30);
   const { y: yImage } = useParallax(45); // Enhanced parallax for individual images
   return (
-    <section ref={parRef as any} id="home" className="relative pt-4 md:pt-8 lg:pt-8 min-h-[70svh] sm:min-h-[75svh] md:min-h-[80svh] lg:min-h-[88svh] flex items-center justify-center overflow-hidden">
-      {/* Background Images with parallax and crossfade */}
-      <div className="absolute inset-0">
+    <section
+      ref={parRef as any}
+      id="home"
+      className="relative pt-24 md:pt-28 lg:pt-32 min-h-[70svh] sm:min-h-[75svh] md:min-h-[80svh] lg:min-h-[88svh] flex items-center justify-center overflow-hidden bg-background"
+    >
+      {/* Image background panel on the right, with slider (desktop / tablet) */}
+      <div className="pointer-events-none hidden md:block absolute inset-y-6 right-0 left-2/5 lg:left-[45%] rounded-l-[2.75rem] md:rounded-l-[3.25rem] overflow-hidden shadow-2xl shadow-black/30">
         {slides.map((s, idx) => (
           <motion.div
             key={idx}
-            className={`absolute inset-0 transition-opacity duration-700 ease-out ${idx === currentSlide ? "opacity-100" : "opacity-0"}`}
+            className={`absolute inset-0 transition-opacity duration-700 ease-out ${
+              idx === currentSlide ? "opacity-100" : "opacity-0"
+            }`}
             style={{ y: yBack }}
           >
-            <motion.div 
+            <motion.div
               className="absolute inset-0 scale-110"
               style={{ y: yImage }}
             >
@@ -115,155 +121,192 @@ const Hero = () => {
                 className="w-full h-full object-cover object-center will-change-transform transition-transform duration-700"
                 loading={idx === 0 ? "eager" : "lazy"}
                 decoding="async"
-                sizes="100vw"
+                sizes="(min-width: 1024px) 60vw, 70vw"
               />
             </motion.div>
-            <motion.div 
-              className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/60 to-black/80" 
-              style={{ y: yOverlay }} 
+            <motion.div
+              className="absolute inset-0 bg-black/45"
+              style={{ y: yOverlay }}
             />
           </motion.div>
         ))}
       </div>
 
-      {/* Content with parallax */}
-      <motion.div 
-        className="relative z-10 container mx-auto px-4 lg:px-8 text-center text-white"
+      {/* Main content card inspired by reference layout */}
+      <motion.div
+        className="relative z-10 container mx-auto px-4 lg:px-8"
         style={{ y: yOverlay }}
       >
         <motion.div
-          initial={{ opacity: 0, y: 18 }}
+          initial={{ opacity: 0, y: 22 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-          className="max-w-3xl md:max-w-4xl mx-auto glass rounded-2xl shadow-elegant px-5 py-6 sm:px-8 sm:py-8 md:px-10 md:py-10 bg-black/40 border border-white/10 backdrop-blur-md"
+          className="relative grid gap-10 md:gap-12 lg:gap-16 items-center md:grid-cols-[minmax(0,1.1fr)_minmax(0,1.1fr)]"
         >
-          {/* Animated Logo */}
-          <div className="flex justify-center mb-4 md:mb-6">
-            <AnimatedLogo size={120} />
+          {/* White curved content panel */}
+          <div className="relative">
+            <div className="relative bg-white rounded-[2.5rem] md:rounded-[3rem] px-6 pt-5 pb-7 sm:px-8 sm:pt-6 sm:pb-9 md:px-10 md:py-10 shadow-[0_18px_60px_rgba(15,23,42,0.18)] border border-slate-100/80 max-w-xl">
+              {/* Mobile image embedded in card */}
+              <div className="relative mb-5 -mx-4 sm:-mx-6 md:hidden rounded-[2rem] overflow-hidden h-52 xs:h-56 sm:h-64">
+                {slides.map((s, idx) => (
+                  <motion.div
+                    key={idx}
+                    className={`absolute inset-0 transition-opacity duration-700 ease-out ${
+                      idx === currentSlide ? "opacity-100" : "opacity-0"
+                    }`}
+                  >
+                    <img
+                      src={s.image}
+                      alt={s.title}
+                      className="w-full h-full object-cover object-center"
+                      loading={idx === 0 ? "eager" : "lazy"}
+                      decoding="async"
+                      sizes="100vw"
+                    />
+                    <div className="absolute inset-0 bg-black/25" />
+                  </motion.div>
+                ))}
+                <div className="absolute inset-x-4 bottom-4 flex items-center justify-between">
+                  <button
+                    onClick={prevSlide}
+                    className="bg-black/55 text-white p-2 rounded-full hover:bg-black/75 transition-colors shadow-lg"
+                    aria-label="Previous slide"
+                  >
+                    <ChevronLeft className="h-4 w-4" />
+                  </button>
+                  <div className="flex items-center gap-1.5">
+                    {slides.map((_, index) => (
+                      <span
+                        key={index}
+                        className={`h-1.5 rounded-full transition-all duration-300 ${
+                          index === currentSlide ? "bg-white w-5" : "bg-white/60 w-2"
+                        }`}
+                      />
+                    ))}
+                  </div>
+                  <button
+                    onClick={nextSlide}
+                    className="bg-black/55 text-white p-2 rounded-full hover:bg-black/75 transition-colors shadow-lg"
+                    aria-label="Next slide"
+                  >
+                    <ChevronRight className="h-4 w-4" />
+                  </button>
+                </div>
+              </div>
+
+              {/* Animated Logo */}
+              <div className="flex items-center gap-3 mb-5 md:mb-6">
+                <div className="shrink-0">
+                  <AnimatedLogo size={68} />
+                </div>
+                <div className="hidden sm:flex flex-col text-xs font-semibold tracking-[0.22em] uppercase text-slate-500">
+                  <span>Knowledge Center</span>
+                  <span className="text-slate-700">Cameroon</span>
+                </div>
+              </div>
+
+              {/* Heading with solid color text */}
+              <div className="relative mb-4 md:mb-5">
+                <AnimatePresence mode="wait">
+                  <motion.h1
+                    key={phraseIndex}
+                    className="heading-1 text-slate-900 leading-tight sm:leading-tight break-words max-w-[18ch] sm:max-w-[22ch]"
+                    initial={{ opacity: 0, y: 4 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -4 }}
+                    transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
+                  >
+                    {phrases[phraseIndex]}
+                  </motion.h1>
+                </AnimatePresence>
+              </div>
+
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={`subtitle-${currentSlide}`}
+                  className="text-sm sm:text-base md:text-lg font-semibold text-slate-700 mb-3 md:mb-4"
+                  initial={{ opacity: 0, y: 3 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -3 }}
+                  transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+                >
+                  {slides[currentSlide].subtitle}
+                </motion.div>
+              </AnimatePresence>
+
+              {/* Description */}
+              <AnimatePresence mode="wait">
+                <motion.p
+                  key={`desc-${currentSlide}`}
+                  className="text-sm sm:text-base md:text-[0.98rem] font-body text-slate-600 leading-relaxed mb-6 md:mb-7 max-w-xl"
+                  initial={{ opacity: 0, y: 3 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -3 }}
+                  transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+                >
+                  {slides[currentSlide].description}
+                </motion.p>
+              </AnimatePresence>
+
+              {/* CTA Buttons */}
+              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 items-stretch sm:items-center">
+                <ArrowButton
+                  text="Our Impact"
+                  bgPrimaryColor="#111827"
+                  bgSecondaryColor="#2563eb"
+                  textPrimaryColor="#ffffff"
+                  textSecondaryColor="#ffffff"
+                  className="rounded-full w-full sm:w-auto"
+                  href="/projects"
+                />
+
+                <ArrowButton
+                  text="Discover Our Story"
+                  bgPrimaryColor="rgba(15,23,42,0.04)"
+                  bgSecondaryColor="#111827"
+                  textPrimaryColor="#0f172a"
+                  textSecondaryColor="#ffffff"
+                  className="rounded-full w-full sm:w-auto border border-slate-200/80 backdrop-blur-[8px]"
+                  href="/about"
+                />
+              </div>
+
+              {/* Bottom meta row: slide dots + scroll circle */}
+              <div className="mt-7 md:mt-8 flex items-center justify-between gap-4 flex-wrap">
+                {/* Slide indicators */}
+                <div className="flex items-center gap-2">
+                  {slides.map((_, index) => (
+                    <button
+                      key={index}
+                      onClick={() => setCurrentSlide(index)}
+                      className={`h-1.5 rounded-full transition-all duration-300 ${
+                        index === currentSlide
+                          ? "bg-slate-900 w-6"
+                          : "bg-slate-300 w-2 hover:bg-slate-400"
+                      }`}
+                      aria-label={`Go to slide ${index + 1}`}
+                    />
+                  ))}
+                </div>
+
+                {/* Scroll circle */}
+                <button
+                  type="button"
+                  onClick={() => scrollToSection("projects")}
+                  aria-label="Scroll to projects section"
+                  className="relative inline-flex items-center justify-center rounded-full border border-slate-200/90 w-24 h-24 text-[0.65rem] uppercase tracking-[0.18em] text-slate-500 hover:border-slate-300 hover:text-slate-700 transition-colors"
+                >
+                  <span className="absolute inset-[18%] rounded-full border border-dashed border-slate-200" />
+                  <span className="z-10 text-[0.6rem] font-semibold">Scroll Down</span>
+                </button>
+              </div>
+            </div>
           </div>
 
-
-          {/* Heading with animated glow */}
-          <div className="relative mb-3 md:mb-4">
-            <motion.div
-              className="absolute inset-0 -z-10 flex items-center justify-center"
-              initial={{ opacity: 0.25, scale: 0.95 }}
-              animate={{ opacity: [0.25, 0.45, 0.25], scale: [0.95, 1, 0.95] }}
-              transition={{ duration: 2.6, repeat: Infinity, ease: "easeInOut" }}
-            >
-              <div className="h-20 w-64 md:h-24 md:w-96 rounded-full blur-2xl"
-                   style={{ background: "linear-gradient(90deg, hsl(var(--kc-blue)), hsl(var(--kc-red)))" }} />
-            </motion.div>
-            <AnimatePresence mode="wait">
-              <motion.h1
-                key={phraseIndex}
-                className="heading-1 bg-clip-text text-white max-w-[22ch] sm:max-w-[28ch] mx-auto leading-tight sm:leading-tight break-words"
-                style={{ backgroundImage: "linear-gradient(90deg, hsl(var(--kc-blue)), hsl(var(--kc-red)))" }}
-                initial={{ opacity: 0, y: 8 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -8 }}
-                transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
-              >
-                <span className="font-extrabold">{phrases[phraseIndex]}</span>
-              </motion.h1>
-            </AnimatePresence>
-          </div>
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={`subtitle-${currentSlide}`}
-              className="subheading text-white/90 mb-6 md:mb-7 max-w-2xl mx-auto px-2"
-              initial={{ opacity: 0, y: 6 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -6 }}
-              transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-            >
-              {slides[currentSlide].subtitle}
-            </motion.div>
-          </AnimatePresence>
-
-          {/* Description */}
-          <AnimatePresence mode="wait">
-            <motion.p
-              key={`desc-${currentSlide}`}
-              className="text-sm sm:text-base md:text-lg font-body text-white/85 leading-relaxed mb-6 md:mb-8 max-w-3xl mx-auto px-2"
-              initial={{ opacity: 0, y: 6 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -6 }}
-              transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-            >
-              {slides[currentSlide].description}
-            </motion.p>
-          </AnimatePresence>
-
-          {/* CTA Buttons */}
-          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center">
-            <ArrowButton
-              text="Our Impact"
-              bgPrimaryColor="#FFFFFF"
-              bgSecondaryColor="#3498db"
-              textPrimaryColor="#3498db"
-              textSecondaryColor="#FFFFFF"
-              className="rounded-full"
-              href="/projects"
-            />
-
-            <ArrowButton
-              text="Discover Our Story"
-              bgPrimaryColor="rgba(255,255,255,0.12)"
-              bgSecondaryColor="#FFFFFF"
-              textPrimaryColor="#FFFFFF"
-              textSecondaryColor="#111827"
-              className="rounded-full backdrop-blur-md border border-white/30"
-              href="/about"
-            />
-          </div>
+          {/* Right column: empty placeholder for layout balance on large screens */}
+          <div className="hidden md:block" aria-hidden="true" />
         </motion.div>
       </motion.div>
-
-      {/* Navigation Controls */}
-      <button
-        onClick={prevSlide}
-        className="hidden sm:flex absolute left-4 lg:left-8 top-1/2 transform -translate-y-1/2 bg-white/20 backdrop-blur-sm text-white p-3 rounded-full hover:bg-white/30 transition-smooth"
-        aria-label="Previous slide"
-      >
-        <ChevronLeft className="h-6 w-6" />
-      </button>
-
-      <button
-        onClick={nextSlide}
-        className="hidden sm:flex absolute right-4 lg:right-8 top-1/2 transform -translate-y-1/2 bg-white/20 backdrop-blur-sm text-white p-3 rounded-full hover:bg-white/30 transition-smooth"
-        aria-label="Next slide"
-      >
-        <ChevronRight className="h-6 w-6" />
-      </button>
-
-      {/* Slide Indicators */}
-      <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex space-x-3">
-        {slides.map((_, index) => (
-          <button
-            key={index}
-            onClick={() => setCurrentSlide(index)}
-            className={`w-3 h-3 rounded-full transition-all duration-300 ${
-              index === currentSlide
-                ? "bg-white scale-110"
-                : "bg-white/50 hover:bg-white/75"
-            }`}
-            aria-label={`Go to slide ${index + 1}`}
-          />
-        ))}
-      </div>
-
-      {/* Scroll Indicator (clickable) */}
-      <button
-        type="button"
-        onClick={() => scrollToSection("projects")}
-        aria-label="Scroll to projects section"
-        className="absolute bottom-8 right-8 hidden lg:block animate-bounce focus:outline-none"
-      >
-        <div className="w-6 h-10 border-2 border-white/50 rounded-full p-1 hover:border-white/80 transition-colors">
-          <div className="w-1 h-3 bg-white/70 rounded-full mx-auto animate-pulse" />
-        </div>
-      </button>
     </section>
   );
 };

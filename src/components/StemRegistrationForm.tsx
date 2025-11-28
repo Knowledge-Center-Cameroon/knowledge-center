@@ -46,19 +46,6 @@ const calculateSubjectPrice = (count: number): number => {
   return count * 1000;
 };
 
-const PAYMENT_INSTRUCTIONS = {
-  mtnMomo: {
-    name: "MTN Mobile Money",
-    number: "670123456",
-    accountName: "Knowledge Center",
-  },
-  orangeMoney: {
-    name: "Orange Money",
-    number: "690123456",
-    accountName: "Knowledge Center",
-  },
-};
-
 const schema = z.object({
   fullName: z.string().min(2, "Full name is required"),
   phone: cmPhone,
@@ -72,9 +59,7 @@ const schema = z.object({
   examLocation: z.string().min(1, "Exam location/town is required"),
   subjects: z.array(z.string()).min(1, "Please select at least one subject"),
   expectations: z.string().min(10, "Please share your expectations (at least 10 characters)"),
-  paymentMethod: z.enum(["mtn", "orange"], { required_error: "Please select payment method" }),
   payerPhone: cmPhone,
-  paymentScreenshot: z.any().optional(),
 });
 
 export type StemRegistrationData = z.infer<typeof schema>;
@@ -85,7 +70,7 @@ const steps: Array<{ key: string; title: string; fields: (keyof StemRegistration
   { key: "education", title: "Education", fields: ["educationLevel", "schoolClass", "school", "region", "examLocation"] },
   { key: "subjects", title: "Subjects", fields: ["subjects"] },
   { key: "expectations", title: "Expectations", fields: ["expectations"] },
-  { key: "payment", title: "Payment", fields: ["paymentMethod", "payerPhone", "paymentScreenshot"] },
+  { key: "payment", title: "Payment", fields: ["payerPhone"] },
 ];
 
 interface Props {
@@ -115,9 +100,7 @@ const StemRegistrationForm: React.FC<Props> = ({ onSubmitted, initialValues, mod
       examLocation: "",
       subjects: [],
       expectations: "",
-      paymentMethod: undefined as any,
       payerPhone: "",
-      paymentScreenshot: undefined,
       ...(initialValues || {}),
     },
     mode: "onTouched",
@@ -153,7 +136,7 @@ const StemRegistrationForm: React.FC<Props> = ({ onSubmitted, initialValues, mod
     try {
       const payload: StemRegistrationPayload = {
         fullName: data.fullName,
-        phone: data.phone,
+        phone: data.payerPhone || data.phone,
         guardianPhone: data.guardianPhone,
         dobISO: data.dob.toISOString(),
         gender: data.gender,
@@ -161,7 +144,6 @@ const StemRegistrationForm: React.FC<Props> = ({ onSubmitted, initialValues, mod
         schoolClass: data.schoolClass,
         motivation: data.expectations,
         level: data.educationLevel,
-        paymentMethod: data.paymentMethod,
       };
 
       const amount = totalAmount;
@@ -200,8 +182,6 @@ const StemRegistrationForm: React.FC<Props> = ({ onSubmitted, initialValues, mod
       setSubmitting(false);
     }
   }
-
-  const fileRef = form.register("paymentScreenshot");
 
   return (
     <div className="max-w-3xl mx-auto">
@@ -423,7 +403,7 @@ const StemRegistrationForm: React.FC<Props> = ({ onSubmitted, initialValues, mod
             {stepIndex === 5 && (
               <>
                 <div className="mb-6 p-4 bg-gradient-subtle rounded-lg border">
-                  <h4 className="font-semibold mb-3">Payment Instructions</h4>
+                  <h4 className="font-semibold mb-3">Payment Details</h4>
                   <div className="space-y-4">
                     <div className="p-3 bg-white rounded border">
                       <p className="font-medium text-sm mb-2">Total Amount to Pay:</p>
@@ -432,59 +412,25 @@ const StemRegistrationForm: React.FC<Props> = ({ onSubmitted, initialValues, mod
                         {selectedSubjects.length} subject{selectedSubjects.length > 1 ? 's' : ''}
                       </p>
                     </div>
+                    <p className="text-xs text-muted-foreground">
+                      Enter the mobile money number that will be charged. We will automatically detect whether it is MTN or Orange and send a payment prompt to that phone.
+                    </p>
                   </div>
                 </div>
 
                 <FormField
                   control={form.control}
-                  name="paymentMethod"
+                  name="payerPhone"
                   render={({ field }) => (
-                    <FormItem className="space-y-3">
-                      <FormLabel>Payment Method</FormLabel>
+                    <FormItem>
+                      <FormLabel>Payer's Mobile Money Number</FormLabel>
                       <FormControl>
-                        <RadioGroup onValueChange={field.onChange} defaultValue={field.value} className="flex flex-col space-y-3">
-                          <FormItem className="flex items-start space-x-3 space-y-0 border rounded-lg p-4">
-                            <FormControl>
-                              <RadioGroupItem value="mtn" />
-                            </FormControl>
-                            <div className="flex-1">
-                              <FormLabel className="font-normal">
-                                <div className="font-semibold">{PAYMENT_INSTRUCTIONS.mtnMomo.name}</div>
-                                <div className="text-sm text-muted-foreground mt-1">
-                                  Number: <span className="font-mono font-medium">{PAYMENT_INSTRUCTIONS.mtnMomo.number}</span>
-                                </div>
-                                <div className="text-sm text-muted-foreground">
-                                  Name: {PAYMENT_INSTRUCTIONS.mtnMomo.accountName}
-                                </div>
-                              </FormLabel>
-                            </div>
-                          </FormItem>
-                          <FormItem className="flex items-start space-x-3 space-y-0 border rounded-lg p-4">
-                            <FormControl>
-                              <RadioGroupItem value="orange" />
-                            </FormControl>
-                            <div className="flex-1">
-                              <FormLabel className="font-normal">
-                                <div className="font-semibold">{PAYMENT_INSTRUCTIONS.orangeMoney.name}</div>
-                                <div className="text-sm text-muted-foreground mt-1">
-                                  Number: <span className="font-mono font-medium">{PAYMENT_INSTRUCTIONS.orangeMoney.number}</span>
-                                </div>
-                                <div className="text-sm text-muted-foreground">
-                                  Name: {PAYMENT_INSTRUCTIONS.orangeMoney.accountName}
-                                </div>
-                              </FormLabel>
-                            </div>
-                          </FormItem>
-                        </RadioGroup>
+                        <Input placeholder="e.g. 670123456" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
-
-                <FormField control={form.control} name="payerPhone" render={({ field }) => (<FormItem><FormLabel>Payer's Phone Number</FormLabel><FormControl><Input placeholder="e.g. 670123456" {...field} /></FormControl><FormMessage /></FormItem>)} />
-                
-                <FormField control={form.control} name="paymentScreenshot" render={({ field }) => (<FormItem><FormLabel>Payment Screenshot</FormLabel><p className="text-sm text-muted-foreground mb-2">Upload a screenshot of your payment confirmation</p><FormControl><Input type="file" accept="image/*" {...fileRef} /></FormControl><FormMessage /></FormItem>)} />
               </>
             )}
 

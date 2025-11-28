@@ -128,35 +128,30 @@ const Stats = () => {
   };
 
   return (
-    <section ref={ref} className="py-16 md:py-24 lg:py-32 bg-gradient-to-br from-gray-900 via-black to-gray-900 relative overflow-hidden">
-      {/* Animated background elements */}
-      <div className="absolute inset-0">
-        <div className="absolute top-20 left-10 w-72 h-72 bg-kc-blue/5 rounded-full blur-3xl animate-pulse"></div>
-        <div className="absolute bottom-20 right-10 w-96 h-96 bg-kc-red/5 rounded-full blur-3xl animate-pulse delay-1000"></div>
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-gradient-radial from-transparent via-kc-blue/3 to-transparent rounded-full"></div>
-      </div>
-
+    <section ref={ref} className="py-14 md:py-20 lg:py-24 bg-slate-950 relative overflow-hidden">
       <div className="container mx-auto px-4 lg:px-8 max-w-6xl relative z-10">
+
         {/* Enhanced Header */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
           transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-          className="text-center mb-16 lg:mb-20"
+          className="text-center mb-10 lg:mb-14"
         >
-          <div className="inline-flex items-center gap-2 bg-gradient-to-r from-kc-blue/10 to-kc-red/10 backdrop-blur-sm border border-white/10 rounded-full px-6 py-2 mb-6">
+          <div className="inline-flex items-center gap-2 bg-slate-900/80 backdrop-blur-sm border border-white/5 rounded-full px-5 py-1.5 mb-4">
             <TrendingUp className="h-4 w-4 text-kc-blue" />
             <span className="text-sm font-medium text-kc-blue">Our Impact</span>
           </div>
 
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 bg-gradient-to-r from-white via-kc-blue/20 to-white bg-clip-text text-transparent">
+          <h2 className="text-3xl md:text-4xl lg:text-[2.6rem] font-semibold text-white mb-4">
             Impact in Numbers
           </h2>
 
-          <p className="text-lg md:text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
+          <p className="text-base md:text-lg text-gray-300/90 max-w-3xl mx-auto leading-relaxed">
             Since our founding in 2019, we've been transforming STEM education across Cameroon,
             creating opportunities and inspiring the next generation of innovators.
           </p>
+
         </motion.div>
 
         {/* Enhanced Stats Grid */}
@@ -164,30 +159,25 @@ const Stats = () => {
           variants={containerVariants}
           initial="hidden"
           animate={isInView ? "visible" : "hidden"}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8 mb-16"
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 lg:gap-6 mb-12"
         >
+
           {statsData.map((stat, index) => (
             <motion.div key={index} variants={cardVariants} className="group">
-              <Card className="relative bg-white/[0.02] backdrop-blur-xl border border-white/10 hover:border-white/20 text-white shadow-2xl hover:shadow-white/10 transition-all duration-500 hover:-translate-y-2 overflow-hidden rounded-3xl">
-                {/* Animated border gradient */}
-                <div className={`absolute inset-0 bg-gradient-to-br ${stat.color} opacity-0 group-hover:opacity-5 transition-opacity duration-500`}></div>
-
-                {/* Subtle animated background */}
-                <div className={`absolute inset-0 bg-gradient-to-br ${stat.color} opacity-0 group-hover:opacity-10 transition-opacity duration-500`}></div>
-
-                <CardContent className="relative p-8 text-center">
-                  {/* Icon with enhanced styling */}
+              <Card className="relative bg-slate-900/80 backdrop-blur-xl border border-white/5 hover:border-white/15 text-white shadow-xl hover:shadow-2xl transition-all duration-400 hover:-translate-y-1.5 overflow-hidden rounded-2xl">
+                <CardContent className="relative px-6 py-6 text-center">
+                  {/* Icon */}
                   <motion.div
-                    className={`w-20 h-20 mx-auto mb-6 rounded-2xl bg-gradient-to-br ${stat.color} flex items-center justify-center shadow-lg group-hover:scale-110 transition-all duration-300`}
+                    className={`w-14 h-14 mx-auto mb-4 rounded-2xl bg-gradient-to-br ${stat.color} flex items-center justify-center shadow-md group-hover:scale-105 transition-all duration-300`}
                     whileHover={{ rotate: 5, scale: 1.1 }}
                     transition={{ duration: 0.2 }}
                   >
-                    <stat.icon className="h-10 w-10 text-white" />
+                    <stat.icon className="h-7 w-7 text-white" />
                   </motion.div>
 
                   {/* Animated counter */}
                   <motion.div
-                    className={`text-5xl md:text-6xl font-bold mb-3 bg-gradient-to-r ${stat.color} bg-clip-text text-transparent`}
+                    className={`text-3xl md:text-4xl font-semibold mb-1 bg-gradient-to-r ${stat.color} bg-clip-text text-transparent`}
                     initial={{ scale: 0.8, opacity: 0 }}
                     animate={isInView ? { scale: 1, opacity: 1 } : { scale: 0.8, opacity: 0 }}
                     transition={{ duration: 0.6, delay: 0.3 + (index * 0.1) }}
@@ -195,14 +185,15 @@ const Stats = () => {
                     {counts[Object.keys(counts)[index] as keyof typeof counts].toLocaleString()}{stat.suffix}
                   </motion.div>
 
-                  <div className="text-white/90 font-semibold text-lg mb-2">
+                  <div className="text-white/90 font-medium text-base md:text-lg mb-1.5">
                     {stat.label}
                   </div>
 
-                  <div className="text-white/60 text-sm">
+                  <div className="text-white/60 text-xs md:text-sm">
                     {stat.description}
                   </div>
                 </CardContent>
+
               </Card>
             </motion.div>
           ))}
@@ -213,15 +204,18 @@ const Stats = () => {
           initial={{ opacity: 0, y: 30 }}
           animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
           transition={{ duration: 0.8, delay: 0.8 }}
-          className="bg-gradient-to-br from-white/5 to-white/10 backdrop-blur-xl rounded-3xl p-8 md:p-12 border border-white/10"
+          className="bg-slate-900/80 backdrop-blur-xl rounded-3xl p-7 md:p-10 border border-white/10"
+
         >
           <div className="text-center mb-10">
-            <div className="inline-flex items-center gap-2 bg-gradient-to-r from-emerald-500/10 to-blue-500/10 backdrop-blur-sm border border-white/10 rounded-full px-6 py-2 mb-6">
+            <div className="inline-flex items-center gap-2 bg-slate-950/80 backdrop-blur-sm border border-white/5 rounded-full px-5 py-1.5 mb-4">
+
               <Award className="h-4 w-4 text-emerald-400" />
               <span className="text-sm font-medium text-emerald-300">Excellence Since 2019</span>
             </div>
 
-            <h3 className="text-3xl md:text-4xl font-bold text-white mb-4">
+            <h3 className="text-2xl md:text-3xl font-semibold text-white mb-3">
+
               Proven Track Record of Success
             </h3>
           </div>

@@ -129,27 +129,27 @@ const Projects = () => {
   }, [activeTab]);
 
   return (
-    <section id="projects" className="py-20 lg:py-32">
+    <section id="projects" className="py-16 lg:py-24 bg-slate-50">
       <div className="container mx-auto px-4 lg:px-8 max-w-6xl">
-        {/* Header with STEM canvas */}
-        <div className="relative overflow-hidden rounded-2xl mb-16">
-          <StemBackground opacity={0.12} density={34} lineDistance={120} speed={0.45} showIcons={true} />
-          <motion.div
-            initial={{ opacity: 0, y: 12 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-80px" }}
-            transition={{ duration: 0.4 }}
-            className="relative z-10 text-center py-8"
-          >
-            <h2 className="heading-2 text-center mb-4 md:mb-6">
-              <span className="text-kc-blue">Our</span> <span className="text-kc-red">Projects</span>
-            </h2>
-            <p className="subheading max-w-3xl mx-auto leading-relaxed">
-              Comprehensive educational programs designed to meet diverse learning needs 
-              and empower students at every stage of their academic journey.
-            </p>
-          </motion.div>
-        </div>
+        {/* Header */}
+        <motion.div
+          initial={{ opacity: 0, y: 14 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-60px" }}
+          transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+          className="text-center mb-8 lg:mb-12"
+        >
+          <div className="inline-flex items-center gap-2 bg-white border border-slate-200 rounded-full px-5 py-1.5 mb-4">
+            <span className="h-2 w-2 rounded-full bg-kc-blue" />
+            <span className="text-xs font-semibold tracking-[0.18em] text-slate-600 uppercase">Programs</span>
+          </div>
+          <h2 className="text-2xl md:text-3xl font-semibold text-slate-900 mb-3">
+            Signature learning experiences
+          </h2>
+          <p className="text-sm md:text-base text-slate-600 max-w-3xl mx-auto leading-relaxed">
+            Explore the core programs that shape how Knowledge Center supports young scientists across Cameroon.
+          </p>
+        </motion.div>
 
         {/* Mobile Menu (Navbar-style) */}
         <div className="md:hidden mb-6">
@@ -181,20 +181,12 @@ const Projects = () => {
 
         {/* Tabs Navigation */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="relative w-full mb-12 p-2 rounded-2xl bg-white/20 backdrop-blur-md border border-white/25 shadow-elegant overflow-x-auto md:overflow-visible hidden md:grid md:grid-cols-3 gap-2">
-            {/* Animated indicator */}
-            <div
-              className="hidden md:block absolute bottom-2 left-2 h-1 rounded-full bg-white/40 transition-transform duration-300 ease-out"
-              style={{
-                width: 'calc((100% - 1rem) / 3)',
-                transform: `translateX(${(activeTab === 'stem' ? 0 : activeTab === 'summer' ? 1 : 2) * 100}%)`
-              }}
-            />
+          <TabsList className="relative w-full mb-6 p-1.5 rounded-2xl bg-white border border-slate-200 shadow-sm overflow-x-auto md:overflow-visible hidden md:grid md:grid-cols-3 gap-1.5">
             <motion.div whileHover={{ y: -2 }} transition={{ type: "spring", stiffness: 260, damping: 18 }}>
               <TabsTrigger 
                 value="stem" 
                 ref={tabRefs.stem}
-                className="flex items-center whitespace-nowrap space-x-2 py-4 px-6 font-semibold rounded-xl transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/40 data-[state=active]:bg-black/70 data-[state=active]:text-white data-[state=inactive]:text-foreground/80 data-[state=inactive]:hover:bg-white/20 border border-white/0 data-[state=active]:border-white/20 shadow-sm snap-start"
+                className="flex items-center whitespace-nowrap space-x-2 py-3 px-5 font-semibold rounded-xl transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-kc-blue/30 data-[state=active]:bg-kc-blue data-[state=active]:text-white data-[state=inactive]:text-slate-700 data-[state=inactive]:hover:bg-slate-50 border border-transparent data-[state=active]:border-kc-blue/70 shadow-sm snap-start"
               >
                 <FlaskConical className="h-5 w-5" />
                 <span>STEM Program</span>
@@ -204,7 +196,7 @@ const Projects = () => {
               <TabsTrigger 
                 value="summer" 
                 ref={tabRefs.summer}
-                className="flex items-center whitespace-nowrap space-x-2 py-4 px-6 font-semibold rounded-xl transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/40 data-[state=active]:bg-black/70 data-[state=active]:text-white data-[state=inactive]:text-foreground/80 data-[state=inactive]:hover:bg-white/20 border border-white/0 data-[state=active]:border-white/20 shadow-sm snap-start"
+                className="flex items-center whitespace-nowrap space-x-2 py-3 px-5 font-semibold rounded-xl transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-kc-blue/30 data-[state=active]:bg-kc-blue data-[state=active]:text-white data-[state=inactive]:text-slate-700 data-[state=inactive]:hover:bg-slate-50 border border-transparent data-[state=active]:border-kc-blue/70 shadow-sm snap-start"
               >
                 <GraduationCap className="h-5 w-5" />
                 <span>Summer Education</span>
@@ -214,7 +206,7 @@ const Projects = () => {
               <TabsTrigger 
                 value="weekend" 
                 ref={tabRefs.weekend}
-                className="flex items-center whitespace-nowrap space-x-2 py-4 px-6 font-semibold rounded-xl transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/40 data-[state=active]:bg-black/70 data-[state=active]:text-white data-[state=inactive]:text-foreground/80 data-[state=inactive]:hover:bg-white/20 border border-white/0 data-[state=active]:border-white/20 shadow-sm snap-start"
+                className="flex items-center whitespace-nowrap space-x-2 py-3 px-5 font-semibold rounded-xl transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-kc-blue/30 data-[state=active]:bg-kc-blue data-[state=active]:text-white data-[state=inactive]:text-slate-700 data-[state=inactive]:hover:bg-slate-50 border border-transparent data-[state=active]:border-kc-blue/70 shadow-sm snap-start"
               >
                 <Calendar className="h-5 w-5" />
                 <span>Weekend School</span>
@@ -224,61 +216,53 @@ const Projects = () => {
 
           {/* Tab Content */}
           <TabsContent value={activeTab} className="mt-0">
-            <motion.div whileHover={{ scale: 1.005 }} transition={{ duration: 0.2 }}>
-              <Card className="shadow-elegant overflow-hidden">
+            <motion.div whileHover={{ scale: 1.003 }} transition={{ duration: 0.2 }}>
+              <Card className="shadow-md overflow-hidden bg-white border border-slate-200 rounded-3xl">
                 <CardContent className="p-0">
-                  <div className="grid lg:grid-cols-2 min-h-[360px] md:min-h-[520px] lg:min-h-[600px]">
+                  <div className="grid lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1.1fr)] min-h-[320px]">
                     {/* Image Section */}
-                    <div className="relative aspect-[16/10] lg:aspect-auto">
+                    <div className="relative h-52 sm:h-64 lg:h-full">
                       <motion.img 
                         src={currentProject.image} 
                         alt={currentProject.title}
-                        className="w-full h-full object-cover"
-                        whileHover={{ scale: 1.03 }}
-                        transition={{ type: "spring", stiffness: 120, damping: 16 }}
+                        className="w-full h-full object-cover lg:rounded-l-3xl"
+                        whileHover={{ scale: 1.02 }}
+                        transition={{ type: "spring", stiffness: 140, damping: 18 }}
                       />
-                      <div className="absolute inset-0 bg-black/30" />
-                      
-                      {/* Stats Overlay */}
-                      <div className="absolute bottom-0 left-0 right-0 bg-black/50 backdrop-blur-sm p-4 md:p-6">
-                        <div className="grid grid-cols-3 gap-3 md:gap-4 text-white text-center text-xs md:text-sm">
-                          {currentProject.stats.map((stat, index) => (
-                            <motion.div key={index} whileHover={{ y: -2 }} transition={{ duration: 0.15 }}>
-                              <div className="text-2xl font-heading font-bold">{stat.number}</div>
-                              <div className="text-sm opacity-90">{stat.label}</div>
-                            </motion.div>
-                          ))}
-                        </div>
-                      </div>
                     </div>
 
                     {/* Content Section */}
-                    <div className="p-6 md:p-8 lg:p-12 flex flex-col justify-center">
-                      <div className="w-16 h-16 bg-kc-blue rounded-full flex items-center justify-center mb-6">
-                        <Icon className="h-8 w-8 text-white" />
+                    <div className="p-5 sm:p-7 lg:p-8 flex flex-col justify-center bg-white">
+                      <div className="inline-flex items-center gap-3 mb-5">
+                        <div className="w-12 h-12 rounded-2xl bg-kc-blue text-white flex items-center justify-center">
+                          <Icon className="h-6 w-6" />
+                        </div>
+                        <div className="text-xs font-semibold tracking-[0.18em] uppercase text-slate-500">
+                          Core Program
+                        </div>
                       </div>
                       
-                      <h3 className="text-3xl font-heading font-bold mb-4">
+                      <h3 className="text-xl sm:text-2xl font-heading font-bold mb-3 text-slate-900">
                         {currentProject.title}
                       </h3>
                       
-                      <p className="text-muted-foreground leading-relaxed mb-6 md:mb-7">
+                      <p className="text-slate-600 leading-relaxed mb-5 md:mb-6">
                         {currentProject.description}
                       </p>
 
                       {/* Features List */}
-                      <div className="space-y-3 md:space-y-4 mb-6 md:mb-7">
+                      <div className="space-y-2.5 md:space-y-3.5 mb-5 md:mb-6">
                         {currentProject.features.map((feature, index) => (
                           <motion.div
                             key={index}
                             initial={{ opacity: 0, x: -8 }}
                             whileInView={{ opacity: 1, x: 0 }}
                             viewport={{ once: true, margin: "-80px" }}
-                            transition={{ delay: index * 0.03, duration: 0.25 }}
+                            transition={{ delay: index * 0.03, duration: 0.3 }}
                             className="flex items-start space-x-3"
                           >
-                            <CheckCircle className="h-5 w-5 text-primary mt-1 flex-shrink-0" />
-                            <span className="text-muted-foreground">{feature}</span>
+                            <CheckCircle className="h-5 w-5 text-kc-blue mt-1 flex-shrink-0" />
+                            <span className="text-slate-700">{feature}</span>
                           </motion.div>
                         ))}
                       </div>
@@ -286,8 +270,8 @@ const Projects = () => {
                       {/* Additional Details */}
                       {currentProject.details && (
                         <div className="mb-6 md:mb-8">
-                          <h4 className="font-semibold mb-3">Additional Details</h4>
-                          <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm text-foreground/90">
+                          <h4 className="font-semibold mb-3 text-slate-900">Additional Details</h4>
+                          <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm text-slate-700">
                             {currentProject.details.map((d, i) => (
                               <li key={i} className="flex items-start gap-2">
                                 <span className="mt-1 h-1.5 w-1.5 rounded-full bg-kc-blue" />
@@ -298,14 +282,29 @@ const Projects = () => {
                         </div>
                       )}
 
+                      {/* Stats row */}
+                      <div className="mt-2 md:mt-3 flex flex-wrap gap-2.5">
+                        {currentProject.stats.map((stat, index) => (
+                          <motion.div
+                            key={index}
+                            whileHover={{ y: -1 }}
+                            transition={{ duration: 0.18 }}
+                            className="px-3 py-2 rounded-full bg-slate-100 text-slate-800 text-xs sm:text-sm flex items-center gap-2"
+                          >
+                            <span className="font-semibold text-slate-900">{stat.number}</span>
+                            <span className="text-slate-600">{stat.label}</span>
+                          </motion.div>
+                        ))}
+                      </div>
+
                       {/* CTA Buttons */}
-                      <div className="flex flex-col sm:flex-row gap-4">
+                      <div className="mt-6 flex flex-col sm:flex-row gap-3">
                         {(() => {
                           const enrollHref = activeTab === 'stem'
                             ? '/stem'
                             : activeTab === 'summer'
                               ? '/projects/summer-education'
-                              : '/projects/weekend-school';
+                            : '/projects/weekend-school';
                           const learnHref = activeTab === 'stem'
                             ? '/projects/stem'
                             : activeTab === 'summer'
