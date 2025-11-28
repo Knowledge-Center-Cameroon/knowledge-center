@@ -122,15 +122,31 @@ const AnimatedLogo: React.FC<AnimatedLogoProps> = ({ size = 140, className }) =>
           />
         </motion.g>
 
-        {/* Center logo image (no entrance animation, static with crisp render) */}
-        <image
-          href="/logo.png"
-          x={center - 36}
-          y={center - 36}
-          width={72}
-          height={72}
-          preserveAspectRatio="xMidYMid meet"
-        />
+        {/* Reveal exact vector logo.svg with an animated mask so it looks hand-drawn */}
+        <defs>
+          <mask id="logo-reveal-mask">
+            <motion.rect
+              x={center - 40}
+              y={center - 40}
+              width={80}
+              height={80}
+              fill="white"
+              initial={{ width: 0 }}
+              animate={{ width: 80 }}
+              transition={{ duration: 1.8, ease: [0.22, 1, 0.36, 1], delay: 0.4 }}
+            />
+          </mask>
+        </defs>
+        <g mask="url(#logo-reveal-mask)">
+          <image
+            href="/logo.svg"
+            x={center - 36}
+            y={center - 36}
+            width={72}
+            height={72}
+            preserveAspectRatio="xMidYMid meet"
+          />
+        </g>
       </svg>
     </motion.div>
   );
