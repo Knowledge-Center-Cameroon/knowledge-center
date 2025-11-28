@@ -10,6 +10,7 @@ import StemBackground from "@/components/StemBackground";
 import { useParallax, Parallax } from "@/hooks/use-parallax";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { useSeo } from "@/hooks/useSeo";
 
 const cardVariants = {
   hidden: {
@@ -41,6 +42,11 @@ const ProjectsPage: React.FC = () => {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = React.useState("");
   const [selectedCategory, setSelectedCategory] = React.useState<string>("all");
+  useSeo({
+    title: "STEM Programs and Projects",
+    description:
+      "Explore Knowledge Center's flagship programs including the National STEM Competition, Summer Education Program, Weekend School, KC Prepa, and Global Scholars Program.",
+  });
   
   // Get unique categories
   const categories = React.useMemo(() => {

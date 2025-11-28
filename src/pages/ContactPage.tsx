@@ -3,9 +3,15 @@ import { motion } from "framer-motion";
 import Contact from "@/components/Contact";
 import StemBackground from "@/components/StemBackground";
 import { useParallax, Parallax } from "@/hooks/use-parallax";
+import { useSeo } from "@/hooks/useSeo";
 
 const ContactPage: React.FC = () => {
   const { ref, y } = useParallax(30);
+  useSeo({
+    title: "Contact Knowledge Center Cameroon",
+    description:
+      "Get in touch with Knowledge Center Cameroon for questions about our STEM programs, partnerships, and opportunities.",
+  });
   return (
     <motion.div
       initial={{ opacity: 0, y: 12 }}

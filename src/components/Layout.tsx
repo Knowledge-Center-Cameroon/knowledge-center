@@ -20,10 +20,6 @@ const Layout: React.FC = () => {
       window.history.scrollRestoration = 'manual';
     }
   }, []);
-  React.useEffect(() => {
-    // Scroll to top on route change to ensure Home shows the Hero first
-    window.scrollTo({ top: 0, behavior: "auto" });
-  }, [location.pathname]);
 
   return (
     <div className="min-h-screen flex flex-col bg-background text-foreground">
@@ -40,6 +36,7 @@ const Layout: React.FC = () => {
           animate="in"
           exit="out"
           transition={pageTransition}
+          role="main"
           className={`flex-1 ${location.pathname === '/' ? 'pt-0' : 'pt-24 lg:pt-28'}`}
         >
           <Outlet />

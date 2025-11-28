@@ -55,10 +55,15 @@ const Navigation = () => {
     <header
       className={cn(
         "fixed top-0 left-0 right-0 z-50 transition-smooth",
-        "bg-white/95 backdrop-blur-md shadow-elegant border-b border-border"
+        "bg-white/95 backdrop-blur-md border-b border-border",
+        isScrolled ? "shadow-elegant" : "shadow-sm/0"
       )}
+      role="banner"
     >
-      <nav className="container mx-auto px-3 sm:px-4 lg:px-8 font-heading">
+      <nav
+        className="container mx-auto px-3 sm:px-4 lg:px-8 font-heading"
+        aria-label="Primary"
+      >
         <div className="flex items-center justify-between h-16 lg:h-20">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-3" onClick={(e) => handleNavClick(e, "/")}>
@@ -133,6 +138,9 @@ const Navigation = () => {
             size="icon"
             className="lg:hidden"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            aria-label={isMobileMenuOpen ? "Close navigation menu" : "Open navigation menu"}
+            aria-expanded={isMobileMenuOpen}
+            aria-controls="mobile-nav"
           >
             {isMobileMenuOpen ? (
               <X className="h-6 w-6" />
@@ -151,6 +159,7 @@ const Navigation = () => {
               exit={{ opacity: 0, y: -8 }}
               transition={{ duration: 0.18, ease: [0.22, 1, 0.36, 1] }}
               className="bg-white/95 backdrop-blur-md border border-border shadow-xl rounded-2xl overflow-hidden"
+              id="mobile-nav"
             >
               <div className="px-4 py-3 border-b border-border/70">
                 <span className="text-sm font-semibold text-foreground/80">Menu</span>

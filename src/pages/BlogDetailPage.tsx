@@ -12,6 +12,7 @@ import { useUser } from "@/contexts/UserContext";
 import { toggleBlogLike, getBlogLikeStatus, getBlogComments, addBlogComment, updateBlogComment, deleteBlogComment, type BlogComment } from "@/services/blogApi";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { useSeo } from "@/hooks/useSeo";
 
 const BlogDetailPage: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -30,6 +31,11 @@ const BlogDetailPage: React.FC = () => {
   const [displayName, setDisplayName] = React.useState<string>(user?.name || "");
 
   const post = blogPosts.find(p => p.id === slug);
+
+  useSeo({
+    title: post ? post.title : "Blog Post | Knowledge Center",
+    description: post?.excerpt,
+  });
 
   // Load like status and comments when component mounts
   React.useEffect(() => {

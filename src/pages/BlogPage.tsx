@@ -13,6 +13,7 @@ import React, { useState, useMemo, useEffect } from "react";
 import { useUser } from "@/contexts/UserContext";
 import { useToast } from "@/components/ui/use-toast";
 import { toggleBlogLike, getBlogLikeStatus, getBlogComments } from "@/services/blogApi";
+import { useSeo } from "@/hooks/useSeo";
 
 interface Post {
   id: string;
@@ -55,6 +56,12 @@ const BlogPage: React.FC = () => {
     const matchesQuery = !q || p.title.toLowerCase().includes(q) || (p.excerpt?.toLowerCase().includes(q));
     const matchesTag = !activeTag || (p.tags || []).includes(activeTag);
     return matchesQuery && matchesTag;
+  });
+
+  useSeo({
+    title: "Knowledge Center Blog and Updates",
+    description:
+      "Read stories, announcements, and insights from Knowledge Center Cameroon about STEM education, competitions, and student success.",
   });
 
   // LocalStorage-backed like/comment state

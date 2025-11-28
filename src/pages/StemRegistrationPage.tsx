@@ -4,12 +4,18 @@ import { ArrowButton } from "@/components/arrowbtn";
 import StemBackground from "@/components/StemBackground";
 import { useNavigate } from "react-router-dom";
 import { MousePointerClick, MapPin, Phone } from "lucide-react";
+import { useSeo } from "@/hooks/useSeo";
 
 const StemRegistrationPage: React.FC = () => {
   const navigate = useNavigate();
   const handleStart = () => {
     navigate("/stem/register");
   };
+  useSeo({
+    title: "National STEM Competition Registration",
+    description:
+      "Register for the Knowledge Center National STEM Competition and join students from across Cameroon in a transformative STEM challenge.",
+  });
   return (
     <motion.section
       initial={{ opacity: 0, y: 12 }}

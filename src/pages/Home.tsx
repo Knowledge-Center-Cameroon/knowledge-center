@@ -6,6 +6,7 @@ import Countdown from "@/components/Countdown";
 import Stats from "@/components/Stats";
 import Projects from "@/components/Projects";
 import Testimonials from "@/components/Testimonials";
+import { useSeo } from "@/hooks/useSeo";
  
 
 const fadeUp = {
@@ -15,9 +16,11 @@ const fadeUp = {
 };
 
 const Home: React.FC = () => {
-  React.useEffect(() => {
-    window.scrollTo({ top: 0, behavior: "auto" });
-  }, []);
+  useSeo({
+    title: "Empowering Young Scientists Through STEM Education",
+    description:
+      "Knowledge Center Cameroon is a non-profit STEM hub in Buea helping young Cameroonians fall in love with science through tutoring, competitions, and hands-on programs.",
+  });
   return (
     <div className="space-y-10 lg:space-y-16">
       <motion.section {...fadeUp}>

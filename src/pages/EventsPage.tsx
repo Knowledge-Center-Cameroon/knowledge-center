@@ -10,6 +10,7 @@ import Timeline, { type TimelineItem } from "@/components/Timeline";
 import { getTimeline } from "@/services/api";
 import { useParallax, Parallax } from "@/hooks/use-parallax";
 import { cn } from "@/lib/utils";
+import { useSeo } from "@/hooks/useSeo";
 
 const UPCOMING = [
   {
@@ -247,6 +248,11 @@ const EventsGrid: React.FC<{ items: typeof UPCOMING }> = ({ items }) => (
 );
 
 const EventsPage = () => {
+  useSeo({
+    title: "STEM Events and Competitions",
+    description:
+      "Discover upcoming and past STEM events, competitions, and workshops hosted by Knowledge Center Cameroon.",
+  });
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
       <div className="container mx-auto px-4 pt-28 pb-12">

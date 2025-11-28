@@ -8,6 +8,7 @@ import { Heart, Users, BookOpen, Star, Zap, Coins, ArrowRight, Phone } from "luc
 import StemBackground from "@/components/StemBackground";
 import donate from "@/assets/hero1.jpeg"
 import kcLogo from "@/assets/logo.png"
+import { useSeo } from "@/hooks/useSeo";
 
 const impactCards = [
   {
@@ -32,6 +33,11 @@ const impactCards = [
 
 const DonatePage: React.FC = () => {
   const { ref, y } = useParallax(40);
+  useSeo({
+    title: "Donate to Knowledge Center Cameroon",
+    description:
+      "Support Knowledge Center's STEM education programs and help empower young students across Cameroon.",
+  });
   return (
     <motion.section
       initial={{ opacity: 0, y: 12 }}
@@ -77,8 +83,10 @@ const DonatePage: React.FC = () => {
                 <div className="aspect-video bg-gradient-to-br from-kc-blue/20 to-kc-red/20 rounded-2xl border border-white/10 overflow-hidden">
                   <img
                     src={donate}
-                    alt="Hero image for donation page"
+                    alt="Students at Knowledge Center Cameroon during a STEM activity"
                     className="w-full h-full object-cover"
+                    loading="lazy"
+                    decoding="async"
                   />
                 </div>
               </div>
