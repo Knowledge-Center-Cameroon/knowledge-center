@@ -21,7 +21,7 @@ const AnimatedLogo: React.FC<AnimatedLogoProps> = ({ size = 140, className }) =>
       style={{ width: size, height: size }}
       whileHover={{ scale: 1.03 }}
       animate={{ y: [0, -4, 0] }}
-      transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut" }}
+      transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
     >
       <svg
         viewBox="0 0 160 160"
@@ -36,15 +36,15 @@ const AnimatedLogo: React.FC<AnimatedLogoProps> = ({ size = 140, className }) =>
         {/* Faint background glow + brand gradients */}
         <defs>
           <radialGradient id="glow" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stopColor="hsl(var(--kc-blue))" stopOpacity="0.5" />
-            <stop offset="100%" stopColor="hsl(var(--kc-red))" stopOpacity="0.15" />
+            <stop offset="0%" stopColor="#ffffff" stopOpacity="0" />
+            <stop offset="100%" stopColor="#ffffff" stopOpacity="0" />
           </radialGradient>
           <linearGradient id="kcSweep" x1="0%" y1="0%" x2="100%" y2="0%">
             <stop offset="0%" stopColor="hsl(var(--kc-red))" />
             <stop offset="100%" stopColor="hsl(var(--kc-blue))" />
           </linearGradient>
         </defs>
-        <circle cx={center} cy={center} r={70} fill="url(#glow)" opacity="0.2" />
+        <circle cx={center} cy={center} r={70} fill="url(#glow)" opacity="0" />
 
         {/* Pulsing halo */}
         <motion.circle
@@ -55,9 +55,9 @@ const AnimatedLogo: React.FC<AnimatedLogoProps> = ({ size = 140, className }) =>
           style={{ stroke: 'hsl(var(--kc-blue))' }}
           strokeOpacity={0.22}
           strokeWidth={6}
-          initial={{ scale: 1, opacity: 0.18 }}
-          animate={{ scale: [1, 1.06, 1], opacity: [0.18, 0.3, 0.18] }}
-          transition={{ duration: 2.6, repeat: Infinity, ease: "easeInOut", delay: 1.1 }}
+          initial={{ scale: 1, opacity: 0.16 }}
+          animate={{ scale: [1, 1.05, 1], opacity: [0.16, 0.28, 0.16] }}
+          transition={{ duration: 3.2, repeat: Infinity, ease: "easeInOut", delay: 1.1 }}
         />
 
         {/* Outer ring draw */}
@@ -75,8 +75,8 @@ const AnimatedLogo: React.FC<AnimatedLogoProps> = ({ size = 140, className }) =>
           strokeDasharray={Math.PI * 2 * radiusInner}
           strokeDashoffset={Math.PI * 2 * radiusInner}
           initial={{ pathLength: 0 }}
-          animate={{ pathLength: 1, strokeDashoffset: 0 }}
-          transition={{ duration: 1.0, delay: 0.35, ease: [0.22, 1, 0.36, 1] }}
+          animate={{ pathLength: [0, 1, 0], strokeDashoffset: [Math.PI * 2 * radiusInner, 0, Math.PI * 2 * radiusInner] }}
+          transition={{ duration: 4.2, delay: 0.4, ease: [0.22, 1, 0.36, 1], repeat: Infinity }}
         />
 
         {/* Rotating accent ring with dashes */}
@@ -91,14 +91,14 @@ const AnimatedLogo: React.FC<AnimatedLogoProps> = ({ size = 140, className }) =>
           strokeDasharray="3 8"
           style={{ originX: center, originY: center }}
           animate={{ rotate: 360 }}
-          transition={{ repeat: Infinity, duration: 12, ease: "linear", delay: 1 }}
+          transition={{ repeat: Infinity, duration: 16, ease: "linear", delay: 1 }}
         />
 
         {/* Orbiting dots */}
         <motion.g
           style={{ originX: center, originY: center }}
           animate={{ rotate: 360 }}
-          transition={{ repeat: Infinity, duration: 8, ease: "linear", delay: 0.8 }}
+          transition={{ repeat: Infinity, duration: 12, ease: "linear", delay: 0.8 }}
         >
           <circle cx={center + radiusInner} cy={center} r={2.8} fill="hsl(var(--kc-blue))" />
           <circle cx={center - radiusInner} cy={center} r={2.4} fill="hsl(var(--kc-red))" />
@@ -108,7 +108,7 @@ const AnimatedLogo: React.FC<AnimatedLogoProps> = ({ size = 140, className }) =>
         <motion.g
           style={{ originX: center, originY: center }}
           animate={{ rotate: 360 }}
-          transition={{ repeat: Infinity, duration: 10, ease: 'linear', delay: 0.6 }}
+          transition={{ repeat: Infinity, duration: 18, ease: 'linear', delay: 0.6 }}
         >
           <circle
             cx={center}
@@ -132,8 +132,8 @@ const AnimatedLogo: React.FC<AnimatedLogoProps> = ({ size = 140, className }) =>
               height={80}
               fill="white"
               initial={{ width: 0 }}
-              animate={{ width: 80 }}
-              transition={{ duration: 1.8, ease: [0.22, 1, 0.36, 1], delay: 0.4 }}
+              animate={{ width: [0, 80, 0] }}
+              transition={{ duration: 4.2, ease: [0.22, 1, 0.36, 1], delay: 0.6, repeat: Infinity }}
             />
           </mask>
         </defs>

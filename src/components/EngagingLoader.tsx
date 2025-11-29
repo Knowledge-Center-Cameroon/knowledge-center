@@ -1,6 +1,7 @@
 import React from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Atom, FlaskConical, Rocket, Brain } from "lucide-react";
+import { Atom, FlaskConical, Rocket } from "lucide-react";
+import AnimatedLogo from "./AnimatedLogo";
 
 const providedFacts = [
   "Fun fact: Bananas are naturally radioactive — proof science hides in everyday life.",
@@ -59,10 +60,10 @@ const EngagingLoader: React.FC = () => {
   const fact = useRotatingFact();
   const reduceMotion = typeof window !== "undefined" && window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   return (
-    <div className="container mx-auto px-4 lg:px-8 py-16">
+    <div className="container mx-auto px-4 lg:px-8 py-16 bg-white">
       <div className="mx-auto max-w-xl text-center">
         {/* Brand Icons orbit */}
-        <div className="relative mx-auto mb-6" style={{ width: 120, height: 120 }}>
+        <div className="relative mx-auto mb-6" style={{ width: 140, height: 140 }}>
           <motion.div
             className="absolute inset-0 rounded-full border border-black/10"
             initial={{ rotate: 0 }}
@@ -70,14 +71,7 @@ const EngagingLoader: React.FC = () => {
             transition={{ repeat: Infinity, ease: "linear", duration: 8 }}
           />
           <div className="absolute inset-0 flex items-center justify-center">
-            <motion.div
-              initial={{ scale: 0.9 }}
-              animate={{ scale: [0.9, 1, 0.9] }}
-              transition={{ repeat: Infinity, duration: 2.2, ease: "easeInOut" }}
-              className="w-12 h-12 rounded-full bg-kc-blue text-white flex items-center justify-center shadow-lg"
-            >
-              <Brain className="w-6 h-6" />
-            </motion.div>
+            <AnimatedLogo size={96} />
           </div>
           <motion.div
             className="absolute -top-2 left-1/2 -translate-x-1/2 bg-white rounded-full p-1 shadow"

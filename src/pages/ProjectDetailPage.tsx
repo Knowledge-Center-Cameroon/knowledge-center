@@ -7,6 +7,8 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft, CheckCircle } from "lucide-react";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious, type CarouselApi } from "@/components/ui/carousel";
 
+const MotionButton = motion(Button);
+
 const ProjectDetailPage: React.FC = () => {
   const { slug } = useParams();
   const navigate = useNavigate();
@@ -149,7 +151,7 @@ const ProjectDetailPage: React.FC = () => {
               <Button
                 asChild
                 variant="outline"
-                className="hover:border-kc-blue hover:text-kc-blue transition-all duration-300"
+                className="hover:border-kc-black hover:text-white transition-all duration-300"
               >
                 <Link to="/projects">All projects</Link>
               </Button>
@@ -385,48 +387,83 @@ const ProjectDetailPage: React.FC = () => {
 
         {/* Call to action */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
+          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
           className="relative mt-16 md:mt-20"
         >
-          <div className="absolute inset-0 bg-gradient-to-r from-kc-blue/20 via-transparent to-kc-red/20 rounded-3xl blur-2xl" />
-          <div className="relative bg-white/10 backdrop-blur-md border border-white/20 rounded-3xl p-8 md:p-10 lg:p-12 overflow-hidden shadow-2xl">
-            <div className="absolute top-0 right-0 w-full h-full bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.12),transparent_50%)]" />
+          <div className="absolute inset-0 bg-kc-blue rounded-3xl " />
+          <motion.div
+            className="relative bg-white/10 backdrop-blur-md border border-white/20 rounded-3xl p-8 md:p-10 lg:p-12 overflow-hidden shadow-2xl"
+            initial={{ opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
+          >
+            <div className="pointer-events-none absolute top-0 right-0 w-full h-full bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.12),transparent_50%)]" />
             
-            <div className="flex flex-col md:flex-row items-center justify-between gap-6 md:gap-8">
-              <div className="text-center md:text-left">
-                <h3 className="text-2xl md:text-3xl font-heading font-bold mb-3">
-                  Ready to Get Started?
-                </h3>
-                <p className="text-lg text-muted-foreground">
-                  Take the next step with {project.title} and be part of something extraordinary.
-                </p>
+            <div className="flex flex-col md:flex-row items-center justify-between gap-6 md:gap-8 ">
+              <div className="text-center md:text-left space-y-3">
+                <div className="inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-xs font-medium text-white/90 mb-1">
+                  <span className="inline-block h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                  <span>Next step with Knowledge Center</span>
+                </div>
+                <div>
+                  <motion.h3
+                    className="text-white text-2xl md:text-3xl font-heading font-bold mb-2"
+                    initial={{ opacity: 0, y: 8 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.4, delay: 0.1 }}
+                  >
+                    Ready to Get Started?
+                  </motion.h3>
+                  <motion.div
+                    className="h-0.5 w-20 rounded-full bg-gradient-to-r from-kc-red to-kc-blue md:ml-0 mx-auto mb-2"
+                    initial={{ scaleX: 0, opacity: 0 }}
+                    whileInView={{ scaleX: 1, opacity: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.5, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
+                  />
+                  <motion.p
+                    className="text-lg text-white/90 max-w-xl"
+                    initial={{ opacity: 0, y: 6 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.45, delay: 0.18 }}
+                  >
+                    Take the next step with {project.title} and be part of something extraordinary.
+                  </motion.p>
+                </div>
               </div>
               
               <div className="flex flex-col sm:flex-row gap-4">
                 {project.slug === "stem" && (
-                  <Button 
+                  <MotionButton 
                     asChild 
-                    variant="blue" 
+                    variant="blackOutline" 
                     size="lg"
                     className="px-8 text-base rounded-full"
+                    whileHover={{ y: -2, scale: 1.03 }}
+                    whileTap={{ scale: 0.97 }}
                   >
                     <Link to="/stem">Get Registered</Link>
-                  </Button>
+                  </MotionButton>
                 )}
-                <Button 
+                <MotionButton 
                   asChild 
                   variant="blackOutline" 
                   size="lg"
-                  className="px-8 text-base rounded-full"
+                  className="sm:w-auto px-8 text-base rounded-full"
+                  whileHover={{ y: -2, scale: 1.03 }}
+                  whileTap={{ scale: 0.97 }}
                 >
                   <Link to="/donate">Support the mission</Link>
-                </Button>
+                </MotionButton>
               </div>
             </div>
-          </div>
+          </motion.div>
         </motion.div>
       </div>
     </section>

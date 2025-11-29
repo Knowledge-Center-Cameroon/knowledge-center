@@ -7,7 +7,7 @@ import { ArrowButton } from "@/components/ui/arrow-button";
 import { Heart, Users, BookOpen, Star, Zap, Coins, ArrowRight, Phone } from "lucide-react";
 import StemBackground from "@/components/StemBackground";
 import donate from "@/assets/hero1.jpeg"
-import kcLogo from "@/assets/logo.png"
+import AnimatedLogo from "@/components/AnimatedLogo";
 import { useSeo } from "@/hooks/useSeo";
 
 const impactCards = [
@@ -54,12 +54,14 @@ const DonatePage: React.FC = () => {
         {/* Hero Section */}
         <Parallax ref={ref as any} style={{ y }} className="text-center mb-20 relative">
           <motion.div 
-            className="inline-flex items-center justify-center w-20 h-20 bg-kc-red/10 rounded-full mb-8 relative"
-            whileHover={{ scale: 1.1, rotate: 10 }}
-            transition={{ type: "spring", stiffness: 400, damping: 10 }}
+            className="inline-flex items-center justify-center w-24 h-24 bg-kc-red/5 rounded-full mb-8 relative"
+            whileHover={{ scale: 1.05, rotate: 4 }}
+            transition={{ type: "spring", stiffness: 320, damping: 16 }}
           >
-            <div className="absolute inset-0 bg-gradient-to-br from-kc-red/20 to-kc-blue/20 rounded-full blur-xl" />
-            <img src={kcLogo} alt="KC Logo" className="w-12 h-12 relative z-10" />
+            <div className="absolute inset-0 bg-gradient-to-br from-kc-red/15 to-kc-blue/15 rounded-full blur-xl" />
+            <div className="relative z-10">
+              <AnimatedLogo size={72} />
+            </div>
           </motion.div>
 
           <motion.div 
@@ -152,7 +154,7 @@ const DonatePage: React.FC = () => {
           transition={{ duration: 0.5 }}
           className="relative"
         >
-          <div className="absolute inset-0 bg-gradient-to-r from-kc-blue/20 via-transparent to-kc-red/20 rounded-3xl blur-2xl" />
+          <div className="absolute inset-0 bg-c-ble rounded-3xl blur-2xl" />
           <div className="relative bg-white/10 backdrop-blur-md border border-white/20 rounded-3xl p-8 md:p-10 lg:p-12 overflow-hidden shadow-2xl">
             <div className="absolute top-0 right-0 w-full h-full bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.12),transparent_50%)]" />
             
