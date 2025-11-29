@@ -14,15 +14,15 @@ export type TimelineItem = {
 const Item: React.FC<{ item: TimelineItem; index: number }> = ({ item, index }) => {
   return (
     <motion.li
-      className="relative pl-5 sm:pl-6"
+      className="relative pl-6 sm:pl-7 py-2 rounded-lg hover:bg-white/30 transition-colors cursor-default"
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.35, delay: index * 0.05, ease: [0.22, 1, 0.36, 1] }}
     >
       {/* line */}
-      <span className="absolute left-[10px] top-0 bottom-0 w-px bg-gradient-to-b from-kc-blue/50 via-white/20 to-kc-red/50" aria-hidden />
+      <span className="absolute left-[11px] top-0 bottom-0 w-px bg-gradient-to-b from-kc-blue/50 via-white/20 to-kc-red/50" aria-hidden />
       {/* dot */}
-      <span className="absolute left-0 top-1.5 inline-flex h-3.5 w-3.5 items-center justify-center rounded-full bg-white shadow">
+      <span className="absolute left-1 top-1.5 inline-flex h-3.5 w-3.5 items-center justify-center rounded-full bg-white shadow">
         <span className="h-2.5 w-2.5 rounded-full bg-gradient-to-br from-kc-blue to-kc-red" />
       </span>
 

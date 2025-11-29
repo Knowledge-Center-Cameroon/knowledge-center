@@ -133,11 +133,11 @@ const Contact = () => {
   ];
 
   return (
-    <section id="contact" className="py-20 lg:py-32">
+    <section id="contact" className="pt-24 md:pt-28 lg:pt-32 pb-16 lg:pb-24">
       <div className="container mx-auto px-4 lg:px-8 max-w-6xl">
         {/* Header */}
-        <div className="text-center mb-16">
-        <div className="h-1 w-28 mx-auto mb-3 bg-kc-blue rounded-full" />
+        <div className="text-center mb-10 md:mb-16">
+          <div className="h-1 w-28 mx-auto mb-3 bg-kc-blue rounded-full" />
           <h2 className="heading-2 mb-6">
             <span className="text-kc-blue">Contact</span> <span className="text-kc-red">Us</span>
           </h2>
@@ -147,9 +147,96 @@ const Contact = () => {
           </p>
         </div>
 
-        <div className="grid lg:grid-cols-3 gap-12">
-          {/* Contact Information */}
-          <div className="lg:col-span-1 space-y-8">
+        <div className="grid lg:grid-cols-3 gap-10 lg:gap-12">
+          {/* Contact Form (first on mobile) */}
+          <div className="lg:col-span-2 order-1 lg:order-2">
+            <div className="max-w-2xl mx-auto w-full">
+              <Card className="card-gradient shadow-elegant">
+                <CardContent className="p-6 md:p-8">
+                  <div className="flex items-center space-x-3 mb-8">
+                    <div className="w-12 h-12 bg-kc-blue rounded-full flex items-center justify-center">
+                      <Send className="h-6 w-6 text-white" />
+                    </div>
+                    <h3 className="text-2xl font-heading font-bold">Send us a Message</h3>
+                  </div>
+
+                  <form onSubmit={handleSubmit} className="space-y-6">
+                    <div className="grid md:grid-cols-2 gap-6">
+                      <div>
+                        <Label htmlFor="name">Full Name *</Label>
+                        <Input
+                          id="name"
+                          type="text"
+                          value={formData.name}
+                          onChange={(e) => handleInputChange("name", e.target.value)}
+                          placeholder="Enter your full name"
+                          required
+                          className="mt-2"
+                        />
+                      </div>
+                      
+                      <div>
+                        <Label htmlFor="email">Email Address *</Label>
+                        <Input
+                          id="email"
+                          type="email"
+                          value={formData.email}
+                          onChange={(e) => handleInputChange("email", e.target.value)}
+                          placeholder="Enter your email address"
+                          required
+                          className="mt-2"
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <Label htmlFor="subject">Subject *</Label>
+                      <Select value={formData.subject} onValueChange={(value) => handleInputChange("subject", value)}>
+                        <SelectTrigger className="mt-2" id="subject">
+                          <SelectValue placeholder="Select a subject" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {subjects.map((subject) => (
+                            <SelectItem key={subject.value} value={subject.value}>
+                              {subject.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    <div>
+                      <Label htmlFor="message">Message *</Label>
+                      <Textarea
+                        id="message"
+                        value={formData.message}
+                        onChange={(e) => handleInputChange("message", e.target.value)}
+                        placeholder="Tell us how we can help you..."
+                        rows={6}
+                        required
+                        className="mt-2 resize-none"
+                      />
+                      <div className="mt-1 text-xs text-muted-foreground text-right">{messageCount} / 1000</div>
+                    </div>
+
+                    <AeroButton
+                      type="submit"
+                      disabled={isSubmitting}
+                      loading={isSubmitting}
+                      text="Send"
+                      width={30}
+                      primaryCol="#e90000"
+                      gradientCol="#014dbb"
+                      className="w-full rounded-full gap-2 text-white py-3"
+                    />
+                  </form>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+
+          {/* Contact Information (second on mobile, side on desktop) */}
+          <div className="lg:col-span-1 space-y-8 order-2 lg:order-1">
             <div>
               <h3 className="text-2xl font-heading font-bold mb-6">Get In Touch</h3>
               <p className="text-muted-foreground mb-8">
@@ -161,7 +248,7 @@ const Contact = () => {
             {/* Contact Details */}
             <div className="space-y-6">
               {contactInfo.map((info, index) => (
-                <Card key={index} className="card-gradient shadow-elegant transition-bounce hover:scale-105">
+                <Card key={index} className="card-gradient shadow-elegant transition-all duration-300 hover:-translate-y-1.5">
                   <CardContent className="p-6">
                     <div className="flex items-start space-x-4">
                       <div className={`w-12 h-12 bg-kc-black rounded-full flex items-center justify-center flex-shrink-0`}>
@@ -182,102 +269,11 @@ const Contact = () => {
             {/* Quick Actions removed as requested */}
           </div>
 
-          {/* Contact Form */}
-          <div className="lg:col-span-2">
-            <div className="max-w-2xl mx-auto w-full">
-            <Card className="card-gradient shadow-elegant">
-              <CardContent className="p-8">
-                <div className="flex items-center space-x-3 mb-8">
-                  <div className="w-12 h-12 bg-kc-blue rounded-full flex items-center justify-center">
-                    <Send className="h-6 w-6 text-white" />
-                  </div>
-                  <h3 className="text-2xl font-heading font-bold">Send us a Message</h3>
-                </div>
-
-                <form onSubmit={handleSubmit} className="space-y-6">
-                  <div className="grid md:grid-cols-2 gap-6">
-                    <div>
-                      <Label htmlFor="name">Full Name *</Label>
-                      <Input
-                        id="name"
-                        type="text"
-                        value={formData.name}
-                        onChange={(e) => handleInputChange("name", e.target.value)}
-                        placeholder="Enter your full name"
-                        required
-                        className="mt-2"
-                      />
-                    </div>
-                    
-                    <div>
-                      <Label htmlFor="email">Email Address *</Label>
-                      <Input
-                        id="email"
-                        type="email"
-                        value={formData.email}
-                        onChange={(e) => handleInputChange("email", e.target.value)}
-                        placeholder="Enter your email address"
-                        required
-                        className="mt-2"
-                      />
-                    </div>
-                  </div>
-
-                  <div>
-                    <Label htmlFor="subject">Subject *</Label>
-                    <Select value={formData.subject} onValueChange={(value) => handleInputChange("subject", value)}>
-                      <SelectTrigger className="mt-2" id="subject">
-                        <SelectValue placeholder="Select a subject" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {subjects.map((subject) => (
-                          <SelectItem key={subject.value} value={subject.value}>
-                            {subject.label}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div>
-                    <Label htmlFor="message">Message *</Label>
-                    <Textarea
-                      id="message"
-                      value={formData.message}
-                      onChange={(e) => handleInputChange("message", e.target.value)}
-                      placeholder="Tell us how we can help you..."
-                      rows={6}
-                      required
-                      className="mt-2 resize-none"
-                    />
-                    <div className="mt-1 text-xs text-muted-foreground text-right">{messageCount} / 1000</div>
-                  </div>
-
-                  {/* <div className="p-4 border-2 border-dashed border-muted rounded-lg text-center text-muted-foreground">
-                    <div className="w-8 h-8 bg-muted rounded mx-auto mb-2"></div>
-                    <span className="text-sm">CAPTCHA verification would go here</span>
-                  </div> */}
-
-                  <AeroButton
-                    type="submit"
-                    disabled={isSubmitting}
-                    loading={isSubmitting}
-                    text="Send"
-                    width={30}
-                    primaryCol="#e90000"
-                    gradientCol="#014dbb"
-                    className="w-full rounded-full gap-2 text-white py-3"
-                  />
-                </form>
-              </CardContent>
-            </Card>
-            </div>
-          </div>
         </div>
 
         {/* Google Maps Embed */}
-        <div className="mt-16">
-          <h3 className="text-2xl font-heading font-bold text-center mb-8">Find Us in Buea</h3>
+        <div className="mt-12 md:mt-16">
+          <h3 className="text-2xl font-heading font-bold text-center mb-6 md:mb-8">Find Us in Buea</h3>
           <Card className="shadow-elegant overflow-hidden bg-kc-black">
             <CardContent className="p-0">
               <div className="relative w-full aspect-[16/9]">

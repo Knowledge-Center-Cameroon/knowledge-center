@@ -8,7 +8,7 @@ import Timeline, { type TimelineItem } from "@/components/Timeline";
 import StemBackground from "@/components/StemBackground";
 import { useParallax, Parallax } from "@/hooks/use-parallax";
 import { Input } from "@/components/ui/input";
-import { Heart, MessageSquare, Loader2, Trash2, Share2 } from "lucide-react";
+import { Heart, MessageSquare, Loader2, Trash2, Share2, Linkedin } from "lucide-react";
 import React, { useState, useMemo, useEffect } from "react"; 
 import { useUser } from "@/contexts/UserContext";
 import { useToast } from "@/components/ui/use-toast";
@@ -29,6 +29,8 @@ interface LikeStatus {
   isLiked: boolean;
   likeCount: number;
 }
+
+const LINKEDIN_URL = "https://www.linkedin.com"; // TODO: replace with your actual LinkedIn page or article URL
 
 const BlogPage: React.FC = () => {
   const { user } = useUser();
@@ -197,6 +199,13 @@ const BlogPage: React.FC = () => {
   };
 
   const { ref, y } = useParallax(40);
+
+  const scrollToSection = (id: string) => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  };
   return (
     <motion.section
       initial={{ opacity: 0, y: 12 }}
@@ -215,9 +224,29 @@ const BlogPage: React.FC = () => {
         </p>
       </Parallax>
 
-      {/* Toolbar: search + tag filters */}
-      <div className="mb-8 flex flex-col sm:flex-row sm:items-center gap-4">
-        <div className="w-full sm:max-w-md">
+      {/* Mobile nav between feed and timeline */}
+      <div className="mb-6 flex gap-2 md:hidden text-xs">
+        <Button
+          variant="outline"
+          size="sm"
+          className="rounded-full px-3 py-1 flex-1"
+          onClick={() => scrollToSection("blog-feed")}
+        >
+          Feed
+        </Button>
+        <Button
+          variant="ghost"
+          size="sm"
+          className="rounded-full px-3 py-1 flex-1"
+          onClick={() => scrollToSection("blog-timeline")}
+        >
+          Timeline
+        </Button>
+      </div>
+
+      {/* Toolbar: search + tag filters + LinkedIn */}
+      <div className="mb-10 flex flex-col gap-4 md:flex-row md:items-center">
+        <div className="w-full md:max-w-md">
           <Input 
             placeholder="Search posts..." 
             value={query} 
@@ -225,25 +254,39 @@ const BlogPage: React.FC = () => {
             className="shadow-sm transition-all duration-300 focus-visible:shadow-md"
           />
         </div>
-        {allTags.length > 0 && (
-          <div className="flex flex-wrap gap-2">
-            <button
-              onClick={() => setActiveTag(null)}
-              className={`px-3 py-1.5 rounded-full text-sm border transition-all duration-300 ${activeTag === null ? 'bg-kc-blue text-white border-kc-blue shadow-md' : 'bg-white/70 text-foreground border-border hover:bg-white hover:shadow-sm'}`}
-            >
-              All
-            </button>
-            {allTags.map(t => (
+        <div className="flex-1 flex flex-wrap items-center gap-3 justify-between md:justify-end">
+          {allTags.length > 0 && (
+            <div className="flex flex-wrap gap-2">
               <button
-                key={t}
-                onClick={() => setActiveTag(t)}
-                className={`px-3 py-1.5 rounded-full text-sm border transition-all duration-300 ${activeTag === t ? 'bg-kc-blue text-white border-kc-blue shadow-md' : 'bg-white/70 text-foreground border-border hover:bg-white hover:shadow-sm'}`}
+                onClick={() => setActiveTag(null)}
+                className={`px-3 py-1.5 rounded-full text-xs sm:text-sm border transition-all duration-300 ${activeTag === null ? 'bg-kc-blue text-white border-kc-blue shadow-md' : 'bg-white/70 text-foreground border-border hover:bg-white hover:shadow-sm'}`}
               >
-                {t}
+                All
               </button>
-            ))}
-          </div>
-        )}
+              {allTags.map(t => (
+                <button
+                  key={t}
+                  onClick={() => setActiveTag(t)}
+                  className={`px-3 py-1.5 rounded-full text-xs sm:text-sm border transition-all duration-300 ${activeTag === t ? 'bg-kc-blue text-white border-kc-blue shadow-md' : 'bg-white/70 text-foreground border-border hover:bg-white hover:shadow-sm'}`}
+                >
+                  {t}
+                </button>
+              ))}
+            </div>
+          )}
+
+          <Button
+            variant="blue"
+            className="inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm"
+            asChild
+          >
+            <a href={LINKEDIN_URL} target="_blank" rel="noopener noreferrer">
+              <Linkedin className="h-4 w-4" />
+              <span className="hidden sm:inline">View posts on LinkedIn</span>
+              <span className="sm:hidden">LinkedIn</span>
+            </a>
+          </Button>
+        </div>
       </div>
 
       {posts.length === 0 ? (
@@ -251,7 +294,7 @@ const BlogPage: React.FC = () => {
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8">
           {/* Feed */}
-          <div className="lg:col-span-8 space-y-8">
+          <div id="blog-feed" className="lg:col-span-8 space-y-8">
             {filtered.map((post, idx) => {
               const dt = new Date(post.date);
               const date = dt.toLocaleDateString(undefined, { year: "numeric", month: "short", day: "2-digit" });
@@ -362,14 +405,15 @@ const BlogPage: React.FC = () => {
           </div>
 
           {/* Sticky sidebar timeline */}
-          <div className="lg:col-span-4">
+          <div id="blog-timeline" className="lg:col-span-4 mt-4 lg:mt-0">
             <div className="lg:sticky lg:top-8">
               {(() => {
                 const items: TimelineItem[] = posts.map((p) => ({
+                  id: p.id,
                   title: p.title,
                   date: new Date(p.date).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: '2-digit' }),
                   description: p.excerpt,
-                  href: '#',
+                  href: `/blog/${p.id}`,
                 }));
                 return <Timeline title="Recent Posts" items={items} />;
               })()}

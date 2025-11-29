@@ -215,7 +215,7 @@ const StemRegistrationForm: React.FC<Props> = ({ onSubmitted, initialValues, mod
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             {stepIndex === 0 && (
               <>
-                <FormField control={form.control} name="fullName" render={({ field }) => (<FormItem><FormLabel>Full Name</FormLabel><FormControl><Input placeholder="e.g. John Doe" {...field} /></FormControl><FormMessage /></FormItem>)} />
+                <FormField control={form.control} name="fullName" render={({ field }) => (<FormItem><FormLabel>Full Name</FormLabel><FormControl><Input placeholder="Your Full Name" {...field} /></FormControl><FormMessage /></FormItem>)} />
                 <FormField control={form.control} name="phone" render={({ field }) => (<FormItem><FormLabel>Phone Number</FormLabel><FormControl><Input placeholder="e.g. 670123456" {...field} /></FormControl><FormMessage /></FormItem>)} />
                 <FormField control={form.control} name="guardianPhone" render={({ field }) => (<FormItem><FormLabel>Guardian's Phone Number</FormLabel><FormControl><Input placeholder="e.g. 670123456" {...field} /></FormControl><FormMessage /></FormItem>)} />
               </>

@@ -350,69 +350,117 @@ const Projects = () => {
 
         {/* STEM Competition Section */}
         <div className="mt-20">
-          <Card className="bg-kc-black text-white overflow-hidden">
-            <CardContent className="p-8 lg:p-12">
-              <div className="grid lg:grid-cols-2 gap-8 items-center">
-                <div>
-                  <div className="flex items-center space-x-4 mb-6">
-                    <div className="w-12 h-12 bg-kc-red rounded-full flex items-center justify-center">
-                      <Trophy className="h-6 w-6 text-white" />
-                    </div>
-                    <h3 className="text-2xl font-heading font-bold">National STEM Competition</h3>
+          <Card className="relative overflow-hidden bg-gradient-to-br from-kc-black via-black to-slate-900 text-white border border-white/10 shadow-2xl">
+            {/* subtle glow accents */}
+            <div className="pointer-events-none absolute -top-32 -left-24 h-64 w-64 rounded-full bg-kc-blue/25 blur-3xl" />
+            <div className="pointer-events-none absolute -bottom-32 -right-24 h-64 w-64 rounded-full bg-kc-red/25 blur-3xl" />
+
+            <CardContent className="relative p-6 sm:p-8 lg:p-12">
+              <div className="grid lg:grid-cols-2 gap-8 lg:gap-10 items-center">
+                <motion.div
+                  initial={{ opacity: 0, x: -24 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true, margin: "-80px" }}
+                  transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+                >
+                  <div className="inline-flex items-center gap-3 mb-4 rounded-full bg-white/5 px-3 py-1 border border-white/10 text-xs font-semibold uppercase tracking-[0.18em]">
+                    <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-kc-red/90">
+                      <Trophy className="h-3.5 w-3.5 text-white" />
+                    </span>
+                    <span className="text-white/90">Flagship Competition</span>
+                  </div>
+
+                  <div className="flex items-center gap-3 mb-5">
+                    <h3 className="text-2xl sm:text-3xl font-heading font-bold leading-tight">
+                      National STEM Competition
+                    </h3>
                   </div>
                   
-                  <p className="text-white/90 leading-relaxed mb-6">
-                    The KC STEM (Science, Technology, Engineering, and Mathematics) Competition, 
-                    whose first edition took place in December of 2021, is an annual national 
-                    (Cameroon) scientific contest organized by Knowledge Center (KC) in an effort 
-                    to foster scientific thinking in students.
+                  <p className="text-white/85 leading-relaxed mb-4 sm:mb-5 text-sm sm:text-base">
+                    The KC STEM (Science, Technology, Engineering, and Mathematics) Competition,
+                    whose first edition took place in December of 2021, is an annual national
+                    (Cameroon) scientific contest organized by Knowledge Center (KC) to foster
+                    scientific thinking in students.
                   </p>
                   
-                  <p className="text-white/90 leading-relaxed mb-8">
-                    We challenge participants with thought-provoking questions which force them 
-                    to think beyond the ordinary student's mental reach, and, perhaps for the 
-                    first time, unlock the floodgates of creativity and critical thinking.
+                  <p className="text-white/80 leading-relaxed mb-6 sm:mb-7 text-sm sm:text-base">
+                    We challenge participants with thought‑provoking questions that push them
+                    beyond routine memorisation, helping them unlock creativity, critical
+                    thinking, and real problem‑solving skills.
                   </p>
 
-                  <motion.div whileHover={{ y: -2 }} whileTap={{ scale: 0.98 }}>
-                    <Button variant="red" size="lg" className="font-semibold" asChild>
+                  <motion.div
+                    className="inline-flex"
+                    whileHover={{ y: -2 }}
+                    whileTap={{ scale: 0.97 }}
+                    transition={{ type: "spring", stiffness: 260, damping: 20 }}
+                  >
+                    <Button
+                      variant="red"
+                      size="lg"
+                      className="group font-semibold rounded-full px-6 sm:px-7 shadow-lg shadow-red-500/30"
+                      asChild
+                    >
                       <Link to="/stem">
-                        Join Competition
-                        <Trophy className="ml-2 h-4 w-4" />
+                        <span>Join Competition</span>
+                        <Trophy className="ml-2 h-4 w-4 group-hover:scale-110 group-hover:translate-x-0.5 transition-transform" />
                       </Link>
                     </Button>
                   </motion.div>
-                </div>
+                </motion.div>
 
-                <div className="space-y-6">
+                <motion.div
+                  className="space-y-5 sm:space-y-6"
+                  initial={{ opacity: 0, x: 24 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true, margin: "-80px" }}
+                  transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1], delay: 0.08 }}
+                >
                   <div className="grid grid-cols-2 gap-4">
-                    <motion.div className="bg-white/10 rounded-xl p-4 text-center backdrop-blur-sm" whileHover={{ y: -2 }}>
+                    <motion.div
+                      className="bg-white/8 rounded-2xl p-4 text-center backdrop-blur-md border border-white/10"
+                      whileHover={{ y: -3, scale: 1.02 }}
+                      transition={{ type: "spring", stiffness: 260, damping: 22 }}
+                    >
                       <Target className="h-8 w-8 text-white mx-auto mb-2" />
-                      <div className="text-2xl font-heading font-bold">Annual</div>
-                      <div className="text-sm text-white/80">Competition</div>
+                      <div className="text-xl sm:text-2xl font-heading font-bold">Annual</div>
+                      <div className="text-xs sm:text-sm text-white/75">Competition</div>
                     </motion.div>
-                    <motion.div className="bg-white/10 rounded-xl p-4 text-center backdrop-blur-sm" whileHover={{ y: -2 }}>
+                    <motion.div
+                      className="bg-white/8 rounded-2xl p-4 text-center backdrop-blur-md border border-white/10"
+                      whileHover={{ y: -3, scale: 1.02 }}
+                      transition={{ type: "spring", stiffness: 260, damping: 22 }}
+                    >
                       <Award className="h-8 w-8 text-white mx-auto mb-2" />
-                      <div className="text-2xl font-heading font-bold">National</div>
-                      <div className="text-sm text-white/80">Recognition</div>
+                      <div className="text-xl sm:text-2xl font-heading font-bold">National</div>
+                      <div className="text-xs sm:text-sm text-white/75">Recognition</div>
                     </motion.div>
                   </div>
                   
-                  <motion.div className="bg-white/10 rounded-xl p-6 backdrop-blur-sm" whileHover={{ y: -2 }}>
-                    <h4 className="font-semibold mb-2">Next Competition</h4>
-                    <p className="text-white/80 text-sm mb-3">
-                      December 2025 - Registration opens in September
+                  <motion.div
+                    className="relative bg-white/8 rounded-2xl p-5 sm:p-6 backdrop-blur-md border border-white/10 overflow-hidden"
+                    whileHover={{ y: -3 }}
+                    transition={{ type: "spring", stiffness: 260, damping: 22 }}
+                  >
+                    <div className="pointer-events-none absolute -top-10 -right-4 h-20 w-20 rounded-full bg-kc-blue/20 blur-2xl" />
+                    <h4 className="font-semibold mb-2 flex items-center gap-2 text-sm sm:text-base">
+                      <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-kc-blue/80 text-[10px]">KC</span>
+                      <span>Next Competition</span>
+                    </h4>
+                    <p className="text-white/80 text-xs sm:text-sm mb-3">
+                      December 2025 &mdash; registration opens in September.
                     </p>
-                    <div className="flex items-center space-x-2 text-sm text-white/80">
+                    <div className="flex items-center space-x-2 text-xs sm:text-sm text-white/80">
                       <Clock className="h-4 w-4" />
-                      <span>3 months to prepare</span>
+                      <span>About 3 months of prep time for teams.</span>
                     </div>
                   </motion.div>
-                </div>
+                </motion.div>
               </div>
             </CardContent>
           </Card>
         </div>
+
       </div>
     </section>
   );

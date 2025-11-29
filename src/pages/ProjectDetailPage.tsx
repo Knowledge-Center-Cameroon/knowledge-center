@@ -110,7 +110,7 @@ const ProjectDetailPage: React.FC = () => {
   const sections = project.slug === "stem" ? stemSections : defaultSections;
 
   return (
-    <section className="py-12 md:py-16 lg:py-20">
+    <section className="pt-24 md:pt-28 lg:pt-32 pb-12 md:pb-16 lg:pb-20">
       <div className="relative container mx-auto px-4 lg:px-8 max-w-6xl">
         {/* Background decor */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none -z-10">
@@ -198,7 +198,7 @@ const ProjectDetailPage: React.FC = () => {
                             src={src}
                             alt={`${project.title} image ${i + 1}`}
                             className="w-full h-full object-cover"
-                            loading="eager"
+                            loading={i === 0 ? "eager" : "lazy"}
                             decoding="async"
                             sizes="(min-width: 1024px) 50vw, 100vw"
                           />

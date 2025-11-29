@@ -253,8 +253,23 @@ const EventsPage = () => {
     description:
       "Discover upcoming and past STEM events, competitions, and workshops hosted by Knowledge Center Cameroon.",
   });
+
+  const upcomingTimelineItems: TimelineItem[] = UPCOMING.map((e) => ({
+    title: e.title,
+    date: e.date,
+    subtitle: e.time,
+    description: e.location,
+  }));
+
+  const pastTimelineItems: TimelineItem[] = PAST.map((e) => ({
+    title: e.title,
+    date: e.date,
+    subtitle: e.time,
+    description: e.location,
+  }));
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-100">
       <div className="container mx-auto px-4 pt-28 pb-12">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -262,15 +277,37 @@ const EventsPage = () => {
           transition={{ duration: 0.6 }}
           className="text-center mb-12"
         >
-          <h1 className="heading-2 mb-6 text-4xl md:text-5xl font-bold bg-gradient-to-r from-kc-blue to-kc-red bg-clip-text text-transparent mb-4">
-            Events
+          <h1 className="heading-2 mb-4">
+            <span className="text-kc-blue">Events</span>
           </h1>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
             Join us for exciting STEM events, competitions, and workshops designed to inspire and educate.
           </p>
         </motion.div>
 
-        <Tabs defaultValue="upcoming" className="w-full">
+        {/* Mobile nav between cards and timeline */}
+        <div className="mb-4 flex gap-2 md:hidden text-xs">
+          <button
+            className="flex-1 rounded-full border border-slate-300 bg-white/80 px-3 py-1"
+            onClick={() => {
+              const el = document.getElementById("events-cards");
+              if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+            }}
+          >
+            Events
+          </button>
+          <button
+            className="flex-1 rounded-full border border-slate-200 bg-slate-50 px-3 py-1"
+            onClick={() => {
+              const el = document.getElementById("events-timeline");
+              if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+            }}
+          >
+            Timeline
+          </button>
+        </div>
+
+        <Tabs defaultValue="upcoming" className="w-full" id="events-cards">
           <TabsList className="grid w-full grid-cols-2 mb-8">
             <TabsTrigger value="upcoming" className="text-lg">Upcoming Events</TabsTrigger>
             <TabsTrigger value="past" className="text-lg">Past Events</TabsTrigger>
@@ -282,6 +319,12 @@ const EventsPage = () => {
             <EventsGrid items={PAST} />
           </TabsContent>
         </Tabs>
+
+        {/* Timeline summary (especially helpful on mobile) */}
+        <div id="events-timeline" className="mt-16 grid gap-10 lg:grid-cols-2">
+          <Timeline title="Upcoming Timeline" items={upcomingTimelineItems} />
+          <Timeline title="Past Timeline" items={pastTimelineItems} />
+        </div>
       </div>
     </div>
   );

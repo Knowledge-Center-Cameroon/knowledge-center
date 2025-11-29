@@ -60,43 +60,32 @@ const Stats = () => {
   useEffect(() => {
     if (!isInView) return;
 
-    const animateCounters = () => {
-      const duration = 2500; // 2.5 seconds for more dramatic effect
-      const steps = 80; // Higher FPS for smoother animation
-      const stepDuration = duration / steps;
+    const duration = 2200;
+    const start = performance.now();
+    let frameId: number;
 
-      let currentStep = 0;
+    const tick = (now: number) => {
+      const elapsed = now - start;
+      const progress = Math.min(elapsed / duration, 1);
+      const easeOutExpo = progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress);
 
-      const timer = setInterval(() => {
-        currentStep++;
-        const progress = currentStep / steps;
+      setCounts({
+        students: Math.round(easeOutExpo * statsData[0].value),
+        graduates: Math.round(easeOutExpo * statsData[1].value),
+        centers: Math.round(easeOutExpo * statsData[2].value),
+        partners: Math.round(easeOutExpo * statsData[3].value)
+      });
 
-        // Easing function for more natural animation
-        const easeOutExpo = progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress);
-
-        setCounts({
-          students: Math.round(easeOutExpo * statsData[0].value),
-          graduates: Math.round(easeOutExpo * statsData[1].value),
-          centers: Math.round(easeOutExpo * statsData[2].value),
-          partners: Math.round(easeOutExpo * statsData[3].value)
-        });
-
-        if (currentStep >= steps) {
-          clearInterval(timer);
-          setCounts({
-            students: statsData[0].value,
-            graduates: statsData[1].value,
-            centers: statsData[2].value,
-            partners: statsData[3].value
-          });
-        }
-      }, stepDuration);
-
-      return () => clearInterval(timer);
+      if (progress < 1) {
+        frameId = requestAnimationFrame(tick);
+      }
     };
 
-    const cleanup = animateCounters();
-    return cleanup;
+    frameId = requestAnimationFrame(tick);
+
+    return () => {
+      if (frameId) cancelAnimationFrame(frameId);
+    };
   }, [isInView]);
 
   const containerVariants = {
@@ -168,9 +157,9 @@ const Stats = () => {
                 <CardContent className="relative px-6 py-6 text-center">
                   {/* Icon */}
                   <motion.div
-                    className={`w-14 h-14 mx-auto mb-4 rounded-2xl bg-gradient-to-br ${stat.color} flex items-center justify-center shadow-md group-hover:scale-105 transition-all duration-300`}
-                    whileHover={{ rotate: 5, scale: 1.1 }}
-                    transition={{ duration: 0.2 }}
+                    className={`w-14 h-14 mx-auto mb-4 rounded-2xl bg-gradient-to-br ${stat.color} flex items-center justify-center shadow-md transition-all duration-300`}
+                    whileHover={{ scale: 1.06 }}
+                    transition={{ type: "spring", stiffness: 220, damping: 18 }}
                   >
                     <stat.icon className="h-7 w-7 text-white" />
                   </motion.div>

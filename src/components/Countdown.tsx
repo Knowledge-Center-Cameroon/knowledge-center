@@ -44,8 +44,9 @@ const CountdownCard: React.FC<{ label: string; value: number; variant: "blue" | 
   const tens = val[0];
   const ones = val[1];
   return (
-    <div className={`relative rounded-xl sm:rounded-2xl ${base} text-white min-w-[76px] sm:min-w-[104px] shadow-lg overflow-hidden`}
-         style={{ height: '104px' }}>
+    <div
+      className={`relative rounded-xl sm:rounded-2xl ${base} text-white min-w-[70px] sm:min-w-[96px] h-24 sm:h-28 shadow-lg overflow-hidden`}
+    >
       {/* Top darker half (50%) */}
       <div className="absolute top-0 left-0 right-0 h-1/2 bg-black/25" />
       {/* Number, animate digits independently */}
@@ -75,13 +76,13 @@ const Countdown: React.FC = () => {
           <div className="pointer-events-none absolute -top-24 -left-16 h-64 w-64 rounded-full bg-kc-blue/15 blur-3xl" />
           <div className="pointer-events-none absolute -bottom-24 -right-16 h-64 w-64 rounded-full bg-kc-red/15 blur-3xl" />
 
-          <div className="relative px-5 py-7 sm:px-10 sm:py-12">
-            <div className="flex flex-col items-center text-center text-neutral-900">
+          <div className="relative px-4 py-7 sm:px-8 sm:py-11">
+            <div className="flex flex-col items-center text-center text-neutral-900 max-w-3xl mx-auto">
               <div className="inline-flex items-center gap-2 bg-white text-kc-black rounded-full px-3 py-1 text-xs font-semibold mb-4">
                 <Sparkles className="h-3.5 w-3.5" />
                 National STEM Competition
               </div>
-              <h2 className="text-2xl sm:text-3xl font-heading font-bold leading-tight">
+              <h2 className="text-xl sm:text-3xl font-heading font-bold leading-tight">
                 Countdown to <span className="text-kc-blue">December 29</span>, <span className="text-kc-red">2025</span>
               </h2>
               <p className="mt-2 text-sm sm:text-base text-foreground/80 max-w-2xl">
@@ -91,7 +92,7 @@ const Countdown: React.FC = () => {
               {/* Countdown Row */}
               {!over ? (
                 <>
-                  <div className="mt-6 sm:mt-8 flex flex-wrap items-stretch justify-center gap-2.5 sm:gap-4" role="timer" aria-live="polite">
+                  <div className="mt-6 sm:mt-8 flex flex-wrap items-stretch justify-center gap-2 sm:gap-3.5" role="timer" aria-live="polite">
                     <CountdownCard label="Days" value={days} variant="blue" />
                     <CountdownCard label="Hours" value={hours} variant="red" />
                     <CountdownCard label="Minutes" value={minutes} variant="blue" />
@@ -115,10 +116,10 @@ const Countdown: React.FC = () => {
               )}
 
               {/* CTA */}
-              <div className="mt-7 sm:mt-9">
+              <div className="mt-7 sm:mt-9 w-full flex justify-center">
                 <a
                   href="/projects/stem"
-                  className="inline-flex items-center gap-2 rounded-full px-5 py-2.5 bg-kc-blue text-white font-semibold shadow hover:bg-kc-red transition-colors"
+                  className="inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-full px-5 py-2.5 bg-kc-blue text-white font-semibold shadow hover:bg-kc-red transition-colors text-sm sm:text-base"
                 >
                   <CalendarDays className="h-4 w-4" />
                   Event details

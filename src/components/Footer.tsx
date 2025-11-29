@@ -42,7 +42,7 @@ const Footer = () => {
   };
 
   return (
-    <footer className="border-t border-border relative">
+    <footer className="border-t border-border relative mt-12 md:mt-16">
       {/* Enhanced wave separator at the very top */}
       <svg className="absolute -top-12 left-0 w-full h-12 overflow-visible" viewBox="0 0 1440 96" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
         <defs>
@@ -65,9 +65,9 @@ const Footer = () => {
       {/* Main Footer Content */}
       <div className="pt-8 pb-16 bg-kc-black relative overflow-visible">
     
-        <StemBackground opacity={0.18} density={50} lineDistance={120} speed={0.45} showIcons={true} />
+        <StemBackground opacity={0.16} density={46} lineDistance={130} speed={0.45} showIcons={true} />
         <div className="container mx-auto px-4 lg:px-8 max-w-6xl relative z-10">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-10">
             {/* Brand Section */}
             <div className="lg:col-span-1">
               <div className="flex items-center gap-3 mb-6">
@@ -88,15 +88,15 @@ const Footer = () => {
               </p>
 
               {/* Compact Newsletter */}
-              <div className="rounded-xl bg-white/5 border border-white/10 p-4">
+              <div className="rounded-xl bg-white/5 border border-white/10 p-4 mt-4 sm:mt-6 max-w-md">
                 <h5 className="text-white font-semibold mb-2 text-sm">Subscribe</h5>
-                <form onSubmit={handleNewsletterSubmit} className="flex gap-2">
+                <form onSubmit={handleNewsletterSubmit} className="flex flex-col sm:flex-row gap-2">
                   <Input
                     type="email"
                     placeholder="Your email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="flex-1 h-9 bg-white/10 border-white/20 text-white placeholder:text-white/60"
+                    className="flex-1 h-9 bg-white/10 border-white/20 text-white placeholder:text-white/60 text-sm"
                     required
                   />
                   <AeroButton
@@ -107,7 +107,7 @@ const Footer = () => {
                     width={150}
                     primaryCol="#ffffff"
                     gradientCol="hsl(240, 0.60%, 31.20%)"
-                    className="h-9 text-black"
+                    className="h-9 w-full sm:w-auto text-black"
                     icon={<Send className="h-4 w-4 text-black" />}
                     iconAlways
                   />
@@ -220,14 +220,14 @@ const Footer = () => {
       </div>
 
       {/* Bottom Bar */}
-      <div className="relative bg-black text-white border-t border-border py-6">
+      <div className="relative bg-black text-white border-t border-border py-5">
         <div className="container mx-auto px-4 lg:px-8 max-w-6xl relative z-10">
-          <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
-            <p className="text-white/80 text-center md:text-left">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+            <p className="text-xs sm:text-sm text-white/80 text-center md:text-left">
               &copy; {new Date().getFullYear()} Knowledge Center. All rights reserved.
             </p>
-            {/* Social links moved here for a compact footer */}
-            <div className="flex space-x-4">
+            {/* Social links */}
+            <div className="flex space-x-3 sm:space-x-4 justify-center md:justify-end">
               <a 
                 href="https://www.linkedin.com/company/knowledge-centercmr/" 
                 target="_blank" 

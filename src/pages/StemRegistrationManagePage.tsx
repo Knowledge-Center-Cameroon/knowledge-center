@@ -23,9 +23,7 @@ const StemRegistrationManagePage: React.FC = () => {
         examLocation: last.examLocation || "",
         subjects: (last.subjects as any) || [],
         expectations: last.expectations || "",
-        paymentMethod: last.paymentMethod as any,
         payerPhone: (last.payerPhone as any) || "",
-        paymentScreenshot: undefined as any,
       };
     }
   } catch {}
