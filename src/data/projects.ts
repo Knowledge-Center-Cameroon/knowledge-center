@@ -30,7 +30,7 @@ import summer3 from "@/assets/summer3.jpg"
 export const projects: Project[] = [
   {
     slug: "stem",
-    title: "National STEM Competition",
+    title: "STEM National Project",
     summary:
       "A country‑wide contest that rewards clear thinking over memorization. Students tackle authentic, multi‑step STEM problems—testing ideas, defending methods, and connecting classroom theory to real‑world impact.",
     images: [StemImg, SummerImg, WeekendImg, stem1],
@@ -74,7 +74,7 @@ export const projects: Project[] = [
   },
   {
     slug: "weekend-school",
-    title: "Weekend School",
+    title: "KC Weekend School",
     summary:
       "Flexible weekend classes for reinforcement, acceleration, and exam mastery with personalized coaching.",
     images: [weekend, WeekendImg, AboutImg, ExtraImg],
@@ -91,6 +91,27 @@ export const projects: Project[] = [
       "Focus: Reinforcement, revision, and mock tests",
       "Support: 1:1 feedback and tailored study plans",
       "Outcomes: Consistent weekly progress and exam readiness"
+    ]
+  },
+  {
+    slug: "global-scholars-program",
+    title: "Global Scholars Program",
+    summary:
+    "We prepare scholars for opportunities beyond borders—competitive scholarships, exchange programs, and global leadership.",
+    images: [global, KC, KC],
+    features: [
+      "Mentorship from seasoned staff and alumni",
+      "Application strategy for global opportunities",
+      "Career orientation and leadership projects",
+      "Training on essays, statements, and interviews",
+      "SAT/ACT/TOEFL prep and timelines",
+      "Progress tracking across milestones"
+    ],
+    details: [
+      "When: Year‑round with intensive summer bootcamps",
+      "Focus: Essays, testing, recommendations, portfolios",
+      "Support: 1:1 mentorship and peer reviews",
+      "Outcomes: Competitive applications and global placement"
     ]
   },
   {
@@ -113,27 +134,6 @@ export const projects: Project[] = [
       "Focus: Concept mastery, revision, and timed mocks",
       "Support: 1:1 feedback and adaptive study plans",
       "Outcomes: Competitive scores and university readiness"
-    ]
-  },
-  {
-    slug: "global-scholars-program",
-    title: "Global Scholars Program",
-    summary:
-      "We prepare scholars for opportunities beyond borders—competitive scholarships, exchange programs, and global leadership.",
-    images: [global, KC, KC],
-    features: [
-      "Mentorship from seasoned staff and alumni",
-      "Application strategy for global opportunities",
-      "Career orientation and leadership projects",
-      "Training on essays, statements, and interviews",
-      "SAT/ACT/TOEFL prep and timelines",
-      "Progress tracking across milestones"
-    ],
-    details: [
-      "When: Year‑round with intensive summer bootcamps",
-      "Focus: Essays, testing, recommendations, portfolios",
-      "Support: 1:1 mentorship and peer reviews",
-      "Outcomes: Competitive applications and global placement"
     ]
   }
 ];

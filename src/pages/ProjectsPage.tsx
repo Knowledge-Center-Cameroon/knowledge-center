@@ -78,7 +78,7 @@ const ProjectsPage: React.FC = () => {
       <section id="projects" className="py-16 lg:py-24">
         <div className="container mx-auto px-4 lg:px-8 max-w-6xl">
           {/* Header */}
-          <Parallax ref={ref as any} style={{ y }} className="text-center mb-10 md:mb-12">
+          <Parallax ref={ref as React.Ref<HTMLDivElement>} style={{ y }} className="text-center mb-10 md:mb-12">
             <div className="h-1 w-28 mx-auto mb-3 bg-kc-blue rounded-full" />
             <h2 className="heading-2 mb-6">
               Explore Our Projects
@@ -312,6 +312,257 @@ const ProjectsPage: React.FC = () => {
               ))}
             </AnimatePresence>
           </motion.div>
+          
+          {/* Detailed project sections with impact numbers */}
+          <div className="mt-16 space-y-16">
+            {/* Project 1: STEM National Project */}
+            <motion.section
+              initial={{ opacity: 0, y: 24 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-120px" }}
+              transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+              className="grid lg:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)] gap-10 items-start"
+            >
+              <div>
+                <p className="text-xs font-semibold tracking-[0.18em] uppercase text-muted-foreground mb-2">
+                  Project 1
+                </p>
+                <h3 className="text-2xl md:text-3xl font-heading font-bold text-kc-blue mb-4">
+                  The KC National STEM Project
+                </h3>
+                <div className="h-1 w-24 bg-kc-red mb-6" />
+                <div className="space-y-4 text-sm md:text-base text-foreground/80 leading-relaxed">
+                  <p>
+                    At KC, we are driven by the confidence that our students are smart enough and can understand
+                    scientific concepts well enough to become luminary participants in today&apos;s burgeoning innovation
+                    economy.
+                  </p>
+                  <p>
+                    We believe that, with more effort to direct their focus away from inertia-heavy, creativity-stifling
+                    practices in schools, we can unlock an era where it would not matter to global customers whether the
+                    computer they buy was built in Silicon Valley or in Bambili, Cameroon &mdash; the quality of either will
+                    be just as impressive.
+                  </p>
+                  <p>
+                    The STEM National Project does exactly this by challenging learners with conceptually rich
+                    questions that reward reasoning, creativity, and problem solving over rote memorisation. It is our
+                    way of nurturing a generation of innovators who are excited about science and confident in their
+                    ability to use it to change their communities.
+                  </p>
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                <p className="text-sm font-semibold tracking-[0.14em] uppercase text-muted-foreground">
+                  Impact in numbers
+                </p>
+                <div className="grid grid-cols-2 gap-3 md:gap-4">
+                  <div className="bg-kc-blue text-white rounded-2xl px-4 py-5 flex flex-col justify-between shadow-elegant">
+                    <div className="text-3xl md:text-4xl font-heading font-bold leading-none mb-2">139</div>
+                    <p className="text-xs md:text-sm text-white/90">
+                      Participants in 2021 across 3 national writing centers.
+                    </p>
+                  </div>
+                  <div className="bg-kc-blue text-white rounded-2xl px-4 py-5 flex flex-col justify-between shadow-elegant">
+                    <div className="text-3xl md:text-4xl font-heading font-bold leading-none mb-2">309</div>
+                    <p className="text-xs md:text-sm text-white/90">
+                      Participants in 2022 across 5 national writing centers.
+                    </p>
+                  </div>
+                  <div className="bg-kc-blue text-white rounded-2xl px-4 py-5 flex flex-col justify-between shadow-elegant">
+                    <div className="text-3xl md:text-4xl font-heading font-bold leading-none mb-2">523</div>
+                    <p className="text-xs md:text-sm text-white/90">
+                      Participants in 2023 across 7 national writing centers.
+                    </p>
+                  </div>
+                  <div className="bg-kc-blue text-white rounded-2xl px-4 py-5 flex flex-col justify-between shadow-elegant">
+                    <div className="text-3xl md:text-4xl font-heading font-bold leading-none mb-2">1004</div>
+                    <p className="text-xs md:text-sm text-white/90">
+                      Participants in 2024 across 13 national writing centers.
+                    </p>
+                  </div>
+                </div>
+                <div className="bg-black text-white rounded-2xl px-5 py-6 md:py-7 shadow-elegant">
+                  <div className="text-4xl md:text-5xl font-heading font-bold leading-none mb-2">1975</div>
+                  <p className="text-xs md:text-sm text-white/90 max-w-xs">
+                    Total number of directly impacted students from the STEM Project since inception in 2021.
+                  </p>
+                </div>
+              </div>
+            </motion.section>
+
+            {/* Project 2: Summer Holiday Education Program */}
+            <motion.section
+              initial={{ opacity: 0, y: 24 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-120px" }}
+              transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+              className="grid lg:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)] gap-10 items-start"
+            >
+              <div>
+                <p className="text-xs font-semibold tracking-[0.18em] uppercase text-muted-foreground mb-2">
+                  Project 2
+                </p>
+                <h3 className="text-2xl md:text-3xl font-heading font-bold text-kc-blue mb-4">
+                  The KC Summer Holiday Education Program
+                </h3>
+                <div className="h-1 w-24 bg-kc-red mb-6" />
+                <div className="space-y-4 text-sm md:text-base text-foreground/80 leading-relaxed">
+                  <p>
+                    The KC Summer Holiday Program is one of our flagship programs, thanks to its enormous impact on
+                    learners. It attracts principals, national educators, parents, and learners from across Cameroon who
+                    are looking for something more than traditional holiday classes.
+                  </p>
+                  <p>
+                    Our objective is simple: create a richly innovative learning experience that nurtures critical
+                    21st‑century competencies and prepares learners for responsible citizenship and career success in
+                    today&apos;s innovation‑led economy.
+                  </p>
+                  <p>
+                    Beyond syllabus coverage, we bring science and innovation to life through smart classroom
+                    experiments, project development, and club activities such as creative writing and public speaking.
+                    Learners leave the program more confident, more curious, and more prepared to shape the future.
+                  </p>
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                <p className="text-sm font-semibold tracking-[0.14em] uppercase text-muted-foreground">
+                  Impact in numbers
+                </p>
+                <div className="grid grid-cols-2 gap-3 md:gap-4">
+                  <div className="bg-black text-white rounded-2xl px-4 py-5 flex flex-col justify-between shadow-elegant">
+                    <div className="text-3xl md:text-4xl font-heading font-bold leading-none mb-2">515</div>
+                    <p className="text-xs md:text-sm text-white/90">
+                      Total number of young science learners directly impacted through this program.
+                    </p>
+                  </div>
+                  <div className="bg-kc-red text-white rounded-2xl px-4 py-5 flex flex-col justify-between shadow-elegant">
+                    <div className="text-3xl md:text-4xl font-heading font-bold leading-none mb-2">264</div>
+                    <p className="text-xs md:text-sm text-white/90">
+                      Total number of girls impacted.
+                    </p>
+                  </div>
+                  <div className="bg-kc-red text-white rounded-2xl px-4 py-5 flex flex-col justify-between shadow-elegant">
+                    <div className="text-3xl md:text-4xl font-heading font-bold leading-none mb-2">251</div>
+                    <p className="text-xs md:text-sm text-white/90">
+                      Total number of boys impacted.
+                    </p>
+                  </div>
+                  <div className="bg-kc-blue text-white rounded-2xl px-4 py-5 flex flex-col justify-between shadow-elegant">
+                    <div className="text-3xl md:text-4xl font-heading font-bold leading-none mb-2">51</div>
+                    <p className="text-xs md:text-sm text-white/90">
+                      Participants impacted during the main edition in the summer of 2021 &mdash; Buea only.
+                    </p>
+                  </div>
+                  <div className="bg-kc-blue text-white rounded-2xl px-4 py-5 flex flex-col justify-between shadow-elegant">
+                    <div className="text-3xl md:text-4xl font-heading font-bold leading-none mb-2">122</div>
+                    <p className="text-xs md:text-sm text-white/90">
+                      Participants impacted during the 2022 edition &mdash; Buea only.
+                    </p>
+                  </div>
+                  <div className="bg-kc-blue text-white rounded-2xl px-4 py-5 flex flex-col justify-between shadow-elegant">
+                    <div className="text-3xl md:text-4xl font-heading font-bold leading-none mb-2">153</div>
+                    <p className="text-xs md:text-sm text-white/90">
+                      Participants impacted during the summer of 2023 &mdash; Buea and Limbe.
+                    </p>
+                  </div>
+                  <div className="bg-kc-blue text-white rounded-2xl px-4 py-5 flex flex-col justify-between shadow-elegant col-span-2 md:col-span-1">
+                    <div className="text-3xl md:text-4xl font-heading font-bold leading-none mb-2">189</div>
+                    <p className="text-xs md:text-sm text-white/90">
+                      Participants impacted during the summer of 2024 &mdash; Buea and Limbe.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </motion.section>
+
+            {/* Project 3: KC Weekend School */}
+            <motion.section
+              initial={{ opacity: 0, y: 24 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-120px" }}
+              transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+              className="grid lg:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)] gap-10 items-start"
+            >
+              <div>
+                <p className="text-xs font-semibold tracking-[0.18em] uppercase text-muted-foreground mb-2">
+                  Project 3
+                </p>
+                <h3 className="text-2xl md:text-3xl font-heading font-bold text-kc-blue mb-4">
+                  The KC Weekend School
+                </h3>
+                <div className="h-1 w-24 bg-kc-red mb-6" />
+                <div className="space-y-4 text-sm md:text-base text-foreground/80 leading-relaxed">
+                  <p>
+                    The KC Weekend School is a competitively selective, audio‑visual science tutoring program that
+                    nurtures some of the nation&apos;s best‑performing students while providing critical mentorship and
+                    access to quality education opportunities.
+                  </p>
+                  <p>
+                    Beyond innovatively covering their high‑school academic syllabus, we offer extra personal attention,
+                    consistent encouragement, close mentorship, more learning opportunities, and quarterly seminars that
+                    expose students to the dynamics of the 21st‑century world.
+                  </p>
+                  <p>
+                    Our scholars fall in love with learning, develop a clear sense of career purpose, and consistently
+                    post outstanding academic outcomes. Above all, they experience school as a vibrant community where
+                    they are inspired to continuously grow and reinvent themselves.
+                  </p>
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                <p className="text-sm font-semibold tracking-[0.14em] uppercase text-muted-foreground">
+                  Impact in numbers
+                </p>
+                <div className="grid grid-cols-2 gap-3 md:gap-4">
+                  <div className="bg-black text-white rounded-2xl px-4 py-5 flex flex-col justify-between shadow-elegant">
+                    <div className="text-3xl md:text-4xl font-heading font-bold leading-none mb-2">423</div>
+                    <p className="text-xs md:text-sm text-white/90">
+                      Total number of young science learners directly impacted through this program.
+                    </p>
+                  </div>
+                  <div className="bg-kc-red text-white rounded-2xl px-4 py-5 flex flex-col justify-between shadow-elegant">
+                    <div className="text-3xl md:text-4xl font-heading font-bold leading-none mb-2">358</div>
+                    <p className="text-xs md:text-sm text-white/90">
+                      Graduated in the top 1% in the GCE.
+                    </p>
+                  </div>
+                  <div className="bg-kc-red text-white rounded-2xl px-4 py-5 flex flex-col justify-between shadow-elegant">
+                    <div className="text-3xl md:text-4xl font-heading font-bold leading-none mb-2">36</div>
+                    <p className="text-xs md:text-sm text-white/90">
+                      Graduated as national honours students with straight A&apos;s.
+                    </p>
+                  </div>
+                  <div className="bg-kc-blue text-white rounded-2xl px-4 py-5 flex flex-col justify-between shadow-elegant">
+                    <div className="text-3xl md:text-4xl font-heading font-bold leading-none mb-2">62</div>
+                    <p className="text-xs md:text-sm text-white/90">
+                      Participants impacted during the 2021/2022 academic year.
+                    </p>
+                  </div>
+                  <div className="bg-kc-blue text-white rounded-2xl px-4 py-5 flex flex-col justify-between shadow-elegant">
+                    <div className="text-3xl md:text-4xl font-heading font-bold leading-none mb-2">104</div>
+                    <p className="text-xs md:text-sm text-white/90">
+                      Participants impacted during the 2022/2023 academic year.
+                    </p>
+                  </div>
+                  <div className="bg-kc-blue text-white rounded-2xl px-4 py-5 flex flex-col justify-between shadow-elegant">
+                    <div className="text-3xl md:text-4xl font-heading font-bold leading-none mb-2">122</div>
+                    <p className="text-xs md:text-sm text-white/90">
+                      Participants impacted during the 2023/2024 academic year.
+                    </p>
+                  </div>
+                  <div className="bg-kc-blue text-white rounded-2xl px-4 py-5 flex flex-col justify-between shadow-elegant col-span-2 md:col-span-1">
+                    <div className="text-3xl md:text-4xl font-heading font-bold leading-none mb-2">135</div>
+                    <p className="text-xs md:text-sm text-white/90">
+                      Participants impacted during the 2024/2025 academic year.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </motion.section>
+          </div>
           
           {/* Empty State */}
           {filteredProjects.length === 0 && (

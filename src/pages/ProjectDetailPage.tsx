@@ -1,7 +1,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { useParams, Link, useNavigate } from "react-router-dom";
-import { projects } from "@/data/projects";
+import { projects, type Project } from "@/data/projects";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, CheckCircle } from "lucide-react";
@@ -9,41 +9,60 @@ import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious
 
 const MotionButton = motion(Button);
 
-const ProjectDetailPage: React.FC = () => {
-  const { slug } = useParams();
-  const navigate = useNavigate();
-  const project = projects.find((p) => p.slug === slug);
+interface ProjectDetailContentProps {
+  project: Project;
+}
 
-  if (!project) {
-    return (
-      <div className="container mx-auto px-4 lg:px-8 max-w-6xl py-16">
-        <p className="text-muted-foreground">Project not found.</p>
-        <Button className="mt-4" variant="outline" onClick={() => navigate(-1)}>
-          <ArrowLeft className="h-4 w-4 mr-2" /> Go back
-        </Button>
-      </div>
-    );
-  }
-
+const ProjectDetailContent: React.FC<ProjectDetailContentProps> = ({ project }) => {
   // Simple per-project stats (fallbacks) for the statistics band
   const statsBySlug: Record<string, { label: string; value: string }[]> = {
     "stem": [
-      { label: "Students Impacted", value: "2000+" },
-      { label: "Success Rate", value: "95%" },
-      { label: "Projects Completed", value: "50+" },
+      { label: "Total students directly impacted", value: "1975" },
+      { label: "National writing centers by 2024", value: "13" },
+      { label: "Years of the competition so far", value: "4" },
     ],
     "summer-education": [
-      { label: "Participants", value: "200+" },
-      { label: "Duration", value: "2 months" },
-      { label: "Instructors", value: "20+" },
+      { label: "Young science learners impacted", value: "515" },
+      { label: "Cities reached (Buea & Limbe)", value: "2" },
+      { label: "Years of consistent programming", value: "4+" },
     ],
     "weekend-school": [
-      { label: "Learners", value: "300+" },
-      { label: "Subjects", value: "12" },
-      { label: "Hours/Weekend", value: "8" },
+      { label: "Young science learners served", value: "423" },
+      { label: "Students in top 1% at GCE", value: "358" },
+      { label: "National honours with straight A's", value: "36" },
     ],
   };
   const stats = statsBySlug[slug!] ?? [];
+
+  // Richer impact tiles for the main detail grid
+  const impactStatsBySlug: Record<string, { value: string; label: string }[]> = {
+    "stem": [
+      { value: "139", label: "Participants in 2021 across 3 national writing centers." },
+      { value: "309", label: "Participants in 2022 across 5 national writing centers." },
+      { value: "523", label: "Participants in 2023 across 7 national writing centers." },
+      { value: "1004", label: "Participants in 2024 across 13 national writing centers." },
+      { value: "1975", label: "Total number of directly impacted students from the STEM Project since inception." },
+    ],
+    "summer-education": [
+      { value: "515", label: "Total number of young science learners directly impacted through this program." },
+      { value: "264", label: "Total number of girls impacted." },
+      { value: "251", label: "Total number of boys impacted." },
+      { value: "51", label: "Participants during the main 2021 edition – Buea only." },
+      { value: "122", label: "Participants during the 2022 edition – Buea only." },
+      { value: "153", label: "Participants during the summer of 2023 – Buea and Limbe." },
+      { value: "189", label: "Participants during the summer of 2024 – Buea and Limbe." },
+    ],
+    "weekend-school": [
+      { value: "423", label: "Total number of young science learners directly impacted through this program." },
+      { value: "358", label: "Graduated in the top 1% in the GCE." },
+      { value: "36", label: "Graduated as national honours students with straight A's." },
+      { value: "62", label: "Participants during the 2021/2022 academic year." },
+      { value: "104", label: "Participants during the 2022/2023 academic year." },
+      { value: "122", label: "Participants during the 2023/2024 academic year." },
+      { value: "135", label: "Participants during the 2024/2025 academic year." },
+    ],
+  };
+  const impactStats = impactStatsBySlug[project.slug] ?? [];
 
   // Carousel api for embla-based UI carousel
   const [api, setApi] = React.useState<CarouselApi | null>(null);
@@ -57,7 +76,10 @@ const ProjectDetailPage: React.FC = () => {
       api.off("select", onSelect);
     };
   }, [api]);
-  React.useEffect(() => { setActiveIndex(0); api?.scrollTo(0); }, [project.slug]);
+  React.useEffect(() => {
+    setActiveIndex(0);
+    api?.scrollTo(0);
+  }, [project.slug, api]);
 
   // Autoplay for project carousel
   React.useEffect(() => {
@@ -108,6 +130,8 @@ const ProjectDetailPage: React.FC = () => {
     },
   ];
   const sections = project.slug === "stem" ? stemSections : defaultSections;
+
+  const navigate = useNavigate();
 
   return (
     <section className="pt-24 md:pt-28 lg:pt-32 pb-12 md:pb-16 lg:pb-20">
@@ -184,42 +208,40 @@ const ProjectDetailPage: React.FC = () => {
         </motion.div>
 
         {/* Media + Content split */}
-        <div className="grid lg:grid-cols-2 gap-6 md:gap-8 mb-12">
-          {/* Carousel using shared UI */}
+        <div className="space-y-10 mb-12">
           <motion.div initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.2 }} transition={{ duration: 0.45 }}>
             <Card className="overflow-hidden shadow-elegant">
               <CardContent className="p-0">
-                <Carousel setApi={setApi} className="rounded-2xl shadow-elegant bg-white/5 backdrop-blur-sm p-2">
-                  <CarouselContent>
+                <Carousel setApi={setApi} className="rounded-3xl shadow-elegant bg-black/80 relative">
+                  <CarouselContent className="">
                     {project.images.map((src, i) => (
                       <CarouselItem key={i}>
-                        <div className="relative overflow-hidden rounded-xl aspect-[16/10] w-full">
+                        <div className="relative overflow-hidden aspect-[16/9] w-full">
                           <img
                             src={src}
                             alt={`${project.title} image ${i + 1}`}
                             className="w-full h-full object-cover"
                             loading={i === 0 ? "eager" : "lazy"}
                             decoding="async"
-                            sizes="(min-width: 1024px) 50vw, 100vw"
+                            sizes="(min-width: 1024px) 80vw, 100vw"
                           />
-                          <div className="absolute inset-0 bg-gradient-to-tr from-kc-blue/20 via-transparent to-kc-red/20" />
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
                         </div>
                       </CarouselItem>
                     ))}
                   </CarouselContent>
                   <CarouselPrevious className="hidden sm:flex bg-kc-blue text-white border-0 hover:bg-kc-red" />
                   <CarouselNext className="hidden sm:flex bg-kc-blue text-white border-0 hover:bg-kc-red" />
-                  {/* Dots */}
-                  <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-2 z-10">
+                  <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-10">
                     {project.images.map((_, idx) => (
-              <motion.button
-                key={idx}
-                onClick={() => api?.scrollTo(idx)}
-                aria-label={`Go to image ${idx + 1}`}
-                className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${idx === activeIndex ? "bg-white scale-125" : "bg-white/60 hover:bg-white/80"}`}
-                whileHover={{ scale: 1.2 }}
-                whileTap={{ scale: 0.9 }}
-              />
+                      <motion.button
+                        key={idx}
+                        onClick={() => api?.scrollTo(idx)}
+                        aria-label={`Go to image ${idx + 1}`}
+                        className={`w-2.5 h-2.5 rounded-full border border-white/50 transition-all duration-300 ${idx === activeIndex ? "bg-white scale-125" : "bg-white/20 hover:bg-white/60"}`}
+                        whileHover={{ scale: 1.2 }}
+                        whileTap={{ scale: 0.9 }}
+                      />
                     ))}
                   </div>
                 </Carousel>
@@ -227,44 +249,74 @@ const ProjectDetailPage: React.FC = () => {
             </Card>
           </motion.div>
 
-          {/* Content sections */}
-          <motion.div
-            className="self-center space-y-5"
-            initial={{ opacity: 0, x: 20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, amount: 0.2 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-          >
-            {sections.map((s, i) => (
+          <div className="grid lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)] gap-8 md:gap-10 items-start">
+            <motion.div
+              className="space-y-5"
+              initial={{ opacity: 0, x: -20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true, amount: 0.2 }}
+              transition={{ duration: 0.6, delay: 0.1 }}
+            >
+              {sections.map((s, i) => (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, y: 15 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, amount: 0.2 }}
+                  transition={{
+                    duration: 0.4,
+                    delay: 0.2 + (i * 0.1),
+                    ease: [0.22, 1, 0.36, 1]
+                  }}
+                  className="group"
+                >
+                  <motion.h2
+                    className="text-xl md:text-2xl font-heading font-semibold mb-2 group-hover:text-kc-blue transition-colors duration-300"
+                    whileHover={{ x: 5 }}
+                  >
+                    {s.title}
+                  </motion.h2>
+                  <motion.p
+                    className="text-foreground/85 leading-relaxed"
+                    initial={{ opacity: 0.8 }}
+                    whileHover={{ opacity: 1 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    {s.body}
+                  </motion.p>
+                </motion.div>
+              ))}
+            </motion.div>
+
+            {impactStats.length > 0 && (
               <motion.div
-                key={i}
-                initial={{ opacity: 0, y: 15 }}
-                whileInView={{ opacity: 1, y: 0 }}
+                initial={{ opacity: 0, x: 20 }}
+                whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true, amount: 0.2 }}
-                transition={{
-                  duration: 0.4,
-                  delay: 0.3 + (i * 0.1),
-                  ease: [0.22, 1, 0.36, 1]
-                }}
-                className="group"
+                transition={{ duration: 0.6, delay: 0.2 }}
+                className="space-y-4"
               >
-                <motion.h2
-                  className="text-xl md:text-2xl font-heading font-semibold mb-2 group-hover:text-kc-blue transition-colors duration-300"
-                  whileHover={{ x: 5 }}
-                >
-                  {s.title}
-                </motion.h2>
-                <motion.p
-                  className="text-foreground/85 leading-relaxed"
-                  initial={{ opacity: 0.8 }}
-                  whileHover={{ opacity: 1 }}
-                  transition={{ duration: 0.2 }}
-                >
-                  {s.body}
-                </motion.p>
+                <p className="text-xs font-semibold tracking-[0.18em] uppercase text-muted-foreground">
+                  Impact in numbers
+                </p>
+                <div className="grid sm:grid-cols-2 gap-3 md:gap-4">
+                  {impactStats.map((stat, idx) => (
+                    <motion.div
+                      key={idx}
+                      whileHover={{ y: -2, scale: 1.01 }}
+                      transition={{ duration: 0.2 }}
+                      className={`rounded-2xl px-4 py-5 flex flex-col justify-between shadow-elegant bg-kc-blue text-white`}
+                    >
+                      <div className="text-2xl md:text-3xl font-heading font-bold leading-none mb-2">{stat.value}</div>
+                      <p className="text-xs md:text-sm text-white/90">
+                        {stat.label}
+                      </p>
+                    </motion.div>
+                  ))}
+                </div>
               </motion.div>
-            ))}
-          </motion.div>
+            )}
+          </div>
         </div>
 
         {/* Why take this project? */}
@@ -468,6 +520,25 @@ const ProjectDetailPage: React.FC = () => {
       </div>
     </section>
   );
+};
+
+const ProjectDetailPage: React.FC = () => {
+  const { slug } = useParams();
+  const navigate = useNavigate();
+  const project = projects.find((p) => p.slug === slug);
+
+  if (!project) {
+    return (
+      <div className="container mx-auto px-4 lg:px-8 max-w-6xl py-16">
+        <p className="text-muted-foreground">Project not found.</p>
+        <Button className="mt-4" variant="outline" onClick={() => navigate(-1)}>
+          <ArrowLeft className="h-4 w-4 mr-2" /> Go back
+        </Button>
+      </div>
+    );
+  }
+
+  return <ProjectDetailContent project={project} />;
 };
 
 export default ProjectDetailPage;

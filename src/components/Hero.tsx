@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import heroImage from "@/assets/hero-image.jpeg";
 import heroImage2 from "@/assets/hero-image2.jpeg";
@@ -11,42 +12,55 @@ import AnimatedLogo from "@/components/AnimatedLogo";
 import { Link } from "react-router-dom";
 import { ArrowButton } from "@/components/arrowbtn";
 
+const slides = [
+  {
+    image: heroImage,
+    title: "Knowledge Center Cameroon",
+    subtitle: "Empowering Young Scientists Through STEM Education",
+    description:
+      "We tutor young Cameroonians, and growing scientists, unto unprecedented levels of scientific curiosity, creativity, and love.",
+  },
+  {
+    image: heroImage2,
+    title: "Home where passion meets academic drive",
+    subtitle: "Inspiring Excellence in Science",
+    description:
+      "Building from a rich repertoire of books and question papers, combined with novel material developed by the KC staff.",
+  },
+  {
+    image: heroImage3,
+    title: "Inspiring a generation of creative thinkers",
+    subtitle: "Hands-on Learning Experience",
+    description:
+      "We help them see the applications and manifestations of the concepts they learn, fostering creativity in solving real-world problems.",
+  },
+  {
+    image: heroImage4,
+    title: "Family, epiphany, serendipity, and scientific obsession",
+    subtitle: "Beyond the Classroom",
+    description:
+      "Every once in a while, we seal the pages of our books and just head out into the sun. To play, to laugh, and to live.",
+  },
+  {
+    image: heroImage5,
+    title: "Family, epiphany, serendipity, and scientific obsession",
+    subtitle: "Beyond the Classroom",
+    description:
+      "Every once in a while, we seal the pages of our books and just head out into the sun. To play, to laugh, and to live.",
+  },
+];
+
+const phrases = [
+  "Learning Today, Leading Tomorrow",
+  "Turning Potential Into Impact",
+  "Igniting the Spark of Curiosity",
+  "Inspiring Young Minds to Rise",
+  "Nurturing Creativity, Driving Change.",
+];
+
 const Hero = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [phraseIndex, setPhraseIndex] = useState(0);
-
-  const slides = [
-    {
-      image: heroImage,
-      title: "Knowledge Center Cameroon",
-      subtitle: "Empowering Young Scientists Through STEM Education",
-      description: "We tutor young Cameroonians, and growing scientists, unto unprecedented levels of scientific curiosity, creativity, and love.",
-    },
-    {
-      image: heroImage2,
-      title: "Home where passion meets academic drive",
-      subtitle: "Inspiring Excellence in Science",
-      description: "Building from a rich repertoire of books and question papers, combined with novel material developed by the KC staff.",
-    },
-    {
-      image: heroImage3,
-      title: "Inspiring a generation of creative thinkers",
-      subtitle: "Hands-on Learning Experience",
-      description: "We help them see the applications and manifestations of the concepts they learn, fostering creativity in solving real-world problems.",
-    },
-    {
-      image: heroImage4,
-      title: "Family, epiphany, serendipity, and scientific obsession",
-      subtitle: "Beyond the Classroom",
-      description: "Every once in a while, we seal the pages of our books and just head out into the sun. To play, to laugh, and to live.",
-    },
-    {
-      image: heroImage5,
-      title: "Family, epiphany, serendipity, and scientific obsession",
-      subtitle: "Beyond the Classroom",
-      description: "Every once in a while, we seal the pages of our books and just head out into the sun. To play, to laugh, and to live.",
-    },
-  ];
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -61,7 +75,7 @@ const Hero = () => {
     const nextIndex = (currentSlide + 1) % slides.length;
     const img = new Image();
     img.src = slides[nextIndex].image;
-  }, [currentSlide]);
+  }, [currentSlide, slides]);
 
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId);
@@ -78,26 +92,17 @@ const Hero = () => {
     setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length);
   };
 
-  // Provided short phrases for the main heading
-  const phrases = [
-    "Learning Today, Leading Tomorrow",
-    "Turning Potential Into Impact",
-    "Igniting the Spark of Curiosity",
-    "Inspiring Young Minds to Rise",
-    "Nurturing Creativity, Driving Change."
-  ];
-
   useEffect(() => {
     const id = setInterval(() => setPhraseIndex((i) => (i + 1) % phrases.length), 3200);
     return () => clearInterval(id);
-  }, []);
+  }, [phrases.length]);
 
   const { ref: parRef, y: yBack } = useParallax(60);
   const { y: yOverlay } = useParallax(30);
   const { y: yImage } = useParallax(45); // Enhanced parallax for individual images
   return (
     <section
-      ref={parRef as any}
+      ref={parRef as React.Ref<HTMLElement>}
       id="home"
       className="relative pt-24 md:pt-28 lg:pt-32 min-h-[70svh] sm:min-h-[75svh] md:min-h-[80svh] lg:min-h-[88svh] flex items-center justify-center overflow-hidden bg-background"
     >
