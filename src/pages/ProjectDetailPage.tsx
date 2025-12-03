@@ -32,7 +32,7 @@ const ProjectDetailContent: React.FC<ProjectDetailContentProps> = ({ project }) 
       { label: "National honours with straight A's", value: "36" },
     ],
   };
-  const stats = statsBySlug[slug!] ?? [];
+  const stats = statsBySlug[project.slug] ?? [];
 
   // Richer impact tiles for the main detail grid
   const impactStatsBySlug: Record<string, { value: string; label: string }[]> = {
