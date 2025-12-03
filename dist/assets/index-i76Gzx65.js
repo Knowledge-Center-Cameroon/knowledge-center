@@ -1,1 +1,0 @@
-import{r as e,x as n,a8 as s}from"./index-CSfNnonw.js";var u=s[" useId ".trim().toString()]||(()=>{}),c=0;function f(t){const[r,o]=e.useState(u());return n(()=>{t||o(a=>a??String(c++))},[t]),t||(r?`radix-${r}`:"")}var i=e.createContext(void 0);function v(t){const r=e.useContext(i);return t||r||"ltr"}export{f as a,v as u};

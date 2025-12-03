@@ -2,7 +2,7 @@ import React from "react";
 import { Outlet, useLocation } from "react-router-dom";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
-import { AnimatePresence, motion } from "framer-motion";
+import { motion } from "framer-motion";
 import StemBackground from "@/components/StemBackground";
 
 const pageVariants = {
@@ -28,20 +28,17 @@ const Layout: React.FC = () => {
         <StemBackground opacity={0.07} density={60} lineDistance={120} speed={0.4} showIcons={false} />
       </div>
       <Navigation />
-      <AnimatePresence mode="wait">
-        <motion.main
-          key={location.pathname}
-          variants={pageVariants}
-          initial="initial"
-          animate="in"
-          exit="out"
-          transition={pageTransition}
-          role="main"
-          className={`flex-1 ${location.pathname === '/' ? 'pt-0' : 'pt-24 lg:pt-28'}`}
-        >
-          <Outlet />
-        </motion.main>
-      </AnimatePresence>
+      <motion.main
+        key={location.pathname}
+        variants={pageVariants}
+        initial="initial"
+        animate="in"
+        transition={pageTransition}
+        role="main"
+        className={`flex-1 ${location.pathname === '/' ? 'pt-0' : 'pt-24 lg:pt-28'}`}
+      >
+        <Outlet />
+      </motion.main>
       <Footer />
     </div>
   );

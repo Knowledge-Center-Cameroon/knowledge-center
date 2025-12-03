@@ -16,7 +16,6 @@ export function useParallax(
 ): ParallaxReturn {
   const ref = useRef<HTMLElement | null>(null);
   const { scrollYProgress } = useScroll({
-    target: ref,
     // as-const tuple satisfies Framer's ScrollOffset type without widening
     offset: ["start end", "end start"] as const,
   });
