@@ -8,7 +8,7 @@ const AboutPage: React.FC = () => {
   const { scrollY } = useScroll();
   const { ref: heroRef, y } = useParallax(40);
   useSeo({
-    title: "About Knowledge Center Cameroon",
+    title: "About | Knowledge Center",
     description:
       "Learn about Knowledge Center Cameroon, our mission to build future-ready STEM leaders, and the team behind our programs in Buea.",
   });

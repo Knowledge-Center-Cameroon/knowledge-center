@@ -100,37 +100,37 @@ const About = () => {
       icon: Brain,
       title: "Independent Thinking",
       description:
-        "At KC, independent thinking means liberating young people from the tyranny of rote memorization. It means refusing easy answers, privileging evidence over status, and cultivating confidence to propose alternatives. KC students test ideas, welcome contradiction, and build solutions that survive scrutiny."
+        "KC was founded in resistance to rote learning, blind syllabus coverage, and unexamined traditions. We lead by questioning first principles of education, assessment, success, and relevance. A KCian is trained to interrogate ideas, decode unfamiliar problems, and think beyond precedent. Organizational decisions at KC prioritize depth of reasoning over convention, even when that path is harder or slower."
     },
     {
       icon: RefreshCw,
       title: "Continuous Learning",
       description:
-        "The discipline to seek new knowledge across fields, revise views in light of new evidence, and turn mistakes into the raw material of improvement. Our students carry the habits of asking, reading, testing, and growing into every season of their lives."
+        "KC is built on the belief that relevance is earned daily. From educators to leadership, we operate as active learners, constantly refining methods, integrating new tools, and evolving our models in response to a changing world. A KCian never “arrives”; growth, reinvention, and intellectual humility are non-negotiable parts of our identity."
     },
     {
       icon: MessageSquare,
       title: "Quality Feedback",
       description:
-        "Education is incomplete until learners know where they went wrong and how to rise higher. Feedback at KC is timely, specific, and outcome-focused—transforming errors into launch pads for deeper insight."
-    },
-    {
-      icon: Rocket,
-      title: "Innovativeness",
-      description:
-        "Practical creativity under constraint: rapid experiments, honest failure, and scalable solutions born from context. True innovation begins with a problem, not an idea. We reimagine how education itself can unleash potential."
-    },
-    {
-      icon: Target,
-      title: "Resist Lowering Standards",
-      description:
-        "In a system where mediocrity is normal, KC insists on excellence. Our exams are deliberately challenging because students rise to the level of trust placed in them. We believe every learner is capable of greatness."
+        "KC treats assessment as a mirror, not a verdict. Feedback at every level - student, educator, program, or system - is designed to reveal thinking, sharpen judgment, and guide improvement. We value honest evaluation over praise, and clarity over comfort, because transformation requires knowing precisely where we stand."
     },
     {
       icon: ShieldCheck,
       title: "Practice What You Preach",
       description:
-        "KC’s credibility comes from living our own gospel. We model resilience and iteration as we run national programs with limited resources yet growing scale. At KC, the line between teacher and learner blurs."
+        "KC leadership is not theoretical. We teach curiosity, rigor, discipline, and innovation because we live them. Our educators are practitioners, our leaders are learners, and our programs reflect the standards we demand. A KCian understands that credibility is built through action, not declaration."
+    },
+    {
+      icon: Target,
+      title: "Resist Lowering Standards",
+      description:
+        "KC was born in crisis, scarcity, and constraint but never compromise. Whether in tutoring, national exams, or global scholar preparation, we reject dilution for convenience. A KCian believes excellence is not contextual; it is cultivated. We hold high standards because they are the gateway to confidence, competence, and global competitiveness "
+    },
+    {
+      icon: Rocket,
+      title: "Innovativeness",
+      description:
+        "Innovation is the operating logic of KC. From reimagined assessments and hands-on STEM projects to AI-assisted learning and interdisciplinary programs, we lead by building what does not yet exist. A KCian is not satisfied with inherited systems, they design better ones, guided by purpose, creativity, and real-world relevance. "
     }
   ];
 
@@ -195,10 +195,10 @@ const About = () => {
                 transition={{ duration: 0.6 }}
                 className="text-muted-foreground leading-relaxed mb-4 md:mb-6"
               >
-                There is a violence being done to young minds across large parts of Africa: education reduced to regurgitation,
-                curiosity stamped out for the sake of a grade. Knowledge Center exists to end that quiet violence. We are a youth-led
-                movement that refuses the belief that school must be a factory of memorized answers. KC is where young people relearn
-                how to wonder, how to reason, and how to turn knowledge into power.
+                Knowledge Center (KC) is a non-profit, community-serving education and STEM 
+                advocacy organization based in Cameroon. We exist to inspire young people to 
+                explore the full depth of their intellectual potential and to use learning as a tool for 
+                service, innovation, and human progress.
               </motion.p>
 
               <motion.p 
@@ -208,10 +208,16 @@ const About = () => {
                 transition={{ duration: 0.6, delay: 0.2 }}
                 className="text-muted-foreground leading-relaxed"
               >
-                We build learning that looks like life. Experiences that demand imagination, refuse easy answers, and teach students
-                how to wield ideas as tools to remake their communities. Our work spans rigorous national assessments recast as
-                laboratories for thought, mentorship that elevates aspiration into skill, and an innovation pipeline that turns classroom
-                insight into community solutions. We do this with intention, regional reach, and relentless care.
+                KC began as a small act of community service - helping students understand difficult 
+                science concepts during a time of national crisis - but has grown into a national 
+                movement redefining what meaningful education can look like. Through tutoring 
+                programs, national STEM initiatives, mentorship, hands-on projects, and 
+                scholarships, we nurture learners who are not only academically excellent, but 
+                deeply curious, resilient, collaborative, and driven to change their communities. 
+                <br />
+                At Knowledge Center, education is not the memorization of facts or a race through 
+                syllabi. It is the training of minds to question, to build, to imagine, and to keep 
+                learning long after school is out. 
               </motion.p>
             </div>
           </div>
@@ -239,7 +245,7 @@ const About = () => {
           <div className="space-y-12 animate-slide-up">
             <div>
               <div className="h-1 w-20 mb-3 bg-kc-blue rounded-full" />
-              <h3 className="text-2xl md:text-3xl font-heading font-bold mb-3 md:mb-4">What we teach that school forgets</h3>
+              <h3 className="text-2xl md:text-3xl font-heading font-bold mb-3 md:mb-4">Why we are different</h3>
                 <div className="prose md:prose-lg max-w-none">
                   <motion.p 
                     initial={{ opacity: 0, y: 20 }}
@@ -248,10 +254,22 @@ const About = () => {
                     transition={{ duration: 0.6 }}
                     className="text-muted-foreground leading-relaxed"
                   >
-                    We teach the courage to ask the wrong question until the right one appears. We value process over an answer and craft
-                    problems that expand the mind rather than narrow it. We are architects of intellectual habit: skepticism,
-                    cross-disciplinary synthesis, craftsmanship in reasoning, and fierce curiosity. KC's students know how to make things
-                    that matter.
+                    We do more than prepare students for exams - we prepare them for life in a rapidly 
+                    We do more than prepare students for exams - we prepare them for life in a rapidly 
+                    changing world. While traditional systems often reward rote memorization and grade 
+                    accumulation, KC prioritizes conceptual understanding, creativity, and critical 
+                    thinking. Our students are encouraged to ask <b>why</b> and <b>how</b>, not just <b>what</b>. 
+                    <br />
+                    Learning at KC is immersive and practical. Students build devices, conduct 
+                    experiments, analyze unfamiliar problems, and apply classroom knowledge to 
+                    real-world challenges. We use audio-visual tools, simulations, mentorship, 
+                    collaborative learning, and national projects like the KC National STEM Project to 
+                    push learners beyond comfort and into discovery.
+                    <br /> 
+                    Most importantly, we see academic excellence as a byproduct - not the sole goal. 
+                    What defines a KC scholar is curiosity, ambition, integrity, and a genuine love for 
+                    learning. We graduate not just high performers, but thoughtful humans ready to 
+                    contribute meaningfully to society.
                   </motion.p>
                 </div>
             </div>
@@ -261,9 +279,22 @@ const About = () => {
               <h3 className="text-2xl md:text-3xl font-heading font-bold mb-3 md:mb-4">Why this matters now</h3>
               <div className="prose md:prose-lg max-w-none">
                 <p className="text-muted-foreground leading-relaxed">
-                  The global economy no longer prizes the person who remembers or knows the most. It rewards the person who sees a
-                  problem nobody else sees and makes a solution. Africa’s future will be written by those trained to ask, test, and invent.
-                  KC is creating that cohort, urgently. We are cultivating the mental muscles necessary for Africa to leap.
+                  We are living in an innovation-driven, globally connected era where information is 
+                  abundant and routine skills are increasingly automated. The real advantage today 
+                  lies in the ability to think critically, adapt quickly, collaborate across disciplines, and 
+                  creatively solve complex problems. Unfortunately, many education systems are still 
+                  preparing students for a world that no longer exists.
+                  <br /> 
+                  At the same time, Africa - and Cameroon in particular - has an immense reserve of 
+                  untapped intellectual talent. When learners are confined to narrow career paths, 
+                  exam-focused learning, and creativity-stifling systems, societies lose innovators, 
+                  problem-solvers, and leaders the world urgently needs. 
+                  <br />
+                  Knowledge Center exists because this moment demands a different approach to 
+                  education. One that reconnects learning to purpose, equips young people with skills 
+                  that matter, and empowers them to see themselves as capable contributors to local 
+                  and global progress. What we build today in our classrooms shapes the future of our 
+                  communities, our nation, and our place in the world.
                 </p>
               </div>
             </div>
@@ -303,9 +334,9 @@ const About = () => {
               <div className="h-1 w-16 mb-3 bg-kc-blue rounded-full" />
               <h3 className="text-xl md:text-2xl font-heading font-bold mb-3 md:mb-4">Our Mission</h3>
               <p className="text-muted-foreground leading-relaxed">
-                To re-imagine education by cultivating critical 21st-century skills—creativity, problem-solving, collaboration, and
-                resilience—that empower young learners to compete globally and lead Africa’s exponential growth. KC exists to move
-                students beyond memorization into inquiry, innovation, and impact.
+                To deliver world-class education programs that strengthen academic excellence, 
+                unlock global opportunities, and develop leaders capable of solving Africa's most 
+                pressing challenges.
               </p>
             </CardContent>
           </Card>
@@ -324,8 +355,9 @@ const About = () => {
               <div className="h-1 w-16 mb-3 bg-kc-blue rounded-full" />
               <h3 className="text-xl md:text-2xl font-heading font-bold mb-3 md:mb-4">Our Vision</h3>
               <p className="text-muted-foreground leading-relaxed">
-                To build true parity in pre-university education where talent defines opportunity. We aim to raise a generation of
-                African learners who rise as global icons, setting the pace in science, technology, leadership, and creativity.
+                Re-imagining education to cultivate critical 21st century competencies that empower 
+                and equip our local learners to compete with their global peers and to become the 
+                new drivers of Africa's exponential growth. 
               </p>
             </CardContent>
           </Card>

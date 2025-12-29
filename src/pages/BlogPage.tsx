@@ -61,7 +61,7 @@ const BlogPage: React.FC = () => {
   });
 
   useSeo({
-    title: "Knowledge Center Blog and Updates",
+    title: "Blog | Knowledge Center",
     description:
       "Read stories, announcements, and insights from Knowledge Center Cameroon about STEM education, competitions, and student success.",
   });

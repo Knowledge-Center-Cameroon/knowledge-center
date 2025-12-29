@@ -8,7 +8,7 @@ import { useSeo } from "@/hooks/useSeo";
 const ContactPage: React.FC = () => {
   const { ref, y } = useParallax(30);
   useSeo({
-    title: "Contact Knowledge Center Cameroon",
+    title: "Contact | Knowledge Center",
     description:
       "Get in touch with Knowledge Center Cameroon for questions about our STEM programs, partnerships, and opportunities.",
   });

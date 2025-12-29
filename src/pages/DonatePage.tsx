@@ -34,7 +34,7 @@ const impactCards = [
 const DonatePage: React.FC = () => {
   const { ref, y } = useParallax(40);
   useSeo({
-    title: "Donate to Knowledge Center Cameroon",
+    title: "Donate | Knowledge Center",
     description:
       "Support Knowledge Center's STEM education programs and help empower young students across Cameroon.",
   });

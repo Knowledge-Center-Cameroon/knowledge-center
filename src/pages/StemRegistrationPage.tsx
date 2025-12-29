@@ -2,6 +2,7 @@ import React from "react";
 import { motion } from "framer-motion";
 import { ArrowButton } from "@/components/arrowbtn";
 import StemBackground from "@/components/StemBackground";
+import flyer from "@/assets/flyer.jpeg"
 import { useNavigate } from "react-router-dom";
 import { MousePointerClick, MapPin, Phone } from "lucide-react";
 import { useSeo } from "@/hooks/useSeo";
@@ -12,7 +13,7 @@ const StemRegistrationPage: React.FC = () => {
     navigate("/stem/register");
   };
   useSeo({
-    title: "National STEM Competition Registration",
+    title: "STEM | Knowledge Center",
     description:
       "Register for the Knowledge Center National STEM Competition and join students from across Cameroon in a transformative STEM challenge.",
   });
@@ -43,6 +44,17 @@ const StemRegistrationPage: React.FC = () => {
           </div>
 
           {/* Removed top Start Registration button. */}
+          <div className="relative">
+            <div className=" bg-gradient-to-br from-kc-blue/20 to-kc-red/20 rounded-2xl border border-white/10 overflow-hidden">
+              <img
+                src={flyer}
+                alt="Students at Knowledge Center Cameroon during a STEM activity"
+                className="w-full h-full object-cover"
+                loading="lazy"
+                decoding="async"
+              />
+            </div>
+          </div>
 
           {/* Additional registration options */}
           <div className="mt-12 grid md:grid-cols-3 gap-6">
@@ -115,10 +127,10 @@ const StemRegistrationPage: React.FC = () => {
                 <p className="text-muted-foreground mb-2">Prefer to speak with someone? Call us:</p>
                 <ul className="space-y-1">
                   <li>
-                    <a className="hover:underline" href="tel:+237670123456">+237 670 123 456</a>
+                    <a className="hover:underline" href="tel:+237680789894">+237 680 789 894</a>
                   </li>
                   <li>
-                    <a className="hover:underline" href="tel:+237699987654">+237 699 987 654</a>
+                    <a className="hover:underline" href="tel:+1(781)9477058">+1(781)9477058</a>
                   </li>
                 </ul>
               </div>
@@ -129,7 +141,7 @@ const StemRegistrationPage: React.FC = () => {
           <div className="mt-12 flex justify-center">
             <ArrowButton
               text="Download Brochure"
-              bgPrimaryColor="rgba(17,24,39,0.08)"
+              bgPrimaryColor="#FFFFFF"
               bgSecondaryColor="#111827"
               textPrimaryColor="#111827"
               textSecondaryColor="#FFFFFF"

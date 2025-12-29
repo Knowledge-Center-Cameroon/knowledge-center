@@ -17,7 +17,7 @@ const fadeUp = {
 
 const Home: React.FC = () => {
   useSeo({
-    title: "Empowering Young Scientists Through STEM Education",
+    title: "Home | Knowledge Center",
     description:
       "Knowledge Center Cameroon is a non-profit STEM hub in Buea helping young Cameroonians fall in love with science through tutoring, competitions, and hands-on programs.",
   });

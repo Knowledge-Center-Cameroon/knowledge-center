@@ -43,7 +43,7 @@ const ProjectsPage: React.FC = () => {
   const [searchQuery, setSearchQuery] = React.useState("");
   const [selectedCategory, setSelectedCategory] = React.useState<string>("all");
   useSeo({
-    title: "STEM Programs and Projects",
+    title: "Projects | Knowledge Center",
     description:
       "Explore Knowledge Center's flagship programs including the National STEM Competition, Summer Education Program, Weekend School, KC Prepa, and Global Scholars Program.",
   });
