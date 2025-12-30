@@ -6,28 +6,32 @@ import aboutImage from "@/assets/about.jpeg";
 import { Link } from "react-router-dom";
 
 const AboutKC: React.FC = () => {
-  const { ref, y } = useParallax(30);
+  const { ref, y } = useParallax(20);
 
   const highlights = [
     {
       icon: Heart,
-      title: "Passion-Driven",
-      description: "We nurture scientific curiosity through hands-on learning and real-world application"
+      title: "Passion-Driven Learning",
+      description:
+        "Hands-on STEM education that builds curiosity, discipline, and real problem-solving skills."
     },
     {
       icon: Lightbulb,
-      title: "Innovation-Focused",
-      description: "Building tomorrow's STEM leaders with creativity and problem-solving skills"
+      title: "Innovation First",
+      description:
+        "We train young minds to think critically, experiment boldly, and create meaningful solutions."
     },
     {
       icon: Users,
-      title: "Community-Centered",
-      description: "Creating a supportive family where every young mind can thrive and grow"
+      title: "Strong Community",
+      description:
+        "A safe, focused environment where students grow together through mentorship and teamwork."
     },
     {
       icon: BookOpen,
-      title: "Knowledge-Rich",
-      description: "Comprehensive STEM education from fundamentals to advanced applications"
+      title: "Solid Foundations",
+      description:
+        "From fundamentals to advanced concepts, we emphasize clarity and depth over shortcuts."
     }
   ];
 
@@ -35,106 +39,110 @@ const AboutKC: React.FC = () => {
     <section
       id="about-home"
       ref={ref as any}
-      className="py-16 lg:py-24 bg-slate-50 relative overflow-hidden"
+      className="bg-[#f8f9fa] py-20 overflow-hidden"
     >
-      <Parallax style={{ y }} className="container mx-auto px-4 lg:px-8 relative z-10">
-        <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-          <div className="lg:text-left">
-            {/* Section header */}
+      <Parallax style={{ y }} className="container mx-auto px-4 lg:px-8">
+        <div className="grid lg:grid-cols-2 gap-14 items-center">
+          {/* Left content */}
+          <div>
+            {/* Header */}
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 16 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-              className="mb-10 lg:mb-14 text-center lg:text-left"
+              transition={{ duration: 0.4 }}
+              className="mb-10"
             >
-              <div className="inline-flex items-center gap-2 bg-white border border-slate-200 rounded-full px-5 py-1.5 mb-4">
-                <span className="h-2 w-2 rounded-full bg-kc-blue" />
-                <span className="text-xs font-semibold tracking-[0.18em] text-slate-600 uppercase">About us</span>
-              </div>
-              <h2 className="text-3xl md:text-4xl font-semibold text-slate-900 mb-4">
-                A home for young
-                <span className="text-kc-blue"> scientists</span> in Cameroon
+              <span className="text-xs font-semibold tracking-wide text-slate-500 uppercase">
+                About Knowledge Center
+              </span>
+
+              <h2 className="mt-3 text-3xl md:text-4xl font-semibold text-slate-900 leading-tight">
+                Building the next generation of
+                <span className="text-kc-blue"> scientists and engineers</span>
               </h2>
-              <p className="text-base md:text-lg text-slate-600 max-w-2xl leading-relaxed lg:mx-0 mx-auto">
-                Knowledge Center Cameroon (KC) is a dedicated STEM education hub empowering young Cameroonians
-                through innovative learning experiences that spark curiosity and foster excellence.
+
+              <p className="mt-4 max-w-xl text-slate-600 text-base md:text-lg">
+                Knowledge Center Cameroon (KC) equips young Cameroonians with
+                practical STEM skills through structured learning, mentorship,
+                and real-world projects.
               </p>
             </motion.div>
 
-            {/* Features grid */}
-            <motion.div
-              initial={{ opacity: 0, y: 18 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.65, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
-              className="grid grid-cols-1 md:grid-cols-2 gap-5 lg:gap-6"
-            >
+            {/* Feature cards */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {highlights.map((item, index) => {
                 const Icon = item.icon;
                 return (
                   <motion.div
                     key={item.title}
-                    initial={{ opacity: 0, y: 20 }}
+                    initial={{ opacity: 0, y: 12 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
-                    transition={{
-                      duration: 0.5,
-                      delay: 0.3 + (index * 0.1),
-                      ease: [0.22, 1, 0.36, 1]
-                    }}
-                    className="group"
+                    transition={{ duration: 0.35, delay: index * 0.08 }}
+                    className="bg-white border border-slate-200 rounded-lg p-5"
                   >
-                    <div className="bg-white rounded-2xl p-5 lg:p-6 shadow-sm border border-slate-200 hover:shadow-md hover:-translate-y-1 hover:shadow-lg transition-transform duration-300">
-                      <div className="w-10 h-10 mb-3 rounded-xl flex items-center justify-center bg-slate-100 text-kc-blue group-hover:bg-kc-blue group-hover:text-white transition-colors duration-300">
+                    <div className="flex items-start gap-4">
+                      <div className="flex h-10 w-10 items-center justify-center rounded-md bg-slate-100 text-kc-blue">
                         <Icon className="h-5 w-5" />
                       </div>
-                      <h3 className="font-semibold text-base md:text-lg mb-2 text-slate-900 group-hover:text-kc-blue transition-colors duration-300 text-left">
-                        {item.title}
-                      </h3>
-                      <p className="text-slate-600 text-sm leading-relaxed text-left">
-                        {item.description}
-                      </p>
+
+                      <div>
+                        <h3 className="text-sm font-semibold text-slate-900">
+                          {item.title}
+                        </h3>
+                        <p className="mt-1 text-sm text-slate-600 leading-relaxed">
+                          {item.description}
+                        </p>
+                      </div>
                     </div>
                   </motion.div>
                 );
               })}
-            </motion.div>
+            </div>
 
-            {/* Call to action */}
+            {/* CTA */}
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 14 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.55, delay: 0.45, ease: [0.22, 1, 0.36, 1] }}
-              className="mt-10 lg:mt-12"
+              transition={{ duration: 0.4, delay: 0.3 }}
+              className="mt-10 flex flex-wrap gap-3"
             >
-              <p className="text-slate-600 mb-5 text-base md:text-lg text-center lg:text-left">
-                Join us in shaping the future of STEM education in Cameroon
-              </p>
-              <div className="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start">
-                <Link to="/programs" className="inline-flex items-center justify-center px-7 py-3 bg-kc-blue text-white rounded-full font-medium hover:bg-kc-blue/90 hover:shadow-md transition-all duration-200">
-                  Explore Our Programs <ArrowRight className="w-4 h-4 ml-2" />
-                </Link>
-                <Link to="/about" className="inline-flex items-center justify-center px-7 py-3 bg-white text-slate-800 rounded-full font-medium border border-slate-200 hover:bg-slate-50 hover:border-slate-300 transition-all duration-200">
-                  Learn More About Us
-                </Link>
-              </div>
+              <Link
+                to="/programs"
+                className="inline-flex items-center gap-2 rounded-md bg-kc-blue px-6 py-3 text-sm font-medium text-white hover:bg-kc-blue/90 transition"
+              >
+                View Programs <ArrowRight className="h-4 w-4" />
+              </Link>
+
+              <Link
+                to="/about"
+                className="inline-flex items-center rounded-md border border-slate-300 px-6 py-3 text-sm font-medium text-slate-800 hover:bg-slate-100 transition"
+              >
+                Learn More
+              </Link>
             </motion.div>
           </div>
 
+          {/* Right image */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.9, x: 50 }}
-            whileInView={{ opacity: 1, scale: 1, x: 0 }}
+            initial={{ opacity: 0, scale: 0.96 }}
+            whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+            transition={{ duration: 0.5 }}
             className="relative"
           >
-            <div className="aspect-w-4 aspect-h-3 lg:aspect-w-3 lg:aspect-h-4 rounded-3xl overflow-hidden bg-slate-200">
-              <img src={aboutImage} alt="About Knowledge Center" className="w-full h-full object-cover" />
+            <div className="overflow-hidden rounded-xl border border-slate-200 bg-white">
+              <img
+                src={aboutImage}
+                alt="Knowledge Center Cameroon"
+                className="h-full w-full object-cover"
+              />
             </div>
-            <div className="absolute -top-4 -left-4 h-10 w-28 rounded-full bg-white shadow-sm border border-slate-200 flex items-center justify-center text-[0.7rem] font-medium text-slate-600">
-              Since 2019
+
+            <div className="absolute top-4 left-4 rounded-md bg-white px-3 py-1 text-xs font-medium text-slate-600 shadow-sm border border-slate-200">
+              Established 2019
             </div>
           </motion.div>
         </div>
