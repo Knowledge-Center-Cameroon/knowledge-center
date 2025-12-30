@@ -1,37 +1,37 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { Heart, Lightbulb, Users, BookOpen, ArrowRight } from "lucide-react";
+import { Heart, Lightbulb, Users, BookOpen, ArrowRight, Target, ShieldCheck } from "lucide-react";
 import { useParallax, Parallax } from "@/hooks/use-parallax";
 import aboutImage from "@/assets/about.jpeg";
 import { Link } from "react-router-dom";
 
 const AboutKC: React.FC = () => {
-  const { ref, y } = useParallax(20);
+  const { ref, y } = useParallax(15);
 
   const highlights = [
     {
-      icon: Heart,
-      title: "Passion-Driven Learning",
+      icon: Target,
+      title: "Our Mission",
       description:
-        "Hands-on STEM education that builds curiosity, discipline, and real problem-solving skills."
+        "To bridge the gap between theoretical education and practical industry demands for young Cameroonians."
     },
     {
       icon: Lightbulb,
-      title: "Innovation First",
+      title: "Why KC Exists",
       description:
-        "We train young minds to think critically, experiment boldly, and create meaningful solutions."
+        "We exist to foster a culture of innovation, ensuring that STEM isn't just learned, but applied to solve local problems."
+    },
+    {
+      icon: ShieldCheck,
+      title: "Core Values",
+      description:
+        "Discipline, Excellence, and Community. We provide a safe space for bold experimentation and deep learning."
     },
     {
       icon: Users,
-      title: "Strong Community",
+      title: "Mentorship",
       description:
-        "A safe, focused environment where students grow together through mentorship and teamwork."
-    },
-    {
-      icon: BookOpen,
-      title: "Solid Foundations",
-      description:
-        "From fundamentals to advanced concepts, we emphasize clarity and depth over shortcuts."
+        "Connecting students with industry experts to guide their journey from curiosity to professional mastery."
     }
   ];
 
@@ -39,112 +39,123 @@ const AboutKC: React.FC = () => {
     <section
       id="about-home"
       ref={ref as any}
-      className="bg-[#f8f9fa] py-20 overflow-hidden"
+      className="bg-[#FAFBFF] py-24 overflow-hidden"
     >
-      <Parallax style={{ y }} className="container mx-auto px-4 lg:px-8">
-        <div className="grid lg:grid-cols-2 gap-14 items-center">
+      <Parallax style={{ y }} className="container mx-auto px-6 lg:px-12">
+        <div className="grid lg:grid-cols-2 gap-16 items-center">
+          
+          {/* Right image - Placed first on mobile for better flow */}
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, ease: "easeOut" }}
+            className="relative order-last lg:order-none"
+          >
+            <div className="relative z-10 overflow-hidden rounded-[2.5rem] shadow-2xl shadow-blue-100/50">
+              <img
+                src={aboutImage}
+                alt="Knowledge Center Cameroon Students"
+                className="h-full w-full object-cover aspect-square md:aspect-video lg:aspect-square hover:scale-105 transition-transform duration-700"
+              />
+            </div>
+            
+            {/* Google-style Floating Badge */}
+            <div className="absolute -bottom-6 -right-6 z-20 bg-white p-6 rounded-3xl shadow-xl border border-slate-50 hidden sm:block">
+              <div className="flex items-center gap-4">
+                <div className="bg-kc-blue/10 p-3 rounded-2xl">
+                  <Users className="h-6 w-6 text-kc-blue" />
+                </div>
+                <div>
+                  <p className="text-2xl font-bold text-slate-900 leading-none">500+</p>
+                  <p className="text-sm text-slate-500 font-medium">Students Trained</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Decorative background element */}
+            <div className="absolute -top-10 -left-10 w-64 h-64 bg-kc-blue/5 rounded-full blur-3xl -z-0" />
+          </motion.div>
+
           {/* Left content */}
           <div>
-            {/* Header */}
             <motion.div
-              initial={{ opacity: 0, y: 16 }}
+              initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.4 }}
-              className="mb-10"
+              transition={{ duration: 0.5 }}
+              className="mb-12"
             >
-              <span className="text-xs font-semibold tracking-wide text-slate-500 uppercase">
-                About Knowledge Center
-              </span>
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-kc-blue/10 text-kc-blue text-xs font-bold uppercase tracking-wider mb-6">
+                <span className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-kc-blue opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-kc-blue"></span>
+                </span>
+                The KC Story
+              </div>
 
-              <h2 className="mt-3 text-3xl md:text-4xl font-semibold text-slate-900 leading-tight">
-                Building the next generation of
-                <span className="text-kc-blue"> scientists and engineers</span>
+              <h2 className="text-4xl md:text-5xl font-bold text-slate-900 tracking-tight leading-[1.15]">
+                What is <span className="text-kc-blue">Knowledge Center?</span>
               </h2>
 
-              <p className="mt-4 max-w-xl text-slate-600 text-base md:text-lg">
-                Knowledge Center Cameroon (KC) equips young Cameroonians with
-                practical STEM skills through structured learning, mentorship,
-                and real-world projects.
+              <p className="mt-6 text-slate-600 text-lg leading-relaxed">
+                <strong className="text-slate-900 font-semibold">Knowledge Center (KC)</strong> is a premier STEM hub in Cameroon dedicated to empowering the next generation. We don't just teach code or robotics; we cultivate the mindset of a creator. KC was founded to provide the resources and mentorship that bridge the gap between classroom theory and real-world innovation.
               </p>
             </motion.div>
 
-            {/* Feature cards */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {/* Feature cards - Google Material 3 inspired */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
               {highlights.map((item, index) => {
                 const Icon = item.icon;
                 return (
                   <motion.div
                     key={item.title}
-                    initial={{ opacity: 0, y: 12 }}
+                    initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
-                    transition={{ duration: 0.35, delay: index * 0.08 }}
-                    className="bg-white border border-slate-200 rounded-lg p-5"
+                    transition={{ duration: 0.4, delay: index * 0.1 }}
+                    whileHover={{ y: -5 }}
+                    className="group bg-white hover:bg-kc-blue-[2px] p-6 rounded-[2rem] border border-slate-100 shadow-sm hover:shadow-md transition-all duration-300"
                   >
-                    <div className="flex items-start gap-4">
-                      <div className="flex h-10 w-10 items-center justify-center rounded-md bg-slate-100 text-kc-blue">
-                        <Icon className="h-5 w-5" />
-                      </div>
-
-                      <div>
-                        <h3 className="text-sm font-semibold text-slate-900">
-                          {item.title}
-                        </h3>
-                        <p className="mt-1 text-sm text-slate-600 leading-relaxed">
-                          {item.description}
-                        </p>
-                      </div>
+                    <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-slate-50 text-kc-blue group-hover:bg-kc-blue group-hover:text-white transition-colors duration-300">
+                      <Icon className="h-6 w-6" />
                     </div>
+
+                    <h3 className="text-lg font-bold text-slate-900 mb-2">
+                      {item.title}
+                    </h3>
+                    <p className="text-sm text-slate-500 leading-relaxed">
+                      {item.description}
+                    </p>
                   </motion.div>
                 );
               })}
             </div>
 
-            {/* CTA */}
+            {/* CTA Buttons */}
             <motion.div
-              initial={{ opacity: 0, y: 14 }}
+              initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.4, delay: 0.3 }}
-              className="mt-10 flex flex-wrap gap-3"
+              transition={{ duration: 0.5, delay: 0.4 }}
+              className="mt-12 flex flex-wrap gap-4"
             >
               <Link
                 to="/programs"
-                className="inline-flex items-center gap-2 rounded-md bg-kc-blue px-6 py-3 text-sm font-medium text-white hover:bg-kc-blue/90 transition"
+                className="group inline-flex items-center gap-2 rounded-full bg-kc-blue px-8 py-4 text-sm font-bold text-white shadow-lg shadow-blue-200 hover:bg-slate-900 hover:shadow-none transition-all duration-300"
               >
-                View Programs <ArrowRight className="h-4 w-4" />
+                Explore Programs 
+                <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
               </Link>
 
               <Link
                 to="/about"
-                className="inline-flex items-center rounded-md border border-slate-300 px-6 py-3 text-sm font-medium text-slate-800 hover:bg-slate-100 transition"
+                className="inline-flex items-center rounded-full border-2 border-slate-100 bg-white px-8 py-4 text-sm font-bold text-slate-700 hover:bg-slate-50 hover:border-slate-200 transition-all duration-300"
               >
-                Learn More
+                Our Full Story
               </Link>
             </motion.div>
           </div>
-
-          {/* Right image */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.96 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
-            className="relative"
-          >
-            <div className="overflow-hidden rounded-xl border border-slate-200 bg-white">
-              <img
-                src={aboutImage}
-                alt="Knowledge Center Cameroon"
-                className="h-full w-full object-cover"
-              />
-            </div>
-
-            <div className="absolute top-4 left-4 rounded-md bg-white px-3 py-1 text-xs font-medium text-slate-600 shadow-sm border border-slate-200">
-              Established 2019
-            </div>
-          </motion.div>
         </div>
       </Parallax>
     </section>
