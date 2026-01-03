@@ -38,7 +38,7 @@ const highlights = [
 
 const AboutKC: React.FC = () => {
   return (
-    <section className="bg-black text-white py-24">
+    <section className="bg-background text-foreground py-24">
       <div className="container mx-auto px-6 lg:px-12">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -50,7 +50,7 @@ const AboutKC: React.FC = () => {
           <h2 className="text-4xl md:text-5xl font-bold tracking-tight leading-[1.15]">
             What is Knowledge Center?
           </h2>
-          <p className="mt-6 text-lg leading-relaxed max-w-3xl mx-auto">
+          <p className="mt-6 text-lg leading-relaxed max-w-3xl mx-auto text-muted-foreground">
             Knowledge Center (KC) is an education innovation hub re-imagining
             how African talent is discovered, trained, and launched onto the
             global stage.
@@ -67,13 +67,13 @@ const AboutKC: React.FC = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.4, delay: index * 0.1 }}
-                className="bg-gray-900 p-6 rounded-lg"
+                className="bg-card p-6 rounded-lg border"
               >
                 <div className="mb-4">
-                  <Icon className="h-8 w-8 text-white" />
+                  <Icon className="h-8 w-8 text-primary" />
                 </div>
                 <h3 className="text-lg font-bold mb-2">{item.title}</h3>
-                <p className="text-sm leading-relaxed">{item.description}</p>
+                <p className="text-sm leading-relaxed text-muted-foreground">{item.description}</p>
               </motion.div>
             );
           })}

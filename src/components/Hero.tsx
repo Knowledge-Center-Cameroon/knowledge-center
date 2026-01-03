@@ -5,8 +5,7 @@ import { Button } from "@/components/ui/button";
 
 const Hero = () => {
   return (
-    <section className="relative h-screen flex items-center justify-center text-center text-white bg-black">
-      <div className="absolute inset-0 bg-black opacity-50" />
+    <section className="relative h-screen flex items-center justify-center text-center bg-background text-foreground">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -16,7 +15,7 @@ const Hero = () => {
         <h1 className="text-4xl md:text-6xl font-bold mb-4">
           The future is here. We power the innovators building it.
         </h1>
-        <p className="text-lg md:text-xl mb-8">
+        <p className="text-lg md:text-xl mb-8 text-muted-foreground">
           Our mission is to incubate the next generation of entrepreneurs,
           researchers, and civic leaders for the AI age.
         </p>
@@ -24,7 +23,7 @@ const Hero = () => {
           <Button asChild variant="primary" size="lg">
             <Link to="/about">Discover Our Story</Link>
           </Button>
-          <Button asChild variant="secondary" size="lg">
+          <Button asChild variant="outline" size="lg">
             <Link to="/projects">Our Impact</Link>
           </Button>
         </div>

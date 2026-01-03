@@ -30,7 +30,7 @@ const testimonials = [
 
 const Testimonials = () => {
   return (
-    <section className="bg-black text-white py-20">
+    <section className="bg-background text-foreground py-20">
       <div className="container mx-auto px-6 max-w-7xl">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -51,11 +51,11 @@ const Testimonials = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
-              className="bg-gray-900 p-8 rounded-lg"
+              className="bg-card p-8 rounded-lg border"
             >
-              <p className="mb-6">"{testimonial.quote}"</p>
+              <p className="mb-6 text-muted-foreground">"{testimonial.quote}"</p>
               <p className="font-bold">{testimonial.name}</p>
-              <p>
+              <p className="text-sm text-muted-foreground">
                 {testimonial.location} - {testimonial.program}{" "}
                 {testimonial.year}
               </p>

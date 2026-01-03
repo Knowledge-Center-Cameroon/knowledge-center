@@ -11,7 +11,7 @@ const statsData = [
 
 const Stats = () => {
   return (
-    <section className="bg-black text-white py-20">
+    <section className="bg-background text-foreground py-20">
       <div className="container mx-auto px-6 max-w-7xl">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -33,8 +33,8 @@ const Stats = () => {
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
             >
-              <p className="text-4xl font-bold">{stat.value}</p>
-              <p className="text-lg">{stat.label}</p>
+              <p className="text-4xl font-bold text-primary">{stat.value}</p>
+              <p className="text-lg text-muted-foreground">{stat.label}</p>
             </motion.div>
           ))}
         </div>
