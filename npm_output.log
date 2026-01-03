@@ -3,7 +3,8 @@
 > vite
 
 
-  VITE v5.4.21  ready in 440 ms
+  VITE v5.4.21  ready in 379 ms
 
   ➜  Local:   http://localhost:8080/
   ➜  Network: http://192.168.0.2:8080/
+9:17:36 PM [vite] hmr update /src/pages/ProjectDetailPage.tsx, /src/index.css

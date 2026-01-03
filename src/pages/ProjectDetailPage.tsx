@@ -2,6 +2,7 @@ import React from "react";
 import { motion } from "framer-motion";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { projects, type Project } from "@/data/projects";
+import { useSeo } from "@/hooks/useSeo";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, CheckCircle } from "lucide-react";
@@ -92,80 +93,7 @@ const ProjectDetailContent: React.FC<ProjectDetailContentProps> = ({ project }) 
   }, [api]);
 
   // Per-project structured sections
-  const stemSections = [
-    {
-      title: `What the STEM is?`,
-      body: `At KC, we are driven by the confidence that our students are smart enough and can understand
-      scientific concepts well enough to become luminary participants in today&apos;s burgeoning innovation
-      economy. We believe that, with more effort to direct their focus away from inertia-heavy, creativity-stifling
-      practices in schools, we can unlock an era where it would not matter to global customers whether the
-      computer they buy was built in Silicon Valley or in Bambili, Cameroon &mdash; the quality of either will
-      be just as impressive. The STEM National Project does exactly this by challenging learners with conceptually rich
-      questions that reward reasoning, creativity, and problem solving over rote memorisation. It is our
-      way of nurturing a generation of innovators who are excited about science and confident in their
-      ability to use it to change their communities.`,
-    },
-    {
-      title: `What impact has the STEM had?`,
-      body: `2000+ students reached so far with 95% reporting improved problem‑solving confidence. Alumni have gone on to lead school clubs, win regional fairs, and secure scholarships after demonstrating rigorous thinking.`,
-    },
-    {
-      title: `What we ask students and how questions look like?`,
-      body: `Questions are scenario‑based and cross‑disciplinary. Students analyze a situation, choose a method, compute carefully, and justify assumptions. Solutions value clarity, defensible steps, and insight—not just the final number.`,
-    },
-    {
-      title: `Our effort in the STEM`,
-      body: `We run mentor clinics, publish past papers with annotated solutions, and host team workshops. Regional qualifiers build momentum towards a December grand final—with feedback loops at every stage.`,
-    },
-    {
-      title: `What people say about the STEM`,
-      body: `“This changed how I study—now I explain my method before calculating.” · “Team rounds taught me to listen and refine ideas.” · “The finals felt like solving real problems that matter.”`,
-    },
-  ];
-
-  const summerSections = [
-    {
-      title: `What the Summer Education Program is?`,
-      body: `The KC Summer Holiday Program is one of our flagship programs, thanks to its enormous impact on
-      learners. It attracts principals, national educators, parents, and learners from across Cameroon who
-      are looking for something more than traditional holiday classes. Our objective is simple: create a richly innovative learning experience that nurtures critical
-      21st‑century competencies and prepares learners for responsible citizenship and career success in
-      today&apos;s innovation‑led economy. Beyond syllabus coverage, we bring science and innovation to life through smart classroom
-      experiments, project development, and club activities such as creative writing and public speaking.
-      Learners leave the program more confident, more curious, and more prepared to shape the future.`,
-    },
-    {
-      title: `What impact has the Summer Education Program had?`,
-      body: `500+ students reached so far with 95% reporting improved problem‑solving confidence. Alumni have gone on to lead school clubs, win regional fairs, and secure scholarships after demonstrating rigorous thinking.`,
-    },
-    {
-      title: `What we ask students and how questions look like?`,
-      body: `Questions are scenario‑based and cross‑disciplinary. Students analyze a situation, choose a method, compute carefully, and justify assumptions. Solutions value clarity, defensible steps, and insight—not just the final number.`,
-    },
-  ];
-
-  const weekendSections = [
-    {
-      title: `What the Weekend School is?`,
-      body: `The KC Weekend School is a competitively selective, audio‑visual science tutoring program that
-      nurtures some of the nation&apos;s best‑performing students while providing critical mentorship and
-      access to quality education opportunities. Beyond innovatively covering their high‑school academic syllabus, we offer extra personal attention,
-      consistent encouragement, close mentorship, more learning opportunities, and quarterly seminars that
-      expose students to the dynamics of the 21st‑century world. Our scholars fall in love with learning, develop a clear sense of career purpose, and consistently
-      post outstanding academic outcomes. Above all, they experience school as a vibrant community where
-      they are inspired to continuously grow and reinvent themselves.`,
-    },
-    {
-      title: `What impact has the Weekend School had?`,
-      body: `400+ students reached so far with 95% reporting improved problem‑solving confidence. Alumni have gone on to lead school clubs, win regional fairs, and secure scholarships after demonstrating rigorous thinking.`,
-    },
-    {
-      title: `What we ask students and how questions look like?`,
-      body: `Questions are scenario‑based and cross‑disciplinary. Students analyze a situation, choose a method, compute carefully, and justify assumptions. Solutions value clarity, defensible steps, and insight—not just the final number.`,
-    },
-  ];
-
-  const defaultSections = [
+  const sections = [
     {
       title: `Overview`,
       body: project.summary,
@@ -179,15 +107,6 @@ const ProjectDetailContent: React.FC<ProjectDetailContentProps> = ({ project }) 
       body: project.details.join(" · "),
     },
   ];
-
-  const sections =
-    project.slug === "stem"
-      ? stemSections
-      : project.slug === "summer-education"
-      ? summerSections
-      : project.slug === "weekend-school"
-      ? weekendSections
-      : defaultSections;
 
   const navigate = useNavigate();
 
@@ -445,55 +364,6 @@ const ProjectDetailContent: React.FC<ProjectDetailContentProps> = ({ project }) 
           </div>
         </motion.div>
 
-        {/* Additional Details only (avoid redundancy) */}
-        <div className="grid md:grid-cols-2 gap-8">
-          <Card className="shadow-elegant bg-white/5 backdrop-blur-sm border-white/20 transition-all duration-300 hover:shadow-2xl">
-            <CardContent className="p-6 md:p-8">
-              <div className="flex items-center gap-3 mb-6">
-                <div className="h-8 w-1 bg-gradient-to-b from-kc-blue to-kc-red rounded-full" />
-                <h2 className="text-xl md:text-2xl font-heading font-semibold">Additional Details</h2>
-              </div>
-              <ul className="space-y-2">
-                {project.details.map((d, i) => (
-                  <motion.li
-                    key={i}
-                    initial={{ opacity: 0, y: 6 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true, amount: 0.2 }}
-                    transition={{ duration: 0.25, delay: i * 0.03 }}
-                    className="text-foreground/90"
-                  >
-                    {d}
-                  </motion.li>
-                ))}
-              </ul>
-            </CardContent>
-          </Card>
-          {/* Stats on the side if present */}
-          {stats.length > 0 && (
-            <div className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-1 gap-4">
-              {stats.map((s, idx) => (
-                <motion.div
-                  key={idx}
-                  initial={{ opacity: 0, y: 8 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, amount: 0.2 }}
-                  transition={{ duration: 0.35, delay: idx * 0.05 }}
-                >
-                  <Card className="bg-white/5 backdrop-blur-sm border border-white/20 transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 group">
-                    <CardContent className="p-6 text-center relative overflow-hidden">
-                      <div className="absolute inset-0 bg-gradient-to-br from-kc-blue/5 to-kc-red/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                      <div className="relative">
-                        <div className="text-3xl md:text-4xl font-heading font-bold mb-1 group-hover:text-kc-blue transition-colors">{s.value}</div>
-                        <div className="text-sm md:text-base text-foreground/80">{s.label}</div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </motion.div>
-              ))}
-            </div>
-          )}
-        </div>
 
         {/* Call to action */}
         <motion.div
@@ -584,6 +454,11 @@ const ProjectDetailPage: React.FC = () => {
   const { slug } = useParams();
   const navigate = useNavigate();
   const project = projects.find((p) => p.slug === slug);
+
+  useSeo({
+    title: project?.title ?? "Project",
+    description: project?.summary,
+  });
 
   if (!project) {
     return (
