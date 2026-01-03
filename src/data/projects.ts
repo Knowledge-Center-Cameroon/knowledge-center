@@ -30,9 +30,9 @@ import summer3 from "@/assets/summer3.jpg"
 export const projects: Project[] = [
   {
     slug: "stem",
-    title: "STEM National Project",
+    title: "National STEM Olympiad",
     summary:
-      "A country‑wide contest that rewards clear thinking over memorization. Students tackle authentic, multi‑step STEM problems—testing ideas, defending methods, and connecting classroom theory to real‑world impact.",
+      "The Knowledge Center National STEM Olympiad is the nation’s most ambitious science education program, built to foster deep conceptual understanding, independent thinking, and creative problem-solving among young learners. It moves students beyond formulaic learning into scientific reasoning, experimentation, and real-world application. At the heart of the initiative is a structured system of challenges that push students to think critically, design solutions, and demonstrate mastery rather than memorize content. The program has consistently produced high-performing students who excel in national competitions and advanced academic pathways. The initiative culminates in the National STEM Convention, an annual, impact-heavy gathering that celebrates excellence and innovation in science education. All STEM laureates are transported on a fully funded trip to the host region, where they participate in a two-day convention designed around learning, recognition, and exposure. The convention brings together top educators, national dignitaries, KC scholars, alumni, and the country’s brightest students. It concludes with a national conference that connects talent, leadership, and opportunity—marking both a celebration and a launchpad for future innovators.",
     images: [StemImg, SummerImg, WeekendImg, stem1],
     features: [
       "Drive for problem solving critical thinking and innovation.",
@@ -53,7 +53,7 @@ export const projects: Project[] = [
     slug: "summer-education",
     title: "Summer Education Program",
     summary:
-      "Intensive summer sessions designed to help students get access to quality education, that inspires a nexus for change makers in society and grow practical skills during school breaks.",
+      "The KC Summer Education Program is a two-month, high-intensity learning experience designed to re-ignite curiosity and rebuild mastery in secondary school students. It reimagines what African education can be by replacing rote memorization with applied learning, experimentation, and creative exploration. Through hands-on STEM innovation projects, AI-assisted personalized learning, public speaking, creative writing, and immersive audio-visual lessons powered by simulations, students develop the critical competencies required for today’s globally connected economy. Learners do not just study concepts—they build, test, speak, write, and solve. The program directly responds to the failures of traditional schooling systems that reward recall over understanding and grades over growth. By creating a vibrant, experiential learning environment each summer, KC enables students to fall back in love with learning while acquiring real-world skills in problem-solving, collaboration, communication, and innovation.",
     images: [HeroImg, Summer, SummerImg, ExtraImg, summer3],
     features: [
       "2‑month intensive learning blocks (July–August)",
@@ -76,7 +76,7 @@ export const projects: Project[] = [
     slug: "weekend-school",
     title: "KC Weekend School",
     summary:
-      "Flexible weekend classes for reinforcement, acceleration, and exam mastery with personalized coaching.",
+      "The KC Weekend School is a research-driven remedial education program designed to rebuild academic foundations, close chronic learning gaps, and restore confidence in students. It delivers structured, individualized instruction through small-group learning, continuous assessment, and multi-sensory teaching methods. The program directly addresses the widespread lack of conceptual mastery in science subjects by replacing fragmented private tutoring with a coherent, accountable system. Students are guided to not only meet curriculum standards but exceed them—developing the ability",
     images: [weekend, WeekendImg, AboutImg, ExtraImg],
     features: [
       "Saturday and Sunday options that fit school schedules",
@@ -97,7 +97,7 @@ export const projects: Project[] = [
     slug: "global-scholars-program",
     title: "Global Scholars Program",
     summary:
-    "We prepare scholars for opportunities beyond borders—competitive scholarships, exchange programs, and global leadership.",
+    "The KC Global Scholars Program connects Africa’s highest-potential students to world-class international education opportunities. Through SAT preparation, registration support, and personalized study-abroad consulting, the program levels the international playing field for students who would otherwise lack access, guidance, or exposure. The program is built on a fully integrated support system that helps students prepare, apply, and succeed globally. KC scholars have gone on to attend leading institutions across the United States, Europe, and Africa, including Ivy League universities and top global campuses. Rooted in the belief that talent is evenly distributed but opportunity is not, the Global Scholars Program transforms academic ambition into measurable outcomes. It has established a strong alumni mentorship ecosystem, partnerships with leading secondary schools, and a proven record of significant standardized test score improvements—positioning KC as a trusted bridge between African talent and global opportunity.",
     images: [global, KC, KC],
     features: [
       "Mentorship from seasoned staff and alumni",

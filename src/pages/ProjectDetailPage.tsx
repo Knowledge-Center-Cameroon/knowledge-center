@@ -2,6 +2,7 @@ import React from "react";
 import { motion } from "framer-motion";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { projects, type Project } from "@/data/projects";
+import { useSeo } from "@/hooks/useSeo";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, CheckCircle } from "lucide-react";
@@ -92,30 +93,7 @@ const ProjectDetailContent: React.FC<ProjectDetailContentProps> = ({ project }) 
   }, [api]);
 
   // Per-project structured sections
-  const stemSections = [
-    {
-      title: `What the STEM is?`,
-      body: `A national reasoning-first competition where students tackle authentic, multi‑step STEM problems across Math, Physics, Chemistry, Biology and Computing. It's less about memorizing and more about thinking clearly, communicating methods, and defending ideas.`,
-    },
-    {
-      title: `What impact has the STEM had?`,
-      body: `2000+ students reached so far with 95% reporting improved problem‑solving confidence. Alumni have gone on to lead school clubs, win regional fairs, and secure scholarships after demonstrating rigorous thinking.`,
-    },
-    {
-      title: `What we ask students and how questions look like?`,
-      body: `Questions are scenario‑based and cross‑disciplinary. Students analyze a situation, choose a method, compute carefully, and justify assumptions. Solutions value clarity, defensible steps, and insight—not just the final number.`,
-    },
-    {
-      title: `Our effort in the STEM`,
-      body: `We run mentor clinics, publish past papers with annotated solutions, and host team workshops. Regional qualifiers build momentum towards a December grand final—with feedback loops at every stage.`,
-    },
-    {
-      title: `What people say about the STEM`,
-      body: `“This changed how I study—now I explain my method before calculating.” · “Team rounds taught me to listen and refine ideas.” · “The finals felt like solving real problems that matter.”`,
-    },
-  ];
-
-  const defaultSections = [
+  const sections = [
     {
       title: `Overview`,
       body: project.summary,
@@ -129,7 +107,6 @@ const ProjectDetailContent: React.FC<ProjectDetailContentProps> = ({ project }) 
       body: project.details.join(" · "),
     },
   ];
-  const sections = project.slug === "stem" ? stemSections : defaultSections;
 
   const navigate = useNavigate();
 
@@ -387,55 +364,6 @@ const ProjectDetailContent: React.FC<ProjectDetailContentProps> = ({ project }) 
           </div>
         </motion.div>
 
-        {/* Additional Details only (avoid redundancy) */}
-        <div className="grid md:grid-cols-2 gap-8">
-          <Card className="shadow-elegant bg-white/5 backdrop-blur-sm border-white/20 transition-all duration-300 hover:shadow-2xl">
-            <CardContent className="p-6 md:p-8">
-              <div className="flex items-center gap-3 mb-6">
-                <div className="h-8 w-1 bg-gradient-to-b from-kc-blue to-kc-red rounded-full" />
-                <h2 className="text-xl md:text-2xl font-heading font-semibold">Additional Details</h2>
-              </div>
-              <ul className="space-y-2">
-                {project.details.map((d, i) => (
-                  <motion.li
-                    key={i}
-                    initial={{ opacity: 0, y: 6 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true, amount: 0.2 }}
-                    transition={{ duration: 0.25, delay: i * 0.03 }}
-                    className="text-foreground/90"
-                  >
-                    {d}
-                  </motion.li>
-                ))}
-              </ul>
-            </CardContent>
-          </Card>
-          {/* Stats on the side if present */}
-          {stats.length > 0 && (
-            <div className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-1 gap-4">
-              {stats.map((s, idx) => (
-                <motion.div
-                  key={idx}
-                  initial={{ opacity: 0, y: 8 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, amount: 0.2 }}
-                  transition={{ duration: 0.35, delay: idx * 0.05 }}
-                >
-                  <Card className="bg-white/5 backdrop-blur-sm border border-white/20 transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 group">
-                    <CardContent className="p-6 text-center relative overflow-hidden">
-                      <div className="absolute inset-0 bg-gradient-to-br from-kc-blue/5 to-kc-red/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                      <div className="relative">
-                        <div className="text-3xl md:text-4xl font-heading font-bold mb-1 group-hover:text-kc-blue transition-colors">{s.value}</div>
-                        <div className="text-sm md:text-base text-foreground/80">{s.label}</div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </motion.div>
-              ))}
-            </div>
-          )}
-        </div>
 
         {/* Call to action */}
         <motion.div
@@ -526,6 +454,11 @@ const ProjectDetailPage: React.FC = () => {
   const { slug } = useParams();
   const navigate = useNavigate();
   const project = projects.find((p) => p.slug === slug);
+
+  useSeo({
+    title: project?.title ?? "Project",
+    description: project?.summary,
+  });
 
   if (!project) {
     return (
