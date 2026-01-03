@@ -10,7 +10,7 @@ import {
   ShieldCheck,
 } from "lucide-react";
 import { useParallax, Parallax } from "@/hooks/use-parallax";
-import aboutImage from "@/assets/prepa1.jpeg";
+import aboutImage from "@/assets/hero-image2.jpeg";
 import { Link } from "react-router-dom";
 
 const AboutKC: React.FC = () => {
