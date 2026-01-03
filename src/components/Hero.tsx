@@ -1,275 +1,32 @@
-import React, { useState, useEffect } from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import React from "react";
+import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
-
-// Assets
-import heroImage from "@/assets/hero-image.jpeg";
-import heroImage2 from "@/assets/hero-image2.jpeg";
-import heroImage3 from "@/assets/weekend.jpeg";
-import heroImage4 from "@/assets/hero-image4.jpeg";
-import heroImage5 from "@/assets/hero-image5.jpeg";
-
-// Components & Hooks
-import { useParallax } from "@/hooks/use-parallax";
-import AnimatedLogo from "@/components/AnimatedLogo";
-import { ArrowButton } from "@/components/arrowbtn";
-
-const slides = [
-  {
-    image: heroImage,
-    title: "Where Curiosity Becomes Capability",
-    subtitle: "Empowering Young Scientists",
-    description:
-      "We don’t teach students what to think. We teach them how to question, explore, and turn understanding into real-world impact.",
-  },
-  {
-    image: heroImage2,
-    title: "Inspiring Minds. Shaping Futures",
-    subtitle: "Inspiring Excellence in Science",
-    description:
-      "Every lesson is an invitation to imagine more, aim higher, and grow into a thinker the future actually needs.",
-  },
-  {
-    image: heroImage3,
-    title: "Education That Ignites Possibility",
-    subtitle: "Hands-on Learning Experience",
-    description:
-      "Beyond grades and syllabi, we awaken curiosity, creativity, and the courage to try what feels impossible.",
-  },
-  {
-    image: heroImage4,
-    title: "Learning That Reaches Beyond Exams",
-    subtitle: "Building Practical Knowledge",
-    description:
-      "Here, knowledge isn’t memorized for tests; it's used to build, solve, and serve communities.",
-  },
-  {
-    image: heroImage5,
-    title: "Building Thinkers for a Changing World",
-    subtitle: "Beyond the Classroom",
-    description:
-      "We prepare young minds not just for school, but for uncertainty, innovation, and meaningful contribution.",
-  },
-];
-
-// Extracted titles for the cycling heading
-const phrases = slides.map((slide) => slide.title);
+import { Button } from "@/components/ui/button";
 
 const Hero = () => {
-  const [currentSlide, setCurrentSlide] = useState(0);
-
-  // Auto-advance slides
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % slides.length);
-    }, 5000);
-    return () => clearInterval(timer);
-  }, []);
-
-  // Preload the next slide image
-  useEffect(() => {
-    const nextIndex = (currentSlide + 1) % slides.length;
-    const img = new Image();
-    img.src = slides[nextIndex].image;
-  }, [currentSlide]);
-
-  const scrollToSection = (sectionId: string) => {
-    const element = document.getElementById(sectionId);
-    if (element) {
-      element.scrollIntoView({ behavior: "smooth" });
-    }
-  };
-
-  const nextSlide = () => {
-    setCurrentSlide((prev) => (prev + 1) % slides.length);
-  };
-
-  const prevSlide = () => {
-    setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length);
-  };
-
-  const { ref: parRef, y: yBack } = useParallax(60);
-  const { y: yOverlay } = useParallax(30);
-  const { y: yImage } = useParallax(45);
-
   return (
-    <section
-      ref={parRef as React.Ref<HTMLElement>}
-      id="home"
-      className="relative pt-24 md:pt-28 lg:pt-32 min-h-[70svh] sm:min-h-[75svh] md:min-h-[80svh] lg:min-h-[88svh] flex items-center justify-center overflow-hidden bg-background"
-    >
-      {/* Desktop Parallax Background */}
-      <div className="pointer-events-none hidden md:block absolute inset-y-6 right-0 left-2/5 lg:left-[45%] rounded-l-[2.75rem] md:rounded-l-[3.25rem] overflow-hidden shadow-2xl shadow-black/30">
-        {slides.map((s, idx) => (
-          <motion.div
-            key={idx}
-            className={`absolute inset-0 transition-opacity duration-700 ease-out ${
-              idx === currentSlide ? "opacity-100" : "opacity-0"
-            }`}
-            style={{ y: yBack }}
-          >
-            <motion.div
-              className="absolute inset-0 scale-110"
-              style={{ y: yImage }}
-            >
-              <img
-                src={s.image}
-                alt={s.title}
-                className="w-full h-full object-cover object-center will-change-transform"
-                loading={idx === 0 ? "eager" : "lazy"}
-                decoding="async"
-              />
-            </motion.div>
-            <motion.div
-              className="absolute inset-0 bg-black/45"
-              style={{ y: yOverlay }}
-            />
-          </motion.div>
-        ))}
-      </div>
-
+    <section className="relative h-screen flex items-center justify-center text-center bg-background text-foreground">
       <motion.div
-        className="relative z-10 container mx-auto px-4 lg:px-8"
-        style={{ y: yOverlay }}
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, ease: "easeInOut" }}
+        className="relative z-10 max-w-4xl mx-auto px-4"
       >
-        <motion.div
-          initial={{ opacity: 0, y: 22 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-          className="relative grid gap-10 md:gap-12 lg:gap-16 items-center md:grid-cols-[minmax(0,1.1fr)_minmax(0,1.1fr)]"
-        >
-          {/* Main Content Card */}
-          <div className="relative">
-            <div className="relative bg-white rounded-[2.5rem] md:rounded-[3rem] px-6 pt-5 pb-7 sm:px-8 sm:pt-6 sm:pb-9 md:px-10 md:py-10 shadow-[0_18px_60px_rgba(15,23,42,0.18)] border border-slate-100/80 max-w-xl">
-              
-              {/* Mobile image slider */}
-              <div className="relative mb-5 -mx-4 sm:-mx-6 md:hidden rounded-[2rem] overflow-hidden h-52 xs:h-56 sm:h-64">
-                {slides.map((s, idx) => (
-                  <motion.div
-                    key={idx}
-                    className={`absolute inset-0 transition-opacity duration-700 ease-out ${
-                      idx === currentSlide ? "opacity-100" : "opacity-0"
-                    }`}
-                  >
-                    <img
-                      src={s.image}
-                      alt={s.title}
-                      className="w-full h-full object-cover"
-                    />
-                    <div className="absolute inset-0 bg-black/25" />
-                  </motion.div>
-                ))}
-                <div className="absolute inset-x-4 bottom-4 flex items-center justify-between">
-                  <button onClick={prevSlide} className="bg-black/55 text-white p-2 rounded-full"><ChevronLeft className="h-4 w-4" /></button>
-                  <div className="flex gap-1.5">
-                    {slides.map((_, i) => (
-                      <span key={i} className={`h-1.5 rounded-full transition-all ${i === currentSlide ? "bg-white w-5" : "bg-white/60 w-2"}`} />
-                    ))}
-                  </div>
-                  <button onClick={nextSlide} className="bg-black/55 text-white p-2 rounded-full"><ChevronRight className="h-4 w-4" /></button>
-                </div>
-              </div>
-
-              {/* Logo Row */}
-              <div className="flex items-center gap-3 mb-5 md:mb-6">
-                <AnimatedLogo size={68} />
-                <div className="hidden sm:flex flex-col text-xs font-semibold tracking-[0.22em] uppercase text-slate-500">
-                  <span>Knowledge Center</span>
-                  <span className="text-slate-700">Cameroon</span>
-                </div>
-              </div>
-
-              {/* Dynamic Content */}
-              <div className="relative mb-4 md:mb-5">
-                <AnimatePresence mode="wait">
-                  <motion.h1
-                    key={`title-${currentSlide}`}
-                    className="heading-1 text-slate-900 leading-tight break-words max-w-[22ch]"
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -10 }}
-                    transition={{ duration: 0.5 }}
-                  >
-                    {slides[currentSlide].title}
-                  </motion.h1>
-                </AnimatePresence>
-              </div>
-
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={`subtitle-${currentSlide}`}
-                  className="text-sm sm:text-base md:text-lg font-semibold text-blue-600 mb-3 md:mb-4"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                >
-                  {slides[currentSlide].subtitle}
-                </motion.div>
-              </AnimatePresence>
-
-              <AnimatePresence mode="wait">
-                <motion.p
-                  key={`desc-${currentSlide}`}
-                  className="text-sm sm:text-base md:text-[0.98rem] font-body text-slate-600 leading-relaxed mb-6 md:mb-7"
-                  initial={{ opacity: 0, y: 5 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -5 }}
-                >
-                  {slides[currentSlide].description}
-                </motion.p>
-              </AnimatePresence>
-
-              {/* CTA Buttons */}
-              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 items-stretch sm:items-center">
-                <ArrowButton
-                  text="Our Impact"
-                  bgPrimaryColor="#111827"
-                  bgSecondaryColor="#2563eb"
-                  textPrimaryColor="#ffffff"
-                  textSecondaryColor="#ffffff"
-                  className="rounded-full w-full sm:w-auto"
-                  href="/projects"
-                />
-                <ArrowButton
-                  text="Discover Our Story"
-                  bgPrimaryColor="rgba(15,23,42,0.04)"
-                  bgSecondaryColor="#111827"
-                  textPrimaryColor="#0f172a"
-                  textSecondaryColor="#ffffff"
-                  className="rounded-full w-full sm:w-auto border border-slate-200/80 backdrop-blur-[8px]"
-                  href="/about"
-                />
-              </div>
-
-              {/* Pagination Dots & Scroll Down */}
-              <div className="mt-7 md:mt-8 flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  {slides.map((_, index) => (
-                    <button
-                      key={index}
-                      onClick={() => setCurrentSlide(index)}
-                      className={`h-1.5 rounded-full transition-all duration-300 ${
-                        index === currentSlide ? "bg-slate-900 w-6" : "bg-slate-300 w-2"
-                      }`}
-                    />
-                  ))}
-                </div>
-
-                <button
-                  type="button"
-                  onClick={() => scrollToSection("about-home")}
-                  className="relative inline-flex items-center justify-center rounded-full border border-slate-200 w-24 h-24 text-[0.6rem] uppercase tracking-widest text-slate-500 hover:text-slate-900 transition-colors"
-                >
-                  <span className="absolute inset-[18%] rounded-full border border-dashed border-slate-200" />
-                  <span className="z-10 font-semibold">Scroll Down</span>
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <div className="hidden md:block" aria-hidden="true" />
-        </motion.div>
+        <h1 className="text-4xl md:text-6xl font-bold mb-4">
+          The future is here. We power the innovators building it.
+        </h1>
+        <p className="text-lg md:text-xl mb-8 text-muted-foreground">
+          Our mission is to incubate the next generation of entrepreneurs,
+          researchers, and civic leaders for the AI age.
+        </p>
+        <div className="flex justify-center gap-4">
+          <Button asChild variant="primary" size="lg">
+            <Link to="/about">Discover Our Story</Link>
+          </Button>
+          <Button asChild variant="outline" size="lg">
+            <Link to="/projects">Our Impact</Link>
+          </Button>
+        </div>
       </motion.div>
     </section>
   );
