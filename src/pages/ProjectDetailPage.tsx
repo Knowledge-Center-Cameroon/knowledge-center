@@ -95,7 +95,15 @@ const ProjectDetailContent: React.FC<ProjectDetailContentProps> = ({ project }) 
   const stemSections = [
     {
       title: `What the STEM is?`,
-      body: `A national reasoning-first competition where students tackle authentic, multi‑step STEM problems across Math, Physics, Chemistry, Biology and Computing. It's less about memorizing and more about thinking clearly, communicating methods, and defending ideas.`,
+      body: `At KC, we are driven by the confidence that our students are smart enough and can understand
+      scientific concepts well enough to become luminary participants in today&apos;s burgeoning innovation
+      economy. We believe that, with more effort to direct their focus away from inertia-heavy, creativity-stifling
+      practices in schools, we can unlock an era where it would not matter to global customers whether the
+      computer they buy was built in Silicon Valley or in Bambili, Cameroon &mdash; the quality of either will
+      be just as impressive. The STEM National Project does exactly this by challenging learners with conceptually rich
+      questions that reward reasoning, creativity, and problem solving over rote memorisation. It is our
+      way of nurturing a generation of innovators who are excited about science and confident in their
+      ability to use it to change their communities.`,
     },
     {
       title: `What impact has the STEM had?`,
@@ -115,6 +123,48 @@ const ProjectDetailContent: React.FC<ProjectDetailContentProps> = ({ project }) 
     },
   ];
 
+  const summerSections = [
+    {
+      title: `What the Summer Education Program is?`,
+      body: `The KC Summer Holiday Program is one of our flagship programs, thanks to its enormous impact on
+      learners. It attracts principals, national educators, parents, and learners from across Cameroon who
+      are looking for something more than traditional holiday classes. Our objective is simple: create a richly innovative learning experience that nurtures critical
+      21st‑century competencies and prepares learners for responsible citizenship and career success in
+      today&apos;s innovation‑led economy. Beyond syllabus coverage, we bring science and innovation to life through smart classroom
+      experiments, project development, and club activities such as creative writing and public speaking.
+      Learners leave the program more confident, more curious, and more prepared to shape the future.`,
+    },
+    {
+      title: `What impact has the Summer Education Program had?`,
+      body: `500+ students reached so far with 95% reporting improved problem‑solving confidence. Alumni have gone on to lead school clubs, win regional fairs, and secure scholarships after demonstrating rigorous thinking.`,
+    },
+    {
+      title: `What we ask students and how questions look like?`,
+      body: `Questions are scenario‑based and cross‑disciplinary. Students analyze a situation, choose a method, compute carefully, and justify assumptions. Solutions value clarity, defensible steps, and insight—not just the final number.`,
+    },
+  ];
+
+  const weekendSections = [
+    {
+      title: `What the Weekend School is?`,
+      body: `The KC Weekend School is a competitively selective, audio‑visual science tutoring program that
+      nurtures some of the nation&apos;s best‑performing students while providing critical mentorship and
+      access to quality education opportunities. Beyond innovatively covering their high‑school academic syllabus, we offer extra personal attention,
+      consistent encouragement, close mentorship, more learning opportunities, and quarterly seminars that
+      expose students to the dynamics of the 21st‑century world. Our scholars fall in love with learning, develop a clear sense of career purpose, and consistently
+      post outstanding academic outcomes. Above all, they experience school as a vibrant community where
+      they are inspired to continuously grow and reinvent themselves.`,
+    },
+    {
+      title: `What impact has the Weekend School had?`,
+      body: `400+ students reached so far with 95% reporting improved problem‑solving confidence. Alumni have gone on to lead school clubs, win regional fairs, and secure scholarships after demonstrating rigorous thinking.`,
+    },
+    {
+      title: `What we ask students and how questions look like?`,
+      body: `Questions are scenario‑based and cross‑disciplinary. Students analyze a situation, choose a method, compute carefully, and justify assumptions. Solutions value clarity, defensible steps, and insight—not just the final number.`,
+    },
+  ];
+
   const defaultSections = [
     {
       title: `Overview`,
@@ -129,7 +179,15 @@ const ProjectDetailContent: React.FC<ProjectDetailContentProps> = ({ project }) 
       body: project.details.join(" · "),
     },
   ];
-  const sections = project.slug === "stem" ? stemSections : defaultSections;
+
+  const sections =
+    project.slug === "stem"
+      ? stemSections
+      : project.slug === "summer-education"
+      ? summerSections
+      : project.slug === "weekend-school"
+      ? weekendSections
+      : defaultSections;
 
   const navigate = useNavigate();
 
