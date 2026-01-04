@@ -195,10 +195,10 @@ const About = () => {
                 transition={{ duration: 0.6 }}
                 className="text-muted-foreground leading-relaxed mb-4 md:mb-6"
               >
-                Knowledge Center (KC) is a non-profit, community-serving education and STEM 
-                advocacy organization based in Cameroon. We exist to inspire young people to 
+                Knowledge Center (KC) is a <b>non-profit, community-serving education and STEM
+                advocacy organization</b> based in Cameroon. We exist to inspire young people to
                 explore the full depth of their intellectual potential and to use learning as a tool for 
-                service, innovation, and human progress.
+                <b>service, innovation, and human progress.</b>
               </motion.p>
 
               <motion.p 
@@ -208,16 +208,16 @@ const About = () => {
                 transition={{ duration: 0.6, delay: 0.2 }}
                 className="text-muted-foreground leading-relaxed"
               >
-                KC began as a small act of community service - helping students understand difficult 
-                science concepts during a time of national crisis - but has grown into a national 
-                movement redefining what meaningful education can look like. Through tutoring 
+                KC began as a <b>small act of community service</b> - helping students understand difficult
+                science concepts during a time of national crisis - but has grown into a <b>national
+                movement</b> redefining what meaningful education can look like. Through tutoring
                 programs, national STEM initiatives, mentorship, hands-on projects, and 
                 scholarships, we nurture learners who are not only academically excellent, but 
-                deeply curious, resilient, collaborative, and driven to change their communities. 
+                <b>deeply curious, resilient, collaborative, and driven to change their communities.</b>
                 <br />
                 At Knowledge Center, education is not the memorization of facts or a race through 
-                syllabi. It is the training of minds to question, to build, to imagine, and to keep 
-                learning long after school is out. 
+                syllabi. It is the training of minds to <b>question, to build, to imagine, and to keep
+                learning long after school is out.</b>
               </motion.p>
             </div>
           </div>
@@ -254,44 +254,43 @@ const About = () => {
                     transition={{ duration: 0.6 }}
                     className="text-muted-foreground leading-relaxed"
                   >
-                    We do more than prepare students for exams - we prepare them for life in a rapidly 
-                    We do more than prepare students for exams - we prepare them for life in a rapidly 
-                    changing world. While traditional systems often reward rote memorization and grade 
-                    accumulation, KC prioritizes conceptual understanding, creativity, and critical 
-                    thinking. Our students are encouraged to ask <b>why</b> and <b>how</b>, not just <b>what</b>. 
+                    We do more than prepare students for exams - we prepare them for <b>life in a rapidly
+                    changing world.</b> While traditional systems often reward <b>rote memorization and grade
+                    accumulation,</b> KC prioritizes <b>conceptual understanding, creativity, and critical
+                    thinking.</b> Our students are encouraged to ask <b>why</b> and <b>how</b>, not just <b>what</b>.
                     <br />
-                    Learning at KC is immersive and practical. Students build devices, conduct 
+                    Learning at KC is <b>immersive and practical.</b> Students build devices, conduct
                     experiments, analyze unfamiliar problems, and apply classroom knowledge to 
                     real-world challenges. We use audio-visual tools, simulations, mentorship, 
                     collaborative learning, and national projects like the KC National STEM Project to 
                     push learners beyond comfort and into discovery.
                     <br /> 
-                    Most importantly, we see academic excellence as a byproduct - not the sole goal. 
-                    What defines a KC scholar is curiosity, ambition, integrity, and a genuine love for 
-                    learning. We graduate not just high performers, but thoughtful humans ready to 
+                    Most importantly, we see <b>academic excellence as a byproduct</b> - not the sole goal.
+                    What defines a KC scholar is <b>curiosity, ambition, integrity, and a genuine love for
+                    learning.</b> We graduate not just high performers, but thoughtful humans ready to
                     contribute meaningfully to society.
                   </motion.p>
                 </div>
             </div>
 
-            <div>
+            <div className="lg:col-span-2">
               <div className="h-1 w-20 mb-3 bg-kc-blue rounded-full" />
               <h3 className="text-2xl md:text-3xl font-heading font-bold mb-3 md:mb-4">Why this matters now</h3>
               <div className="prose md:prose-lg max-w-none">
                 <p className="text-muted-foreground leading-relaxed">
-                  We are living in an innovation-driven, globally connected era where information is 
+                  We are living in an <b>innovation-driven, globally connected era</b> where information is
                   abundant and routine skills are increasingly automated. The real advantage today 
-                  lies in the ability to think critically, adapt quickly, collaborate across disciplines, and 
-                  creatively solve complex problems. Unfortunately, many education systems are still 
+                  lies in the ability to <b>think critically, adapt quickly, collaborate across disciplines, and
+                  creatively solve complex problems.</b> Unfortunately, many education systems are still
                   preparing students for a world that no longer exists.
                   <br /> 
-                  At the same time, Africa - and Cameroon in particular - has an immense reserve of 
-                  untapped intellectual talent. When learners are confined to narrow career paths, 
+                  At the same time, Africa - and Cameroon in particular - has an <b>immense reserve of
+                  untapped intellectual talent.</b> When learners are confined to narrow career paths,
                   exam-focused learning, and creativity-stifling systems, societies lose innovators, 
                   problem-solvers, and leaders the world urgently needs. 
                   <br />
-                  Knowledge Center exists because this moment demands a different approach to 
-                  education. One that reconnects learning to purpose, equips young people with skills 
+                  Knowledge Center exists because this moment demands a <b>different approach to
+                  education.</b> One that reconnects learning to purpose, equips young people with skills
                   that matter, and empowers them to see themselves as capable contributors to local 
                   and global progress. What we build today in our classrooms shapes the future of our 
                   communities, our nation, and our place in the world.
@@ -334,7 +333,7 @@ const About = () => {
               <div className="h-1 w-16 mb-3 bg-kc-blue rounded-full" />
               <h3 className="text-xl md:text-2xl font-heading font-bold mb-3 md:mb-4">Our Mission</h3>
               <p className="text-muted-foreground leading-relaxed">
-                To deliver world-class education programs that strengthen academic excellence, 
+                To deliver <b>world-class education programs</b> that strengthen academic excellence,
                 unlock global opportunities, and develop leaders capable of solving Africa's most 
                 pressing challenges.
               </p>
@@ -355,7 +354,7 @@ const About = () => {
               <div className="h-1 w-16 mb-3 bg-kc-blue rounded-full" />
               <h3 className="text-xl md:text-2xl font-heading font-bold mb-3 md:mb-4">Our Vision</h3>
               <p className="text-muted-foreground leading-relaxed">
-                Re-imagining education to cultivate critical 21st century competencies that empower 
+                Re-imagining education to cultivate <b>critical 21st century competencies</b> that empower
                 and equip our local learners to compete with their global peers and to become the 
                 new drivers of Africa's exponential growth. 
               </p>

@@ -129,7 +129,7 @@ const ProjectDetailContent: React.FC<ProjectDetailContentProps> = ({ project }) 
       body: project.details.join(" · "),
     },
   ];
-  const sections = project.slug === "stem" ? stemSections : defaultSections;
+  const sections = project.sections ?? (project.slug === "stem" ? stemSections : defaultSections);
 
   const navigate = useNavigate();
 
