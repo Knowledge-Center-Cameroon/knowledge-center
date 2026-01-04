@@ -158,7 +158,7 @@ export const projects: Project[] = [
       "When: Summer before entrance exams",
       "Focus: Concept mastery, revision, and timed mocks",
       "Support: 1:1 feedback and adaptive study plans",
-      "Outcomes": "Competitive scores and university readiness"
+      "Outcomes: Competitive scores and university readiness"
     ]
   }
 ];
