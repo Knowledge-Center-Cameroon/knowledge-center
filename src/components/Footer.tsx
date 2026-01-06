@@ -68,7 +68,7 @@ const Footer = () => {
                     className="h-12 w-12 object-contain transition-transform group-hover:scale-105"
                   />
                   <div className="text-2xl font-bold tracking-tight text-white">
-                    Knowledge<span className="text-kc-blue">Center</span>
+                    Knowledge<span className="text-kc-blue"> Center</span>
                   </div>
                 </Link>
                 <p className="text-slate-400 text-lg leading-relaxed max-w-sm mb-8">

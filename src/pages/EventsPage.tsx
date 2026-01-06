@@ -249,7 +249,7 @@ const EventsGrid: React.FC<{ items: typeof UPCOMING }> = ({ items }) => (
 
 const EventsPage = () => {
   useSeo({
-    title: "STEM Events and Competitions",
+    title: "Events | Knowledge Center",
     description:
       "Discover upcoming and past STEM events, competitions, and workshops hosted by Knowledge Center Cameroon.",
   });

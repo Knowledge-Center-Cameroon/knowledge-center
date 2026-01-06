@@ -30,7 +30,7 @@ interface LikeStatus {
   likeCount: number;
 }
 
-const LINKEDIN_URL = "https://www.linkedin.com"; // TODO: replace with your actual LinkedIn page or article URL
+const LINKEDIN_URL = "https://www.linkedin.com/company/knowledge-centercmr"; // TODO: replace with your actual LinkedIn page or article URL
 
 const BlogPage: React.FC = () => {
   const { user } = useUser();
