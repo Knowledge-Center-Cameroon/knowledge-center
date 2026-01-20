@@ -9,14 +9,12 @@ import {
   Twitter, 
   Youtube,
   Linkedin,
-  Send,
-  ExternalLink
+  Send
 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { Link, NavLink } from "react-router-dom";
 import { subscribeEmail } from "@/services/api";
 import StemBackground from "@/components/StemBackground";
-import { motion } from "framer-motion";
 
 const Footer = () => {
   const [email, setEmail] = useState("");
@@ -25,6 +23,7 @@ const Footer = () => {
   const handleNewsletterSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email) return;
+
     setSubmitting(true);
     try {
       await subscribeEmail(email);
@@ -33,8 +32,12 @@ const Footer = () => {
         description: "Welcome to the KC STEM community.",
       });
       setEmail("");
-    } catch (err) {
-      toast({ variant: "destructive", title: "Subscription failed", description: "Please try again.", });
+    } catch {
+      toast({
+        variant: "destructive",
+        title: "Subscription failed",
+        description: "Please try again.",
+      });
     } finally {
       setSubmitting(false);
     }
@@ -48,18 +51,25 @@ const Footer = () => {
   ];
 
   return (
-    <footer className="relative mt-20 bg-[#0A0C10] border-t border-white/5">
+    <footer className="relative mt-20 bg-[#0A0C10] border-t border-white/10 rounded-t-[3rem] overflow-hidden">
+      
       {/* Decorative Top Glow */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-4xl h-px bg-gradient-to-r from-transparent via-kc-blue/50 to-transparent" />
 
-      <div className="relative overflow-hidden pt-20 pb-12">
-        <StemBackground opacity={0.08} density={30} lineDistance={150} speed={0.3} showIcons={false} />
-        
+      <div className="relative pt-20 pb-12">
+        <StemBackground
+          opacity={0.08}
+          density={30}
+          lineDistance={150}
+          speed={0.3}
+          showIcons={false}
+        />
+
         <div className="container mx-auto px-6 lg:px-12 max-w-7xl relative z-10">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-12 lg:gap-8">
-            
-            {/* 1. Brand & Newsletter - Taking up 5 cols */}
-            <div className="lg:col-span-5 flex flex-col justify-between">
+
+            {/* Brand & Newsletter */}
+            <div className="lg:col-span-4 flex flex-col justify-between">
               <div>
                 <Link to="/" className="flex items-center gap-3 mb-6 group">
                   <img
@@ -68,46 +78,64 @@ const Footer = () => {
                     className="h-12 w-12 object-contain transition-transform group-hover:scale-105"
                   />
                   <div className="text-2xl font-bold tracking-tight text-white">
-                    Knowledge<span className="text-kc-blue"> Center</span>
+                    <span className="text-kc-blue">Knowledge</span>
+                    <span className="text-kc-red"> Center</span>
                   </div>
                 </Link>
+
                 <p className="text-slate-400 text-lg leading-relaxed max-w-sm mb-8">
-                  Empowering Cameroon's next generation of scientists and engineers through world-class STEM education.
+                  Building a strong nexus of future-ready STEM leaders. For the betterment of humanity.
                 </p>
               </div>
 
-              <div className="relative max-w-md">
-                <h5 className="text-white font-semibold mb-4">Stay updated with our newsletter</h5>
-                <form onSubmit={handleNewsletterSubmit} className="relative group">
+              <div className="max-w-md">
+                <h5 className="text-white font-semibold mb-4">
+                  Stay updated with our newsletter
+                </h5>
+
+                <form onSubmit={handleNewsletterSubmit} className="relative">
                   <Input
                     type="email"
                     placeholder="Enter your email address"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="h-14 bg-white/5 border-white/10 rounded-2xl pl-6 pr-32 text-white placeholder:text-slate-500 focus:ring-kc-blue/50 transition-all"
+                    className="h-14 bg-white/5 border-white/10 rounded-2xl pl-6 pr-32 text-white placeholder:text-slate-500 focus:ring-kc-blue/50"
                     required
                   />
-                  <Button 
+
+                  <Button
                     disabled={submitting}
-                    className="absolute right-1.5 top-1.5 h-11 px-6 rounded-xl bg-kc-blue hover:bg-kc-blue/90 text-white font-bold transition-all"
+                    className="absolute right-1.5 top-1.5 h-11 px-6 rounded-xl bg-kc-blue hover:bg-kc-blue/90 text-white font-bold"
                   >
-                    {submitting ? "..." : <><span className="hidden sm:inline mr-2">Join</span> <Send className="h-4 w-4" /></>}
+                    {submitting ? "..." : (
+                      <>
+                        <span className="hidden sm:inline mr-2">Join</span>
+                        <Send className="h-4 w-4" />
+                      </>
+                    )}
                   </Button>
                 </form>
-                <p className="mt-3 text-[11px] text-slate-500 uppercase tracking-widest font-medium">No spam. Only STEM excellence.</p>
+
+                <p className="mt-3 text-[11px] text-slate-500 uppercase tracking-widest font-medium">
+                  No spam.
+                </p>
               </div>
             </div>
 
-            {/* 2. Quick Links - 2 cols */}
+            {/* Platform Links */}
             <div className="lg:col-span-2 lg:ml-auto">
-              <h4 className="text-sm font-bold text-white uppercase tracking-[0.2em] mb-8">Platform</h4>
+              <h4 className="text-sm font-bold text-white uppercase tracking-[0.2em] mb-8">
+                Platform
+              </h4>
               <ul className="space-y-4">
                 {["Home", "About Us", "Our Projects", "Blog", "Contact Us"].map((item) => (
                   <li key={item}>
                     <NavLink
                       to={`/${item.toLowerCase().replace(" ", "")}`}
-                      className={({ isActive }) => 
-                        `text-base transition-colors duration-300 ${isActive ? 'text-kc-blue' : 'text-slate-400 hover:text-white'}`
+                      className={({ isActive }) =>
+                        isActive
+                          ? "text-kc-blue"
+                          : "text-slate-400 hover:text-white transition-colors"
                       }
                     >
                       {item}
@@ -117,50 +145,45 @@ const Footer = () => {
               </ul>
             </div>
 
-            {/* 3. Programs - 2 cols */}
+            {/* Programs */}
             <div className="lg:col-span-2 lg:ml-auto">
-              <h4 className="text-sm font-bold text-white uppercase tracking-[0.2em] mb-8">Programs</h4>
+              <h4 className="text-sm font-bold text-white uppercase tracking-[0.2em] mb-8">
+                Programs
+              </h4>
               <ul className="space-y-4">
-                {[
-                  { name: "STEM Competition", to: "/projects/stem" },
-                  { name: "Summer School", to: "/projects/summer-education" },
-                  { name: "Weekend School", to: "/projects/weekend-school" },
-                  { name: "Global Scholars", to: "/projects" },
-                ].map((item) => (
-                  <li key={item.name}>
-                    <Link to={item.to} className="text-base text-slate-400 hover:text-white transition-colors flex items-center group">
-                      {item.name}
-                    </Link>
-                  </li>
-                ))}
+                <li><Link to="/projects/stem" className="text-slate-400 hover:text-white">STEM Competition</Link></li>
+                <li><Link to="/projects/summer-education" className="text-slate-400 hover:text-white">Summer School</Link></li>
+                <li><Link to="/projects/weekend-school" className="text-slate-400 hover:text-white">Weekend School</Link></li>
+                <li><Link to="/projects" className="text-slate-400 hover:text-white">Global Scholars</Link></li>
               </ul>
             </div>
 
-            {/* 4. Contact Info - 3 cols */}
+            {/* Contact */}
             <div className="lg:col-span-3 lg:ml-auto">
-              <h4 className="text-sm font-bold text-white uppercase tracking-[0.2em] mb-8">Get In Touch</h4>
-              <div className="space-y-6">
-                <div className="flex items-start gap-4">
+              <h4 className="text-sm font-bold text-white uppercase tracking-[0.2em] mb-8">
+                Get In Touch
+              </h4>
+
+              <div className="space-y-6 text-slate-300 text-sm">
+                <div className="flex gap-4">
                   <div className="bg-white/5 p-2 rounded-lg">
                     <MapPin className="h-5 w-5 text-kc-blue" />
                   </div>
-                  <span className="text-slate-300 text-sm leading-relaxed">
-                    Molyko, Buea<br />Southwest Region, Cameroon
-                  </span>
+                  <span>Molyko, Buea<br />Southwest Region, Cameroon</span>
                 </div>
-                
-                <a href="mailto:kcstemhub@gmail.com" className="flex items-center gap-4 group">
-                  <div className="bg-white/5 p-2 rounded-lg group-hover:bg-kc-blue/10 transition-colors">
+
+                <a href="mailto:kcstemhub@gmail.com" className="flex gap-4 hover:text-white">
+                  <div className="bg-white/5 p-2 rounded-lg">
                     <Mail className="h-5 w-5 text-kc-blue" />
                   </div>
-                  <span className="text-slate-300 text-sm group-hover:text-white transition-colors">kcstemhub@gmail.com</span>
+                  kcstemhub@gmail.com
                 </a>
-                
-                <a href="tel:+237680789894" className="flex items-center gap-4 group">
-                  <div className="bg-white/5 p-2 rounded-lg group-hover:bg-kc-blue/10 transition-colors">
+
+                <a href="tel:+237680789894" className="flex gap-4 hover:text-white">
+                  <div className="bg-white/5 p-2 rounded-lg">
                     <Phone className="h-5 w-5 text-kc-blue" />
                   </div>
-                  <span className="text-slate-300 text-sm group-hover:text-white transition-colors">+237 680 789 894</span>
+                  +237 680 789 894
                 </a>
               </div>
             </div>
@@ -171,33 +194,23 @@ const Footer = () => {
 
       {/* Bottom Bar */}
       <div className="border-t border-white/5 bg-[#080A0E] py-8">
-        <div className="container mx-auto px-6 max-w-7xl">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-6">
-            <div className="flex items-center gap-8">
-              <p className="text-sm text-slate-500">
-                &copy; {new Date().getFullYear()} Knowledge Center.
-              </p>
-              <div className="hidden md:flex gap-6">
-                <Link to="/privacy" className="text-xs text-slate-600 hover:text-slate-400 uppercase tracking-widest font-bold">Privacy</Link>
-                <Link to="/terms" className="text-xs text-slate-600 hover:text-slate-400 uppercase tracking-widest font-bold">Terms</Link>
-              </div>
-            </div>
+        <div className="container mx-auto px-6 max-w-7xl flex flex-col md:flex-row justify-between items-center gap-6">
+          <p className="text-sm text-slate-500">
+            &copy; {new Date().getFullYear()} Knowledge Center.
+          </p>
 
-            {/* Modern Social Icons */}
-            <div className="flex gap-3">
-              {socialLinks.map((social) => (
-                <a 
-                  key={social.label}
-                  href={social.href} 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="w-11 h-11 bg-white/5 hover:bg-kc-blue text-slate-400 hover:text-white rounded-2xl flex items-center justify-center transition-all duration-300 border border-white/5 shadow-xl"
-                  aria-label={social.label}
-                >
-                  <social.icon className="h-5 w-5" />
-                </a>
-              ))}
-            </div>
+          <div className="flex gap-3">
+            {socialLinks.map(({ icon: Icon, href, label }) => (
+              <a
+                key={label}
+                href={href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-11 h-11 bg-white/5 hover:bg-kc-blue text-slate-400 hover:text-white rounded-2xl flex items-center justify-center transition-all border border-white/5"
+              >
+                <Icon className="h-5 w-5" />
+              </a>
+            ))}
           </div>
         </div>
       </div>

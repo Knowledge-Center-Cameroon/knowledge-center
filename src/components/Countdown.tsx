@@ -4,7 +4,7 @@ import { CalendarDays, Sparkles } from "lucide-react";
 
 const pad = (n: number) => n.toString().padStart(2, "0");
 
-const targetDate = new Date("2025-12-29T00:00:00");
+const targetDate = new Date("2026-12-29T00:00:00");
 
 const useCountdown = (to: Date) => {
   const [now, setNow] = useState(() => new Date());
@@ -40,20 +40,20 @@ const Digit: React.FC<{ d: string }> = ({ d }) => (
 
 const CountdownCard: React.FC<{ label: string; value: number; variant: "blue" | "red" }> = ({ label, value, variant }) => {
   const base = variant === "blue" ? "bg-kc-blue" : "bg-kc-red";
-  const val = pad(value);
-  const tens = val[0];
-  const ones = val[1];
+  const digits = pad(value).split("");
+
   return (
     <div
-      className={`relative rounded-xl sm:rounded-2xl ${base} text-white min-w-[70px] sm:min-w-[96px] h-24 sm:h-28 shadow-lg overflow-hidden`}
+      className={`relative rounded-xl sm:rounded-2xl ${base} text-white min-w-[70px] sm:min-w-[96px] px-2 h-24 sm:h-28 shadow-lg overflow-hidden`}
     >
       {/* Top darker half (50%) */}
       <div className="absolute top-0 left-0 right-0 h-1/2 bg-black/25" />
       {/* Number, animate digits independently */}
       <div className="absolute inset-0 flex items-center justify-center">
-        <span className="text-3xl sm:text-4xl font-bold leading-none tabular-nums select-none tracking-tight">
-          <Digit d={tens} />
-          <Digit d={ones} />
+        <span className="text-3xl sm:text-4xl font-bold leading-none tabular-nums select-none tracking-tight flex">
+          {digits.map((d, i) => (
+            <Digit key={`${i}-${d}`} d={d} />
+          ))}
         </span>
       </div>
       {/* Label */}
@@ -83,7 +83,7 @@ const Countdown: React.FC = () => {
                 National STEM Competition
               </div>
               <h2 className="text-xl sm:text-3xl font-heading font-bold leading-tight">
-                Countdown to <span className="text-kc-blue">December 29</span>, <span className="text-kc-red">2025</span>
+                Countdown to <span className="text-kc-blue">December 29</span>, <span className="text-kc-red">2026</span>
               </h2>
               <p className="mt-2 text-sm sm:text-base text-foreground/80 max-w-2xl">
                 Join us for a national celebration of ideas, teamwork, and invention. Get your teams ready!

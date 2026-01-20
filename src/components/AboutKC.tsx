@@ -47,7 +47,7 @@ const AboutKC: React.FC = () => {
     <section
       id="about-home"
       ref={ref as any}
-      className="bg-[#FAFBFF] py-24 overflow-hidden"
+      className="bg-[#FAFBFF] py-24 rounded-3xl overflow-hidden"
     >
       <Parallax style={{ y }} className="container mx-auto px-6 lg:px-12">
         <div className="grid lg:grid-cols-2 gap-16 items-center">
@@ -60,7 +60,7 @@ const AboutKC: React.FC = () => {
             transition={{ duration: 0.6, ease: "easeOut" }}
             className="relative order-last lg:order-none"
           >
-            <div className="relative z-10 overflow-hidden rounded-[2.5rem] shadow-2xl shadow-blue-100/50">
+            <div className="relative z-10 overflow-hidden rounded-[2rem] shadow-2xl shadow-blue-100/50">
               <img
                 src={aboutImage}
                 alt="Knowledge Center students learning"
