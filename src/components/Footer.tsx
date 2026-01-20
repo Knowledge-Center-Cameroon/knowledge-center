@@ -51,7 +51,7 @@ const Footer = () => {
   ];
 
   return (
-    <footer className="relative mt-20 bg-[#0A0C10] border-t border-white/10 rounded-t-[3rem] overflow-hidden">
+    <footer className="relative mt-20 bg-[#0A0C10] border-t border-white/10 rounded-t-3xl overflow-hidden">
       
       {/* Decorative Top Glow */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-4xl h-px bg-gradient-to-r from-transparent via-kc-blue/50 to-transparent" />

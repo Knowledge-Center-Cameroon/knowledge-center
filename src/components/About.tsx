@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
+import { Link } from "react-router-dom";
 import { 
   Target, 
   Lightbulb,
@@ -559,23 +560,25 @@ const About = () => {
                 transition={{ duration: 0.6, delay: 0.3 }}
                 className="mt-10 text-center"
               >
-                <motion.button
-                  whileHover={{ scale: 1.05, y: -2 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="group relative inline-flex items-center gap-3 rounded-full px-6 md:px-8 py-3 md:py-3.5 bg-kc-blue text-white font-semibold text-base md:text-lg shadow-md hover:shadow-lg transition-all duration-200 border border-kc-blue/70 hover:bg-kc-red hover:border-kc-red"
-                >
-                  <span className="relative">Explore Programs Near You</span>
+                <Link to="/contact">
+                  <motion.button
+                    whileHover={{ scale: 1.05, y: -2 }}
+                    whileTap={{ scale: 0.95 }}
+                    className="group relative inline-flex items-center gap-3 rounded-full px-6 md:px-8 py-3 md:py-3.5 bg-kc-blue text-white font-semibold text-base md:text-lg shadow-md hover:shadow-lg transition-all duration-200 border border-kc-blue/70 hover:bg-kc-red hover:border-kc-red"
+                    >
+                    <span className="relative">Explore Programs Near You</span>
 
-                  <motion.div
-                    className="relative"
-                    animate={{ x: [0, 4, 0] }}
-                    transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
-                  >
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                    </svg>
-                  </motion.div>
-                </motion.button>
+                    <motion.div
+                      className="relative"
+                      animate={{ x: [0, 4, 0] }}
+                      transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+                    >
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                      </svg>
+                    </motion.div>
+                  </motion.button>
+                </Link>
                 <p className="text-sm text-muted-foreground mt-3 max-w-md mx-auto">
                   Ready to start your STEM journey? Find programs, schedules, and opportunities in your city.
                 </p>
