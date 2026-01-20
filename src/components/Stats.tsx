@@ -189,7 +189,7 @@ const Stats = () => {
           <div className="grid md:grid-cols-3 gap-8 text-center">
             {[
               "95% Success Rate in National Exams",
-              "Recognized STEM Leader in SW Region",
+              "Recognized STEM Leader Across the Globe",
               "Community-Driven Education Impact",
             ].map((text, i) => (
               <div key={i} className="text-gray-300">

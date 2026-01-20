@@ -147,7 +147,7 @@ const EventsGrid: React.FC<{ items: typeof UPCOMING }> = ({ items }) => (
         >
           <Card className="group relative h-full overflow-hidden bg-white/90 backdrop-blur-xl border border-white/30 shadow-xl hover:shadow-2xl rounded-3xl transition-all duration-500 hover:border-kc-blue/50 hover:bg-white/95">
             {/* Animated border gradient */}
-            <div className="absolute inset-0 bg-gradient-to-br from-kc-blue/20 via-transparent to-kc-red/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+            <div className="absolute inset-0 bg-gradient-to-br from-kc-blue/20 via-transparent to-white opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
             {e.badge && (
               <motion.div
                 initial={{ opacity: 0, scale: 0.8, y: -10 }}

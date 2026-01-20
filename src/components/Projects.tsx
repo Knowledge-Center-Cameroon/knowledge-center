@@ -75,13 +75,13 @@ const Projects = () => {
       ],
       details: [
         "Duration: 2 months (July–August)",
-        "Format: SMordern classrooms with audio-visual lectures",
-        "Extras: Industry talks and campus tours",
-        "Outcome: Portfolio-ready projects"
+        "Format: Mordern classrooms with audio-visual lectures",
+        "Extras: Free T-Shirts and Swag",
+        "Outcome: Extracurricular skills"
       ],
       stats: [
-        { number: "200+", label: "Summer Participants" },
-        { number: "6", label: "Weeks Duration" },
+        { number: "500+", label: "Summer Participants" },
+        { number: "8", label: "Weeks Duration" },
         { number: "20+", label: "Expert Instructors" }
       ]
     },
@@ -107,7 +107,7 @@ const Projects = () => {
       ],
       stats: [
         { number: "300+", label: "Weekend Learners" },
-        { number: "12", label: "Subjects Offered" },
+        { number: "5", label: "Subjects Offered" },
         { number: "8", label: "Hours per Weekend" }
       ]
     }
@@ -448,11 +448,11 @@ const Projects = () => {
                       <span>Next Competition</span>
                     </h4>
                     <p className="text-white/80 text-xs sm:text-sm mb-3">
-                      December 2025 &mdash; registration opens in September.
+                      December 2026 &mdash; registration opens in September.
                     </p>
                     <div className="flex items-center space-x-2 text-xs sm:text-sm text-white/80">
                       <Clock className="h-4 w-4" />
-                      <span>About 3 months of prep time for teams.</span>
+                      <span>Driving innovation, problem-solving and creativity.</span>
                     </div>
                   </motion.div>
                 </motion.div>

@@ -45,7 +45,7 @@ export const projects: Project[] = [
     ],
     details: [
       "Eligibility: Form 4 – Upper Sixth (O/L & A/L)",
-      "Teams: 3–5 students (solo entries allowed where needed)",
+      // "Teams: 3–5 students (solo entries allowed where needed)",
       "Format: Every December",
       "Outcomes: Deeper STEM literacy, critical thinking, and real‑world problem‑solving"
     ],
@@ -75,7 +75,7 @@ export const projects: Project[] = [
     details: [
       "Duration: 2 months (July–August)",
       "Format: Modern classrooms with audio-visual lectures",
-      "Extras: Additional Tshirts for all registered students",
+      "Extras: Additional T-shirts for all registered students",
       "Outcomes: Academic excellence, Skill acquistion, global stage scholars"
     ],
     sections: [
@@ -127,7 +127,7 @@ export const projects: Project[] = [
       "Progress tracking across milestones"
     ],
     details: [
-      "When: Year‑round with intensive summer bootcamps",
+      "When: Year‑round with intensive programs",
       "Focus: Essays, testing, recommendations, portfolios",
       "Support: 1:1 mentorship and peer reviews",
       "Outcomes: Competitive applications and global placement"
