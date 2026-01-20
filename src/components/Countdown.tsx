@@ -4,7 +4,7 @@ import { CalendarDays, Sparkles } from "lucide-react";
 
 const pad = (n: number) => n.toString().padStart(2, "0");
 
-const targetDate = new Date("2025-12-29T00:00:00");
+const targetDate = new Date("2026-12-29T00:00:00");
 
 const useCountdown = (to: Date) => {
   const [now, setNow] = useState(() => new Date());
@@ -83,7 +83,7 @@ const Countdown: React.FC = () => {
                 National STEM Competition
               </div>
               <h2 className="text-xl sm:text-3xl font-heading font-bold leading-tight">
-                Countdown to <span className="text-kc-blue">December 29</span>, <span className="text-kc-red">2025</span>
+                Countdown to <span className="text-kc-blue">December 29</span>, <span className="text-kc-red">2026</span>
               </h2>
               <p className="mt-2 text-sm sm:text-base text-foreground/80 max-w-2xl">
                 Join us for a national celebration of ideas, teamwork, and invention. Get your teams ready!

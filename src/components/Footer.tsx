@@ -58,8 +58,8 @@ const Footer = () => {
         <div className="container mx-auto px-6 lg:px-12 max-w-7xl relative z-10">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-12 lg:gap-8">
             
-            {/* 1. Brand & Newsletter - Taking up 5 cols */}
-            <div className="lg:col-span-5 flex flex-col justify-between">
+            {/* 1. Brand & Newsletter - Taking up 6 cols for a larger presence */}
+            <div className="lg:col-span-6 flex flex-col justify-between">
               <div>
                 <Link to="/" className="flex items-center gap-3 mb-6 group">
                   <img
@@ -71,13 +71,13 @@ const Footer = () => {
                     Knowledge<span className="text-kc-blue"> Center</span>
                   </div>
                 </Link>
-                <p className="text-slate-400 text-lg leading-relaxed max-w-sm mb-8">
+                <p className="text-slate-400 text-lg leading-relaxed max-w-md mb-8">
                   Empowering Cameroon's next generation of scientists and engineers through world-class STEM education.
                 </p>
               </div>
 
-              <div className="relative max-w-md">
-                <h5 className="text-white font-semibold mb-4">Stay updated with our newsletter</h5>
+              <div className="relative max-w-lg">
+                <h5 className="text-white font-semibold mb-4 text-lg">Stay updated with our newsletter</h5>
                 <form onSubmit={handleNewsletterSubmit} className="relative group">
                   <Input
                     type="email"
@@ -99,7 +99,7 @@ const Footer = () => {
             </div>
 
             {/* 2. Quick Links - 2 cols */}
-            <div className="lg:col-span-2 lg:ml-auto">
+            <div className="lg:col-span-2">
               <h4 className="text-sm font-bold text-white uppercase tracking-[0.2em] mb-8">Platform</h4>
               <ul className="space-y-4">
                 {["Home", "About Us", "Our Projects", "Blog", "Contact Us"].map((item) => (
@@ -118,7 +118,7 @@ const Footer = () => {
             </div>
 
             {/* 3. Programs - 2 cols */}
-            <div className="lg:col-span-2 lg:ml-auto">
+            <div className="lg:col-span-2">
               <h4 className="text-sm font-bold text-white uppercase tracking-[0.2em] mb-8">Programs</h4>
               <ul className="space-y-4">
                 {[
@@ -136,8 +136,8 @@ const Footer = () => {
               </ul>
             </div>
 
-            {/* 4. Contact Info - 3 cols */}
-            <div className="lg:col-span-3 lg:ml-auto">
+            {/* 4. Contact Info - 2 cols */}
+            <div className="lg:col-span-2">
               <h4 className="text-sm font-bold text-white uppercase tracking-[0.2em] mb-8">Get In Touch</h4>
               <div className="space-y-6">
                 <div className="flex items-start gap-4">

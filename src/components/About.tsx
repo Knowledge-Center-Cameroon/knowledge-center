@@ -34,6 +34,86 @@ import {
 import StemBackground from "@/components/StemBackground";
 import { useParallax, Parallax } from "@/hooks/use-parallax";
 
+const CameroonMap = () => {
+  const hubs = [
+    { name: "Yaoundé", x: 64, y: 70 },
+    { name: "Buea", x: 23, y: 65 },
+    { name: "Limbe", x: 20, y: 68 },
+    { name: "Tiko", x: 25, y: 67 },
+    { name: "Douala", x: 31, y: 66 },
+    { name: "Nkongsamba", x: 34, y: 55 },
+    { name: "Bafoussam", x: 42, y: 51 },
+    { name: "Kumba", x: 28, y: 58 },
+    { name: "Bamenda", x: 35, y: 44 },
+    { name: "Dschang", x: 33, y: 49 },
+    { name: "Muyuka", x: 27, y: 63 },
+    { name: "Mbouda", x: 40, y: 48 },
+    { name: "Santchou", x: 32, y: 52 },
+  ];
+
+  return (
+    <div className="relative w-full aspect-[4/5] max-w-md mx-auto bg-slate-50/50 rounded-2xl border border-slate-100 p-4 shadow-inner overflow-hidden">
+      <svg
+        viewBox="0 0 100 125"
+        className="w-full h-full drop-shadow-sm"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        {/* Refined Cameroon Outline SVG path (coordinates scaled to 0-100, 0-125) */}
+        <path
+          d="M40,110 L30,120 L20,115 L10,105 L15,85 L10,65 L20,45 L35,35 L45,25 L55,15 L65,5 L75,15 L80,30 L75,45 L85,60 L95,75 L90,95 L80,110 L65,115 L50,112 L40,110 Z"
+          fill="#f1f5f9"
+          stroke="#cbd5e1"
+          strokeWidth="1.5"
+        />
+        {/* Hub locations */}
+        {hubs.map((hub, i) => (
+          <g key={hub.name}>
+            <motion.circle
+              initial={{ scale: 0 }}
+              whileInView={{ scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ delay: i * 0.05, type: "spring", stiffness: 200 }}
+              cx={hub.x}
+              cy={hub.y}
+              r="2"
+              className="fill-kc-red"
+            />
+            <motion.circle
+              initial={{ scale: 0 }}
+              whileInView={{ scale: 2, opacity: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: i * 0.05 + 0.5, duration: 1.5, repeat: Infinity }}
+              cx={hub.x}
+              cy={hub.y}
+              r="3.5"
+              className="stroke-kc-red fill-none"
+              strokeWidth="0.5"
+            />
+          </g>
+        ))}
+      </svg>
+
+      {/* Legend/Labels overlay for some key hubs */}
+      <div className="absolute inset-0 pointer-events-none">
+        {hubs.filter((_, i) => i % 3 === 0).map((hub) => (
+          <div
+            key={hub.name}
+            className="absolute text-[9px] font-bold text-slate-600 bg-white/90 px-1 py-0.5 rounded shadow-sm border border-slate-100 z-10"
+            style={{
+              left: `${hub.x}%`,
+              top: `${(hub.y / 125) * 100}%`,
+              transform: 'translate(-50%, -150%)'
+            }}
+          >
+            {hub.name}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
 const About = () => {
   const [openFaq, setOpenFaq] = useState<string | undefined>("item-0");
   const [introApi, setIntroApi] = useState<CarouselApi | null>(null);
@@ -448,36 +528,40 @@ const About = () => {
                 </p>
               </div>
 
-              {/* Enhanced city chips with better styling and animations */}
-              <div className="mt-8">
-                <div className="relative">
-                  <div className="absolute left-4 right-4 top-1/2 -translate-y-1/2 h-px bg-slate-200" />
+              {/* Map and Enhanced city chips */}
+              <div className="mt-8 grid lg:grid-cols-2 gap-12 items-center">
+                <div className="order-2 lg:order-1">
+                  <CameroonMap />
+                </div>
 
-                  <div className="overflow-x-auto no-scrollbar snap-x snap-mandatory" ref={hubsTrackRef}>
-                    <div className="flex items-stretch gap-3 md:gap-4 px-4 py-4">
-                      {hubs.map((city, i) => (
-                        <motion.div
-                          key={city}
-                          initial={{ opacity: 0, scale: 0.8 }}
-                          whileInView={{ opacity: 1, scale: 1 }}
-                          viewport={{ once: true }}
-                          transition={{ duration: 0.5, delay: i * 0.05 }}
-                          whileHover={{ y: -6, scale: 1.05 }}
-                          whileTap={{ scale: 0.95 }}
-                          className="snap-start"
-                        >
-                          <div className="group relative rounded-full px-4 md:px-5 py-2.5 bg-kc-blue text-white shadow-md hover:shadow-lg transition-all duration-200">
-                            <div className="relative flex items-center gap-2.5">
-                              <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-white/15">
-                                <MapPin className="h-3.5 w-3.5" />
-                              </span>
-                              <span className="text-sm md:text-base font-semibold tracking-tight whitespace-nowrap">{city}</span>
-                            </div>
-                          </div>
+                <div className="order-1 lg:order-2">
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 md:gap-4">
+                    {hubs.map((city, i) => (
+                      <motion.div
+                        key={city}
+                        initial={{ opacity: 0, x: 20 }}
+                        whileInView={{ opacity: 1, x: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.4, delay: i * 0.05 }}
+                        whileHover={{ x: 5 }}
+                        className="group flex items-center gap-3 p-3 rounded-xl bg-slate-50 border border-slate-100 hover:border-kc-blue/30 hover:bg-white transition-all duration-200"
+                      >
+                        <span className="flex-shrink-0 inline-flex h-8 w-8 items-center justify-center rounded-lg bg-kc-blue/10 text-kc-blue group-hover:bg-kc-blue group-hover:text-white transition-colors">
+                          <MapPin className="h-4 w-4" />
+                        </span>
+                        <span className="text-sm md:text-base font-semibold text-slate-700 group-hover:text-kc-blue transition-colors">{city}</span>
+                      </motion.div>
+                    ))}
+                  </div>
 
-                        </motion.div>
-                      ))}
-                    </div>
+                  <div className="mt-8 p-6 rounded-2xl bg-kc-blue/5 border border-kc-blue/10">
+                    <h4 className="font-bold text-kc-blue mb-2 flex items-center gap-2">
+                      <Rocket className="h-4 w-4" />
+                      Expansion in Progress
+                    </h4>
+                    <p className="text-sm text-slate-600 leading-relaxed">
+                      We are rapidly expanding our reach across Cameroon. Our goal is to ensure every young Cameroonian has access to a KC STEM Hub within their region.
+                    </p>
                   </div>
                 </div>
               </div>
