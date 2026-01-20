@@ -76,25 +76,25 @@ const Footer = () => {
                 </p>
               </div>
 
-              <div className="relative max-w-lg">
-                <h5 className="text-white font-semibold mb-4 text-lg">Stay updated with our newsletter</h5>
+              <div className="relative max-w-xl">
+                <h5 className="text-white font-semibold mb-6 text-xl">Stay updated with our newsletter</h5>
                 <form onSubmit={handleNewsletterSubmit} className="relative group">
                   <Input
                     type="email"
                     placeholder="Enter your email address"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="h-14 bg-white/5 border-white/10 rounded-2xl pl-6 pr-32 text-white placeholder:text-slate-500 focus:ring-kc-blue/50 transition-all"
+                    className="h-16 bg-white/5 border-white/10 rounded-2xl pl-6 pr-40 text-lg text-white placeholder:text-slate-500 focus:ring-kc-blue/50 transition-all"
                     required
                   />
                   <Button 
                     disabled={submitting}
-                    className="absolute right-1.5 top-1.5 h-11 px-6 rounded-xl bg-kc-blue hover:bg-kc-blue/90 text-white font-bold transition-all"
+                    className="absolute right-2 top-2 h-12 px-8 rounded-xl bg-kc-blue hover:bg-kc-blue/90 text-white text-lg font-bold transition-all shadow-lg"
                   >
-                    {submitting ? "..." : <><span className="hidden sm:inline mr-2">Join</span> <Send className="h-4 w-4" /></>}
+                    {submitting ? "..." : <><span className="hidden sm:inline mr-2">Subscribe</span> <Send className="h-5 w-5" /></>}
                   </Button>
                 </form>
-                <p className="mt-3 text-[11px] text-slate-500 uppercase tracking-widest font-medium">No spam. Only STEM excellence.</p>
+                <p className="mt-4 text-xs text-slate-500 uppercase tracking-[0.2em] font-medium">No spam. Only world-class STEM excellence.</p>
               </div>
             </div>
 

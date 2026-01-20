@@ -40,20 +40,20 @@ const Digit: React.FC<{ d: string }> = ({ d }) => (
 
 const CountdownCard: React.FC<{ label: string; value: number; variant: "blue" | "red" }> = ({ label, value, variant }) => {
   const base = variant === "blue" ? "bg-kc-blue" : "bg-kc-red";
-  const val = pad(value);
-  const tens = val[0];
-  const ones = val[1];
+  const digits = pad(value).split("");
+
   return (
     <div
-      className={`relative rounded-xl sm:rounded-2xl ${base} text-white min-w-[70px] sm:min-w-[96px] h-24 sm:h-28 shadow-lg overflow-hidden`}
+      className={`relative rounded-xl sm:rounded-2xl ${base} text-white min-w-[70px] sm:min-w-[96px] px-2 h-24 sm:h-28 shadow-lg overflow-hidden`}
     >
       {/* Top darker half (50%) */}
       <div className="absolute top-0 left-0 right-0 h-1/2 bg-black/25" />
       {/* Number, animate digits independently */}
       <div className="absolute inset-0 flex items-center justify-center">
-        <span className="text-3xl sm:text-4xl font-bold leading-none tabular-nums select-none tracking-tight">
-          <Digit d={tens} />
-          <Digit d={ones} />
+        <span className="text-3xl sm:text-4xl font-bold leading-none tabular-nums select-none tracking-tight flex">
+          {digits.map((d, i) => (
+            <Digit key={`${i}-${d}`} d={d} />
+          ))}
         </span>
       </div>
       {/* Label */}

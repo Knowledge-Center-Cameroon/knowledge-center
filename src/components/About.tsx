@@ -36,77 +36,62 @@ import { useParallax, Parallax } from "@/hooks/use-parallax";
 
 const CameroonMap = () => {
   const hubs = [
-    { name: "Yaoundé", x: 64, y: 70 },
-    { name: "Buea", x: 23, y: 65 },
-    { name: "Limbe", x: 20, y: 68 },
-    { name: "Tiko", x: 25, y: 67 },
-    { name: "Douala", x: 31, y: 66 },
-    { name: "Nkongsamba", x: 34, y: 55 },
-    { name: "Bafoussam", x: 42, y: 51 },
-    { name: "Kumba", x: 28, y: 58 },
-    { name: "Bamenda", x: 35, y: 44 },
-    { name: "Dschang", x: 33, y: 49 },
-    { name: "Muyuka", x: 27, y: 63 },
-    { name: "Mbouda", x: 40, y: 48 },
-    { name: "Santchou", x: 32, y: 52 },
+    { name: "Yaoundé", x: 42.0, y: 78.5 },
+    { name: "Douala", x: 18.5, y: 81.5 },
+    { name: "Buea", x: 11.5, y: 80.5 },
+    { name: "Bafoussam", x: 27.5, y: 66.5 },
+    { name: "Garoua", x: 55.0, y: 25.5 },
+    { name: "Bamenda", x: 22.5, y: 60.5 },
+    { name: "Ngaoundéré", x: 53.0, y: 48.5 },
+    { name: "Maroua", x: 73.0, y: 10.5 },
+    { name: "Bertoua", x: 65.0, y: 75.5 },
+    { name: "Ebolowa", x: 32.5, y: 88.5 },
+    { name: "Limbe", x: 10.5, y: 82.5 },
+    { name: "Dschang", x: 21.5, y: 67.5 },
+    { name: "Foumban", x: 33.5, y: 62.5 },
   ];
 
   return (
-    <div className="relative w-full aspect-[4/5] max-w-md mx-auto bg-slate-50/50 rounded-2xl border border-slate-100 p-4 shadow-inner overflow-hidden">
-      <svg
-        viewBox="0 0 100 125"
-        className="w-full h-full drop-shadow-sm"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        {/* Refined Cameroon Outline SVG path (coordinates scaled to 0-100, 0-125) */}
-        <path
-          d="M40,110 L30,120 L20,115 L10,105 L15,85 L10,65 L20,45 L35,35 L45,25 L55,15 L65,5 L75,15 L80,30 L75,45 L85,60 L95,75 L90,95 L80,110 L65,115 L50,112 L40,110 Z"
-          fill="#f1f5f9"
-          stroke="#cbd5e1"
-          strokeWidth="1.5"
-        />
-        {/* Hub locations */}
+    <div className="relative w-full aspect-[992/1429] max-w-md mx-auto bg-slate-50/30 rounded-2xl border border-slate-100 p-2 shadow-inner overflow-hidden group">
+      {/* Actual Cameroon Map Image */}
+      <img
+        src="/cameroon.svg"
+        alt="Map of Cameroon"
+        className="w-full h-full object-contain opacity-80"
+      />
+
+      {/* Hub locations overlay */}
+      <div className="absolute inset-0">
         {hubs.map((hub, i) => (
-          <g key={hub.name}>
-            <motion.circle
+          <div
+            key={hub.name}
+            className="absolute"
+            style={{ left: `${hub.x}%`, top: `${hub.y}%` }}
+          >
+            <motion.div
               initial={{ scale: 0 }}
               whileInView={{ scale: 1 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.05, type: "spring", stiffness: 200 }}
-              cx={hub.x}
-              cy={hub.y}
-              r="2"
-              className="fill-kc-red"
-            />
-            <motion.circle
-              initial={{ scale: 0 }}
-              whileInView={{ scale: 2, opacity: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.05 + 0.5, duration: 1.5, repeat: Infinity }}
-              cx={hub.x}
-              cy={hub.y}
-              r="3.5"
-              className="stroke-kc-red fill-none"
-              strokeWidth="0.5"
-            />
-          </g>
-        ))}
-      </svg>
+              className="relative"
+            >
+              {/* Core pulse dot */}
+              <div className="w-2 h-2 bg-kc-red rounded-full shadow-sm z-20" />
 
-      {/* Legend/Labels overlay for some key hubs */}
-      <div className="absolute inset-0 pointer-events-none">
-        {hubs.filter((_, i) => i % 3 === 0).map((hub) => (
-          <div
-            key={hub.name}
-            className="absolute text-[9px] font-bold text-slate-600 bg-white/90 px-1 py-0.5 rounded shadow-sm border border-slate-100 z-10"
-            style={{
-              left: `${hub.x}%`,
-              top: `${(hub.y / 125) * 100}%`,
-              transform: 'translate(-50%, -150%)'
-            }}
-          >
-            {hub.name}
+              {/* Pulsing ring animation */}
+              <motion.div
+                animate={{ scale: [1, 2.5], opacity: [0.5, 0] }}
+                transition={{ duration: 2, repeat: Infinity, ease: "easeOut" }}
+                className="absolute inset-0 bg-kc-red rounded-full -z-10"
+              />
+
+              {/* Tooltip-style label on hover or key hubs */}
+              <div
+                className={`absolute left-1/2 -translate-x-1/2 bottom-full mb-1.5 px-1.5 py-0.5 bg-white/95 border border-slate-200 rounded shadow-md text-[8px] font-bold text-slate-700 whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none ${i % 3 === 0 ? 'opacity-100' : ''}`}
+              >
+                {hub.name}
+              </div>
+            </motion.div>
           </div>
         ))}
       </div>
@@ -142,20 +127,20 @@ const About = () => {
     return () => clearInterval(id);
   }, [philoApi]);
 
-  const hubs = [
+  const hubsList = [
     "Yaoundé",
-    "Buea",
-    "Limbe",
-    "Tiko",
     "Douala",
-    "Nkongsamba",
+    "Buea",
     "Bafoussam",
-    "Kumba",
+    "Garoua",
     "Bamenda",
+    "Ngaoundéré",
+    "Maroua",
+    "Bertoua",
+    "Ebolowa",
+    "Limbe",
     "Dschang",
-    "Muyuka",
-    "Mbouda",
-    "Santchou",
+    "Foumban",
   ];
 
   // Gentle auto-scroll for hubs chips
@@ -536,7 +521,7 @@ const About = () => {
 
                 <div className="order-1 lg:order-2">
                   <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 md:gap-4">
-                    {hubs.map((city, i) => (
+                    {hubsList.map((city, i) => (
                       <motion.div
                         key={city}
                         initial={{ opacity: 0, x: 20 }}
