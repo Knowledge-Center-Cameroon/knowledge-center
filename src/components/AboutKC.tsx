@@ -75,7 +75,7 @@ const AboutKC: React.FC = () => {
                   <Users className="h-6 w-6 text-kc-blue" />
                 </div>
                 <div>
-                  <p className="text-2xl font-bold text-slate-900 leading-none">
+                  <p className="text-h5 font-heading font-bold text-foreground leading-none">
                     7,000+
                   </p>
                   <p className="text-sm text-slate-500 font-medium">

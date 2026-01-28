@@ -2,6 +2,14 @@ import * as React from "react"
 
 import { cn } from "@/lib/utils"
 
+/**
+ * Card Component - Consistent card styling with border, shadow, and hover effects
+ * 
+ * Base: rounded-lg border, subtle shadow, white background
+ * Variants: Default, elevated, hover-interactive
+ * Composition: Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter
+ */
+
 const Card = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement>
@@ -9,7 +17,7 @@ const Card = React.forwardRef<
   <div
     ref={ref}
     className={cn(
-      "rounded-lg border bg-card text-card-foreground shadow-sm",
+      "rounded-lg border border-border bg-card text-card-foreground shadow-card transition-all duration-300 hover:shadow-hover hover:border-primary/20",
       className
     )}
     {...props}
@@ -29,6 +37,7 @@ const CardHeader = React.forwardRef<
 ))
 CardHeader.displayName = "CardHeader"
 
+/** CardTitle: Poppins heading, H3 semantic size */
 const CardTitle = React.forwardRef<
   HTMLParagraphElement,
   React.HTMLAttributes<HTMLHeadingElement>
@@ -36,7 +45,7 @@ const CardTitle = React.forwardRef<
   <h3
     ref={ref}
     className={cn(
-      "text-2xl font-semibold leading-none tracking-tight",
+      "text-h4 font-heading font-semibold leading-tight text-foreground",
       className
     )}
     {...props}
@@ -44,13 +53,14 @@ const CardTitle = React.forwardRef<
 ))
 CardTitle.displayName = "CardTitle"
 
+/** CardDescription: Muted text color, Montserrat body font */
 const CardDescription = React.forwardRef<
   HTMLParagraphElement,
   React.HTMLAttributes<HTMLParagraphElement>
 >(({ className, ...props }, ref) => (
   <p
     ref={ref}
-    className={cn("text-sm text-muted-foreground", className)}
+    className={cn("text-body-sm text-muted-foreground font-body", className)}
     {...props}
   />
 ))

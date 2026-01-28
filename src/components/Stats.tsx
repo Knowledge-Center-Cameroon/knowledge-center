@@ -1,3 +1,12 @@
+/**
+ * Stats Component - Impact metrics and key statistics
+ * 
+ * Features:
+ * - Animated counter numbers (Spring animation)
+ * - Card-based layout with icon indicators
+ * - Responsive grid (1 → 2 → 4 columns)
+ * - Semantic card structure
+ */
 import React, { useEffect, useRef } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import {
@@ -16,9 +25,7 @@ import {
   useTransform,
 } from "framer-motion";
 
-/* -----------------------------
-   Counter (single responsibility)
------------------------------- */
+/* Counter component - Animated number display */
 const Counter = ({ value, suffix }: { value: number; suffix: string }) => {
   const ref = useRef<HTMLSpanElement>(null);
   const inView = useInView(ref, { once: true });
@@ -45,9 +52,9 @@ const Counter = ({ value, suffix }: { value: number; suffix: string }) => {
   );
 };
 
-/* -----------------------------
-   Stats (ONE component only)
------------------------------- */
+/**
+ * Stats Component - Display key metrics and impact numbers
+ */
 const Stats = () => {
   const containerRef = useRef(null);
   const isInView = useInView(containerRef, {
@@ -180,8 +187,8 @@ const Stats = () => {
           className="bg-slate-900/80 border border-white/10 rounded-3xl p-10"
         >
           <div className="text-center mb-10">
-            <Award className="h-10 w-10 text-emerald-400 mx-auto mb-3" />
-            <h3 className="text-2xl font-semibold text-white">
+            <Award className="h-10 w-10 text-kc-red mx-auto mb-3" />
+            <h3 className="text-h4 font-heading font-semibold text-white">
               Proven Track Record of Success
             </h3>
           </div>
@@ -192,8 +199,8 @@ const Stats = () => {
               "Recognized STEM Leader Across the Globe",
               "Community-Driven Education Impact",
             ].map((text, i) => (
-              <div key={i} className="text-gray-300">
-                <Target className="h-6 w-6 mx-auto mb-3 text-blue-400" />
+              <div key={i} className="text-white/75">
+                <Target className="h-6 w-6 mx-auto mb-3 text-kc-blue" />
                 {text}
               </div>
             ))}

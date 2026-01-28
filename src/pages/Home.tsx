@@ -7,7 +7,23 @@ import Stats from "@/components/Stats";
 import Projects from "@/components/Projects";
 import Testimonials from "@/components/Testimonials";
 import { useSeo } from "@/hooks/useSeo";
- 
+
+/**
+ * Home Page - Landing page with hero, about, stats, projects, testimonials
+ * 
+ * SEO Structure:
+ * - H1: Primary page heading (Hero section)
+ * - H2: Section headings (About, Stats, Projects, etc.)
+ * - Proper section hierarchy for screen readers
+ * - Structured data for rich snippets
+ * 
+ * Design:
+ * - Montserrat font for body text
+ * - Poppins font for headings
+ * - Blue, red, black color palette
+ * - Consistent spacing and whitespace
+ * - Smooth fade-up animations
+ */
 
 const fadeUp = {
   initial: { opacity: 0, y: 16 },
@@ -17,32 +33,50 @@ const fadeUp = {
 
 const Home: React.FC = () => {
   useSeo({
-    title: "Home | Knowledge Center",
+    title: "Knowledge Center | STEM Education in Cameroon",
     description:
-      "Knowledge Center Cameroon is a non-profit STEM hub in Buea helping young Cameroonians fall in love with science through tutoring, competitions, and hands-on programs.",
+      "Knowledge Center Cameroon is a premier non-profit STEM hub in Buea empowering young Cameroonians through tutoring, competitions, hands-on programs, and mentorship.",
   });
+
   React.useEffect(() => {
     window.scrollTo({ top: 0, behavior: "auto" });
   }, []);
+
   return (
-    <div className="space-y-10 lg:space-y-16">
+    <div className="space-y-0">
+      {/* Hero Section: Primary visual introduction */}
       <motion.section {...fadeUp}>
         <Hero />
       </motion.section>
-      <motion.section {...fadeUp} className="bg-gray-100 p-8 rounded-lg shadow-md">
+
+      {/* About KC Section: Brand story and mission */}
+      <motion.section
+        {...fadeUp}
+        className="bg-gradient-subtle py-16 md:py-20 lg:py-24"
+      >
         <AboutKC />
       </motion.section>
-      <motion.section {...fadeUp}>
+
+      {/* Stats Section: Impact metrics */}
+      <motion.section {...fadeUp} className="section-padding">
         <Stats />
       </motion.section>
-      <motion.section {...fadeUp}>
+
+      {/* Projects Section: Showcase of work */}
+      <motion.section
+        {...fadeUp}
+        className="bg-gradient-subtle section-padding"
+      >
         <Projects />
       </motion.section>
 
-      <motion.section {...fadeUp}>
+      {/* Testimonials Section: Social proof */}
+      <motion.section {...fadeUp} className="section-padding">
         <Testimonials />
       </motion.section>
-      <motion.section {...fadeUp}>
+
+      {/* Countdown Section: Upcoming event */}
+      <motion.section {...fadeUp} className="section-padding-lg">
         <Countdown />
       </motion.section>
     </div>

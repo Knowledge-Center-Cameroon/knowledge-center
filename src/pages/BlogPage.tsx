@@ -30,8 +30,24 @@ interface LikeStatus {
   likeCount: number;
 }
 
-const LINKEDIN_URL = "https://www.linkedin.com/company/knowledge-centercmr"; // TODO: replace with your actual LinkedIn page or article URL
+const LINKEDIN_URL = "https://www.linkedin.com/company/knowledge-centercmr";
 
+/**
+ * Blog Page - Articles and insights on STEM education
+ * 
+ * SEO Structure:
+ * - H1: "Knowledge Center Blog"
+ * - H2: Article titles in post cards
+ * - Tag-based categorization
+ * - Author and date metadata
+ * - Proper heading hierarchy
+ * 
+ * Design:
+ * - Search and filter functionality
+ * - Card-based article display
+ * - Like/comment interaction
+ * - Responsive grid layout
+ */
 const BlogPage: React.FC = () => {
   const { user } = useUser();
   const { toast } = useToast();
@@ -43,6 +59,12 @@ const BlogPage: React.FC = () => {
   const [loadingLikes, setLoadingLikes] = useState<Record<string, boolean>>({});
   const [discardDraft, setDiscardDraft] = useState(false);
   const [comments, setComments] = useState<Record<string, string[]>>({});
+
+  useSeo({
+    title: "Blog | Knowledge Center - STEM Education Insights",
+    description:
+      "Read articles and insights on STEM education, student success stories, and educational trends from Knowledge Center Cameroon.",
+  });
 
   const posts = useMemo(() => (
     [...blogPosts].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())

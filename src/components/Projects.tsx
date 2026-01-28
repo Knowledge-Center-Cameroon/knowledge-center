@@ -1,3 +1,19 @@
+/**
+ * Projects Component - Showcase of Knowledge Center programs
+ * 
+ * Features:
+ * - Tabbed interface for multiple programs
+ * - Card-based project display
+ * - Responsive grid layout
+ * - Hover effects and animations
+ * - Feature lists for each project
+ * 
+ * Semantic Structure:
+ * - H2 project titles
+ * - Proper card hierarchy
+ * - Feature lists (ul/li)
+ * - CTA buttons with clear labels
+ */
 import React, { useEffect, useRef, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -28,6 +44,9 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
+/**
+ * Projects Component - Display KC's flagship programs and projects
+ */
 const Projects = () => {
   const [activeTab, setActiveTab] = useState("stem");
 

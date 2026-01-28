@@ -37,7 +37,7 @@ const StemRegistrationSuccessPage: React.FC = () => {
       </div>
 
       <div className="max-w-2xl mx-auto text-center">
-        <CheckCircle2 className="mx-auto h-14 w-14 text-green-600" />
+        <CheckCircle2 className="mx-auto h-14 w-14 text-kc-blue" />
         <h1 className="heading-2 mt-3">Registration Started</h1>
         <p className="text-muted-foreground mt-2">We have initiated your payment. Keep your reference safe and follow the mobile money prompt on your phone to complete the transaction.</p>
 

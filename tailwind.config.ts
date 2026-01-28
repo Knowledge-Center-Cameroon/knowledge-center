@@ -18,10 +18,24 @@ export default {
 			}
 		},
 		extend: {
+			/* Typography System: Poppins for headings (h1-h6), Montserrat for body/ui text */
 			fontFamily: {
-				'sans': ['Montserrat', 'Inter', 'system-ui', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'Noto Sans', 'Liberation Sans', 'sans-serif'],
-				'heading': ['Poppins', 'Inter', 'system-ui', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'Noto Sans', 'Liberation Sans', 'sans-serif'],
-				'body': ['Montserrat', 'Inter', 'system-ui', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'Noto Sans', 'Liberation Sans', 'sans-serif'],
+				'sans': ['Montserrat', 'system-ui', 'Segoe UI', 'sans-serif'],
+				'heading': ['Poppins', 'system-ui', 'Segoe UI', 'sans-serif'],
+				'body': ['Montserrat', 'system-ui', 'Segoe UI', 'sans-serif'],
+			},
+			fontSize: {
+				/* Semantic heading scale: 96/80/64/48/36/24/20/16/14/12px */
+				'h1': ['2.75rem', { lineHeight: '1.2', fontWeight: '700', letterSpacing: '-0.02em' }],
+				'h2': ['2.25rem', { lineHeight: '1.3', fontWeight: '700', letterSpacing: '-0.01em' }],
+				'h3': ['1.875rem', { lineHeight: '1.3', fontWeight: '700' }],
+				'h4': ['1.5rem', { lineHeight: '1.4', fontWeight: '600' }],
+				'h5': ['1.25rem', { lineHeight: '1.4', fontWeight: '600' }],
+				'h6': ['1rem', { lineHeight: '1.5', fontWeight: '600' }],
+				'body-lg': ['1.0625rem', { lineHeight: '1.6', fontWeight: '400' }],
+				'body': ['1rem', { lineHeight: '1.6', fontWeight: '400' }],
+				'body-sm': ['0.875rem', { lineHeight: '1.5', fontWeight: '400' }],
+				'body-xs': ['0.75rem', { lineHeight: '1.4', fontWeight: '400' }],
 			},
 			colors: {
 				border: 'hsl(var(--border))',
@@ -86,6 +100,30 @@ export default {
 				md: 'calc(var(--radius) - 2px)',
 				sm: 'calc(var(--radius) - 4px)'
 			},
+			spacing: {
+				/* Consistent spacing scale: 4px grid */
+				'0.5': '0.125rem',
+				'1': '0.25rem',
+				'2': '0.5rem',
+				'3': '0.75rem',
+				'4': '1rem',
+				'6': '1.5rem',
+				'8': '2rem',
+				'12': '3rem',
+				'16': '4rem',
+				'20': '5rem',
+				'24': '6rem',
+			},
+			gap: {
+				/* Consistent gap/gap utilities */
+				'2': '0.5rem',
+				'3': '0.75rem',
+				'4': '1rem',
+				'6': '1.5rem',
+				'8': '2rem',
+				'12': '3rem',
+				'16': '4rem',
+			},
 			keyframes: {
 				'accordion-down': {
 					from: {
@@ -102,11 +140,29 @@ export default {
 					to: {
 						height: '0'
 					}
+				},
+				/* Subtle hover and fade animations */
+				'fade-in': {
+					from: { opacity: '0' },
+					to: { opacity: '1' }
+				},
+				'slide-up': {
+					from: { transform: 'translateY(4px)', opacity: '0' },
+					to: { transform: 'translateY(0)', opacity: '1' }
 				}
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
-				'accordion-up': 'accordion-up 0.2s ease-out'
+				'accordion-up': 'accordion-up 0.2s ease-out',
+				'fade-in': 'fade-in 0.3s ease-out',
+				'slide-up': 'slide-up 0.3s ease-out'
+			},
+			/* Shadow scale: professional depth hierarchy */
+			boxShadow: {
+				'elegant': '0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)',
+				'card': '0 1px 3px rgb(0 0 0 / 0.1), 0 1px 2px rgb(0 0 0 / 0.06)',
+				'hover': '0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -2px rgb(0 0 0 / 0.05)',
+				'elevated': '0 20px 25px -5px rgb(0 0 0 / 0.1), 0 10px 10px -5px rgb(0 0 0 / 0.04)',
 			}
 		}
 	},

@@ -1,3 +1,17 @@
+/**
+ * About Component - Organization story, mission, vision, and values
+ * 
+ * Sections:
+ * - Mission & Vision statement
+ * - Core values
+ * - Team/Leadership (optional)
+ * - Geographic reach
+ * 
+ * Semantic Structure:
+ * - Uses H2 for section headings
+ * - Proper paragraph text hierarchy
+ * - Card components for value display
+ */
 import React, { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
@@ -460,7 +474,7 @@ const About = () => {
 
         {/* FAQ Section */}
         <div>
-          <h3 className="text-2xl md:text-3xl font-heading font-bold text-center mb-6 md:mb-10">Frequently Asked Questions</h3>
+          <h3 className="text-h3 md:text-h2 font-heading font-bold text-center mb-6 md:mb-10">Frequently Asked Questions</h3>
           <Accordion type="single" collapsible value={openFaq} onValueChange={setOpenFaq} className="max-w-3xl mx-auto">
             {faqs.map((faq, index) => (
               <motion.div
@@ -474,12 +488,10 @@ const About = () => {
                   value={`item-${index}`} 
                   className="border border-border rounded-xl mb-3 md:mb-4 overflow-hidden bg-white/5 backdrop-blur-sm transition-all duration-300 hover:border-kc-blue/40"
                 >
-                <AccordionTrigger className="px-4 md:px-6 py-3.5 md:py-5 text-left font-semibold hover:no-underline">
-                  <div className="flex items-center justify-between w-full">
-                    <span>{faq.question}</span>
-                  </div>
+                <AccordionTrigger className="px-4 md:px-6 pb-4 md:pb-6 text-left font-normal hover:no-underline">
+                  <span className="text-body md:text-body-lg font-body text-foreground">{faq.question}</span>
                 </AccordionTrigger>
-                <AccordionContent className="px-4 md:px-6 pb-4 md:pb-6 text-muted-foreground">
+                <AccordionContent className="px-4 md:px-6 pb-4 md:pb-6 text-body font-body text-muted-foreground">
                   {faq.answer}
                 </AccordionContent>
                 </AccordionItem>

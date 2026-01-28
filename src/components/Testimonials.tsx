@@ -1,10 +1,13 @@
+/**
+ * Testimonials Component - Student success stories and feedback
+ */
 import React from "react";
 import { Star, Quote } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { motion } from "framer-motion";
 
-// Stories focused on science education impact at KC
+// Student testimonials - Real feedback from KC students and success stories
 const TESTIMONIALS = [
   {
     name: "Martha A.",

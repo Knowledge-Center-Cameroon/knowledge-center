@@ -83,13 +83,13 @@ const Footer = () => {
                   </div>
                 </Link>
 
-                <p className="text-slate-400 text-lg leading-relaxed max-w-sm mb-8">
+                <p className="text-kc-gray/90 text-base leading-relaxed max-w-sm mb-8">
                   Building a strong nexus of future-ready STEM leaders. For the betterment of humanity.
                 </p>
               </div>
 
-              <div className="max-w-md">
-                <h5 className="text-white font-semibold mb-4">
+              <div className="max-w-sm">
+                <h5 className="text-white font-semibold mb-4 text-base">
                   Stay updated with our newsletter
                 </h5>
 
@@ -99,24 +99,24 @@ const Footer = () => {
                     placeholder="Enter your email address"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="h-14 bg-white/5 border-white/10 rounded-2xl pl-6 pr-32 text-white placeholder:text-slate-500 focus:ring-kc-blue/50"
+                    className="h-11 bg-white/5 border-white/20 rounded-xl pl-4 pr-28 text-sm text-white placeholder:text-kc-gray/60 focus:ring-kc-blue/50 focus:border-kc-blue/50"
                     required
                   />
 
                   <Button
                     disabled={submitting}
-                    className="absolute right-1.5 top-1.5 h-11 px-6 rounded-xl bg-kc-blue hover:bg-kc-blue/90 text-white font-bold"
+                    className="absolute right-1 top-1 h-9 px-4 text-sm rounded-lg bg-kc-blue hover:bg-kc-blue/90 text-white font-bold"
                   >
                     {submitting ? "..." : (
                       <>
                         <span className="hidden sm:inline mr-2">Join</span>
-                        <Send className="h-4 w-4" />
+                        <Send className="h-3.5 w-3.5" />
                       </>
                     )}
                   </Button>
                 </form>
 
-                <p className="mt-3 text-[11px] text-slate-500 uppercase tracking-widest font-medium">
+                <p className="mt-2.5 text-xs text-kc-gray/80 uppercase tracking-widest font-medium">
                   No spam.
                 </p>
               </div>
@@ -134,8 +134,8 @@ const Footer = () => {
                       to={`/${item.toLowerCase().replace(" ", "")}`}
                       className={({ isActive }) =>
                         isActive
-                          ? "text-kc-blue"
-                          : "text-slate-400 hover:text-white transition-colors"
+                          ? "text-kc-blue font-semibold"
+                          : "text-kc-gray/90 hover:text-white transition-colors"
                       }
                     >
                       {item}
@@ -151,10 +151,10 @@ const Footer = () => {
                 Programs
               </h4>
               <ul className="space-y-4">
-                <li><Link to="/projects/stem" className="text-slate-400 hover:text-white">STEM Competition</Link></li>
-                <li><Link to="/projects/summer-education" className="text-slate-400 hover:text-white">Summer School</Link></li>
-                <li><Link to="/projects/weekend-school" className="text-slate-400 hover:text-white">Weekend School</Link></li>
-                <li><Link to="/projects" className="text-slate-400 hover:text-white">Global Scholars</Link></li>
+                <li><Link to="/projects/stem" className="text-kc-gray/90 hover:text-white transition-colors">STEM Competition</Link></li>
+                <li><Link to="/projects/summer-education" className="text-kc-gray/90 hover:text-white transition-colors">Summer School</Link></li>
+                <li><Link to="/projects/weekend-school" className="text-kc-gray/90 hover:text-white transition-colors">Weekend School</Link></li>
+                <li><Link to="/projects" className="text-kc-gray/90 hover:text-white transition-colors">Global Scholars</Link></li>
               </ul>
             </div>
 
@@ -164,7 +164,7 @@ const Footer = () => {
                 Get In Touch
               </h4>
 
-              <div className="space-y-6 text-slate-300 text-sm">
+              <div className="space-y-6 text-kc-gray/90 text-sm">
                 <div className="flex gap-4">
                   <div className="bg-white/5 p-2 rounded-lg">
                     <MapPin className="h-5 w-5 text-kc-blue" />
@@ -195,7 +195,7 @@ const Footer = () => {
       {/* Bottom Bar */}
       <div className="border-t border-white/5 bg-[#080A0E] py-8">
         <div className="container mx-auto px-6 max-w-7xl flex flex-col md:flex-row justify-between items-center gap-6">
-          <p className="text-sm text-slate-500">
+          <p className="text-sm text-kc-gray">
             &copy; {new Date().getFullYear()} Knowledge Center.
           </p>
 
@@ -206,7 +206,7 @@ const Footer = () => {
                 href={href}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-11 h-11 bg-white/5 hover:bg-kc-blue text-slate-400 hover:text-white rounded-2xl flex items-center justify-center transition-all border border-white/5"
+                className="w-11 h-11 bg-white/5 hover:bg-kc-blue text-kc-gray hover:text-white rounded-2xl flex items-center justify-center transition-all border border-white/5"
               >
                 <Icon className="h-5 w-5" />
               </a>

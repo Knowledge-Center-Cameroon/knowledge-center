@@ -62,7 +62,7 @@ const Activities = () => {
       <div className="container mx-auto px-4 lg:px-8">
         {/* Header */}
         <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-heading font-bold text-center mb-12">
+          <h2 className="text-h2 md:text-h1 font-heading font-bold text-center mb-12">
             <span className="text-kc-blue">Our</span> <span className="text-kc-red">Activities</span>
           </h2>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
@@ -101,7 +101,7 @@ const Activities = () => {
                       <activity.icon className="h-8 w-8 text-white" />
                     </div>
                     
-                    <h3 className="text-3xl font-heading font-bold mb-4">{activity.title}</h3>
+                    <h3 className="text-h3 font-heading font-bold mb-4">{activity.title}</h3>
                     
                     <p className="text-muted-foreground leading-relaxed mb-4">
                       {activity.description}

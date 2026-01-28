@@ -105,19 +105,19 @@ const Contact = () => {
       icon: MapPin,
       title: "Visit Us",
       details: ["Buea, Southwest Region", "Cameroon"],
-      color: "text-blue-600"
+      color: "text-kc-blue"
     },
     {
       icon: Phone,
       title: "Call Us",
       details: ["+237 680 789 894", "+237 650 986 127"],
-      color: "text-green-600"
+      color: "text-kc-red"
     },
     {
       icon: Mail,
       title: "Email Us",
       details: ["kcstemhub@gmail.com"],
-      color: "text-purple-600"
+      color: "text-kc-black"
     },
 
   ];

@@ -31,12 +31,28 @@ const impactCards = [
   }
 ];
 
+/**
+ * Donate Page - Donation landing with impact messaging
+ * 
+ * SEO Structure:
+ * - H1: Primary donation headline
+ * - H2: Impact card headings
+ * - CTA buttons with clear action text
+ * - Structured data for donation organizations
+ * 
+ * Design:
+ * - Hero section with mission statement
+ * - Impact cards showing donation effects
+ * - Multiple CTA options
+ * - Responsive for mobile giving
+ */
 const DonatePage: React.FC = () => {
   const { ref, y } = useParallax(40);
+  
   useSeo({
-    title: "Donate | Knowledge Center",
+    title: "Donate to Knowledge Center | Support STEM Education",
     description:
-      "Support Knowledge Center's STEM education programs and help empower young students across Cameroon.",
+      "Support Knowledge Center's mission to empower young Cameroonians through quality STEM education. Your donation helps us reach more students.",
   });
   return (
     <motion.section
@@ -72,7 +88,7 @@ const DonatePage: React.FC = () => {
             <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
               {/* Hero Content */}
               <div className="text-center lg:text-left">
-                <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
+                <h1 className="text-h1 md:text-h1 lg:text-h1 font-heading font-bold mb-6">
                   Support Our <span className="text-gradient bg-gradient-to-r from-kc-blue to-kc-red bg-clip-text text-transparent">Mission</span>
                 </h1>
                 <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto lg:mx-0 leading-relaxed">
@@ -133,7 +149,7 @@ const DonatePage: React.FC = () => {
                   <card.icon className={`w-7 h-7 text-kc-${card.color}`} />
                 </motion.div>
                 
-                <h3 className="text-xl md:text-2xl font-heading font-bold mb-3 group-hover:text-kc-blue transition-colors">
+                <h3 className="text-h5 md:text-h4 font-heading font-bold mb-3 group-hover:text-kc-blue transition-colors">
                   {card.title}
                 </h3>
                 
@@ -160,7 +176,7 @@ const DonatePage: React.FC = () => {
             
             <div className="flex flex-col md:flex-row items-center justify-between gap-8 md:gap-12">
               <div className="text-center md:text-left">
-                <h2 className="text-2xl md:text-3xl font-bold mb-4">
+                <h2 className="text-h2 md:text-h2 font-heading font-bold mb-4">
                   Ready to Make a <span className="text-gradient bg-gradient-to-r from-kc-blue to-kc-red bg-clip-text text-transparent">Difference</span>?
                 </h2>
                 <p className="text-lg text-muted-foreground">

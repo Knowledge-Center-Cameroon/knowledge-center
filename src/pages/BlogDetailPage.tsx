@@ -150,7 +150,7 @@ const BlogDetailPage: React.FC = () => {
         className="container mx-auto px-4 lg:px-8 py-16 min-h-screen flex items-center justify-center"
       >
         <div className="text-center">
-          <h2 className="text-2xl font-bold mb-4">Post not found</h2>
+          <h2 className="text-h3 font-heading font-bold mb-4">Post not found</h2>
           <Button asChild variant="blue">
             <Link to="/blog">Back to Blog</Link>
           </Button>
@@ -225,7 +225,7 @@ const BlogDetailPage: React.FC = () => {
               )}
             </div>
 
-            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 bg-gradient-to-r from-kc-blue to-kc-red bg-clip-text text-transparent">
+            <h1 className="text-h1 md:text-h1 lg:text-h1 font-heading font-bold mb-4 bg-gradient-to-r from-kc-blue to-kc-red bg-clip-text text-transparent">
               {post.title}
             </h1>
 
@@ -319,7 +319,7 @@ const BlogDetailPage: React.FC = () => {
           transition={{ duration: 0.4, delay: 0.5 }}
           className="mt-12 pt-8 border-t border-border/50"
         >
-          <h3 className="text-2xl font-bold mb-6">Comments ({comments.length})</h3>
+          <h3 className="text-h3 font-heading font-bold mb-6">Comments ({comments.length})</h3>
 
           {/* Comment Form */}
           {user?.id ? (

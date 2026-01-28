@@ -44,12 +44,12 @@ const StemRegistrationPage: React.FC = () => {
           </div>
 
           {/* Removed top Start Registration button. */}
-          <div className="relative">
-            <div className=" bg-gradient-to-br from-kc-blue/20 to-kc-red/20 rounded-2xl border border-white/10 overflow-hidden">
+          <div className="relative max-w-4xl mx-auto mb-16 flex justify-center">
+            <div className="bg-gradient-to-br from-kc-blue/20 to-kc-red/20 rounded-2xl border border-white/10 overflow-hidden shadow-lg max-w-2xl">
               <img
                 src={flyer}
                 alt="Students at Knowledge Center Cameroon during a STEM activity"
-                className="w-full h-full object-cover"
+                className="w-full h-auto object-contain"
                 loading="lazy"
                 decoding="async"
               />
@@ -146,7 +146,14 @@ const StemRegistrationPage: React.FC = () => {
               textPrimaryColor="#111827"
               textSecondaryColor="#FFFFFF"
               className="rounded-full"
-              onClick={() => {/* wire to brochure link */}}
+              onClick={() => {
+                const link = document.createElement('a');
+                link.href = flyer;
+                link.download = 'KC-STEM-Competition-Brochure.jpeg';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+              }}
             />
           </div>
         </div>

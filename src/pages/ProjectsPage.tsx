@@ -38,14 +38,30 @@ const cardVariants = {
   }
 };
 
+/**
+ * Projects Page - Showcase of Knowledge Center programs and initiatives
+ * 
+ * SEO Structure:
+ * - H1: "Our Projects"
+ * - H2: Project cards with descriptive titles
+ * - Category filtering for improved navigation
+ * - Proper image alt text describing each project
+ * 
+ * Design:
+ * - Grid layout with card hover effects
+ * - Search and filter functionality
+ * - Smooth animations on load
+ * - Responsive design (1, 2, 3 columns)
+ */
 const ProjectsPage: React.FC = () => {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = React.useState("");
   const [selectedCategory, setSelectedCategory] = React.useState<string>("all");
+  
   useSeo({
-    title: "Projects | Knowledge Center",
+    title: "Our Projects | Knowledge Center - STEM Programs",
     description:
-      "Explore Knowledge Center's flagship programs including the National STEM Competition, Summer Education Program, Weekend School, KC Prepa, and Global Scholars Program.",
+      "Discover Knowledge Center's innovative STEM programs: National STEM Competition, Summer Education Program, Weekend School, KC Prepa, and Global Scholars Program.",
   });
   
   // Get unique categories

@@ -6,6 +6,17 @@ import { Link, NavLink, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
 import { prefetchRoute } from "@/route-prefetch";
 
+/**
+ * Navigation Component - Primary site navigation
+ * 
+ * Features:
+ * - Sticky header with scroll-aware shadow
+ * - Desktop: Animated sliding pill indicator
+ * - Mobile: Collapsible menu with smooth animations
+ * - Semantic HTML with ARIA labels for accessibility
+ * - Route prefetching on hover/focus
+ * - Consistent styling using design tokens
+ */
 const Navigation = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -56,17 +67,22 @@ const Navigation = () => {
       className={cn(
         "fixed top-0 left-0 right-0 z-50 transition-smooth",
         "bg-white/95 backdrop-blur-md border-b border-border",
-        isScrolled ? "shadow-elegant" : "shadow-sm/0"
+        isScrolled ? "shadow-elegant" : "shadow-sm"
       )}
       role="banner"
     >
       <nav
-        className="container mx-auto px-3 sm:px-4 lg:px-8 font-heading"
+        className="container mx-auto px-3 sm:px-4 lg:px-8 font-body"
         aria-label="Primary"
       >
         <div className="flex items-center justify-between h-16 lg:h-20">
-          {/* Logo */}
-          <Link to="/" className="flex items-center gap-3" onClick={(e) => handleNavClick(e, "/")}>
+          {/* Logo: Poppins bold heading font */}
+          <Link
+            to="/"
+            className="flex items-center gap-3 hover:opacity-80 transition-opacity duration-300"
+            onClick={(e) => handleNavClick(e, "/")}
+            aria-label="Knowledge Center home"
+          >
             <img
               src="/logo.png"
               alt="Knowledge Center Logo"
@@ -80,20 +96,20 @@ const Navigation = () => {
             </div>
           </Link>
 
-          {/* Desktop Navigation */}
+          {/* Desktop Navigation: Animated sliding pill with Montserrat text */}
           <div className="hidden lg:block relative">
             {/* Sliding pill container: dynamic equal columns */}
             <div
               className="relative grid items-center"
               style={{ gridTemplateColumns: `repeat(${navCount}, minmax(0, 1fr))` }}
             >
-              {/* Sliding pill */}
+              {/* Animated sliding pill background */}
               <motion.span
                 layout
                 initial={{ left: 0 }}
                 animate={{ left: `calc((100% / ${navCount}) * ${activeIndex})` }}
                 transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-                className="absolute top-0 bottom-0 my-auto h-10 rounded-full bg-neutral-900 shadow-lg"
+                className="absolute top-0 bottom-0 my-auto h-10 rounded-full bg-kc-black shadow-lg"
                 style={{ width: `calc(100%/${navCount})` }}
               />
               {navItems.map((item) => (
@@ -106,13 +122,14 @@ const Navigation = () => {
                   end={item.to === "/" ? true : undefined}
                   className={({ isActive }) =>
                     cn(
-                      "relative z-10 transition-smooth font-semibold",
+                      "relative z-10 transition-smooth font-semibold font-body",
                       "px-3 py-2 text-sm text-center",
                       isActive
                         ? "text-white drop-shadow-sm"
-                        : "text-foreground hover:text-foreground"
+                        : "text-foreground hover:text-foreground/80"
                     )
                   }
+                  aria-current={location.pathname === item.to ? "page" : undefined}
                 >
                   {item.label}
                 </NavLink>
@@ -120,13 +137,33 @@ const Navigation = () => {
             </div>
           </div>
 
-          {/* CTA Buttons */}
-          <div className="hidden lg:flex items-center space-x-3">
-            <Button asChild variant="blackOutline" size="sm">
-              <Link to="/donate" onMouseEnter={handlePrefetch("/donate")} onFocus={handlePrefetch("/donate")}>Donate</Link>
+          {/* CTA Buttons: Brand blue and black outline */}
+          <div className="hidden lg:flex items-center gap-3">
+            <Button
+              asChild
+              variant="blackOutline"
+              size="sm"
+              className="font-semibold"
+            >
+              <Link
+                to="/donate"
+                onMouseEnter={handlePrefetch("/donate")}
+                onFocus={handlePrefetch("/donate")}
+              >
+                Donate
+              </Link>
             </Button>
-            <Button asChild variant="blue" size="sm">
-              <Link to="/stem" onMouseEnter={handlePrefetch("/stem")} onFocus={handlePrefetch("/stem")}>
+            <Button
+              asChild
+              variant="blue"
+              size="sm"
+              className="font-semibold"
+            >
+              <Link
+                to="/stem"
+                onMouseEnter={handlePrefetch("/stem")}
+                onFocus={handlePrefetch("/stem")}
+              >
                 STEM Reg.
               </Link>
             </Button>
@@ -136,7 +173,7 @@ const Navigation = () => {
           <Button
             variant="ghost"
             size="icon"
-            className="lg:hidden"
+            className="lg:hidden text-foreground"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             aria-label={isMobileMenuOpen ? "Close navigation menu" : "Open navigation menu"}
             aria-expanded={isMobileMenuOpen}
@@ -150,7 +187,7 @@ const Navigation = () => {
           </Button>
         </div>
 
-        {/* Mobile Menu */}
+        {/* Mobile Menu: Montserrat text, brand colors */}
         {isMobileMenuOpen && (
           <div className="lg:hidden absolute top-full left-0 right-0 px-3 pb-3">
             <motion.div
@@ -158,14 +195,14 @@ const Navigation = () => {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -8 }}
               transition={{ duration: 0.18, ease: [0.22, 1, 0.36, 1] }}
-              className="bg-white/95 backdrop-blur-md border border-border shadow-xl rounded-2xl overflow-hidden"
+              className="bg-white/95 backdrop-blur-md border border-border shadow-elevated rounded-2xl overflow-hidden"
               id="mobile-nav"
             >
-              <div className="px-4 py-3 border-b border-border/70">
-                <span className="text-sm font-semibold text-foreground/80">Menu</span>
+              <div className="px-4 py-3 border-b border-border/70 bg-kc-blue/5">
+                <span className="text-sm font-semibold text-foreground font-body">Navigation</span>
               </div>
               <div className="py-2">
-                {navItems.map((item, idx) => (
+                {navItems.map((item) => (
                   <NavLink
                     key={item.to}
                     to={item.to}
@@ -173,22 +210,47 @@ const Navigation = () => {
                     end={item.to === "/" ? true : undefined}
                     className={({ isActive }) =>
                       cn(
-                        "block w-full text-left py-3 transition-smooth font-medium",
+                        "block w-full text-left py-3 transition-smooth font-semibold font-body",
                         "px-5",
-                        isActive ? "bg-neutral-900 text-white" : "text-foreground hover:bg-black/5"
+                        isActive
+                          ? "bg-kc-black text-white"
+                          : "text-foreground hover:bg-muted"
                       )
                     }
+                    aria-current={location.pathname === item.to ? "page" : undefined}
                   >
                     {item.label}
                   </NavLink>
                 ))}
               </div>
               <div className="px-4 py-4 border-t border-border/70 grid grid-cols-2 gap-3">
-                <Button asChild variant="blackOutline" className="w-full" onClick={closeMobile}>
-                  <Link to="/donate" onMouseEnter={handlePrefetch("/donate")} onFocus={handlePrefetch("/donate")}>Donate</Link>
+                <Button
+                  asChild
+                  variant="blackOutline"
+                  className="w-full font-semibold"
+                  onClick={closeMobile}
+                >
+                  <Link
+                    to="/donate"
+                    onMouseEnter={handlePrefetch("/donate")}
+                    onFocus={handlePrefetch("/donate")}
+                  >
+                    Donate
+                  </Link>
                 </Button>
-                <Button asChild variant="blue" className="w-full" onClick={closeMobile}>
-                  <Link to="/stem" onMouseEnter={handlePrefetch("/stem")} onFocus={handlePrefetch("/stem")}>STEM</Link>
+                <Button
+                  asChild
+                  variant="blue"
+                  className="w-full font-semibold"
+                  onClick={closeMobile}
+                >
+                  <Link
+                    to="/stem"
+                    onMouseEnter={handlePrefetch("/stem")}
+                    onFocus={handlePrefetch("/stem")}
+                  >
+                    STEM
+                  </Link>
                 </Button>
               </div>
             </motion.div>

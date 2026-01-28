@@ -1,31 +1,45 @@
 import React from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion } from "framer-motion";
 import About from "@/components/About";
 import { useParallax } from "@/hooks/use-parallax";
 import { useSeo } from "@/hooks/useSeo";
 
+/**
+ * About Page - Organization story, mission, values, and team
+ * 
+ * SEO Structure:
+ * - H1: "About Knowledge Center"
+ * - H2: Section headings (Mission, Team, Values, etc.)
+ * - Semantic article/section elements
+ * - Proper image alt text with context
+ * 
+ * Design:
+ * - Montserrat body text, Poppins headings
+ * - Blue/red accent colors
+ * - Consistent spacing and section padding
+ * - Smooth fade-in animation
+ */
 const AboutPage: React.FC = () => {
-  const { scrollY } = useScroll();
   const { ref: heroRef, y } = useParallax(40);
+  
   useSeo({
-    title: "About | Knowledge Center",
+    title: "About Knowledge Center | STEM Education in Cameroon",
     description:
-      "Learn about Knowledge Center Cameroon, our mission to build future-ready STEM leaders, and the team behind our programs in Buea.",
+      "Discover Knowledge Center's mission to build future-ready STEM leaders through innovative programs, mentorship, and hands-on learning in Buea, Cameroon.",
   });
   
   return (
-    <motion.div
+    <motion.article
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.6 }}
-      className="min-h-screen relative"
+      className="min-h-screen w-full"
     >
-
-      
-      <div className="container mx-auto px-4 lg:px-8">
+      {/* Main content container with consistent padding */}
+      <div className="container-wide" ref={heroRef}>
         <About />
       </div>
-    </motion.div>
+    </motion.article>
   );
 };
 

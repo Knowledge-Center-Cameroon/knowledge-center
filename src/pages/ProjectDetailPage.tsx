@@ -189,7 +189,7 @@ const ProjectDetailContent: React.FC<ProjectDetailContentProps> = ({ project }) 
             className="text-center max-w-4xl mx-auto"
           >
             <motion.h1
-              className="text-3xl md:text-4xl lg:text-5xl font-heading font-bold mb-4"
+              className="text-h1 md:text-h1 lg:text-h1 font-heading font-bold mb-4"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.3 }}
@@ -271,7 +271,7 @@ const ProjectDetailContent: React.FC<ProjectDetailContentProps> = ({ project }) 
                   className="group"
                 >
                   <motion.h2
-                    className="text-xl md:text-2xl font-heading font-semibold mb-2 group-hover:text-kc-blue transition-colors duration-300"
+                    className="text-h4 md:text-h3 font-heading font-semibold mb-2 group-hover:text-kc-blue transition-colors duration-300"
                     whileHover={{ x: 5 }}
                   >
                     {s.title}
@@ -307,7 +307,7 @@ const ProjectDetailContent: React.FC<ProjectDetailContentProps> = ({ project }) 
                       transition={{ duration: 0.2 }}
                       className={`rounded-2xl px-4 py-5 flex flex-col justify-between shadow-elegant bg-kc-blue text-white`}
                     >
-                      <div className="text-2xl md:text-3xl font-heading font-bold leading-none mb-2">{stat.value}</div>
+                      <div className="text-h4 md:text-h3 font-heading font-bold leading-none mb-2">{stat.value}</div>
                       <p className="text-xs md:text-sm text-white/90">
                         {stat.label}
                       </p>
@@ -328,7 +328,7 @@ const ProjectDetailContent: React.FC<ProjectDetailContentProps> = ({ project }) 
           transition={{ duration: 0.6, delay: 0.1 }}
         >
           <motion.h2
-            className="text-2xl font-heading font-semibold mb-4"
+            className="text-h3 font-heading font-semibold mb-4"
             initial={{ opacity: 0, x: -10 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
@@ -393,7 +393,7 @@ const ProjectDetailContent: React.FC<ProjectDetailContentProps> = ({ project }) 
             <CardContent className="p-6 md:p-8">
               <div className="flex items-center gap-3 mb-6">
                 <div className="h-8 w-1 bg-gradient-to-b from-kc-blue to-kc-red rounded-full" />
-                <h2 className="text-xl md:text-2xl font-heading font-semibold">Additional Details</h2>
+                <h2 className="text-h4 md:text-h3 font-heading font-semibold">Additional Details</h2>
               </div>
               <ul className="space-y-2">
                 {project.details.map((d, i) => (
@@ -426,7 +426,7 @@ const ProjectDetailContent: React.FC<ProjectDetailContentProps> = ({ project }) 
                     <CardContent className="p-6 text-center relative overflow-hidden">
                       <div className="absolute inset-0 bg-gradient-to-br from-kc-blue/5 to-kc-red/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                       <div className="relative">
-                        <div className="text-3xl md:text-4xl font-heading font-bold mb-1 group-hover:text-kc-blue transition-colors">{s.value}</div>
+                        <div className="text-h3 md:text-h2 font-heading font-bold mb-1 group-hover:text-kc-blue transition-colors">{s.value}</div>
                         <div className="text-sm md:text-base text-foreground/80">{s.label}</div>
                       </div>
                     </CardContent>
@@ -463,7 +463,7 @@ const ProjectDetailContent: React.FC<ProjectDetailContentProps> = ({ project }) 
                 </div>
                 <div>
                   <motion.h3
-                    className="text-white text-2xl md:text-3xl font-heading font-bold mb-2"
+                    className="text-white text-h3 md:text-h2 font-heading font-bold mb-2"
                     initial={{ opacity: 0, y: 8 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
