@@ -37,7 +37,7 @@ const StemRegistrationManagePage: React.FC = () => {
     >
       <div className="max-w-5xl mx-auto">
         <div className="text-center mb-8">
-          <h1 className="heading-2 mb-2">
+          <h1 className="heading-1 mb-2">
             Manage STEM <span className="text-kc-blue">Registration</span>
           </h1>
           <p className="text-muted-foreground">
@@ -51,3 +51,4 @@ const StemRegistrationManagePage: React.FC = () => {
 };
 
 export default StemRegistrationManagePage;
+

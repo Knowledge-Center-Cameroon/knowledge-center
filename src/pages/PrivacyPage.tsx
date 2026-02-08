@@ -10,7 +10,7 @@ const PrivacyPage: React.FC = () => {
       className="container mx-auto px-4 lg:px-8 py-12"
     >
       <div className="max-w-3xl space-y-4">
-        <h1 className="text-h1 font-heading font-bold">Privacy Policy</h1>
+        <h1 className="heading-1">Privacy Policy</h1>
         <p className="text-muted-foreground">
           This is a placeholder for the Privacy Policy. Currently in development..
         </p>
@@ -20,3 +20,4 @@ const PrivacyPage: React.FC = () => {
 };
 
 export default PrivacyPage;
+

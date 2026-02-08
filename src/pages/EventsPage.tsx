@@ -90,7 +90,7 @@ const TimelineEvent: React.FC<{ event: Event; index: number; isUpcoming: boolean
       className={`flex gap-4 md:gap-8 mb-8 md:mb-10 items-start relative`}
     >
       {/* Timeline dot - centered on line on mobile, centered on vertical line on desktop */}
-      <div className={`flex flex-col items-center flex-shrink-0 z-10 ${mobileLineLeft ? "absolute left-3 transform -translate-x-1/2" : "md:absolute md:left-1/2 md:transform md:-translate-x-1/2 md:top-0"}`}>
+      <div className={`flex flex-col items-center flex-shrink-0 z-10 ${mobileLineLeft ? "absolute left-3.5 transform -translate-x-1/2" : "md:absolute md:left-1/2 md:transform md:-translate-x-1/2 md:top-0"}`}>
         <motion.div
           whileHover={{ scale: 1.25 }}
           className="w-6 h-6 rounded-full bg-kc-blue border-3 border-background flex items-center justify-center shadow-lg"
@@ -102,29 +102,22 @@ const TimelineEvent: React.FC<{ event: Event; index: number; isUpcoming: boolean
       {/* Card container - all cards on right on mobile, alternating on desktop */}
       <div className={`flex-1 ${isLeft ? "md:order-first md:flex md:justify-end md:pr-6" : ""}`}>
           <motion.div
-            whileHover={{ y: -6, backdrop: "blur(12px)" }}
-            className="group relative max-w-xs w-full overflow-hidden rounded-2xl transition-all duration-300 border-2 border-border"
-            style={{
-              background: "rgba(255, 255, 255, 0.7)",
-              backdropFilter: "blur(10px)"
-            }}
+            whileHover={{ y: -6 }}
+            className="group relative max-w-xs w-full overflow-hidden rounded-2xl border border-border bg-white shadow-card transition-all duration-300 hover:shadow-hover"
           >
-            {/* Gradient overlay */}
-            <div className="absolute inset-0 bg-gradient-to-br from-white/40 via-white/10 to-white/5 pointer-events-none" />
-            
             <div className="relative p-4 md:p-5 z-10">
               {event.badge && (
                 <motion.div
                   initial={{ opacity: 0, scale: 0.8 }}
                   animate={{ opacity: 1, scale: 1 }}
-                  className="inline-flex items-center gap-1.5 mb-3 rounded-full bg-kc-red/20 text-kc-red px-3 py-1 text-xs font-semibold border border-kc-red/40 backdrop-blur-sm"
+                  className="inline-flex items-center gap-1.5 mb-3 rounded-full bg-kc-blue/10 text-kc-blue px-3 py-1 text-xs font-semibold border border-kc-blue/30"
                 >
-                  <span className="w-1.5 h-1.5 rounded-full bg-kc-red" />
+                  <span className="w-1.5 h-1.5 rounded-full bg-kc-blue" />
                   {event.badge}
                 </motion.div>
               )}
 
-              <h3 className="text-sm md:text-base font-heading font-bold mb-2.5 text-foreground/90 line-clamp-2">
+              <h3 className="text-sm md:text-base font-heading font-bold mb-2.5 text-kc-blue line-clamp-2">
                 {event.title}
               </h3>
 
@@ -134,16 +127,16 @@ const TimelineEvent: React.FC<{ event: Event; index: number; isUpcoming: boolean
                   <span>{event.date}</span>
                 </div>
                 <div className="flex items-center gap-2 text-xs text-muted-foreground/80">
-                  <Clock className="h-3.5 w-3.5 text-kc-red flex-shrink-0" />
+                  <Clock className="h-3.5 w-3.5 text-kc-blue flex-shrink-0" />
                   <span>{event.time}</span>
                 </div>
                 <div className="flex items-center gap-2 text-xs text-muted-foreground/80">
-                  <MapPin className="h-3.5 w-3.5 text-kc-black flex-shrink-0" />
+                  <MapPin className="h-3.5 w-3.5 text-kc-blue flex-shrink-0" />
                   <span>{event.location}</span>
                 </div>
               </div>
 
-              <p className="text-xs text-foreground/70 mb-4 leading-relaxed line-clamp-3">
+              <p className="text-xs text-kc-black/80 mb-4 leading-relaxed line-clamp-3">
                 {event.description}
               </p>
 
@@ -217,10 +210,10 @@ const EventsPage = () => {
         {/* Header */}
         <Parallax style={{ y }} className="text-center mb-16 md:mb-20">
           <div className="h-1 w-28 mx-auto mb-3 bg-kc-blue rounded-full" />
-          <h1 className="text-h1 md:text-h1 font-heading font-bold mb-4">
-            <span className="text-kc-blue">Upcoming</span> <span className="text-kc-red">Events</span>
+          <h1 className="heading-1 mb-4">
+            <span className="text-kc-blue">Upcoming Events</span>
           </h1>
-          <p className="text-body-lg text-muted-foreground max-w-3xl mx-auto">
+          <p className="subheading max-w-3xl mx-auto">
             Join us for exciting STEM events, competitions, and workshops designed to inspire and educate young minds.
           </p>
         </Parallax>
@@ -230,10 +223,10 @@ const EventsPage = () => {
 
           {/* Mobile Timeline: Upcoming Events */}
           <div className="md:hidden">
-            <div className="relative pl-12">
-              <h2 className="text-h3 font-heading font-bold mb-8 text-kc-blue -ml-12">Upcoming Events</h2>
+            <div className="relative pl-12 pb-10">
+              <h2 className="heading-3 mb-8 text-kc-blue -ml-12">Upcoming Events</h2>
               {/* Mobile vertical line for upcoming events - starts below heading */}
-              <div className="absolute left-3 top-12 bottom-0 w-1 bg-gradient-to-b from-kc-blue via-kc-blue/50 to-kc-blue" style={{ zIndex: 0 }} />
+              <div className="absolute left-3.5 top-12 bottom-10 w-1 bg-kc-blue/40" style={{ zIndex: 0 }} />
               
               <div className="mb-12 relative z-5">
                 <AnimatePresence>
@@ -257,10 +250,10 @@ const EventsPage = () => {
 
             {/* Mobile Timeline: Past Events */}
             {past.length > 0 && (
-              <div className="relative pl-12 mt-8">
-                <h2 className="text-h3 font-heading font-bold mb-8 text-kc-black -ml-12">Past Events</h2>
+              <div className="relative pl-12 mt-8 pb-10">
+                <h2 className="heading-3 mb-8 text-kc-blue -ml-12">Past Events</h2>
                 {/* Mobile vertical line for past events - starts below heading */}
-                <div className="absolute left-3 top-12 bottom-0 w-1 bg-gradient-to-b from-kc-red/50 to-kc-red" style={{ zIndex: 0 }} />
+                <div className="absolute left-3.5 top-12 bottom-10 w-1 bg-kc-blue/20" style={{ zIndex: 0 }} />
                 
                 <div className="relative z-5">
                   <AnimatePresence>
@@ -273,7 +266,7 @@ const EventsPage = () => {
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
                       onClick={() => setExpandPast(true)}
-                      className="w-full flex items-center justify-center gap-2 py-3 px-6 rounded-full border-2 border-kc-black text-kc-black font-semibold hover:bg-kc-black/10 transition-colors"
+                      className="w-full flex items-center justify-center gap-2 py-3 px-6 rounded-full border-2 border-kc-blue text-kc-blue font-semibold hover:bg-kc-blue/10 transition-colors"
                     >
                       View {past.length - 3} More Events
                       <ChevronDown className="h-5 w-5" />
@@ -287,8 +280,11 @@ const EventsPage = () => {
           {/* Desktop Timeline */}
           <div className="hidden md:block">
             {/* Upcoming Events with vertical line */}
-            <div className="relative">
-              <div className="absolute left-1/2 transform -translate-x-1/2 w-1.5 bg-gradient-to-b from-kc-blue via-kc-blue/50 to-kc-blue hidden md:block" style={{ height: "calc(100% - 2rem)" }} />
+            <div className="relative pb-16">
+              <div
+                className="absolute left-1/2 transform -translate-x-1/2 w-1.5 bg-kc-blue/40 hidden md:block"
+                style={{ top: 0, bottom: hasMoreUpcoming && !expandUpcoming ? "4.5rem" : "0" }}
+              />
               
               <AnimatePresence>
                 {upcomingToShow.map((event, index) => (
@@ -300,7 +296,7 @@ const EventsPage = () => {
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="flex justify-center my-12 relative z-20"
+                  className="flex justify-center my-12 relative z-20 bg-white px-6"
                 >
                   <motion.button
                     whileHover={{ scale: 1.05 }}
@@ -318,12 +314,15 @@ const EventsPage = () => {
             {past.length > 0 && (
               <>
                 <div className="my-16 text-center relative z-10 bg-background py-4">
-                  <h2 className="text-h2 font-heading font-bold text-kc-black">Past Events</h2>
+                  <h2 className="heading-2 text-kc-blue">Past Events</h2>
                 </div>
 
                 {/* Past Events with vertical line */}
-                <div className="relative">
-                  <div className="absolute left-1/2 transform -translate-x-1/2 w-1.5 bg-gradient-to-b from-kc-red/50 to-kc-red hidden md:block" style={{ height: "calc(100% - 2rem)" }} />
+                <div className="relative pb-16">
+                  <div
+                    className="absolute left-1/2 transform -translate-x-1/2 w-1.5 bg-kc-blue/20 hidden md:block"
+                    style={{ top: 0, bottom: hasMorePast && !expandPast ? "4.5rem" : "0" }}
+                  />
                   
                   <AnimatePresence>
                     {pastToShow.map((event, index) => {
@@ -340,16 +339,16 @@ const EventsPage = () => {
                     <motion.div
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
-                      className="flex justify-center mt-12 relative z-20"
+                    className="flex justify-center mt-12 relative z-20 bg-white px-6"
                     >
                       <motion.button
                         whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                        onClick={() => setExpandPast(true)}
-                        className="flex items-center justify-center gap-2 py-3 px-8 rounded-full border-2 border-kc-black text-kc-black font-semibold hover:bg-kc-black/10 transition-colors"
-                      >
-                        View {past.length - 3} More Past Events
-                        <ChevronDown className="h-5 w-5" />
+                      whileTap={{ scale: 0.95 }}
+                      onClick={() => setExpandPast(true)}
+                      className="flex items-center justify-center gap-2 py-3 px-8 rounded-full border-2 border-kc-blue text-kc-blue font-semibold hover:bg-kc-blue/10 transition-colors"
+                    >
+                      View {past.length - 3} More Past Events
+                      <ChevronDown className="h-5 w-5" />
                       </motion.button>
                     </motion.div>
                   )}
@@ -364,3 +363,4 @@ const EventsPage = () => {
 };
 
 export default EventsPage;
+

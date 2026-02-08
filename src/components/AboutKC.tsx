@@ -47,7 +47,7 @@ const AboutKC: React.FC = () => {
     <section
       id="about-home"
       ref={ref as any}
-      className="bg-[#FAFBFF] py-24 rounded-3xl overflow-hidden"
+      className="bg-white py-24 rounded-3xl overflow-hidden"
     >
       <Parallax style={{ y }} className="container mx-auto px-6 lg:px-12">
         <div className="grid lg:grid-cols-2 gap-16 items-center">
@@ -60,7 +60,7 @@ const AboutKC: React.FC = () => {
             transition={{ duration: 0.6, ease: "easeOut" }}
             className="relative order-last lg:order-none"
           >
-            <div className="relative z-10 overflow-hidden rounded-[2rem] shadow-2xl shadow-blue-100/50">
+            <div className="relative z-10 overflow-hidden rounded-[2rem] shadow-card">
               <img
                 src={aboutImage}
                 alt="Knowledge Center students learning"
@@ -69,16 +69,16 @@ const AboutKC: React.FC = () => {
             </div>
 
             {/* Impact Badge */}
-            <div className="absolute -bottom-6 -right-6 z-20 bg-white p-6 rounded-3xl shadow-xl border border-slate-100 hidden sm:block">
+            <div className="absolute -bottom-6 -right-6 z-20 bg-white p-6 rounded-3xl shadow-xl border border-border hidden sm:block">
               <div className="flex items-center gap-4">
                 <div className="bg-kc-blue/10 p-3 rounded-2xl">
                   <Users className="h-6 w-6 text-kc-blue" />
                 </div>
                 <div>
-                  <p className="text-h5 font-heading font-bold text-foreground leading-none">
+                  <p className="text-h5 font-heading font-bold text-kc-black leading-none">
                     7,000+
                   </p>
-                  <p className="text-sm text-slate-500 font-medium">
+                  <p className="text-sm text-kc-black/70 font-medium">
                     Students Impacted
                   </p>
                 </div>
@@ -103,12 +103,12 @@ const AboutKC: React.FC = () => {
                 About Knowledge Center
               </div>
 
-              <h2 className="text-4xl md:text-5xl font-bold text-slate-900 tracking-tight leading-[1.15]">
+              <h2 className="heading-2">
                 What is <span className="text-kc-blue">Knowledge Center?</span>
               </h2>
 
-              <p className="mt-6 text-slate-600 text-lg leading-relaxed">
-                <strong className="text-slate-900 font-semibold">
+              <p className="mt-6 text-kc-black/80 text-lg leading-relaxed">
+                <strong className="text-kc-blue font-semibold">
                   Knowledge Center (KC)
                 </strong>{" "}
                 is an education innovation hub re-imagining how African talent is
@@ -131,16 +131,16 @@ const AboutKC: React.FC = () => {
                     viewport={{ once: true }}
                     transition={{ duration: 0.4, delay: index * 0.1 }}
                     whileHover={{ y: -5 }}
-                    className="bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm hover:shadow-md transition-all duration-300"
+                    className="bg-white p-6 rounded-[2rem] border border-border shadow-sm hover:shadow-md transition-all duration-300"
                   >
-                    <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-slate-50 text-kc-blue group-hover:bg-kc-blue group-hover:text-white transition-colors duration-300">
+                    <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-kc-blue/10 text-kc-blue group-hover:bg-kc-blue group-hover:text-white transition-colors duration-300">
                       <Icon className="h-6 w-6" />
                     </div>
 
-                    <h3 className="text-lg font-bold text-slate-900 mb-2">
+                    <h3 className="text-lg font-bold text-kc-blue mb-2">
                       {item.title}
                     </h3>
-                    <p className="text-sm text-slate-500 leading-relaxed">
+                    <p className="text-sm text-kc-black/70 leading-relaxed">
                       {item.description}
                     </p>
                   </motion.div>
@@ -158,7 +158,7 @@ const AboutKC: React.FC = () => {
             >
               <Link
                 to="/projects"
-                className="group inline-flex items-center gap-2 rounded-full bg-kc-blue px-8 py-4 text-sm font-bold text-white shadow-lg shadow-blue-200 hover:bg-slate-900 transition-all duration-300"
+                className="group inline-flex items-center gap-2 rounded-full bg-kc-blue px-8 py-4 text-sm font-bold text-white shadow-card hover:bg-kc-blue-dark transition-all duration-300"
               >
                 Explore Projects
                 <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
@@ -166,7 +166,7 @@ const AboutKC: React.FC = () => {
 
               <Link
                 to="/about"
-                className="inline-flex items-center rounded-full border-2 border-slate-100 bg-white px-8 py-4 text-sm font-bold text-slate-700 hover:bg-slate-50 transition-all duration-300"
+                className="inline-flex items-center rounded-full border-2 border-kc-blue/30 bg-white px-8 py-4 text-sm font-bold text-kc-blue hover:bg-kc-blue/10 transition-all duration-300"
               >
                 Our Full Story
               </Link>
@@ -179,3 +179,4 @@ const AboutKC: React.FC = () => {
 };
 
 export default AboutKC;
+

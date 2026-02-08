@@ -52,7 +52,7 @@ const Home: React.FC = () => {
       {/* About KC Section: Brand story and mission */}
       <motion.section
         {...fadeUp}
-        className="bg-gradient-subtle py-16 md:py-20 lg:py-24"
+        className="bg-white py-16 md:py-20 lg:py-24"
       >
         <AboutKC />
       </motion.section>
@@ -65,7 +65,7 @@ const Home: React.FC = () => {
       {/* Projects Section: Showcase of work */}
       <motion.section
         {...fadeUp}
-        className="bg-gradient-subtle section-padding"
+        className="bg-white section-padding"
       >
         <Projects />
       </motion.section>

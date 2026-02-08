@@ -188,7 +188,7 @@ const StemRegistrationForm: React.FC<Props> = ({ onSubmitted, initialValues, mod
       <div className="flex items-center gap-3 mb-6">
         <div className="h-2 flex-1 rounded-full overflow-hidden bg-gray-200">
           <motion.div
-            className="h-full bg-gradient-to-r from-kc-blue to-kc-red"
+            className="h-full bg-kc-blue"
             initial={{ width: 0 }}
             animate={{ width: `${((stepIndex + 1) / steps.length) * 100}%` }}
             transition={{ duration: 0.4, ease: "easeInOut" }}
@@ -207,7 +207,7 @@ const StemRegistrationForm: React.FC<Props> = ({ onSubmitted, initialValues, mod
         </Button>
       </div>
 
-      <div className="bg-gradient-subtle rounded-2xl p-6 shadow-elegant">
+      <div className="bg-white rounded-2xl p-6 shadow-elegant">
         <h3 className="heading-3 mb-1">{steps[stepIndex].title}</h3>
         <p className="text-sm text-muted-foreground mb-6">Step {stepIndex + 1} of {steps.length}</p>
 
@@ -402,7 +402,7 @@ const StemRegistrationForm: React.FC<Props> = ({ onSubmitted, initialValues, mod
 
             {stepIndex === 5 && (
               <>
-                <div className="mb-6 p-4 bg-gradient-subtle rounded-lg border">
+                <div className="mb-6 p-4 bg-white rounded-lg border">
                   <h4 className="font-semibold mb-3">Payment Details</h4>
                   <div className="space-y-4">
                     <div className="p-3 bg-white rounded border">

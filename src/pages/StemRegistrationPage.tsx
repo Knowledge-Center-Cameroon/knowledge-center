@@ -30,9 +30,9 @@ const StemRegistrationPage: React.FC = () => {
             <StemBackground opacity={0.15} density={36} lineDistance={120} speed={0.45} showIcons={true} />
             <div className="relative z-10 text-center py-8">
               <div className="h-1 w-28 mx-auto mb-3 bg-kc-blue rounded-full" />
-                <h2 className="heading-2 mb-6">
-                  <span className="text-kc-blue">National</span> <span className="text-kc-red">STEM Competition</span>
-                </h2>
+                <h1 className="heading-1 mb-6">
+                  <span className="text-kc-blue">National</span> <span className="text-kc-blue">STEM Competition</span>
+                </h1>
                 <p className="subheading max-w-3xl mx-auto leading-relaxed">
                   Register for one of the nations most transformative experience.
                 </p>
@@ -45,7 +45,7 @@ const StemRegistrationPage: React.FC = () => {
 
           {/* Removed top Start Registration button. */}
           <div className="relative max-w-4xl mx-auto mb-16 flex justify-center">
-            <div className="bg-gradient-to-br from-kc-blue/20 to-kc-red/20 rounded-2xl border border-white/10 overflow-hidden shadow-lg max-w-2xl">
+            <div className="bg-white rounded-2xl border border-border overflow-hidden shadow-card max-w-2xl">
               <img
                 src={flyer}
                 alt="Students at Knowledge Center Cameroon during a STEM activity"
@@ -64,7 +64,7 @@ const StemRegistrationPage: React.FC = () => {
               viewport={{ once: true, amount: 0.2 }}
               transition={{ duration: 0.4 }}
               whileHover={{ y: -4 }}
-              className="bg-gradient-card p-6 rounded-2xl shadow-elegant"
+              className="bg-white p-6 rounded-2xl border border-border shadow-card"
             >
               <div className="flex items-center gap-3 mb-3">
                 <div className="w-10 h-10 rounded-full bg-kc-blue/10 flex items-center justify-center">
@@ -77,15 +77,15 @@ const StemRegistrationPage: React.FC = () => {
               </p>
               <div className="inline-flex items-center gap-2 mb-3">
                 <span className="px-2 py-0.5 text-xs rounded-full bg-kc-blue/10 text-kc-blue border border-kc-blue/20">Fastest Way</span>
-                <span className="px-2 py-0.5 text-xs rounded-full bg-kc-red/10 text-kc-red border border-kc-red/20">Limited Slots</span>
+                <span className="px-2 py-0.5 text-xs rounded-full bg-kc-blue/10 text-kc-blue border border-kc-blue/20">Limited Slots</span>
               </div>
               <ArrowButton
                 text="Register Now"
                 bgPrimaryColor="#ffffff"
-                bgSecondaryColor="#e11d48"
-                textPrimaryColor="#e11d48"
+                bgSecondaryColor="#2E3AF0"
+                textPrimaryColor="#2E3AF0"
                 textSecondaryColor="#ffffff"
-                className="rounded-full shadow-lg shadow-kc-red/20 animate-pulse hover:animate-none"
+                className="rounded-full"
                 onClick={handleStart}
               />
             </motion.div>
@@ -96,11 +96,11 @@ const StemRegistrationPage: React.FC = () => {
               viewport={{ once: true, amount: 0.2 }}
               transition={{ duration: 0.4, delay: 0.05 }}
               whileHover={{ y: -4 }}
-              className="bg-gradient-card p-6 rounded-2xl shadow-elegant"
+              className="bg-white p-6 rounded-2xl border border-border shadow-card"
             >
               <div className="flex items-center gap-3 mb-3">
-                <div className="w-10 h-10 rounded-full bg-kc-red/10 flex items-center justify-center">
-                  <MapPin className="w-5 h-5 text-kc-red" />
+                <div className="w-10 h-10 rounded-full bg-kc-blue/10 flex items-center justify-center">
+                  <MapPin className="w-5 h-5 text-kc-blue" />
                 </div>
                 <h3 className="font-semibold">Visit Our Head Office</h3>
               </div>
@@ -115,7 +115,7 @@ const StemRegistrationPage: React.FC = () => {
               viewport={{ once: true, amount: 0.2 }}
               transition={{ duration: 0.4, delay: 0.1 }}
               whileHover={{ y: -4 }}
-              className="bg-gradient-card p-6 rounded-2xl shadow-elegant"
+              className="bg-white p-6 rounded-2xl border border-border shadow-card"
             >
               <div className="flex items-center gap-3 mb-3">
                 <div className="w-10 h-10 rounded-full bg-kc-blue/10 flex items-center justify-center">

@@ -122,7 +122,7 @@ const Hero = () => {
               />
             </motion.div>
             <motion.div
-              className="absolute inset-0 bg-black/45"
+              className="absolute inset-0 bg-kc-blue/20"
               style={{ y: yOverlay }}
             />
           </motion.div>
@@ -140,7 +140,7 @@ const Hero = () => {
           className="relative grid gap-10 md:gap-12 lg:gap-16 items-center md:grid-cols-[minmax(0,1.1fr)_minmax(0,1.1fr)]"
         >
           {/* Main Content Card */}
-          <div className="relative bg-white rounded-[2.5rem] md:rounded-[3rem] px-6 pt-5 pb-7 sm:px-8 sm:pt-6 sm:pb-9 md:px-10 md:py-10 shadow-[0_18px_60px_rgba(211,92,132,0.12)] border border-kc-blue/20 max-w-xl">
+          <div className="relative bg-white rounded-[2.5rem] md:rounded-[3rem] px-6 pt-5 pb-7 sm:px-8 sm:pt-6 sm:pb-9 md:px-10 md:py-10 shadow-card border border-kc-blue/20 max-w-xl">
             {/* Mobile image slider */}
               <div className="relative mb-5 -mx-4 sm:-mx-6 md:hidden rounded-[2rem] overflow-hidden h-52 xs:h-56 sm:h-64">
                 {slides.map((s, idx) => (
@@ -155,26 +155,26 @@ const Hero = () => {
                       alt={s.title}
                       className="w-full h-full object-cover"
                     />
-                    <div className="absolute inset-0 bg-black/25" />
+                    <div className="absolute inset-0 bg-kc-blue/20" />
                   </motion.div>
                 ))}
                 <div className="absolute inset-x-4 bottom-4 flex items-center justify-between">
-                  <button onClick={prevSlide} className="bg-black/55 text-white p-2 rounded-full"><ChevronLeft className="h-4 w-4" /></button>
+                  <button onClick={prevSlide} className="bg-kc-blue/90 text-white p-2 rounded-full"><ChevronLeft className="h-4 w-4" /></button>
                   <div className="flex gap-1.5">
                     {slides.map((_, i) => (
                       <span key={i} className={`h-1.5 rounded-full transition-all ${i === currentSlide ? "bg-white w-5" : "bg-white/60 w-2"}`} />
                     ))}
                   </div>
-                  <button onClick={nextSlide} className="bg-black/55 text-white p-2 rounded-full"><ChevronRight className="h-4 w-4" /></button>
+                  <button onClick={nextSlide} className="bg-kc-blue/90 text-white p-2 rounded-full"><ChevronRight className="h-4 w-4" /></button>
                 </div>
               </div>
 
               {/* Logo Row */}
               <div className="flex items-center gap-3 mb-5 md:mb-6">
                 <AnimatedLogo size={68} />
-                <div className="hidden sm:flex flex-col text-xs font-semibold tracking-[0.22em] uppercase text-foreground/60">
+                <div className="hidden sm:flex flex-col text-xs font-semibold tracking-[0.22em] uppercase text-kc-black/60">
                   <span>Knowledge Center</span>
-                  <span className="text-foreground">Cameroon</span>
+                  <span className="text-kc-black">Cameroon</span>
                 </div>
               </div>
 
@@ -183,7 +183,7 @@ const Hero = () => {
                 <AnimatePresence mode="wait">
                   <motion.h1
                     key={`title-${currentSlide}`}
-                    className="heading-1 text-foreground leading-tight break-words max-w-[22ch]"
+                    className="heading-1 text-kc-blue leading-tight break-words max-w-[22ch]"
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -10 }}
@@ -209,7 +209,7 @@ const Hero = () => {
               <AnimatePresence mode="wait">
                 <motion.p
                   key={`desc-${currentSlide}`}
-                  className="text-sm sm:text-base md:text-[0.98rem] font-body text-foreground/70 leading-relaxed mb-6 md:mb-7"
+                  className="text-sm sm:text-base md:text-[0.98rem] font-body text-kc-black/70 leading-relaxed mb-6 md:mb-7"
                   initial={{ opacity: 0, y: 5 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -5 }}
@@ -223,7 +223,7 @@ const Hero = () => {
                 <ArrowButton
                   text="Our Impact"
                   bgPrimaryColor="hsl(220 100% 45%)"
-                  bgSecondaryColor="hsl(0 75% 50%)"
+                  bgSecondaryColor="hsl(220 100% 45%)"
                   textPrimaryColor="#ffffff"
                   textSecondaryColor="#ffffff"
                   className="rounded-full w-full sm:w-auto"
@@ -235,7 +235,7 @@ const Hero = () => {
                   bgSecondaryColor="hsl(220 100% 45%)"
                   textPrimaryColor="hsl(0 0% 10%)"
                   textSecondaryColor="#ffffff"
-                  className="rounded-full w-full sm:w-auto border border-kc-blue/30 backdrop-blur-[8px]"
+                  className="rounded-full w-full sm:w-auto border border-kc-blue/30 "
                   href="/about"
                 />
               </div>
@@ -257,7 +257,7 @@ const Hero = () => {
                 <button
                   type="button"
                   onClick={() => scrollToSection("about-home")}
-                  className="relative inline-flex items-center justify-center rounded-full border border-kc-blue/30 w-24 h-24 text-[0.6rem] uppercase tracking-widest text-foreground/60 hover:text-foreground transition-colors"
+                  className="relative inline-flex items-center justify-center rounded-full border border-kc-blue/30 w-24 h-24 text-[0.6rem] uppercase tracking-widest text-kc-black/60 hover:text-kc-black transition-colors"
                 >
                   <span className="absolute inset-[18%] rounded-full border border-dashed border-kc-blue/30" />
                   <span className="z-10 font-semibold">Scroll Down</span>
@@ -272,3 +272,6 @@ const Hero = () => {
 };
 
 export default Hero;
+
+
+

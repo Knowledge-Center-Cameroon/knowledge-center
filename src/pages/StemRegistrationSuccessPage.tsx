@@ -38,10 +38,10 @@ const StemRegistrationSuccessPage: React.FC = () => {
 
       <div className="max-w-2xl mx-auto text-center">
         <CheckCircle2 className="mx-auto h-14 w-14 text-kc-blue" />
-        <h1 className="heading-2 mt-3">Registration Started</h1>
+        <h1 className="heading-1 mt-3">Registration Started</h1>
         <p className="text-muted-foreground mt-2">We have initiated your payment. Keep your reference safe and follow the mobile money prompt on your phone to complete the transaction.</p>
 
-        <div className="mt-6 rounded-2xl bg-white/60 backdrop-blur-md border border-white/50 p-6 text-left shadow-elegant">
+        <div className="mt-6 rounded-2xl bg-white  border border-border p-6 text-left shadow-card">
           <div className="grid sm:grid-cols-2 gap-4 text-sm">
             <div>
               <div className="text-foreground/70">Reference</div>
@@ -83,7 +83,7 @@ const StemRegistrationSuccessPage: React.FC = () => {
 
         {/* Post-registration management hint */}
         <div className="mt-6">
-          <div className="max-w-xl mx-auto rounded-2xl bg-white/70 backdrop-blur-md border border-white/50 p-4 text-left">
+          <div className="max-w-xl mx-auto rounded-2xl bg-white  border border-border p-4 text-left">
             <div className="text-sm text-foreground/80">
               You can view and edit your registration details later if needed.
             </div>
@@ -106,3 +106,5 @@ const StemRegistrationSuccessPage: React.FC = () => {
 };
 
 export default StemRegistrationSuccessPage;
+
+

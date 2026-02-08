@@ -27,6 +27,10 @@ import KC from "@/assets/logo.png";
 import global from "@/assets/global.png"
 import stem1 from "@/assets/stem3.jpeg"
 import summer3 from "@/assets/summer3.jpg"
+import global1 from "@/assets/global-s (1).jpg"
+import global2 from "@/assets/global-s (2).jpg"
+import global3 from "@/assets/global-s (3).jpg"
+
 
 export const projects: Project[] = [
   {
@@ -117,7 +121,7 @@ export const projects: Project[] = [
     title: "Global Scholars Program",
     summary:
     "We prepare scholars for opportunities beyond borders—competitive scholarships, exchange programs, and global leadership.",
-    images: [global, KC, KC],
+    images: [global,global1, global2, global3],
     features: [
       "Mentorship from seasoned staff and alumni",
       "Application strategy for global opportunities",

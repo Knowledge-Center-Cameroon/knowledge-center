@@ -148,7 +148,7 @@ const Projects = () => {
   }, [activeTab]);
 
   return (
-    <section id="projects" className="py-16 lg:py-24 bg-slate-50">
+    <section id="projects" className="py-16 lg:py-24 bg-white">
       <div className="container mx-auto px-4 lg:px-8 max-w-6xl">
         {/* Header */}
         <motion.div
@@ -158,14 +158,14 @@ const Projects = () => {
           transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
           className="text-center mb-8 lg:mb-12"
         >
-          <div className="inline-flex items-center gap-2 bg-white border border-slate-200 rounded-full px-5 py-1.5 mb-4">
+          <div className="inline-flex items-center gap-2 bg-white border border-border rounded-full px-5 py-1.5 mb-4">
             <span className="h-2 w-2 rounded-full bg-kc-blue" />
-            <span className="text-xs font-semibold tracking-[0.18em] text-slate-600 uppercase">Programs</span>
+            <span className="text-xs font-semibold tracking-[0.18em] text-kc-black/70 uppercase">Programs</span>
           </div>
-          <h2 className="text-2xl md:text-3xl font-semibold text-slate-900 mb-3">
+          <h2 className="heading-2 mb-3">
             Signature learning experiences
           </h2>
-          <p className="text-sm md:text-base text-slate-600 max-w-3xl mx-auto leading-relaxed">
+          <p className="text-sm md:text-base text-kc-black/70 max-w-3xl mx-auto leading-relaxed">
             Explore the core programs that shape how Knowledge Center supports young scientists across Cameroon.
           </p>
         </motion.div>
@@ -200,12 +200,12 @@ const Projects = () => {
 
         {/* Tabs Navigation */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="relative w-full mb-6 p-1.5 rounded-2xl bg-white border border-slate-200 shadow-sm overflow-x-auto md:overflow-visible hidden md:grid md:grid-cols-3 gap-1.5">
+          <TabsList className="relative w-full mb-6 p-1.5 rounded-2xl bg-white border border-border shadow-sm overflow-x-auto md:overflow-visible hidden md:grid md:grid-cols-3 gap-1.5">
             <motion.div whileHover={{ y: -2 }} transition={{ type: "spring", stiffness: 260, damping: 18 }}>
               <TabsTrigger 
                 value="stem" 
                 ref={tabRefs.stem}
-                className="flex items-center whitespace-nowrap space-x-2 py-3 px-5 font-semibold rounded-xl transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-kc-blue/30 data-[state=active]:bg-kc-blue data-[state=active]:text-white data-[state=inactive]:text-slate-700 data-[state=inactive]:hover:bg-slate-50 border border-transparent data-[state=active]:border-kc-blue/70 shadow-sm snap-start"
+                className="flex items-center whitespace-nowrap space-x-2 py-3 px-5 font-semibold rounded-xl transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-kc-blue/30 data-[state=active]:bg-kc-blue data-[state=active]:text-white data-[state=inactive]:text-kc-black/80 data-[state=inactive]:hover:bg-white border border-transparent data-[state=active]:border-kc-blue/70 shadow-sm snap-start"
               >
                 <FlaskConical className="h-5 w-5" />
                 <span>STEM Program</span>
@@ -215,7 +215,7 @@ const Projects = () => {
               <TabsTrigger 
                 value="summer" 
                 ref={tabRefs.summer}
-                className="flex items-center whitespace-nowrap space-x-2 py-3 px-5 font-semibold rounded-xl transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-kc-blue/30 data-[state=active]:bg-kc-blue data-[state=active]:text-white data-[state=inactive]:text-slate-700 data-[state=inactive]:hover:bg-slate-50 border border-transparent data-[state=active]:border-kc-blue/70 shadow-sm snap-start"
+                className="flex items-center whitespace-nowrap space-x-2 py-3 px-5 font-semibold rounded-xl transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-kc-blue/30 data-[state=active]:bg-kc-blue data-[state=active]:text-white data-[state=inactive]:text-kc-black/80 data-[state=inactive]:hover:bg-white border border-transparent data-[state=active]:border-kc-blue/70 shadow-sm snap-start"
               >
                 <GraduationCap className="h-5 w-5" />
                 <span>Summer Education</span>
@@ -225,7 +225,7 @@ const Projects = () => {
               <TabsTrigger 
                 value="weekend" 
                 ref={tabRefs.weekend}
-                className="flex items-center whitespace-nowrap space-x-2 py-3 px-5 font-semibold rounded-xl transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-kc-blue/30 data-[state=active]:bg-kc-blue data-[state=active]:text-white data-[state=inactive]:text-slate-700 data-[state=inactive]:hover:bg-slate-50 border border-transparent data-[state=active]:border-kc-blue/70 shadow-sm snap-start"
+                className="flex items-center whitespace-nowrap space-x-2 py-3 px-5 font-semibold rounded-xl transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-kc-blue/30 data-[state=active]:bg-kc-blue data-[state=active]:text-white data-[state=inactive]:text-kc-black/80 data-[state=inactive]:hover:bg-white border border-transparent data-[state=active]:border-kc-blue/70 shadow-sm snap-start"
               >
                 <Calendar className="h-5 w-5" />
                 <span>Weekend School</span>
@@ -236,7 +236,7 @@ const Projects = () => {
           {/* Tab Content */}
           <TabsContent value={activeTab} className="mt-0">
             <motion.div whileHover={{ scale: 1.003 }} transition={{ duration: 0.2 }}>
-              <Card className="shadow-md overflow-hidden bg-white border border-slate-200 rounded-3xl">
+              <Card className="shadow-md overflow-hidden bg-white border border-border rounded-3xl">
                 <CardContent className="p-0">
                   <div className="grid lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1.1fr)] min-h-[320px]">
                     {/* Image Section */}
@@ -256,16 +256,16 @@ const Projects = () => {
                         <div className="w-12 h-12 rounded-2xl bg-kc-blue text-white flex items-center justify-center">
                           <Icon className="h-6 w-6" />
                         </div>
-                        <div className="text-xs font-semibold tracking-[0.18em] uppercase text-slate-500">
+                        <div className="text-xs font-semibold tracking-[0.18em] uppercase text-kc-black/60">
                           Core Program
                         </div>
                       </div>
                       
-                      <h3 className="text-xl sm:text-2xl font-heading font-bold mb-3 text-slate-900">
+                      <h3 className="text-xl sm:text-2xl font-heading font-bold mb-3 text-kc-blue">
                         {currentProject.title}
                       </h3>
                       
-                      <p className="text-slate-600 leading-relaxed mb-5 md:mb-6">
+                      <p className="text-kc-black/70 leading-relaxed mb-5 md:mb-6">
                         {currentProject.description}
                       </p>
 
@@ -281,7 +281,7 @@ const Projects = () => {
                             className="flex items-start space-x-3"
                           >
                             <CheckCircle className="h-5 w-5 text-kc-blue mt-1 flex-shrink-0" />
-                            <span className="text-slate-700">{feature}</span>
+                            <span className="text-kc-black/80">{feature}</span>
                           </motion.div>
                         ))}
                       </div>
@@ -289,8 +289,8 @@ const Projects = () => {
                       {/* Additional Details */}
                       {currentProject.details && (
                         <div className="mb-6 md:mb-8">
-                          <h4 className="font-semibold mb-3 text-slate-900">Additional Details</h4>
-                          <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm text-slate-700">
+                          <h4 className="font-semibold mb-3 text-kc-blue">Additional Details</h4>
+                          <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm text-kc-black/80">
                             {currentProject.details.map((d, i) => (
                               <li key={i} className="flex items-start gap-2">
                                 <span className="mt-1 h-1.5 w-1.5 rounded-full bg-kc-blue" />
@@ -308,10 +308,10 @@ const Projects = () => {
                             key={index}
                             whileHover={{ y: -1 }}
                             transition={{ duration: 0.18 }}
-                            className="px-3 py-2 rounded-full bg-slate-100 text-slate-800 text-xs sm:text-sm flex items-center gap-2"
+                            className="px-3 py-2 rounded-full bg-kc-blue/5 text-kc-black/80 text-xs sm:text-sm flex items-center gap-2"
                           >
-                            <span className="font-semibold text-slate-900">{stat.number}</span>
-                            <span className="text-slate-600">{stat.label}</span>
+                            <span className="font-semibold text-kc-blue">{stat.number}</span>
+                            <span className="text-kc-black/70">{stat.label}</span>
                           </motion.div>
                         ))}
                       </div>
@@ -332,17 +332,28 @@ const Projects = () => {
                           return (
                             <>
                               <motion.div whileHover={{ y: -2 }} whileTap={{ scale: 0.98 }}>
-                                <Button 
-                                  variant="blue"
-                                  size="lg"
-                                  className="group font-semibold w-full sm:w-auto"
-                                  asChild
-                                >
-                                  <Link to={enrollHref}>
+                                {activeTab === 'stem' ? (
+                                  <Button
+                                    variant="blue"
+                                    size="lg"
+                                    className="group font-semibold w-full sm:w-auto"
+                                    disabled
+                                  >
                                     Enroll Now
-                                    <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
-                                  </Link>
-                                </Button>
+                                  </Button>
+                                ) : (
+                                  <Button 
+                                    variant="blue"
+                                    size="lg"
+                                    className="group font-semibold w-full sm:w-auto"
+                                    asChild
+                                  >
+                                    <Link to={enrollHref}>
+                                      Enroll Now
+                                      <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                                    </Link>
+                                  </Button>
+                                )}
                               </motion.div>
                               <motion.div whileHover={{ y: -2 }} whileTap={{ scale: 0.98 }}>
                                 <Button 
@@ -369,10 +380,10 @@ const Projects = () => {
 
         {/* STEM Competition Section */}
         <div className="mt-20">
-          <Card className="relative overflow-hidden bg-gradient-to-br from-kc-black via-black to-slate-900 text-white border border-white/10 shadow-2xl">
+          <Card className="relative overflow-hidden bg-white text-kc-black border border-border shadow-card">
             {/* subtle glow accents */}
             <div className="pointer-events-none absolute -top-32 -left-24 h-64 w-64 rounded-full bg-kc-blue/25 blur-3xl" />
-            <div className="pointer-events-none absolute -bottom-32 -right-24 h-64 w-64 rounded-full bg-kc-red/25 blur-3xl" />
+            <div className="pointer-events-none absolute -bottom-32 -right-24 h-64 w-64 rounded-full bg-kc-blue/10 blur-3xl" />
 
             <CardContent className="relative p-6 sm:p-8 lg:p-12">
               <div className="grid lg:grid-cols-2 gap-8 lg:gap-10 items-center">
@@ -382,27 +393,27 @@ const Projects = () => {
                   viewport={{ once: true, margin: "-80px" }}
                   transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
                 >
-                  <div className="inline-flex items-center gap-3 mb-4 rounded-full bg-white/5 px-3 py-1 border border-white/10 text-xs font-semibold uppercase tracking-[0.18em]">
-                    <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-kc-red/90">
+                  <div className="inline-flex items-center gap-3 mb-4 rounded-full bg-kc-blue/10 px-3 py-1 border border-kc-blue/20 text-xs font-semibold uppercase tracking-[0.18em]">
+                    <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-kc-blue">
                       <Trophy className="h-3.5 w-3.5 text-white" />
                     </span>
-                    <span className="text-white/90">Flagship Competition</span>
+                    <span className="text-kc-blue">Flagship Competition</span>
                   </div>
 
                   <div className="flex items-center gap-3 mb-5">
-                    <h3 className="text-2xl sm:text-3xl font-heading font-bold leading-tight">
+                    <h3 className="text-2xl sm:text-3xl font-heading font-bold leading-tight text-kc-blue">
                       National STEM Competition
                     </h3>
                   </div>
                   
-                  <p className="text-white/85 leading-relaxed mb-4 sm:mb-5 text-sm sm:text-base">
+                  <p className="text-kc-black/80 leading-relaxed mb-4 sm:mb-5 text-sm sm:text-base">
                     The KC STEM (Science, Technology, Engineering, and Mathematics) Competition,
                     whose first edition took place in December of 2021, is an annual national
                     (Cameroon) scientific contest organized by Knowledge Center (KC) to foster
                     scientific thinking in students.
                   </p>
                   
-                  <p className="text-white/80 leading-relaxed mb-6 sm:mb-7 text-sm sm:text-base">
+                  <p className="text-kc-black/70 leading-relaxed mb-6 sm:mb-7 text-sm sm:text-base">
                     We challenge participants with thought‑provoking questions that push them
                     beyond routine memorisation, helping them unlock creativity, critical
                     thinking, and real problem‑solving skills.
@@ -415,9 +426,9 @@ const Projects = () => {
                     transition={{ type: "spring", stiffness: 260, damping: 20 }}
                   >
                     <Button
-                      variant="red"
+                      variant="blue"
                       size="lg"
-                      className="group font-semibold rounded-full px-6 sm:px-7 shadow-lg shadow-red-500/30"
+                      className="group font-semibold rounded-full px-6 sm:px-7 "
                       asChild
                     >
                       <Link to="/stem">
@@ -437,27 +448,27 @@ const Projects = () => {
                 >
                   <div className="grid grid-cols-2 gap-4">
                     <motion.div
-                      className="bg-white/8 rounded-2xl p-4 text-center backdrop-blur-md border border-white/10"
+                      className="bg-white rounded-2xl p-4 text-center border border-kc-blue/20 shadow-card"
                       whileHover={{ y: -3, scale: 1.02 }}
                       transition={{ type: "spring", stiffness: 260, damping: 22 }}
                     >
-                      <Target className="h-8 w-8 text-white mx-auto mb-2" />
-                      <div className="text-xl sm:text-2xl font-heading font-bold">Annual</div>
-                      <div className="text-xs sm:text-sm text-white/75">Competition</div>
+                      <Target className="h-8 w-8 text-kc-blue mx-auto mb-2" />
+                      <div className="text-xl sm:text-2xl font-heading font-bold text-kc-blue">Annual</div>
+                      <div className="text-xs sm:text-sm text-kc-black/70">Competition</div>
                     </motion.div>
                     <motion.div
-                      className="bg-white/8 rounded-2xl p-4 text-center backdrop-blur-md border border-white/10"
+                      className="bg-white rounded-2xl p-4 text-center border border-kc-blue/20 shadow-card"
                       whileHover={{ y: -3, scale: 1.02 }}
                       transition={{ type: "spring", stiffness: 260, damping: 22 }}
                     >
-                      <Award className="h-8 w-8 text-white mx-auto mb-2" />
-                      <div className="text-xl sm:text-2xl font-heading font-bold">National</div>
-                      <div className="text-xs sm:text-sm text-white/75">Recognition</div>
+                      <Award className="h-8 w-8 text-kc-blue mx-auto mb-2" />
+                      <div className="text-xl sm:text-2xl font-heading font-bold text-kc-blue">National</div>
+                      <div className="text-xs sm:text-sm text-kc-black/70">Recognition</div>
                     </motion.div>
                   </div>
                   
                   <motion.div
-                    className="relative bg-white/8 rounded-2xl p-5 sm:p-6 backdrop-blur-md border border-white/10 overflow-hidden"
+                    className="relative bg-white rounded-2xl p-5 sm:p-6 border border-kc-blue/20 shadow-card overflow-hidden"
                     whileHover={{ y: -3 }}
                     transition={{ type: "spring", stiffness: 260, damping: 22 }}
                   >
@@ -466,11 +477,11 @@ const Projects = () => {
                       <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-kc-blue/80 text-[10px]">KC</span>
                       <span>Next Competition</span>
                     </h4>
-                    <p className="text-white/80 text-xs sm:text-sm mb-3">
+                    <p className="text-kc-black/70 text-xs sm:text-sm mb-3">
                       December 2026 &mdash; registration opens in September.
                     </p>
-                    <div className="flex items-center space-x-2 text-xs sm:text-sm text-white/80">
-                      <Clock className="h-4 w-4" />
+                    <div className="flex items-center space-x-2 text-xs sm:text-sm text-kc-black/70">
+                      <Clock className="h-4 w-4 text-kc-blue" />
                       <span>Driving innovation, problem-solving and creativity.</span>
                     </div>
                   </motion.div>
@@ -486,3 +497,4 @@ const Projects = () => {
 };
 
 export default Projects;
+

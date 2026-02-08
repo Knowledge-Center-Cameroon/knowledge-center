@@ -19,7 +19,7 @@ const impactCards = [
   },
   {
     icon: BookOpen,
-    color: "red",
+    color: "blue",
     title: "Enhance Learning",
     description: "Support innovative teaching methods and cutting-edge learning technologies.",
   },
@@ -70,11 +70,11 @@ const DonatePage: React.FC = () => {
         {/* Hero Section */}
         <Parallax ref={ref as any} style={{ y }} className="text-center mb-20 relative">
           <motion.div 
-            className="inline-flex items-center justify-center w-24 h-24 bg-kc-red/5 rounded-full mb-8 relative"
+            className="inline-flex items-center justify-center w-24 h-24 bg-kc-blue/5 rounded-full mb-8 relative"
             whileHover={{ scale: 1.05, rotate: 4 }}
             transition={{ type: "spring", stiffness: 320, damping: 16 }}
           >
-            <div className="absolute inset-0 bg-gradient-to-br from-kc-red/15 to-kc-blue/15 rounded-full blur-xl" />
+            <div className="absolute inset-0 bg-white rounded-full blur-xl" />
             <div className="relative z-10">
               <AnimatedLogo size={72} />
             </div>
@@ -88,17 +88,17 @@ const DonatePage: React.FC = () => {
             <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
               {/* Hero Content */}
               <div className="text-center lg:text-left">
-                <h1 className="text-h1 md:text-h1 lg:text-h1 font-heading font-bold mb-6">
-                  Support Our <span className="text-gradient bg-gradient-to-r from-kc-blue to-kc-red bg-clip-text text-transparent">Mission</span>
+                <h1 className="heading-1 mb-6">
+                  Support Our <span className="text-kc-blue">Mission</span>
                 </h1>
-                <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto lg:mx-0 leading-relaxed">
+                <p className="text-lg md:text-xl text-kc-black/80 max-w-3xl mx-auto lg:mx-0 leading-relaxed">
                   Your donation today will shape the minds of tomorrow. By supporting our educational initiative, you're not just contributing to a cause—you are investing in the limitless potential of young learners, empowering them to explore their creativity and build a brighter future.
                 </p>
               </div>
 
               {/* Hero Image Space */}
               <div className="relative">
-                <div className="aspect-video bg-gradient-to-br from-kc-blue/20 to-kc-red/20 rounded-2xl border border-white/10 overflow-hidden">
+                <div className="aspect-video bg-white rounded-2xl border border-border overflow-hidden">
                   <img
                     src={donate}
                     alt="Students at Knowledge Center Cameroon during a STEM activity"
@@ -121,7 +121,7 @@ const DonatePage: React.FC = () => {
               <Badge 
                 key={tag}
                 variant="secondary" 
-                className="px-4 py-2 text-base bg-white/10 backdrop-blur-sm hover:bg-white/20 transition-all duration-300"
+                className="px-4 py-2 text-base bg-white border border-border hover:bg-kc-blue/5 transition-all duration-300"
               >
                 {tag}
               </Badge>
@@ -139,9 +139,9 @@ const DonatePage: React.FC = () => {
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: i * 0.1 }}
               whileHover={{ y: -8, scale: 1.02 }}
-              className="group bg-white/5 backdrop-blur-sm p-8 rounded-2xl shadow-elegant border border-white/10 transition-all duration-500 hover:shadow-2xl relative overflow-hidden"
+              className="group bg-white p-8 rounded-2xl shadow-card border border-border transition-all duration-500 hover:shadow-hover relative overflow-hidden"
             >
-              <div className="absolute inset-0 bg-gradient-to-br from-kc-blue/5 to-kc-red/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+              
               <div className="relative">
                 <motion.div 
                   className={`inline-flex items-center justify-center w-14 h-14 bg-kc-${card.color}/10 rounded-full mb-6 transition-all duration-300 group-hover:scale-110 group-hover:rotate-3`}
@@ -149,11 +149,11 @@ const DonatePage: React.FC = () => {
                   <card.icon className={`w-7 h-7 text-kc-${card.color}`} />
                 </motion.div>
                 
-                <h3 className="text-h5 md:text-h4 font-heading font-bold mb-3 group-hover:text-kc-blue transition-colors">
+                <h3 className="heading-4 mb-3 text-kc-blue">
                   {card.title}
                 </h3>
                 
-                <p className="text-muted-foreground text-base leading-relaxed mb-6">
+                <p className="text-kc-black/80 text-base leading-relaxed mb-6">
                   {card.description}
                 </p>
                 
@@ -170,16 +170,15 @@ const DonatePage: React.FC = () => {
           transition={{ duration: 0.5 }}
           className="relative"
         >
-          <div className="absolute inset-0 bg-c-ble rounded-3xl blur-2xl" />
-          <div className="relative bg-white/10 backdrop-blur-md border border-white/20 rounded-3xl p-8 md:p-10 lg:p-12 overflow-hidden shadow-2xl">
-            <div className="absolute top-0 right-0 w-full h-full bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.12),transparent_50%)]" />
+          <div className="absolute inset-0 bg-kc-blue/5 rounded-3xl blur-2xl" />
+          <div className="relative bg-white border border-border rounded-3xl p-8 md:p-10 lg:p-12 overflow-hidden shadow-card">
             
             <div className="flex flex-col md:flex-row items-center justify-between gap-8 md:gap-12">
               <div className="text-center md:text-left">
-                <h2 className="text-h2 md:text-h2 font-heading font-bold mb-4">
-                  Ready to Make a <span className="text-gradient bg-gradient-to-r from-kc-blue to-kc-red bg-clip-text text-transparent">Difference</span>?
+                <h2 className="heading-2 mb-4">
+                  Ready to Make a <span className="text-kc-blue">Difference</span>?
                 </h2>
-                <p className="text-lg text-muted-foreground">
+                <p className="text-lg text-kc-black/80">
                   Join us in transforming education and empowering the next generation of leaders.
                 </p>
               </div>
@@ -187,7 +186,7 @@ const DonatePage: React.FC = () => {
               <div className="flex flex-col sm:flex-row gap-4">
                 <ArrowButton 
                   size="lg" 
-                  variant="red" 
+                  variant="blue" 
                   className="rounded-full px-8 text-base"
                   onClick={() => {
                     // Add your donation logic here
@@ -218,3 +217,4 @@ const DonatePage: React.FC = () => {
 };
 
 export default DonatePage;
+

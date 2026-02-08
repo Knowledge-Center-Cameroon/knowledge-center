@@ -25,7 +25,7 @@
 
 /* ===================================
  * DESIGN SYSTEM & BRAND COLORS
- * Blue (#2E3AF0 / 220 100% 45%), Red (#DD3333 / 0 75% 50%), Black (#1A1A1A / 0 0% 10%), White (#FFFFFF)
+ * Primary Blue (#2E3AF0 / 220 100% 45%), White (#FFFFFF), Black (#1A1A1A / 0 0% 10%)
  * Montserrat: Body, UI Text | Poppins: Headings (H1-H6)
  * =================================== */
 
@@ -35,12 +35,13 @@
     --kc-blue: 220 100% 45%;
     --kc-blue-dark: 220 100% 35%;
     --kc-blue-light: 220 60% 85%;
+    /* Legacy red kept for logo assets only (avoid in UI) */
     --kc-red: 0 75% 50%;
     --kc-red-dark: 0 75% 40%;
     --kc-red-light: 0 75% 85%;
     --kc-black: 0 0% 10%;
     --kc-gray: 0 0% 25%;
-    --kc-gray-light: 0 0% 85%;
+    --kc-gray-light: 0 0% 92%;
     --kc-white: 0 0% 100%;
 
     /* ✓ SEMANTIC COLORS (mapped to brand) */
@@ -52,30 +53,30 @@
     --popover-foreground: 0 0% 5%;
     --primary: 220 100% 45%;
     --primary-foreground: 0 0% 98%;
-    --secondary: 0 0% 96%;
+    --secondary: 0 0% 100%;
     --secondary-foreground: 0 0% 10%;
-    --muted: 220 15% 96%;
-    --muted-foreground: 0 0% 25%;
-    --accent: 0 75% 50%;
+    --muted: 0 0% 98%;
+    --muted-foreground: 0 0% 20%;
+    --accent: 220 100% 45%;
     --accent-foreground: 0 0% 98%;
-    --destructive: 0 85% 60%;
+    --destructive: 220 100% 35%;
     --destructive-foreground: 0 0% 98%;
     --border: 220 15% 90%;
     --input: 220 15% 90%;
     --ring: 214 100% 50%;
     --radius: 0.75rem;
 
-    /* ✓ GRADIENT TOKENS */
-    --gradient-primary: linear-gradient(135deg, hsl(214 100% 50%), hsl(0 85% 55%));
-    --gradient-hero: linear-gradient(135deg, hsl(214 100% 50%) 0%, hsl(214 100% 40%) 50%, hsl(0 85% 55%) 100%);
-    --gradient-card: linear-gradient(145deg, hsl(0 0% 100%) 0%, hsl(220 15% 98%) 100%);
-    --gradient-subtle: linear-gradient(180deg, hsl(220 15% 99%) 0%, hsl(220 15% 96%) 100%);
+    /* ✓ GRADIENT TOKENS (neutralized; avoid decorative gradients) */
+    --gradient-primary: linear-gradient(180deg, hsl(0 0% 100%), hsl(0 0% 100%));
+    --gradient-hero: linear-gradient(180deg, hsl(0 0% 100%), hsl(0 0% 100%));
+    --gradient-card: linear-gradient(180deg, hsl(0 0% 100%), hsl(0 0% 100%));
+    --gradient-subtle: linear-gradient(180deg, hsl(0 0% 100%), hsl(0 0% 100%));
 
     /* ✓ SHADOW DEPTH HIERARCHY */
-    --shadow-sm: 0 2px 8px hsl(214 100% 50% / 0.1);
-    --shadow-md: 0 8px 25px hsl(214 100% 50% / 0.15);
-    --shadow-lg: 0 25px 50px hsl(214 100% 50% / 0.25);
-    --shadow-accent: 0 8px 25px hsl(0 85% 55% / 0.2);
+    --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.05);
+    --shadow-md: 0 4px 8px rgb(0 0 0 / 0.08);
+    --shadow-lg: 0 12px 24px rgb(0 0 0 / 0.12);
+    --shadow-accent: 0 6px 16px rgb(0 0 0 / 0.08);
     --shadow-card: 0 1px 3px rgb(0 0 0 / 0.1);
     --shadow-hover: 0 10px 15px -3px rgb(0 0 0 / 0.1);
 
@@ -86,47 +87,47 @@
     /* ✓ SIDEBAR COLORS */
     --sidebar-background: 0 0% 98%;
     --sidebar-foreground: 240 5.3% 26.1%;
-    --sidebar-primary: 214 100% 50%;
+    --sidebar-primary: 220 100% 45%;
     --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 214 100% 95%;
-    --sidebar-accent-foreground: 214 100% 20%;
+    --sidebar-accent: 0 0% 100%;
+    --sidebar-accent-foreground: 0 0% 10%;
     --sidebar-border: 220 15% 90%;
-    --sidebar-ring: 214 100% 50%;
+    --sidebar-ring: 220 100% 45%;
   }
 
   /* Dark mode color overrides */
   .dark {
-    --background: 0 0% 8%;
-    --foreground: 0 0% 95%;
-    --card: 0 0% 10%;
-    --card-foreground: 0 0% 95%;
-    --popover: 0 0% 10%;
-    --popover-foreground: 0 0% 95%;
-    --primary: 214 100% 55%;
-    --primary-foreground: 0 0% 5%;
-    --secondary: 0 0% 15%;
-    --secondary-foreground: 0 0% 95%;
-    --muted: 0 0% 15%;
-    --muted-foreground: 0 0% 65%;
-    --accent: 0 85% 60%;
-    --accent-foreground: 0 0% 5%;
-    --destructive: 0 85% 65%;
-    --destructive-foreground: 0 0% 95%;
-    --border: 0 0% 20%;
-    --input: 0 0% 20%;
-    --ring: 214 100% 55%;
-    --gradient-primary: linear-gradient(135deg, hsl(214 100% 55%), hsl(0 85% 60%));
-    --gradient-hero: linear-gradient(135deg, hsl(214 100% 55%) 0%, hsl(214 100% 45%) 50%, hsl(0 85% 60%) 100%);
-    --gradient-card: linear-gradient(145deg, hsl(0 0% 10%) 0%, hsl(0 0% 15%) 100%);
-    --gradient-subtle: linear-gradient(180deg, hsl(0 0% 12%) 0%, hsl(0 0% 8%) 100%);
-    --sidebar-background: 0 0% 8%;
-    --sidebar-foreground: 0 0% 95%;
-    --sidebar-primary: 214 100% 55%;
-    --sidebar-primary-foreground: 0 0% 5%;
-    --sidebar-accent: 0 0% 15%;
-    --sidebar-accent-foreground: 0 0% 95%;
-    --sidebar-border: 0 0% 20%;
-    --sidebar-ring: 214 100% 55%;
+    --background: 0 0% 100%;
+    --foreground: 0 0% 10%;
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 10%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 10%;
+    --primary: 220 100% 45%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 0 0% 100%;
+    --secondary-foreground: 0 0% 10%;
+    --muted: 0 0% 98%;
+    --muted-foreground: 0 0% 20%;
+    --accent: 220 100% 45%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 220 100% 35%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 220 15% 90%;
+    --input: 220 15% 90%;
+    --ring: 220 100% 45%;
+    --gradient-primary: linear-gradient(180deg, hsl(0 0% 100%), hsl(0 0% 100%));
+    --gradient-hero: linear-gradient(180deg, hsl(0 0% 100%), hsl(0 0% 100%));
+    --gradient-card: linear-gradient(180deg, hsl(0 0% 100%), hsl(0 0% 100%));
+    --gradient-subtle: linear-gradient(180deg, hsl(0 0% 100%), hsl(0 0% 100%));
+    --sidebar-background: 0 0% 100%;
+    --sidebar-foreground: 0 0% 10%;
+    --sidebar-primary: 220 100% 45%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 0 0% 100%;
+    --sidebar-accent-foreground: 0 0% 10%;
+    --sidebar-border: 220 15% 90%;
+    --sidebar-ring: 220 100% 45%;
   }
 }
 
@@ -168,36 +169,36 @@
 
   /* ✓ HEADING TYPOGRAPHY: Poppins, bold, clear hierarchy */
   h1 {
-    @apply font-heading text-h1 font-bold text-foreground;
+    @apply font-heading text-h1 font-bold text-kc-blue;
   }
 
   h2 {
-    @apply font-heading text-h2 font-bold text-foreground;
+    @apply font-heading text-h2 font-bold text-kc-blue;
   }
 
   h3 {
-    @apply font-heading text-h3 font-bold text-foreground;
+    @apply font-heading text-h3 font-bold text-kc-blue;
   }
 
   h4 {
-    @apply font-heading text-h4 font-semibold text-foreground;
+    @apply font-heading text-h4 font-semibold text-kc-blue;
   }
 
   h5 {
-    @apply font-heading text-h5 font-semibold text-foreground;
+    @apply font-heading text-h5 font-semibold text-kc-blue;
   }
 
   h6 {
-    @apply font-heading text-h6 font-semibold text-foreground;
+    @apply font-heading text-h6 font-semibold text-kc-blue;
   }
 
   /* ✓ BODY TEXT: Montserrat, consistent sizing */
   p {
-    @apply text-body leading-relaxed text-foreground;
+    @apply text-body leading-relaxed text-kc-black;
   }
 
   a {
-    @apply text-primary underline-offset-4 transition-colors duration-200 hover:text-primary/80;
+    @apply text-kc-blue underline-offset-4 transition-colors duration-200 hover:text-kc-blue/80;
   }
 
   button {
@@ -230,23 +231,40 @@
 @layer components {
   /* ✓ HEADING UTILITIES: Pre-composed heading scales */
   .heading-xl {
-    @apply text-h1 font-heading font-bold leading-tight text-foreground;
+    @apply text-h1 font-heading font-bold leading-tight text-kc-blue;
   }
 
   .heading-lg {
-    @apply text-h2 font-heading font-bold leading-snug text-foreground;
+    @apply text-h2 font-heading font-bold leading-snug text-kc-blue;
   }
 
   .heading-md {
-    @apply text-h3 font-heading font-semibold text-foreground;
+    @apply text-h3 font-heading font-semibold text-kc-blue;
   }
 
   .heading-sm {
-    @apply text-h4 font-heading font-semibold text-foreground;
+    @apply text-h4 font-heading font-semibold text-kc-blue;
+  }
+
+  /* Semantic heading utilities */
+  .heading-1 {
+    @apply text-h1 font-heading font-bold text-kc-blue;
+  }
+
+  .heading-2 {
+    @apply text-h2 font-heading font-bold text-kc-blue;
+  }
+
+  .heading-3 {
+    @apply text-h3 font-heading font-semibold text-kc-blue;
+  }
+
+  .heading-4 {
+    @apply text-h4 font-heading font-semibold text-kc-blue;
   }
 
   .subheading {
-    @apply text-lg md:text-xl text-muted-foreground font-body;
+    @apply text-lg md:text-xl text-kc-black/80 font-body;
   }
 
   /* ✓ CONTAINER UTILITIES: Google-like clean spacing */
@@ -289,7 +307,7 @@
   }
 
   .text-gradient {
-    @apply bg-gradient-to-r from-kc-blue to-kc-red bg-clip-text text-transparent;
+    @apply text-kc-blue;
   }
 
   /* ✓ SHADOW UTILITIES */
@@ -347,16 +365,14 @@
 
   /* ✓ GLASSMORPHISM */
   .glass {
-    background: rgba(0, 0, 0, 0.271);
-    border-radius: 26px;
-    box-shadow: 0 4px 30px rgba(10, 5, 75, 0.719);
-    backdrop-filter: blur(6.3px);
-    -webkit-backdrop-filter: blur(6.3px);
-    border: 1px solid rgb(15, 64, 200);
+    background: #ffffff;
+    border-radius: 20px;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid hsl(var(--border));
   }
 
   .glass-card {
-    @apply bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl shadow-elegant;
+    @apply bg-white border border-border rounded-2xl shadow-card;
   }
 
   /* ✓ ANIMATION UTILITIES */

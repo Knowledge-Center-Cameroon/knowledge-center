@@ -20,10 +20,10 @@ const Item: React.FC<{ item: TimelineItem; index: number }> = ({ item, index }) 
       transition={{ duration: 0.35, delay: index * 0.05, ease: [0.22, 1, 0.36, 1] }}
     >
       {/* line */}
-      <span className="absolute left-[11px] top-0 bottom-0 w-px bg-gradient-to-b from-kc-blue/50 via-white/20 to-kc-red/50" aria-hidden />
+      <span className="absolute left-[11px] top-0 bottom-0 w-px bg-kc-blue/40" aria-hidden />
       {/* dot */}
       <span className="absolute left-1 top-1.5 inline-flex h-3.5 w-3.5 items-center justify-center rounded-full bg-white shadow">
-        <span className="h-2.5 w-2.5 rounded-full bg-gradient-to-br from-kc-blue to-kc-red" />
+        <span className="h-2.5 w-2.5 rounded-full bg-kc-blue" />
       </span>
 
       <div className="mb-1 text-[11px] sm:text-xs uppercase tracking-wider text-foreground/60 flex items-center gap-1">
@@ -40,7 +40,7 @@ const Item: React.FC<{ item: TimelineItem; index: number }> = ({ item, index }) 
       {item.href && (
         <a
           href={item.href}
-          className="mt-2 inline-block text-sm font-semibold text-kc-blue hover:text-kc-red transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-kc-blue rounded"
+          className="mt-2 inline-block text-sm font-semibold text-kc-blue hover:text-kc-blue/80 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-kc-blue rounded"
         >
           Learn more →
         </a>

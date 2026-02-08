@@ -89,7 +89,7 @@ const EngagingLoader: React.FC = () => {
             transition={{ repeat: Infinity, ease: "linear", duration: 8 }}
             style={{ transformOrigin: "-20px 60px" }}
           >
-            <FlaskConical className="w-5 h-5 text-kc-red" />
+            <FlaskConical className="w-5 h-5 text-kc-blue" />
           </motion.div>
           <motion.div
             className="absolute top-6 -left-2 bg-white rounded-full p-1 shadow"
@@ -104,7 +104,7 @@ const EngagingLoader: React.FC = () => {
 
         {/* Progress shimmer */}
         <div className="mx-auto w-full max-w-md">
-          <div className="h-2 w-full rounded-full bg-black/10 overflow-hidden">
+          <div className="h-2 w-full rounded-full bg-kc-blue/10 overflow-hidden">
             <motion.div
               className="h-full bg-kc-blue/80"
               initial={{ x: "-100%" }}
@@ -115,7 +115,7 @@ const EngagingLoader: React.FC = () => {
         </div>
 
         {/* Caption */}
-        <div className="mt-4 text-sm text-foreground/80">
+        <div className="mt-4 text-sm text-kc-black/80">
           <span>Loading</span>{" "}
           <Dot delay={0} /> {" "}
           <Dot delay={0.2} /> {" "}
@@ -123,7 +123,7 @@ const EngagingLoader: React.FC = () => {
         </div>
 
         {/* Rotating STEM facts */}
-        <div className="mt-3 h-[24px] text-xs text-muted-foreground">
+        <div className="mt-3 h-[24px] text-xs text-kc-black/60">
           <AnimatePresence mode="popLayout" initial={false}>
             <motion.div
               key={fact}

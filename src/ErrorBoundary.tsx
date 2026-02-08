@@ -24,7 +24,7 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundarySta
       return (
         <div className="min-h-screen flex items-center justify-center bg-background text-foreground px-4">
           <div className="text-center max-w-md">
-            <h1 className="text-h3 font-heading font-bold mb-3">Something went wrong.</h1>
+            <h1 className="heading-3 mb-3">Something went wrong.</h1>
             <p className="text-muted-foreground mb-4">
               Please refresh the page or go back to the home page while we work on a fix.
             </p>
@@ -41,3 +41,4 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundarySta
 }
 
 export default ErrorBoundary;
+

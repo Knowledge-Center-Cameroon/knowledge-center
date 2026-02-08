@@ -240,7 +240,7 @@ const BlogPage: React.FC = () => {
             </div>
       <Parallax ref={ref as any} style={{ y }} className="max-w-3xl mb-10">
         <div className="h-1 w-20 mb-3 bg-kc-blue rounded-full" />
-        <h2 className="heading-2 mb-6">Blog</h2>
+        <h1 className="heading-1 mb-6">Blog</h1>
         <p className="text-muted-foreground">
           Stories, updates, and insights from Knowledge Center.
         </p>
@@ -281,7 +281,7 @@ const BlogPage: React.FC = () => {
             <div className="flex flex-wrap gap-2">
               <button
                 onClick={() => setActiveTag(null)}
-                className={`px-3 py-1.5 rounded-full text-xs sm:text-sm border transition-all duration-300 ${activeTag === null ? 'bg-kc-blue text-white border-kc-blue shadow-md' : 'bg-white/70 text-foreground border-border hover:bg-white hover:shadow-sm'}`}
+                className={`px-3 py-1.5 rounded-full text-xs sm:text-sm border transition-all duration-300 ${activeTag === null ? 'bg-kc-blue text-white border-kc-blue shadow-md' : 'bg-white text-foreground border-border hover:bg-white hover:shadow-sm'}`}
               >
                 All
               </button>
@@ -289,7 +289,7 @@ const BlogPage: React.FC = () => {
                 <button
                   key={t}
                   onClick={() => setActiveTag(t)}
-                  className={`px-3 py-1.5 rounded-full text-xs sm:text-sm border transition-all duration-300 ${activeTag === t ? 'bg-kc-blue text-white border-kc-blue shadow-md' : 'bg-white/70 text-foreground border-border hover:bg-white hover:shadow-sm'}`}
+                  className={`px-3 py-1.5 rounded-full text-xs sm:text-sm border transition-all duration-300 ${activeTag === t ? 'bg-kc-blue text-white border-kc-blue shadow-md' : 'bg-white text-foreground border-border hover:bg-white hover:shadow-sm'}`}
                 >
                   {t}
                 </button>
@@ -327,7 +327,7 @@ const BlogPage: React.FC = () => {
               const commentCount = commentCounts[pid] || 0;
               return (
                 <motion.div key={post.id} initial={{ opacity: 0, y: 8 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.2 }} transition={{ duration: 0.35, delay: idx * 0.05 }}>
-                  <Card className="group relative overflow-hidden border-border/60 bg-white/80 backdrop-blur-md shadow-sm transition-all duration-300 hover:-translate-y-1.5 hover:shadow-xl hover:border-kc-blue/40">
+                  <Card className="group relative overflow-hidden border-border/60 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1.5 hover:shadow-hover hover:border-kc-blue/40">
                     {post.cover && (
                       <div className="relative overflow-hidden">
                         <img 
@@ -448,3 +448,5 @@ const BlogPage: React.FC = () => {
 };
 
 export default BlogPage;
+
+

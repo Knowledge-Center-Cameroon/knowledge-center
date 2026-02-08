@@ -15,7 +15,6 @@ import {
   HelpCircle
 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
-import { AeroButton } from "@/components/aerobutton";
 
 const Contact = () => {
   const [formData, setFormData] = useState({
@@ -111,7 +110,7 @@ const Contact = () => {
       icon: Phone,
       title: "Call Us",
       details: ["+237 680 789 894", "+237 650 986 127"],
-      color: "text-kc-red"
+      color: "text-kc-blue"
     },
     {
       icon: Mail,
@@ -139,7 +138,7 @@ const Contact = () => {
         <div className="text-center mb-10 md:mb-16">
           <div className="h-1 w-28 mx-auto mb-3 bg-kc-blue rounded-full" />
           <h2 className="heading-2 mb-6">
-            <span className="text-kc-blue">Contact</span> <span className="text-kc-red">Us</span>
+            <span className="text-kc-blue">Contact Us</span>
           </h2>
           <p className="subheading max-w-3xl mx-auto leading-relaxed">
             Ready to join our STEM community or have questions? We'd love to hear from you. 
@@ -151,13 +150,13 @@ const Contact = () => {
           {/* Contact Form (first on mobile) */}
           <div className="lg:col-span-2 order-1 lg:order-2">
             <div className="max-w-2xl mx-auto w-full">
-              <Card className="card-gradient shadow-elegant">
+              <Card className="bg-white border border-border shadow-card">
                 <CardContent className="p-6 md:p-8">
                   <div className="flex items-center space-x-3 mb-8">
                     <div className="w-12 h-12 bg-kc-blue rounded-full flex items-center justify-center">
                       <Send className="h-6 w-6 text-white" />
                     </div>
-                    <h3 className="text-2xl font-heading font-bold">Send us a Message</h3>
+                    <h3 className="heading-3 text-kc-blue">Send us a Message</h3>
                   </div>
 
                   <form onSubmit={handleSubmit} className="space-y-6">
@@ -219,16 +218,9 @@ const Contact = () => {
                       <div className="mt-1 text-xs text-muted-foreground text-right">{messageCount} / 1000</div>
                     </div>
 
-                    <AeroButton
-                      type="submit"
-                      disabled={isSubmitting}
-                      loading={isSubmitting}
-                      text="Send"
-                      width={30}
-                      primaryCol="#e90000"
-                      gradientCol="#014dbb"
-                      className="w-full rounded-full gap-2 text-white py-3"
-                    />
+                    <Button type="submit" disabled={isSubmitting} className="w-full rounded-full gap-2 py-3">
+                      {isSubmitting ? "Sending..." : "Send"}
+                    </Button>
                   </form>
                 </CardContent>
               </Card>
@@ -238,8 +230,8 @@ const Contact = () => {
           {/* Contact Information (second on mobile, side on desktop) */}
           <div className="lg:col-span-1 space-y-8 order-2 lg:order-1">
             <div>
-              <h3 className="text-2xl font-heading font-bold mb-6">Get In Touch</h3>
-              <p className="text-muted-foreground mb-8">
+              <h3 className="heading-3 mb-6 text-kc-blue">Get In Touch</h3>
+              <p className="text-kc-black/70 mb-8">
                 Whether you're interested in our programs, have questions about admissions, 
                 or want to explore partnership opportunities, we're here to help.
               </p>
@@ -248,16 +240,16 @@ const Contact = () => {
             {/* Contact Details */}
             <div className="space-y-6">
               {contactInfo.map((info, index) => (
-                <Card key={index} className="card-gradient shadow-elegant transition-all duration-300 hover:-translate-y-1.5">
+                <Card key={index} className="bg-white border border-border shadow-card transition-all duration-300 hover:-translate-y-1.5">
                   <CardContent className="p-6">
                     <div className="flex items-start space-x-4">
-                      <div className={`w-12 h-12 bg-kc-black rounded-full flex items-center justify-center flex-shrink-0`}>
+                      <div className="w-12 h-12 bg-kc-blue rounded-full flex items-center justify-center flex-shrink-0">
                         <info.icon className="h-6 w-6 text-white" />
                       </div>
                       <div>
-                        <h4 className="font-semibold mb-2">{info.title}</h4>
+                        <h4 className="font-semibold mb-2 text-kc-blue">{info.title}</h4>
                         {info.details.map((detail, i) => (
-                          <p key={i} className="text-muted-foreground text-sm">{detail}</p>
+                          <p key={i} className="text-kc-black/70 text-sm">{detail}</p>
                         ))}
                       </div>
                     </div>
@@ -273,23 +265,18 @@ const Contact = () => {
 
         {/* Google Maps Embed */}
         <div className="mt-12 md:mt-16">
-          <h3 className="text-2xl font-heading font-bold text-center mb-6 md:mb-8">Find Us in Buea</h3>
-          <Card className="shadow-elegant overflow-hidden bg-kc-black">
+          <h3 className="heading-3 text-center mb-6 md:mb-8 text-kc-blue">Find Us in Buea</h3>
+          <Card className="shadow-card overflow-hidden bg-white border border-border">
             <CardContent className="p-0">
               <div className="relative w-full aspect-[16/9]">
-                {/* Dark theme effect via CSS filters on the embed */}
-                <div className="absolute inset-0 filter invert hue-rotate-180 saturate-75 brightness-90 contrast-90">
-                  <iframe
-                    title="Knowledge Center KC - Google Map"
-                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3979.316754043103!2d9.27541847471133!3d4.157989746123863!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x10613341d1c0ff45%3A0x3d7d600cd306579!2sKnowledge%20Center%20KC!5e0!3m2!1sen!2scm!4v1757380618185!5m2!1sen!2scm"
-                    className="w-full h-full border-0"
-                    allowFullScreen
-                    loading="lazy"
-                    referrerPolicy="no-referrer-when-downgrade"
-                  />
-                </div>
-                {/* subtle border radius and outline */}
-                <div className="absolute inset-0 rounded-md ring-1 ring-white/10 pointer-events-none" />
+                <iframe
+                  title="Knowledge Center KC - Google Map"
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3979.316754043103!2d9.27541847471133!3d4.157989746123863!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x10613341d1c0ff45%3A0x3d7d600cd306579!2sKnowledge%20Center%20KC!5e0!3m2!1sen!2scm!4v1757380618185!5m2!1sen!2scm"
+                  className="w-full h-full border-0"
+                  allowFullScreen
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                />
               </div>
             </CardContent>
           </Card>
@@ -300,3 +287,4 @@ const Contact = () => {
 };
 
 export default Contact;
+

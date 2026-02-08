@@ -76,7 +76,7 @@ const Stats = () => {
       label: "Alumni & Scholars",
       value: 7000,
       suffix: "+",
-      color: "from-kc-red to-kc-red",
+      color: "from-kc-blue to-kc-blue",
       description: "Success stories created",
     },
     {
@@ -92,7 +92,7 @@ const Stats = () => {
       label: "Partners & Collaborators",
       value: 90,
       suffix: "+",
-      color: "from-kc-red to-kc-red",
+      color: "from-kc-blue to-kc-blue",
       description: "Strong alliances built",
     },
   ];
@@ -118,7 +118,7 @@ const Stats = () => {
   return (
     <section
       ref={containerRef}
-      className="py-20 lg:py-28 bg-slate-950 relative overflow-hidden"
+      className="py-20 lg:py-28 bg-white relative overflow-hidden"
     >
       <div className="container mx-auto px-6 max-w-7xl relative z-10">
 
@@ -129,18 +129,16 @@ const Stats = () => {
           transition={{ duration: 0.8 }}
           className="text-center mb-16"
         >
-          <div className="inline-flex items-center gap-2 bg-slate-900/80 border border-white/5 rounded-full px-5 py-1.5 mb-4">
+          <div className="inline-flex items-center gap-2 bg-kc-blue/10 border border-kc-blue/20 rounded-full px-5 py-1.5 mb-4">
             <TrendingUp className="h-4 w-4 text-kc-blue" />
-            <span className="text-sm font-medium text-kc-blue">
-              Our Impact
-            </span>
+            <span className="text-sm font-medium text-kc-blue">Our Impact</span>
           </div>
 
-          <h2 className="text-4xl md:text-5xl font-semibold text-white mb-4">
+          <h2 className="heading-2 mb-4">
             Impact in Numbers
           </h2>
 
-          <p className="text-gray-300 max-w-3xl mx-auto">
+          <p className="text-kc-black/80 max-w-3xl mx-auto">
             Since 2019, Knowledge Center has been transforming STEM education
             across Cameroon.
           </p>
@@ -155,22 +153,22 @@ const Stats = () => {
         >
           {statsData.map((stat, i) => (
             <motion.div key={i} variants={itemVariants}>
-              <Card className="h-full bg-slate-900/80 border border-white/5 rounded-2xl hover:border-white/15 transition">
+              <Card className="h-full bg-white border border-border rounded-2xl shadow-card hover:shadow-hover transition">
                 <CardContent className="p-8 text-center">
                   <div
-                    className={`w-16 h-16 mx-auto mb-6 rounded-2xl bg-gradient-to-br ${stat.color} flex items-center justify-center`}
+                    className="w-16 h-16 mx-auto mb-6 rounded-2xl bg-kc-blue/10 flex items-center justify-center"
                   >
-                    <stat.icon className="h-8 w-8 text-white" />
+                    <stat.icon className="h-8 w-8 text-kc-blue" />
                   </div>
 
-                  <div className="text-4xl font-bold text-white mb-2">
+                  <div className="text-4xl font-bold text-kc-blue mb-2">
                     <Counter value={stat.value} suffix={stat.suffix} />
                   </div>
 
-                  <p className="text-white/90 font-medium">
+                  <p className="text-kc-black font-medium">
                     {stat.label}
                   </p>
-                  <p className="text-white/50 text-sm">
+                  <p className="text-kc-black/70 text-sm">
                     {stat.description}
                   </p>
                 </CardContent>
@@ -184,11 +182,11 @@ const Stats = () => {
           initial={{ opacity: 0, y: 30 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.8 }}
-          className="bg-slate-900/80 border border-white/10 rounded-3xl p-10"
+          className="bg-white border border-border rounded-3xl p-10 shadow-card"
         >
           <div className="text-center mb-10">
-            <Award className="h-10 w-10 text-kc-red mx-auto mb-3" />
-            <h3 className="text-h4 font-heading font-semibold text-white">
+            <Award className="h-10 w-10 text-kc-blue mx-auto mb-3" />
+            <h3 className="heading-4">
               Proven Track Record of Success
             </h3>
           </div>
@@ -199,7 +197,7 @@ const Stats = () => {
               "Recognized STEM Leader Across the Globe",
               "Community-Driven Education Impact",
             ].map((text, i) => (
-              <div key={i} className="text-white/75">
+              <div key={i} className="text-kc-black/70">
                 <Target className="h-6 w-6 mx-auto mb-3 text-kc-blue" />
                 {text}
               </div>

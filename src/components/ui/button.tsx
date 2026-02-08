@@ -10,7 +10,7 @@ import { cn } from "@/lib/utils"
  * Variants:
  * - default: Primary action (blue background, white text)
  * - secondary: Secondary action (light gray background)
- * - destructive: Destructive action (red background)
+ * - destructive: Emphasized action (blue background)
  * - outline: Bordered button (blue border, blue text)
  * - ghost: Minimal button (no background, blue text on hover)
  * - link: Link-like button (underlined text)
@@ -28,25 +28,25 @@ const buttonVariants = cva(
       variant: {
         /** Primary action: Blue background, white text with shadow */
         default: "bg-primary text-primary-foreground hover:bg-primary/90 shadow-md hover:shadow-lg",
-        /** Destructive action: Red background */
+        /** Destructive action: Blue background (brand-safe) */
         destructive:
-          "bg-destructive text-destructive-foreground hover:bg-destructive/90",
+          "bg-kc-blue-dark text-white hover:bg-kc-blue",
         /** Outlined button: Border only */
         outline:
-          "border border-input bg-background hover:bg-accent hover:text-accent-foreground",
+          "border border-kc-blue text-kc-blue bg-white hover:bg-kc-blue/10",
         /** Secondary action: Light gray background */
         secondary:
-          "bg-secondary text-secondary-foreground hover:bg-secondary/80",
+          "border border-kc-blue text-kc-blue bg-white hover:bg-kc-blue/10",
         /** Ghost button: Transparent, hover effect only */
-        ghost: "hover:bg-accent hover:text-accent-foreground",
+        ghost: "text-kc-blue hover:bg-kc-blue/10",
         /** Link button: Underlined text */
-        link: "text-primary underline-offset-4 hover:underline",
+        link: "text-kc-blue underline-offset-4 hover:underline",
         /** Brand blue button */
         blue: "bg-kc-blue text-white hover:bg-kc-blue-dark shadow-md hover:shadow-lg transition-all duration-300",
-        /** Brand red accent button */
-        red: "bg-kc-red text-white hover:bg-kc-red-dark shadow-md hover:shadow-lg transition-all duration-300",
+        /** Legacy red accent button (mapped to blue for brand compliance) */
+        red: "bg-kc-blue text-white hover:bg-kc-blue-dark shadow-md hover:shadow-lg transition-all duration-300",
         /** Black outline button with invert on hover */
-        blackOutline: "border-2 border-kc-black text-kc-black bg-white hover:bg-kc-black hover:text-white transition-all duration-300",
+        blackOutline: "border-2 border-kc-blue text-kc-blue bg-white hover:bg-kc-blue/10 transition-all duration-300",
       },
       size: {
         sm: "h-9 rounded-md px-3",

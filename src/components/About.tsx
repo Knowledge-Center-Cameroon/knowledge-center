@@ -67,7 +67,7 @@ const CameroonMap = () => {
   ];
 
   return (
-    <div className="relative w-full aspect-[992/1429] max-w-md mx-auto bg-slate-50/30 rounded-2xl border border-slate-100 p-2 shadow-inner overflow-hidden group">
+    <div className="relative w-full aspect-[992/1429] max-w-md mx-auto bg-white rounded-2xl border border-border p-2 shadow-card overflow-hidden group">
       {/* Actual Cameroon Map Image */}
       <img 
         src="/cameroon.svg" 
@@ -91,18 +91,18 @@ const CameroonMap = () => {
               className="relative"
             >
               {/* Core pulse dot */}
-              <div className="w-2 h-2 bg-kc-red rounded-full shadow-sm z-20" />
+              <div className="w-2 h-2 bg-kc-blue rounded-full shadow-sm z-20" />
               
               {/* Pulsing ring animation */}
               <motion.div
                 animate={{ scale: [1, 2.5], opacity: [0.5, 0] }}
                 transition={{ duration: 2, repeat: Infinity, ease: "easeOut" }}
-                className="absolute inset-0 bg-kc-red rounded-full -z-10"
+                className="absolute inset-0 bg-kc-blue rounded-full -z-10"
               />
               
               {/* Tooltip-style label on hover or key hubs */}
               <div 
-                className={`absolute left-1/2 -translate-x-1/2 bottom-full mb-1.5 px-1.5 py-0.5 bg-white/95 border border-slate-200 rounded shadow-md text-[8px] font-bold text-slate-700 whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none ${i % 3 === 0 ? 'opacity-100' : ''}`}
+                className={`absolute left-1/2 -translate-x-1/2 bottom-full mb-1.5 px-1.5 py-0.5 bg-white border border-border rounded shadow-md text-[8px] font-bold whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none ${i % 3 === 0 || hub.name === "Buea" ? 'opacity-100' : ''} ${hub.name === "Buea" ? 'text-kc-blue' : 'text-kc-black'}`}
               >
                 {hub.name}
               </div>
@@ -246,9 +246,9 @@ const About = () => {
           <StemBackground opacity={0.15} density={36} lineDistance={120} speed={0.45} showIcons={true} />
           <div className="relative z-10 text-center py-8">
             <div className="h-1 w-28 mx-auto mb-3 bg-kc-blue rounded-full" />
-            <h2 className="heading-2 mb-6">
-              <span className="text-kc-blue">About</span> <span className="text-kc-red">Knowledge Center</span>
-            </h2>
+            <h1 className="heading-1 mb-6">
+              <span className="text-kc-blue">About Knowledge Center</span>
+            </h1>
             <p className="subheading max-w-3xl mx-auto leading-relaxed">
               Discover our journey from a small act of community service to a far bigger odyssey 
               of scientific and humanitarian engagement.
@@ -266,14 +266,14 @@ const About = () => {
                 transition={{ duration: 0.6 }}
                 className="h-1 mb-3 bg-kc-blue rounded-full"
               />
-            <h3 className="text-2xl md:text-3xl font-heading font-bold mb-4 md:mb-6">What is Knowledge Center</h3>
+            <h3 className="heading-3 mb-4 md:mb-6 text-kc-blue">What is Knowledge Center</h3>
         <div className="prose md:prose-lg max-w-none">
               <motion.p 
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.6 }}
-                className="text-muted-foreground leading-relaxed mb-4 md:mb-6"
+                className="text-kc-black/80 leading-relaxed mb-4 md:mb-6"
               >
                 Knowledge Center (KC) is a <b>non-profit, community-serving education and STEM
                 advocacy organization</b> based in Cameroon. We exist to inspire young people to
@@ -286,7 +286,7 @@ const About = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.6, delay: 0.2 }}
-                className="text-muted-foreground leading-relaxed"
+                className="text-kc-black/80 leading-relaxed"
               >
                 KC began as a <b>small act of community service</b> - helping students understand difficult
                 science concepts during a time of national crisis - but has grown into a <b>national
@@ -303,19 +303,18 @@ const About = () => {
           </div>
 
           <div className="animate-slide-up mt-4 lg:mt-0">
-            <Carousel setApi={setIntroApi} className="rounded-2xl shadow-elegant bg-white/5 backdrop-blur-sm p-2">
+            <Carousel setApi={setIntroApi} className="rounded-2xl shadow-card bg-white border border-border p-2">
               <CarouselContent>
                 {[about1, about, hero2, hero4, hero5].map((img, i) => (
                   <CarouselItem key={i}>
                     <div className="relative overflow-hidden rounded-xl">
                       <img src={img} alt={`KC slide ${i + 1}`} className="w-full h-48 sm:h-60 md:h-72 lg:h-[360px] object-cover" loading="lazy" decoding="async" sizes="(min-width: 1024px) 50vw, 100vw" />
-                      <div className="absolute inset-0 bg-gradient-to-tr from-kc-blue/20 via-transparent to-kc-red/20" />
                     </div>
                   </CarouselItem>
                 ))}
               </CarouselContent>
-              <CarouselPrevious className="hidden sm:flex bg-kc-blue text-white border-0 hover:bg-kc-red" />
-              <CarouselNext className="hidden sm:flex bg-kc-blue text-white border-0 hover:bg-kc-red" />
+              <CarouselPrevious className="hidden sm:flex bg-kc-blue text-white border-0 hover:bg-kc-blue-dark" />
+              <CarouselNext className="hidden sm:flex bg-kc-blue text-white border-0 hover:bg-kc-blue-dark" />
             </Carousel>
           </div>
         </div>
@@ -325,14 +324,14 @@ const About = () => {
           <div className="space-y-12 animate-slide-up">
             <div>
               <div className="h-1 w-20 mb-3 bg-kc-blue rounded-full" />
-              <h3 className="text-2xl md:text-3xl font-heading font-bold mb-3 md:mb-4">Why we are different</h3>
+              <h3 className="heading-3 mb-3 md:mb-4 text-kc-blue">Why we are different</h3>
                 <div className="prose md:prose-lg max-w-none">
                   <motion.p 
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     transition={{ duration: 0.6 }}
-                    className="text-muted-foreground leading-relaxed"
+                    className="text-kc-black/80 leading-relaxed"
                   >
                     We do more than prepare students for exams - we prepare them for <b>life in a rapidly
                     changing world.</b> While traditional systems often reward <b>rote memorization and grade
@@ -355,9 +354,9 @@ const About = () => {
 
             <div className="lg:col-span-2">
               <div className="h-1 w-20 mb-3 bg-kc-blue rounded-full" />
-              <h3 className="text-2xl md:text-3xl font-heading font-bold mb-3 md:mb-4">Why this matters now</h3>
+              <h3 className="heading-3 mb-3 md:mb-4 text-kc-blue">Why this matters now</h3>
               <div className="prose md:prose-lg max-w-none">
-                <p className="text-muted-foreground leading-relaxed">
+                <p className="text-kc-black/80 leading-relaxed">
                   We are living in an <b>innovation-driven, globally connected era</b> where information is
                   abundant and routine skills are increasingly automated. The real advantage today 
                   lies in the ability to <b>think critically, adapt quickly, collaborate across disciplines, and
@@ -380,26 +379,25 @@ const About = () => {
           </div>
 
           <div className="animate-slide-up mt-4 lg:mt-0">
-            <Carousel setApi={setPhiloApi} className="rounded-2xl shadow-elegant bg-white/5 backdrop-blur-sm p-2">
+            <Carousel setApi={setPhiloApi} className="rounded-2xl shadow-card bg-white border border-border p-2">
               <CarouselContent>
                 {[hero6, hero7, hero8, hero9, hero10, hero12].map((img, i) => (
                   <CarouselItem key={i}>
                     <div className="relative overflow-hidden rounded-xl">
                       <img src={img} alt={`KC philosophy ${i + 1}`} className="w-full h-48 sm:h-60 md:h-72 lg:h-[360px] object-cover" loading="lazy" decoding="async" sizes="(min-width: 1024px) 50vw, 100vw" />
-                      <div className="absolute inset-0 bg-gradient-to-br from-kc-red/20 via-transparent to-kc-blue/20" />
                     </div>
                   </CarouselItem>
                 ))}
               </CarouselContent>
-              <CarouselPrevious className="hidden sm:flex bg-kc-red text-white border-0 hover:bg-kc-blue" />
-              <CarouselNext className="hidden sm:flex bg-kc-red text-white border-0 hover:bg-kc-blue" />
+              <CarouselPrevious className="hidden sm:flex bg-kc-blue text-white border-0 hover:bg-kc-blue-dark" />
+              <CarouselNext className="hidden sm:flex bg-kc-blue text-white border-0 hover:bg-kc-blue-dark" />
             </Carousel>
           </div>
         </div>
 
         {/* Mission & Vision */}
         <div className="grid md:grid-cols-2 gap-6 md:gap-8 mb-16 md:mb-20">
-          <Card className="shadow-elegant transition-all hover:shadow-2xl hover:-translate-y-1 bg-white/40 backdrop-blur-sm border-white/50">
+          <Card className="shadow-card transition-all hover:shadow-hover hover:-translate-y-1 bg-white border border-border">
             <CardContent className="p-6 md:p-8">
               <motion.div 
                 className="relative w-16 h-16 rounded-full flex items-center justify-center mb-6"
@@ -407,12 +405,11 @@ const About = () => {
                 whileTap={{ scale: 0.96 }}
               >
                 <span className="absolute inset-0 rounded-full bg-kc-blue opacity-90" />
-                <span className="absolute -inset-1 rounded-full bg-gradient-to-br from-kc-blue/40 to-kc-red/40 blur-md" />
                 <Target className="h-8 w-8 text-white relative" aria-label="Mission icon" />
               </motion.div>
               <div className="h-1 w-16 mb-3 bg-kc-blue rounded-full" />
-              <h3 className="text-xl md:text-2xl font-heading font-bold mb-3 md:mb-4">Our Mission</h3>
-              <p className="text-muted-foreground leading-relaxed">
+              <h3 className="heading-3 mb-3 md:mb-4 text-kc-blue">Our Mission</h3>
+              <p className="text-kc-black/80 leading-relaxed">
                 To deliver <b>world-class education programs</b> that strengthen academic excellence,
                 unlock global opportunities, and develop leaders capable of solving Africa's most 
                 pressing challenges.
@@ -420,20 +417,19 @@ const About = () => {
             </CardContent>
           </Card>
 
-          <Card className="shadow-elegant transition-all hover:shadow-2xl hover:-translate-y-1 bg-white/40 backdrop-blur-sm border-white/50">
+          <Card className="shadow-card transition-all hover:shadow-hover hover:-translate-y-1 bg-white border border-border">
             <CardContent className="p-6 md:p-8">
               <motion.div 
                 className="relative w-16 h-16 rounded-full flex items-center justify-center mb-6"
                 whileHover={{ scale: 1.08, rotate: -1 }}
                 whileTap={{ scale: 0.96 }}
               >
-                <span className="absolute inset-0 rounded-full bg-kc-red opacity-90" />
-                <span className="absolute -inset-1 rounded-full bg-gradient-to-br from-kc-red/40 to-kc-blue/40 blur-md" />
+                <span className="absolute inset-0 rounded-full bg-kc-blue opacity-90" />
                 <Lightbulb className="h-8 w-8 text-white relative" aria-label="Vision icon" />
               </motion.div>
               <div className="h-1 w-16 mb-3 bg-kc-blue rounded-full" />
-              <h3 className="text-xl md:text-2xl font-heading font-bold mb-3 md:mb-4">Our Vision</h3>
-              <p className="text-muted-foreground leading-relaxed">
+              <h3 className="heading-3 mb-3 md:mb-4 text-kc-blue">Our Vision</h3>
+              <p className="text-kc-black/80 leading-relaxed">
                 Re-imagining education to cultivate <b>critical 21st century competencies</b> that empower
                 and equip our local learners to compete with their global peers and to become the 
                 new drivers of Africa's exponential growth. 
@@ -446,7 +442,7 @@ const About = () => {
         <div className="mb-20">
           <div className="text-center">
             <div className="h-1 w-28 mx-auto mb-3 bg-kc-blue rounded-full" />
-            <h3 className="text-2xl md:text-3xl font-heading font-bold text-center mb-8 md:mb-12"><span className="text-kc-blue">KC</span> <span className="text-kc-red">Core Values</span></h3>
+            <h3 className="heading-3 text-center mb-8 md:mb-12 text-kc-blue">KC Core Values</h3>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
             {values.map((value, index) => (
@@ -458,13 +454,13 @@ const About = () => {
                 whileHover={{ y: -8, scale: 1.02 }}
                 key={index}
               >
-                <Card className="h-full shadow-elegant transition-all hover:shadow-2xl bg-white/40 backdrop-blur-sm border-white/50">
+                <Card className="h-full shadow-card transition-all hover:shadow-hover bg-white border border-border">
                 <CardContent className="p-5 md:p-6 flex flex-col h-full">
-                  <div className="w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4 bg-kc-black text-white">
+                  <div className="w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4 bg-kc-blue text-white">
                     <value.icon className="h-6 w-6" />
                   </div>
-                  <h4 className="text-base md:text-lg font-heading font-semibold mb-2 md:mb-3 text-center">{value.title}</h4>
-                  <p className="text-muted-foreground text-sm leading-relaxed text-center flex-1">{value.description}</p>
+                  <h4 className="text-base md:text-lg font-heading font-semibold mb-2 md:mb-3 text-center text-kc-blue">{value.title}</h4>
+                  <p className="text-kc-black/70 text-sm leading-relaxed text-center flex-1">{value.description}</p>
                 </CardContent>
                 </Card>
               </motion.div>
@@ -474,7 +470,7 @@ const About = () => {
 
         {/* FAQ Section */}
         <div>
-          <h3 className="text-h3 md:text-h2 font-heading font-bold text-center mb-6 md:mb-10">Frequently Asked Questions</h3>
+          <h3 className="heading-2 text-center mb-6 md:mb-10 text-kc-blue">Frequently Asked Questions</h3>
           <Accordion type="single" collapsible value={openFaq} onValueChange={setOpenFaq} className="max-w-3xl mx-auto">
             {faqs.map((faq, index) => (
               <motion.div
@@ -486,12 +482,12 @@ const About = () => {
               >
                 <AccordionItem 
                   value={`item-${index}`} 
-                  className="border border-border rounded-xl mb-3 md:mb-4 overflow-hidden bg-white/5 backdrop-blur-sm transition-all duration-300 hover:border-kc-blue/40"
+                  className="border border-border rounded-xl mb-3 md:mb-4 overflow-hidden bg-white transition-all duration-300 hover:border-kc-blue/40"
                 >
                 <AccordionTrigger className="px-4 md:px-6 pb-4 md:pb-6 text-left font-normal hover:no-underline">
-                  <span className="text-body md:text-body-lg font-body text-foreground">{faq.question}</span>
+                  <span className="text-body md:text-body-lg font-body text-kc-black">{faq.question}</span>
                 </AccordionTrigger>
-                <AccordionContent className="px-4 md:px-6 pb-4 md:pb-6 text-body font-body text-muted-foreground">
+                <AccordionContent className="px-4 md:px-6 pb-4 md:pb-6 text-body font-body text-kc-black/70">
                   {faq.answer}
                 </AccordionContent>
                 </AccordionItem>
@@ -502,7 +498,7 @@ const About = () => {
 
         {/* KC STEM Hubs - solid accent colors */}
         <div className="mt-16 md:mt-24">
-          <div className="relative overflow-hidden rounded-3xl shadow-xl border border-slate-200 bg-white">
+          <div className="relative overflow-hidden rounded-3xl shadow-card border border-border bg-white">
             <div className="relative p-6 md:p-8 lg:p-10">
 
               {/* Enhanced header with better typography hierarchy */}
@@ -517,11 +513,11 @@ const About = () => {
                   <MapPin className="h-4 w-4 text-kc-blue" />
                   <span className="text-sm font-semibold text-kc-blue">Locations Across Cameroon</span>
                 </motion.div>
-                <h3 className="text-2xl md:text-3xl lg:text-4xl font-heading font-bold mb-3">
-                  <span className="text-kc-blue">KC STEM Hubs</span> <span className="text-foreground">Across Cameroon</span>
+                <h3 className="text-2xl md:text-3xl lg:text-4xl font-heading font-bold mb-3 text-kc-blue">
+                  KC STEM Hubs Across Cameroon
                 </h3>
 
-                <p className="text-foreground/80 max-w-2xl mx-auto text-lg leading-relaxed">
+                <p className="text-kc-black/80 max-w-2xl mx-auto text-lg leading-relaxed">
                   Discover inquiry-driven learning centers nationwide. Find the hub closest to you and join our community of innovators.
                 </p>
               </div>
@@ -542,22 +538,22 @@ const About = () => {
                         viewport={{ once: true }}
                         transition={{ duration: 0.4, delay: i * 0.05 }}
                         whileHover={{ x: 5 }}
-                        className="group flex items-center gap-3 p-3 rounded-xl bg-slate-50 border border-slate-100 hover:border-kc-blue/30 hover:bg-white transition-all duration-200"
+                        className="group flex items-center gap-3 p-3 rounded-xl bg-white border border-border hover:border-kc-blue/30 transition-all duration-200"
                       >
                         <span className="flex-shrink-0 inline-flex h-8 w-8 items-center justify-center rounded-lg bg-kc-blue/10 text-kc-blue group-hover:bg-kc-blue group-hover:text-white transition-colors">
                           <MapPin className="h-4 w-4" />
                         </span>
-                        <span className="text-sm md:text-base font-semibold text-slate-700 group-hover:text-kc-blue transition-colors">{city}</span>
+                        <span className="text-sm md:text-base font-semibold text-kc-black group-hover:text-kc-blue transition-colors">{city}</span>
                       </motion.div>
                     ))}
                   </div>
                   
-                  <div className="mt-8 p-6 rounded-2xl bg-kc-blue/5 border border-kc-blue/10">
+                  <div className="mt-8 p-6 rounded-2xl bg-white border border-border">
                     <h4 className="font-bold text-kc-blue mb-2 flex items-center gap-2">
                       <Rocket className="h-4 w-4" />
                       Expansion in Progress
                     </h4>
-                    <p className="text-sm text-slate-600 leading-relaxed">
+                    <p className="text-sm text-kc-black/70 leading-relaxed">
                       We are rapidly expanding our reach across Cameroon. Our goal is to ensure every young Cameroonian has access to a KC STEM Hub within their region.
                     </p>
                   </div>
@@ -576,7 +572,7 @@ const About = () => {
                   <motion.button
                     whileHover={{ scale: 1.05, y: -2 }}
                     whileTap={{ scale: 0.95 }}
-                    className="group relative inline-flex items-center gap-3 rounded-full px-6 md:px-8 py-3 md:py-3.5 bg-kc-blue text-white font-semibold text-base md:text-lg shadow-md hover:shadow-lg transition-all duration-200 border border-kc-blue/70 hover:bg-kc-red hover:border-kc-red"
+                    className="group relative inline-flex items-center gap-3 rounded-full px-6 md:px-8 py-3 md:py-3.5 bg-kc-blue text-white font-semibold text-base md:text-lg shadow-md hover:shadow-lg transition-all duration-200 border border-kc-blue/70 hover:bg-kc-blue-dark"
                     >
                     <span className="relative">Explore Programs Near You</span>
 
@@ -591,7 +587,7 @@ const About = () => {
                     </motion.div>
                   </motion.button>
                 </Link>
-                <p className="text-sm text-muted-foreground mt-3 max-w-md mx-auto">
+                <p className="text-sm text-kc-black/70 mt-3 max-w-md mx-auto">
                   Ready to start your STEM journey? Find programs, schedules, and opportunities in your city.
                 </p>
               </motion.div>
@@ -604,3 +600,5 @@ const About = () => {
 };
 
 export default About;
+
+

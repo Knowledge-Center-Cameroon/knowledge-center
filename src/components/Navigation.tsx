@@ -66,7 +66,7 @@ const Navigation = () => {
     <header
       className={cn(
         "fixed top-0 left-0 right-0 z-50 transition-smooth",
-        "bg-white/95 backdrop-blur-md border-b border-border",
+        "bg-white border-b border-border",
         isScrolled ? "shadow-elegant" : "shadow-sm"
       )}
       role="banner"
@@ -90,8 +90,7 @@ const Navigation = () => {
             />
             <div className="flex flex-col leading-tight">
               <span className="text-base sm:text-lg lg:text-xl font-heading font-bold tracking-tight">
-                <span className="text-kc-blue">Knowledge</span>
-                <span className="text-kc-red ml-1">Center</span>
+                <span className="text-kc-blue">Knowledge Center</span>
               </span>
             </div>
           </Link>
@@ -109,7 +108,7 @@ const Navigation = () => {
                 initial={{ left: 0 }}
                 animate={{ left: `calc((100% / ${navCount}) * ${activeIndex})` }}
                 transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-                className="absolute top-0 bottom-0 my-auto h-10 rounded-full bg-kc-black shadow-lg"
+                className="absolute top-0 bottom-0 my-auto h-10 rounded-full bg-kc-blue shadow-elegant"
                 style={{ width: `calc(100%/${navCount})` }}
               />
               {navItems.map((item) => (
@@ -124,7 +123,7 @@ const Navigation = () => {
                     cn(
                       "relative z-10 transition-smooth font-semibold font-body",
                       "px-3 py-2 text-sm text-center",
-                      isActive
+                        isActive
                         ? "text-white drop-shadow-sm"
                         : "text-foreground hover:text-foreground/80"
                     )
@@ -154,18 +153,12 @@ const Navigation = () => {
               </Link>
             </Button>
             <Button
-              asChild
               variant="blue"
               size="sm"
               className="font-semibold"
+              disabled
             >
-              <Link
-                to="/stem"
-                onMouseEnter={handlePrefetch("/stem")}
-                onFocus={handlePrefetch("/stem")}
-              >
-                STEM Reg.
-              </Link>
+              STEM Reg.
             </Button>
           </div>
 
@@ -195,7 +188,7 @@ const Navigation = () => {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -8 }}
               transition={{ duration: 0.18, ease: [0.22, 1, 0.36, 1] }}
-              className="bg-white/95 backdrop-blur-md border border-border shadow-elevated rounded-2xl overflow-hidden"
+              className="bg-white border border-border shadow-elevated rounded-2xl overflow-hidden"
               id="mobile-nav"
             >
               <div className="px-4 py-3 border-b border-border/70 bg-kc-blue/5">
@@ -213,7 +206,7 @@ const Navigation = () => {
                         "block w-full text-left py-3 transition-smooth font-semibold font-body",
                         "px-5",
                         isActive
-                          ? "bg-kc-black text-white"
+                          ? "bg-kc-blue text-white"
                           : "text-foreground hover:bg-muted"
                       )
                     }
@@ -239,18 +232,12 @@ const Navigation = () => {
                   </Link>
                 </Button>
                 <Button
-                  asChild
                   variant="blue"
                   className="w-full font-semibold"
                   onClick={closeMobile}
+                  disabled
                 >
-                  <Link
-                    to="/stem"
-                    onMouseEnter={handlePrefetch("/stem")}
-                    onFocus={handlePrefetch("/stem")}
-                  >
-                    STEM
-                  </Link>
+                  STEM
                 </Button>
               </div>
             </motion.div>

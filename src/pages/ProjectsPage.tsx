@@ -96,9 +96,9 @@ const ProjectsPage: React.FC = () => {
           {/* Header */}
           <Parallax ref={ref as React.Ref<HTMLDivElement>} style={{ y }} className="text-center mb-10 md:mb-12">
             <div className="h-1 w-28 mx-auto mb-3 bg-kc-blue rounded-full" />
-            <h2 className="heading-2 mb-6">
+            <h1 className="heading-1 mb-6">
               Explore Our Projects
-            </h2>
+            </h1>
             <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
               Dive deeper into each of our programs. Browse highlights below or jump straight into a project page.
             </p>
@@ -152,7 +152,7 @@ const ProjectsPage: React.FC = () => {
                     px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 relative overflow-hidden
                     ${selectedCategory === category
                       ? 'bg-kc-blue text-white shadow-md transform scale-105'
-                      : 'bg-white/70 text-foreground hover:bg-white hover:shadow-sm'}
+                      : 'bg-white text-foreground hover:bg-white hover:shadow-sm'}
                   `}
                 >
                   {category.charAt(0).toUpperCase() + category.slice(1)}
@@ -208,7 +208,7 @@ const ProjectsPage: React.FC = () => {
                     transition: { duration: 0.3 }
                   }}
                 >
-                  <Card className="group h-full overflow-hidden bg-white/80 backdrop-blur-md border border-white/20 shadow-elegant rounded-2xl transition-all duration-500 hover:border-kc-blue/40 hover:shadow-2xl">
+                  <Card className="group h-full overflow-hidden bg-white border border-border shadow-card rounded-2xl transition-all duration-500 hover:border-kc-blue/40 hover:shadow-hover">
                     <CardContent className="p-0 h-full flex flex-col">
                       <div className="relative aspect-[4/3] w-full overflow-hidden">
                         <motion.img
@@ -222,7 +222,7 @@ const ProjectsPage: React.FC = () => {
                           transition={{ duration: 0.4 }}
                         />
                         <motion.div
-                          className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+                          className="absolute inset-0 bg-kc-blue/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
                           initial={{ opacity: 0 }}
                           whileHover={{ opacity: 1 }}
                         />
@@ -230,7 +230,7 @@ const ProjectsPage: React.FC = () => {
                         {/* Featured Badge */}
                         {p.featured && (
                           <motion.div
-                            className="absolute top-4 right-4 flex items-center gap-1 bg-kc-red/90 text-white px-3 py-1.5 rounded-full text-sm font-medium backdrop-blur-sm"
+                            className="absolute top-4 right-4 flex items-center gap-1 bg-kc-blue text-white px-3 py-1.5 rounded-full text-sm font-medium "
                             initial={{ scale: 0, rotate: -10 }}
                             animate={{ scale: 1, rotate: 0 }}
                             transition={{ delay: 0.2 + (index * 0.05), type: "spring", stiffness: 260 }}
@@ -359,3 +359,6 @@ const ProjectsPage: React.FC = () => {
 };
 
 export default ProjectsPage;
+
+
+

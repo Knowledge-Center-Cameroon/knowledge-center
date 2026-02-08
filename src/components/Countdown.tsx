@@ -38,8 +38,8 @@ const Digit: React.FC<{ d: string }> = ({ d }) => (
   </motion.span>
 );
 
-const CountdownCard: React.FC<{ label: string; value: number; variant: "blue" | "red" }> = ({ label, value, variant }) => {
-  const base = variant === "blue" ? "bg-kc-blue" : "bg-kc-red";
+const CountdownCard: React.FC<{ label: string; value: number; variant: "blue" | "red" }> = ({ label, value }) => {
+  const base = "bg-kc-blue";
   const digits = pad(value).split("");
 
   return (
@@ -47,7 +47,7 @@ const CountdownCard: React.FC<{ label: string; value: number; variant: "blue" | 
       className={`relative rounded-xl sm:rounded-2xl ${base} text-white min-w-[70px] sm:min-w-[96px] px-2 h-24 sm:h-28 shadow-lg overflow-hidden`}
     >
       {/* Top darker half (50%) */}
-      <div className="absolute top-0 left-0 right-0 h-1/2 bg-black/25" />
+      <div className="absolute top-0 left-0 right-0 h-1/2 bg-kc-blue/10" />
       {/* Number, animate digits independently */}
       <div className="absolute inset-0 flex items-center justify-center">
         <span className="text-3xl sm:text-4xl font-bold leading-none tabular-nums select-none tracking-tight flex">
@@ -71,10 +71,9 @@ const Countdown: React.FC = () => {
   return (
     <section className="relative">
       <div className="container mx-auto px-4 lg:px-8">
-        <div className="relative overflow-hidden rounded-3xl shadow-2xl border border-white/20 bg-white/60 backdrop-blur-xl">
+        <div className="relative overflow-hidden rounded-3xl shadow-card border border-border bg-white">
           {/* Decorative accents */}
-          <div className="pointer-events-none absolute -top-24 -left-16 h-64 w-64 rounded-full bg-kc-blue/15 blur-3xl" />
-          <div className="pointer-events-none absolute -bottom-24 -right-16 h-64 w-64 rounded-full bg-kc-red/15 blur-3xl" />
+          <div className="pointer-events-none absolute -top-24 -left-16 h-64 w-64 rounded-full bg-kc-blue/10 blur-3xl" />
 
           <div className="relative px-4 py-7 sm:px-8 sm:py-11">
             <div className="flex flex-col items-center text-center text-neutral-900 max-w-3xl mx-auto">
@@ -82,10 +81,10 @@ const Countdown: React.FC = () => {
                 <Sparkles className="h-3.5 w-3.5" />
                 National STEM Competition
               </div>
-              <h2 className="text-xl sm:text-3xl font-heading font-bold leading-tight">
-                Countdown to <span className="text-kc-blue">December 29</span>, <span className="text-kc-red">2026</span>
+              <h2 className="text-xl sm:text-3xl font-heading font-bold leading-tight text-kc-blue">
+                Countdown to December 29, 2026
               </h2>
-              <p className="mt-2 text-sm sm:text-base text-foreground/80 max-w-2xl">
+              <p className="mt-2 text-sm sm:text-base text-kc-black/80 max-w-2xl">
                 Join us for a national celebration of ideas, teamwork, and invention. Get your teams ready!
               </p>
 
@@ -94,19 +93,19 @@ const Countdown: React.FC = () => {
                 <>
                   <div className="mt-6 sm:mt-8 flex flex-wrap items-stretch justify-center gap-2 sm:gap-3.5" role="timer" aria-live="polite">
                     <CountdownCard label="Days" value={days} variant="blue" />
-                    <CountdownCard label="Hours" value={hours} variant="red" />
+                    <CountdownCard label="Hours" value={hours} variant="blue" />
                     <CountdownCard label="Minutes" value={minutes} variant="blue" />
-                    <CountdownCard label="Seconds" value={seconds} variant="red" />
+                    <CountdownCard label="Seconds" value={seconds} variant="blue" />
                   </div>
                   {/* Seconds progress */}
                   <div className="mt-4 w-full max-w-md">
-                    <div className="h-1.5 w-full rounded bg-black/10 overflow-hidden">
+                    <div className="h-1.5 w-full rounded bg-kc-blue/10 overflow-hidden">
                       <div
                         className="h-full bg-kc-blue transition-[width] duration-500 ease-out"
                         style={{ width: `${(seconds / 60) * 100}%` }}
                       />
                     </div>
-                    <div className="mt-1 text-[11px] text-foreground/70">Next minute in {pad(60 - seconds)}s</div>
+                    <div className="mt-1 text-[11px] text-kc-black/70">Next minute in {pad(60 - seconds)}s</div>
                   </div>
                 </>
               ) : (
@@ -119,7 +118,7 @@ const Countdown: React.FC = () => {
               <div className="mt-7 sm:mt-9 w-full flex justify-center">
                 <a
                   href="/projects/stem"
-                  className="inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-full px-5 py-2.5 bg-kc-blue text-white font-semibold shadow hover:bg-kc-red transition-colors text-sm sm:text-base"
+                  className="inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-full px-5 py-2.5 bg-kc-blue text-white font-semibold shadow hover:bg-kc-blue-dark transition-colors text-sm sm:text-base"
                 >
                   <CalendarDays className="h-4 w-4" />
                   Event details

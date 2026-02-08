@@ -56,7 +56,7 @@ const StarRating: React.FC<{ value: number }> = ({ value }) => (
     {Array.from({ length: 5 }).map((_, i) => (
       <Star
         key={i}
-        className={`h-4 w-4 ${i < value ? "fill-yellow-400 text-yellow-400" : "text-muted-foreground/30"}`}
+        className={`h-4 w-4 ${i < value ? "fill-kc-blue text-kc-blue" : "text-kc-gray/30"}`}
       />
     ))}
   </div>
@@ -79,17 +79,14 @@ const Testimonials: React.FC = () => {
   return (
     <section className="relative">
       {/* Background accent */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0 -z-10 bg-gradient-to-b from-background via-background to-background/50"
-      />
+      <div aria-hidden className="pointer-events-none absolute inset-0 -z-10 bg-white" />
 
       <div className="container mx-auto px-4">
         <div className="mx-auto max-w-2xl text-center">
-          <h2 className="text-4xl font-extrabold tracking-tight sm:text-5xl">
+          <h2 className="heading-2">
             Success Stories
           </h2>
-          <p className="mt-4 text-lg text-muted-foreground">
+          <p className="mt-4 text-lg text-kc-black/80">
             Real voices from students across KC hubs—how our approach to science education builds confidence, clarity, and results.
           </p>
         </div>
@@ -105,19 +102,19 @@ const Testimonials: React.FC = () => {
           {TESTIMONIALS.map((t, idx) => (
             <motion.div key={idx} variants={cardVariants}>
               <Card
-                className="group relative overflow-hidden border-border/60 shadow-sm transition-all duration-300 hover:-translate-y-1.5 hover:shadow-xl hover:border-primary/40"
+                className="group relative overflow-hidden border-border/60 shadow-sm transition-all duration-300 hover:-translate-y-1.5 hover:shadow-xl hover:border-kc-blue/40"
               >
-                <div className="pointer-events-none absolute inset-x-0 -top-24 h-40 bg-gradient-to-b from-primary/10 to-transparent opacity-0 blur-2xl transition-opacity duration-300 group-hover:opacity-100" />
+                <div className="pointer-events-none absolute inset-x-0 -top-24 h-40 bg-kc-blue/10 opacity-0 blur-2xl transition-opacity duration-300 group-hover:opacity-100" />
                 <CardContent className="p-8 md:p-9">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                      <Avatar className="h-14 w-14 ring-2 ring-primary/20 shadow-sm">
+                      <Avatar className="h-14 w-14 ring-2 ring-kc-blue/20 shadow-sm">
                         <AvatarImage src={t.image} alt={t.name} />
                         <AvatarFallback>{t.initials}</AvatarFallback>
                       </Avatar>
                       <div>
                         <p className="text-lg font-semibold leading-tight">{t.name}</p>
-                        <p className="text-sm text-muted-foreground">
+                        <p className="text-sm text-kc-black/70">
                           {t.role} • {t.company}
                         </p>
                       </div>
@@ -126,15 +123,15 @@ const Testimonials: React.FC = () => {
                   </div>
 
                   <div className="mt-6 flex items-start gap-3">
-                    <div className="mt-1 rounded-full bg-primary/10 p-2 text-primary">
+                    <div className="mt-1 rounded-full bg-kc-blue/10 p-2 text-kc-blue">
                       <Quote className="h-4 w-4" />
                     </div>
-                    <p className="text-base md:text-lg leading-relaxed text-muted-foreground">
+                    <p className="text-base md:text-lg leading-relaxed text-kc-black/70">
                       “{t.quote}”
                     </p>
                   </div>
                 </CardContent>
-                <div className="absolute -right-12 -top-12 h-28 w-28 rounded-full bg-primary/10 blur-2xl transition-all duration-300 group-hover:-right-6 group-hover:-top-6" />
+                <div className="absolute -right-12 -top-12 h-28 w-28 rounded-full bg-kc-blue/10 blur-2xl transition-all duration-300 group-hover:-right-6 group-hover:-top-6" />
               </Card>
             </motion.div>
           ))}
@@ -155,13 +152,13 @@ const Testimonials: React.FC = () => {
                   <CardContent className="p-6">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-3">
-                        <Avatar className="h-12 w-12 ring-2 ring-primary/20">
+                        <Avatar className="h-12 w-12 ring-2 ring-kc-blue/20">
                           <AvatarImage src={t.image} alt={t.name} />
                           <AvatarFallback>{t.initials}</AvatarFallback>
                         </Avatar>
                         <div>
                           <p className="text-base font-semibold leading-tight">{t.name}</p>
-                          <p className="text-xs text-muted-foreground">
+                          <p className="text-xs text-kc-black/70">
                             {t.role} • {t.company}
                           </p>
                         </div>
@@ -169,10 +166,10 @@ const Testimonials: React.FC = () => {
                       <StarRating value={t.rating} />
                     </div>
                     <div className="mt-4 flex items-start gap-3">
-                      <div className="mt-0.5 rounded-full bg-primary/10 p-1.5 text-primary">
+                      <div className="mt-0.5 rounded-full bg-kc-blue/10 p-1.5 text-kc-blue">
                         <Quote className="h-3.5 w-3.5" />
                       </div>
-                      <p className="text-[15px] leading-relaxed text-muted-foreground">“{t.quote}”</p>
+                      <p className="text-[15px] leading-relaxed text-kc-black/70">“{t.quote}”</p>
                     </div>
                   </CardContent>
                 </Card>
@@ -193,7 +190,7 @@ const Testimonials: React.FC = () => {
 
         {/* View more */}
         <div className="mt-10 text-center">
-          <a href="/blog" className="inline-flex items-center gap-2 rounded-full px-5 py-2.5 bg-kc-blue text-white font-semibold shadow hover:bg-kc-red transition-colors">
+          <a href="/blog" className="inline-flex items-center gap-2 rounded-full px-5 py-2.5 bg-kc-blue text-white font-semibold shadow hover:bg-kc-blue-dark transition-colors">
             View more stories
           </a>
         </div>

@@ -138,8 +138,8 @@ const ProjectDetailContent: React.FC<ProjectDetailContentProps> = ({ project }) 
       <div className="relative container mx-auto px-4 lg:px-8 max-w-6xl">
         {/* Background decor */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none -z-10">
-          <div className="absolute -top-40 -right-40 w-96 h-96 bg-gradient-to-br from-kc-blue/20 via-transparent to-kc-red/20 rounded-full blur-3xl opacity-50" />
-          <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-gradient-to-tr from-kc-red/20 via-transparent to-kc-blue/20 rounded-full blur-3xl opacity-50" />
+          <div className="absolute -top-40 -right-40 w-96 h-96 bg-kc-blue/10 rounded-full blur-3xl opacity-50" />
+          <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-kc-blue/10 rounded-full blur-3xl opacity-50" />
         </div>
         
         {/* Header */}
@@ -189,7 +189,7 @@ const ProjectDetailContent: React.FC<ProjectDetailContentProps> = ({ project }) 
             className="text-center max-w-4xl mx-auto"
           >
             <motion.h1
-              className="text-h1 md:text-h1 lg:text-h1 font-heading font-bold mb-4"
+              className="heading-1 mb-4"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.3 }}
@@ -210,9 +210,9 @@ const ProjectDetailContent: React.FC<ProjectDetailContentProps> = ({ project }) 
         {/* Media + Content split */}
         <div className="space-y-10 mb-12">
           <motion.div initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.2 }} transition={{ duration: 0.45 }}>
-            <Card className="overflow-hidden shadow-elegant">
+            <Card className="overflow-hidden shadow-card">
               <CardContent className="p-0">
-                <Carousel setApi={setApi} className="rounded-3xl shadow-elegant bg-black/80 relative">
+                <Carousel setApi={setApi} className="rounded-3xl shadow-card bg-white border border-border relative">
                   <CarouselContent className="">
                     {project.images.map((src, i) => (
                       <CarouselItem key={i}>
@@ -225,13 +225,13 @@ const ProjectDetailContent: React.FC<ProjectDetailContentProps> = ({ project }) 
                             decoding="async"
                             sizes="(min-width: 1024px) 80vw, 100vw"
                           />
-                          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
+                          <div className="absolute inset-0 bg-kc-blue/20" />
                         </div>
                       </CarouselItem>
                     ))}
                   </CarouselContent>
-                  <CarouselPrevious className="hidden sm:flex bg-kc-blue text-white border-0 hover:bg-kc-red" />
-                  <CarouselNext className="hidden sm:flex bg-kc-blue text-white border-0 hover:bg-kc-red" />
+                  <CarouselPrevious className="hidden sm:flex bg-kc-blue text-white border-0 hover:bg-kc-blue-dark" />
+                  <CarouselNext className="hidden sm:flex bg-kc-blue text-white border-0 hover:bg-kc-blue-dark" />
                   <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-10">
                     {project.images.map((_, idx) => (
                       <motion.button
@@ -271,7 +271,7 @@ const ProjectDetailContent: React.FC<ProjectDetailContentProps> = ({ project }) 
                   className="group"
                 >
                   <motion.h2
-                    className="text-h4 md:text-h3 font-heading font-semibold mb-2 group-hover:text-kc-blue transition-colors duration-300"
+                    className="heading-3 mb-2 group-hover:text-kc-blue transition-colors duration-300"
                     whileHover={{ x: 5 }}
                   >
                     {s.title}
@@ -305,7 +305,7 @@ const ProjectDetailContent: React.FC<ProjectDetailContentProps> = ({ project }) 
                       key={idx}
                       whileHover={{ y: -2, scale: 1.01 }}
                       transition={{ duration: 0.2 }}
-                      className={`rounded-2xl px-4 py-5 flex flex-col justify-between shadow-elegant bg-kc-blue text-white`}
+                      className={`rounded-2xl px-4 py-5 flex flex-col justify-between shadow-card bg-kc-blue text-white`}
                     >
                       <div className="text-h4 md:text-h3 font-heading font-bold leading-none mb-2">{stat.value}</div>
                       <p className="text-xs md:text-sm text-white/90">
@@ -328,7 +328,7 @@ const ProjectDetailContent: React.FC<ProjectDetailContentProps> = ({ project }) 
           transition={{ duration: 0.6, delay: 0.1 }}
         >
           <motion.h2
-            className="text-h3 font-heading font-semibold mb-4"
+            className="heading-3 mb-4"
             initial={{ opacity: 0, x: -10 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
@@ -355,13 +355,13 @@ const ProjectDetailContent: React.FC<ProjectDetailContentProps> = ({ project }) 
                 }}
                 className="group"
               >
-                <div className="focus:outline-none focus-visible:ring-2 focus-visible:ring-kc-blue/60 focus-visible:ring-offset-2 focus-visible:ring-offset-background rounded-xl border border-white/20 bg-white/5 backdrop-blur-sm hover:bg-white/10 transition-all p-5 md:p-6 shadow-elegant hover:shadow-2xl">
+                <div className="focus:outline-none focus-visible:ring-2 focus-visible:ring-kc-blue/60 focus-visible:ring-offset-2 focus-visible:ring-offset-background rounded-xl border border-border bg-white  hover:bg-white transition-all p-5 md:p-6 shadow-card hover:shadow-hover">
                   <div className="flex items-start gap-3">
                     <motion.div
                       whileHover={{ scale: 1.1, rotate: 5 }}
                       transition={{ duration: 0.2 }}
                     >
-                      <CheckCircle className="h-5 w-5 text-kc-blue mt-0.5 flex-shrink-0 group-hover:text-kc-red transition-colors duration-300" />
+                      <CheckCircle className="h-5 w-5 text-kc-blue mt-0.5 flex-shrink-0 group-hover:text-kc-blue transition-colors duration-300" />
                     </motion.div>
                     <div className="flex-1">
                       <motion.div
@@ -389,11 +389,11 @@ const ProjectDetailContent: React.FC<ProjectDetailContentProps> = ({ project }) 
 
         {/* Additional Details only (avoid redundancy) */}
         <div className="grid md:grid-cols-2 gap-8">
-          <Card className="shadow-elegant bg-white/5 backdrop-blur-sm border-white/20 transition-all duration-300 hover:shadow-2xl">
+          <Card className="shadow-card bg-white  border-border transition-all duration-300 hover:shadow-hover">
             <CardContent className="p-6 md:p-8">
               <div className="flex items-center gap-3 mb-6">
-                <div className="h-8 w-1 bg-gradient-to-b from-kc-blue to-kc-red rounded-full" />
-                <h2 className="text-h4 md:text-h3 font-heading font-semibold">Additional Details</h2>
+                <div className="h-8 w-1 bg-kc-blue rounded-full" />
+                <h2 className="heading-3">Additional Details</h2>
               </div>
               <ul className="space-y-2">
                 {project.details.map((d, i) => (
@@ -422,9 +422,9 @@ const ProjectDetailContent: React.FC<ProjectDetailContentProps> = ({ project }) 
                   viewport={{ once: true, amount: 0.2 }}
                   transition={{ duration: 0.35, delay: idx * 0.05 }}
                 >
-                  <Card className="bg-white/5 backdrop-blur-sm border border-white/20 transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 group">
+                  <Card className="bg-white  border border-border transition-all duration-300 hover:shadow-hover hover:-translate-y-1 group">
                     <CardContent className="p-6 text-center relative overflow-hidden">
-                      <div className="absolute inset-0 bg-gradient-to-br from-kc-blue/5 to-kc-red/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                      <div className="absolute inset-0 bg-kc-blue/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                       <div className="relative">
                         <div className="text-h3 md:text-h2 font-heading font-bold mb-1 group-hover:text-kc-blue transition-colors">{s.value}</div>
                         <div className="text-sm md:text-base text-foreground/80">{s.label}</div>
@@ -447,7 +447,7 @@ const ProjectDetailContent: React.FC<ProjectDetailContentProps> = ({ project }) 
         >
           <div className="absolute inset-0 bg-kc-blue rounded-3xl " />
           <motion.div
-            className="relative bg-white/10 backdrop-blur-md border border-white/20 rounded-3xl p-8 md:p-10 lg:p-12 overflow-hidden shadow-2xl"
+            className="relative bg-white  border border-border rounded-3xl p-8 md:p-10 lg:p-12 overflow-hidden shadow-2xl"
             initial={{ opacity: 0, y: 16 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -457,13 +457,13 @@ const ProjectDetailContent: React.FC<ProjectDetailContentProps> = ({ project }) 
             
             <div className="flex flex-col md:flex-row items-center justify-between gap-6 md:gap-8 ">
               <div className="text-center md:text-left space-y-3">
-                <div className="inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-xs font-medium text-white/90 mb-1">
+                <div className="inline-flex items-center gap-2 rounded-full bg-white px-3 py-1 text-xs font-medium text-white/90 mb-1">
                   <span className="inline-block h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
                   <span>Next step with Knowledge Center</span>
                 </div>
                 <div>
                   <motion.h3
-                    className="text-white text-h3 md:text-h2 font-heading font-bold mb-2"
+                    className="heading-2 mb-2"
                     initial={{ opacity: 0, y: 8 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
@@ -472,7 +472,7 @@ const ProjectDetailContent: React.FC<ProjectDetailContentProps> = ({ project }) 
                     Ready to Get Started?
                   </motion.h3>
                   <motion.div
-                    className="h-0.5 w-20 rounded-full bg-gradient-to-r from-kc-red to-kc-blue md:ml-0 mx-auto mb-2"
+                    className="h-0.5 w-20 rounded-full bg-kc-blue md:ml-0 mx-auto mb-2"
                     initial={{ scaleX: 0, opacity: 0 }}
                     whileInView={{ scaleX: 1, opacity: 1 }}
                     viewport={{ once: true }}
@@ -492,15 +492,13 @@ const ProjectDetailContent: React.FC<ProjectDetailContentProps> = ({ project }) 
               
               <div className="flex flex-col sm:flex-row gap-4">
                 {project.slug === "stem" && (
-                  <MotionButton 
-                    asChild 
-                    variant="blackOutline" 
+                  <MotionButton
+                    variant="blackOutline"
                     size="lg"
                     className="px-8 text-base rounded-full"
-                    whileHover={{ y: -2, scale: 1.03 }}
-                    whileTap={{ scale: 0.97 }}
+                    disabled
                   >
-                    <Link to="/stem">Get Registered</Link>
+                    Get Registered
                   </MotionButton>
                 )}
                 <MotionButton 
@@ -542,3 +540,5 @@ const ProjectDetailPage: React.FC = () => {
 };
 
 export default ProjectDetailPage;
+
+
