@@ -118,6 +118,7 @@ const About = () => {
   const [openFaq, setOpenFaq] = useState<string | undefined>("item-0");
   const [introApi, setIntroApi] = useState<CarouselApi | null>(null);
   const [philoApi, setPhiloApi] = useState<CarouselApi | null>(null);
+  const [mattersApi, setMattersApi] = useState<CarouselApi | null>(null);
   const hubsTrackRef = useRef<HTMLDivElement | null>(null);
 
   // Autoplay for the intro carousel
@@ -141,6 +142,17 @@ const About = () => {
     }, 4500);
     return () => clearInterval(id);
   }, [philoApi]);
+
+  // Autoplay for the "why this matters now" carousel
+  useEffect(() => {
+    if (!mattersApi) return;
+    const id = setInterval(() => {
+      if (!mattersApi) return;
+      if (mattersApi.canScrollNext()) mattersApi.scrollNext();
+      else mattersApi.scrollTo(0);
+    }, 4300);
+    return () => clearInterval(id);
+  }, [mattersApi]);
 
   const hubsList = [
     "Yaoundé",
@@ -239,12 +251,12 @@ const About = () => {
 
   const { ref, y } = useParallax(40);
   return (
-    <section id="about" className="py-14 md:py-20 lg:py-32">
+    <section id="about" className="py-10 md:py-14 lg:py-20">
       <div className="container mx-auto px-4 lg:px-8 max-w-6xl">
         {/* Header */}
-        <Parallax ref={ref as any} style={{ y }} className="relative overflow-hidden rounded-2xl mb-16">
-          <StemBackground opacity={0.15} density={36} lineDistance={120} speed={0.45} showIcons={true} />
-          <div className="relative z-10 text-center py-8">
+        <Parallax ref={ref as any} style={{ y }} className="relative overflow-hidden rounded-2xl mb-12">
+          <StemBackground opacity={0.2} density={36} lineDistance={120} speed={0.45} showIcons={true} />
+          <div className="relative z-10 text-center py-6 md:py-7">
             <div className="h-1 w-28 mx-auto mb-3 bg-kc-blue rounded-full" />
             <h1 className="heading-1 mb-6">
               <span className="text-kc-blue">About Knowledge Center</span>
@@ -319,9 +331,25 @@ const About = () => {
           </div>
         </div>
 
-        {/* Philosophy Sections with Side Carousel */}
+        {/* Why we are different: image left on desktop, text right */}
         <div className="grid lg:grid-cols-2 gap-6 sm:gap-8 md:gap-12 items-start mb-14 md:mb-20">
-          <div className="space-y-12 animate-slide-up">
+          <div className="animate-slide-up mt-4 lg:mt-0 order-2 lg:order-1">
+            <Carousel setApi={setPhiloApi} className="rounded-2xl shadow-card bg-white border border-border p-2">
+              <CarouselContent>
+                {[hero6, hero7, hero8, hero9, hero10, hero12].map((img, i) => (
+                  <CarouselItem key={i}>
+                    <div className="relative overflow-hidden rounded-xl">
+                      <img src={img} alt={`KC philosophy ${i + 1}`} className="w-full h-48 sm:h-60 md:h-72 lg:h-[360px] object-cover" loading="lazy" decoding="async" sizes="(min-width: 1024px) 50vw, 100vw" />
+                    </div>
+                  </CarouselItem>
+                ))}
+              </CarouselContent>
+              <CarouselPrevious className="hidden sm:flex bg-kc-blue text-white border-0 hover:bg-kc-blue-dark" />
+              <CarouselNext className="hidden sm:flex bg-kc-blue text-white border-0 hover:bg-kc-blue-dark" />
+            </Carousel>
+          </div>
+
+          <div className="animate-slide-up order-1 lg:order-2">
             <div>
               <div className="h-1 w-20 mb-3 bg-kc-blue rounded-full" />
               <h3 className="heading-3 mb-3 md:mb-4 text-kc-blue">Why we are different</h3>
@@ -351,8 +379,13 @@ const About = () => {
                   </motion.p>
                 </div>
             </div>
+          </div>
+        </div>
 
-            <div className="lg:col-span-2">
+        {/* Why this matters now: text left, image right */}
+        <div className="grid lg:grid-cols-2 gap-6 sm:gap-8 md:gap-12 items-start mb-14 md:mb-20">
+          <div className="animate-slide-up order-1">
+            <div>
               <div className="h-1 w-20 mb-3 bg-kc-blue rounded-full" />
               <h3 className="heading-3 mb-3 md:mb-4 text-kc-blue">Why this matters now</h3>
               <div className="prose md:prose-lg max-w-none">
@@ -378,13 +411,13 @@ const About = () => {
             </div>
           </div>
 
-          <div className="animate-slide-up mt-4 lg:mt-0">
-            <Carousel setApi={setPhiloApi} className="rounded-2xl shadow-card bg-white border border-border p-2">
+          <div className="animate-slide-up mt-4 lg:mt-0 order-2">
+            <Carousel setApi={setMattersApi} className="rounded-2xl shadow-card bg-white border border-border p-2">
               <CarouselContent>
-                {[hero6, hero7, hero8, hero9, hero10, hero12].map((img, i) => (
+                {[about1, hero2, hero3, hero4, hero5, hero8].map((img, i) => (
                   <CarouselItem key={i}>
                     <div className="relative overflow-hidden rounded-xl">
-                      <img src={img} alt={`KC philosophy ${i + 1}`} className="w-full h-48 sm:h-60 md:h-72 lg:h-[360px] object-cover" loading="lazy" decoding="async" sizes="(min-width: 1024px) 50vw, 100vw" />
+                      <img src={img} alt={`KC future focus ${i + 1}`} className="w-full h-48 sm:h-60 md:h-72 lg:h-[360px] object-cover" loading="lazy" decoding="async" sizes="(min-width: 1024px) 50vw, 100vw" />
                     </div>
                   </CarouselItem>
                 ))}
@@ -529,7 +562,11 @@ const About = () => {
                 </div>
 
                 <div className="order-1 lg:order-2">
-                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 md:gap-4">
+                  <div className="mb-4 flex items-center justify-between gap-3">
+                    <h4 className="text-sm md:text-base font-semibold text-kc-blue">Active City Hubs</h4>
+                    <span className="text-xs font-medium text-kc-black/60">{hubsList.length} cities</span>
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3">
                     {hubsList.map((city, i) => (
                       <motion.div
                         key={city}
@@ -537,10 +574,10 @@ const About = () => {
                         whileInView={{ opacity: 1, x: 0 }}
                         viewport={{ once: true }}
                         transition={{ duration: 0.4, delay: i * 0.05 }}
-                        whileHover={{ x: 5 }}
-                        className="group flex items-center gap-3 p-3 rounded-xl bg-white border border-border hover:border-kc-blue/30 transition-all duration-200"
+                        whileHover={{ y: -2, x: 2 }}
+                        className="group flex items-center gap-3 p-3 rounded-xl bg-kc-blue/5 border border-kc-blue/15 hover:border-kc-blue/35 hover:bg-white transition-all duration-200"
                       >
-                        <span className="flex-shrink-0 inline-flex h-8 w-8 items-center justify-center rounded-lg bg-kc-blue/10 text-kc-blue group-hover:bg-kc-blue group-hover:text-white transition-colors">
+                        <span className="flex-shrink-0 inline-flex h-8 w-8 items-center justify-center rounded-lg bg-white text-kc-blue border border-kc-blue/20 group-hover:bg-kc-blue group-hover:text-white transition-colors">
                           <MapPin className="h-4 w-4" />
                         </span>
                         <span className="text-sm md:text-base font-semibold text-kc-black group-hover:text-kc-blue transition-colors">{city}</span>

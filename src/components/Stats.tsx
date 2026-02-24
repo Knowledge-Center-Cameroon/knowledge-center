@@ -118,7 +118,7 @@ const Stats = () => {
   return (
     <section
       ref={containerRef}
-      className="py-20 lg:py-28 bg-white relative overflow-hidden"
+      className="py-12 md:py-14 lg:py-16 bg-white relative overflow-hidden"
     >
       <div className="container mx-auto px-6 max-w-7xl relative z-10">
 
@@ -134,7 +134,7 @@ const Stats = () => {
             <span className="text-sm font-medium text-kc-blue">Our Impact</span>
           </div>
 
-          <h2 className="heading-2 mb-4">
+          <h2 className="home-section-heading mb-4">
             Impact in Numbers
           </h2>
 

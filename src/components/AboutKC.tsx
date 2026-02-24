@@ -47,7 +47,7 @@ const AboutKC: React.FC = () => {
     <section
       id="about-home"
       ref={ref as any}
-      className="bg-white py-24 rounded-3xl overflow-hidden"
+      className="bg-white py-12 md:py-16 lg:py-20 rounded-3xl overflow-hidden"
     >
       <Parallax style={{ y }} className="container mx-auto px-6 lg:px-12">
         <div className="grid lg:grid-cols-2 gap-16 items-center">
@@ -103,7 +103,7 @@ const AboutKC: React.FC = () => {
                 About Knowledge Center
               </div>
 
-              <h2 className="heading-2">
+              <h2 className="home-section-heading">
                 What is <span className="text-kc-blue">Knowledge Center?</span>
               </h2>
 

@@ -7,6 +7,7 @@ import Stats from "@/components/Stats";
 import Projects from "@/components/Projects";
 import Testimonials from "@/components/Testimonials";
 import { useSeo } from "@/hooks/useSeo";
+import { BookOpen, Microscope, Rocket, Users } from "lucide-react";
 
 /**
  * Home Page - Landing page with hero, about, stats, projects, testimonials
@@ -49,34 +50,46 @@ const Home: React.FC = () => {
         <Hero />
       </motion.section>
 
+      <motion.section {...fadeUp} className="py-6 md:py-8 bg-white border-y border-border/60">
+        <div className="container mx-auto px-4 lg:px-8 max-w-6xl">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
+            {[
+              { icon: Microscope, label: "STEM Learning" },
+              { icon: Users, label: "Mentorship" },
+              { icon: BookOpen, label: "Programs" },
+              { icon: Rocket, label: "Innovation" },
+            ].map((item) => (
+              <div key={item.label} className="flex items-center justify-center gap-2 rounded-xl border border-border/80 bg-white py-3 px-3">
+                <item.icon className="h-4 w-4 text-kc-blue" />
+                <span className="text-xs md:text-sm font-semibold text-kc-blue">{item.label}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </motion.section>
+
       {/* About KC Section: Brand story and mission */}
-      <motion.section
-        {...fadeUp}
-        className="bg-white py-16 md:py-20 lg:py-24"
-      >
+      <motion.section {...fadeUp} className="bg-white">
         <AboutKC />
       </motion.section>
 
       {/* Stats Section: Impact metrics */}
-      <motion.section {...fadeUp} className="section-padding">
+      <motion.section {...fadeUp}>
         <Stats />
       </motion.section>
 
       {/* Projects Section: Showcase of work */}
-      <motion.section
-        {...fadeUp}
-        className="bg-white section-padding"
-      >
+      <motion.section {...fadeUp} className="bg-white">
         <Projects />
       </motion.section>
 
       {/* Testimonials Section: Social proof */}
-      <motion.section {...fadeUp} className="section-padding">
+      <motion.section {...fadeUp}>
         <Testimonials />
       </motion.section>
 
       {/* Countdown Section: Upcoming event */}
-      <motion.section {...fadeUp} className="section-padding-lg">
+      <motion.section {...fadeUp} className="pt-10 md:pt-14">
         <Countdown />
       </motion.section>
     </div>

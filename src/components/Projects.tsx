@@ -148,7 +148,7 @@ const Projects = () => {
   }, [activeTab]);
 
   return (
-    <section id="projects" className="py-16 lg:py-24 bg-white">
+    <section id="projects" className="py-12 md:py-14 lg:py-16 bg-white">
       <div className="container mx-auto px-4 lg:px-8 max-w-6xl">
         {/* Header */}
         <motion.div
@@ -162,7 +162,7 @@ const Projects = () => {
             <span className="h-2 w-2 rounded-full bg-kc-blue" />
             <span className="text-xs font-semibold tracking-[0.18em] text-kc-black/70 uppercase">Programs</span>
           </div>
-          <h2 className="heading-2 mb-3">
+          <h2 className="home-section-heading mb-3">
             Signature learning experiences
           </h2>
           <p className="text-sm md:text-base text-kc-black/70 max-w-3xl mx-auto leading-relaxed">
