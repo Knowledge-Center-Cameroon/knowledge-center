@@ -4,7 +4,7 @@ import { useParams, Link, useNavigate } from "react-router-dom";
 import { projects, type Project } from "@/data/projects";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, CheckCircle } from "lucide-react";
+import { ArrowLeft, Award, BrainCircuit, Rocket, Users } from "lucide-react";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious, type CarouselApi } from "@/components/ui/carousel";
 
 const MotionButton = motion(Button);
@@ -14,26 +14,6 @@ interface ProjectDetailContentProps {
 }
 
 const ProjectDetailContent: React.FC<ProjectDetailContentProps> = ({ project }) => {
-  // Simple per-project stats (fallbacks) for the statistics band
-  const statsBySlug: Record<string, { label: string; value: string }[]> = {
-    "stem": [
-      { label: "Total students directly impacted", value: "1975" },
-      { label: "National writing centers by 2024", value: "13" },
-      { label: "Years of the competition so far", value: "4" },
-    ],
-    "summer-education": [
-      { label: "Young science learners impacted", value: "515" },
-      { label: "Cities reached (Buea & Limbe)", value: "2" },
-      { label: "Years of consistent programming", value: "4+" },
-    ],
-    "weekend-school": [
-      { label: "Young science learners served", value: "423" },
-      { label: "Students in top 1% at GCE", value: "358" },
-      { label: "National honours with straight A's", value: "36" },
-    ],
-  };
-  const stats = statsBySlug[project.slug] ?? [];
-
   // Richer impact tiles for the main detail grid
   const impactStatsBySlug: Record<string, { value: string; label: string }[]> = {
     "stem": [
@@ -130,6 +110,27 @@ const ProjectDetailContent: React.FC<ProjectDetailContentProps> = ({ project }) 
     },
   ];
   const sections = project.sections ?? (project.slug === "stem" ? stemSections : defaultSections);
+  const featuredBenefits = React.useMemo(() => {
+    const templates = [
+      {
+        icon: BrainCircuit,
+      },
+      {
+        icon: Rocket,
+      },
+      {
+        icon: Users,
+      },
+      {
+        icon: Award,
+      },
+    ] as const;
+
+    return templates.map((template, idx) => ({
+      ...template,
+      title: project.features[idx] ?? project.features[0] ?? `Benefit ${idx + 1}`,
+    }));
+  }, [project.features]);
 
   const navigate = useNavigate();
 
@@ -319,7 +320,7 @@ const ProjectDetailContent: React.FC<ProjectDetailContentProps> = ({ project }) 
           </div>
         </div>
 
-        {/* Why take this project? */}
+        {/* Key Benefits */}
         <motion.div
           className="mb-12"
           initial={{ opacity: 0, y: 20 }}
@@ -328,58 +329,51 @@ const ProjectDetailContent: React.FC<ProjectDetailContentProps> = ({ project }) 
           transition={{ duration: 0.6, delay: 0.1 }}
         >
           <motion.h2
-            className="heading-3 mb-4"
-            initial={{ opacity: 0, x: -10 }}
-            whileInView={{ opacity: 1, x: 0 }}
+            className="heading-2 text-center mb-3"
+            initial={{ opacity: 0, y: 8 }}
+            whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
           >
-            Why take {project.title}?
+            Key Benefits
           </motion.h2>
-          <div className="grid sm:grid-cols-2 gap-4 md:gap-6">
-            {project.features.map((f, i) => (
+          <motion.div
+            className="h-1 w-20 mx-auto mb-8 bg-kc-blue rounded-full"
+            initial={{ scaleX: 0, opacity: 0 }}
+            whileInView={{ scaleX: 1, opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+          />
+          <div className="grid sm:grid-cols-2 xl:grid-cols-4 gap-5 md:gap-6">
+            {featuredBenefits.map((benefit, i) => (
               <motion.div
                 key={i}
-                initial={{ opacity: 0, y: 15 }}
-                whileInView={{ opacity: 1, y: 0 }}
+                initial={{ opacity: 0, y: 28, scale: 0.96 }}
+                whileInView={{ opacity: 1, y: 0, scale: 1 }}
                 viewport={{ once: true, amount: 0.2 }}
                 transition={{
-                  duration: 0.4,
-                  delay: 0.2 + (i * 0.08),
+                  duration: 0.5,
+                  delay: 0.15 + (i * 0.08),
                   ease: [0.22, 1, 0.36, 1]
                 }}
                 whileHover={{
-                  scale: 1.02,
-                  y: -3,
-                  transition: { duration: 0.2 }
+                  y: -10,
+                  transition: { duration: 0.22 }
                 }}
-                className="group"
+                className="group relative"
               >
-                <div className="focus:outline-none focus-visible:ring-2 focus-visible:ring-kc-blue/60 focus-visible:ring-offset-2 focus-visible:ring-offset-background rounded-xl border border-border bg-white  hover:bg-white transition-all p-5 md:p-6 shadow-card hover:shadow-hover">
-                  <div className="flex items-start gap-3">
+                <div className="h-full rounded-2xl border border-border/90 bg-white p-6 md:p-7 shadow-card transition-all duration-300 hover:shadow-hover">
+                  <div className="flex flex-col items-center text-center">
                     <motion.div
-                      whileHover={{ scale: 1.1, rotate: 5 }}
-                      transition={{ duration: 0.2 }}
+                      whileHover={{ scale: 1.08 }}
+                      transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
+                      className="mb-5 inline-flex h-16 w-16 items-center justify-center rounded-full bg-kc-blue text-white shadow-md"
                     >
-                      <CheckCircle className="h-5 w-5 text-kc-blue mt-0.5 flex-shrink-0 group-hover:text-kc-blue transition-colors duration-300" />
+                      <benefit.icon className="h-7 w-7" />
                     </motion.div>
-                    <div className="flex-1">
-                      <motion.div
-                        className="font-medium text-foreground group-hover:text-kc-blue transition-colors duration-300"
-                        initial={{ opacity: 0.9 }}
-                        whileHover={{ opacity: 1 }}
-                      >
-                        {f}
-                      </motion.div>
-                      <motion.p
-                        className="text-sm text-foreground/80 mt-1"
-                        initial={{ opacity: 0.7 }}
-                        whileHover={{ opacity: 0.9 }}
-                        transition={{ duration: 0.2 }}
-                      >
-                        Built through expert mentoring, hands‑on sessions, and teamwork to turn curiosity into capability.
-                      </motion.p>
-                    </div>
+                    <h3 className="text-h4 font-heading font-bold text-kc-blue leading-tight">
+                      {benefit.title}
+                    </h3>
                   </div>
                 </div>
               </motion.div>
@@ -387,22 +381,28 @@ const ProjectDetailContent: React.FC<ProjectDetailContentProps> = ({ project }) 
           </div>
         </motion.div>
 
-        {/* Additional Details only (avoid redundancy) */}
-        <div className="grid md:grid-cols-2 gap-8">
-          <Card className="shadow-card bg-white  border-border transition-all duration-300 hover:shadow-hover">
+        {/* Additional Details */}
+        <motion.div
+          className="mb-12"
+          initial={{ opacity: 0, y: 14 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.2 }}
+          transition={{ duration: 0.45 }}
+        >
+          <Card className="shadow-card bg-white border border-border/90 transition-all duration-300 hover:shadow-hover">
             <CardContent className="p-6 md:p-8">
               <div className="flex items-center gap-3 mb-6">
                 <div className="h-8 w-1 bg-kc-blue rounded-full" />
                 <h2 className="heading-3">Additional Details</h2>
               </div>
-              <ul className="space-y-2">
+              <ul className="grid sm:grid-cols-2 gap-x-8 gap-y-3">
                 {project.details.map((d, i) => (
                   <motion.li
                     key={i}
                     initial={{ opacity: 0, y: 6 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true, amount: 0.2 }}
-                    transition={{ duration: 0.25, delay: i * 0.03 }}
+                    transition={{ duration: 0.25, delay: i * 0.04 }}
                     className="text-foreground/90"
                   >
                     {d}
@@ -411,32 +411,7 @@ const ProjectDetailContent: React.FC<ProjectDetailContentProps> = ({ project }) 
               </ul>
             </CardContent>
           </Card>
-          {/* Stats on the side if present */}
-          {stats.length > 0 && (
-            <div className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-1 gap-4">
-              {stats.map((s, idx) => (
-                <motion.div
-                  key={idx}
-                  initial={{ opacity: 0, y: 8 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, amount: 0.2 }}
-                  transition={{ duration: 0.35, delay: idx * 0.05 }}
-                >
-                  <Card className="bg-white  border border-border transition-all duration-300 hover:shadow-hover hover:-translate-y-1 group">
-                    <CardContent className="p-6 text-center relative overflow-hidden">
-                      <div className="absolute inset-0 bg-kc-blue/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                      <div className="relative">
-                        <div className="text-h3 md:text-h2 font-heading font-bold mb-1 group-hover:text-kc-blue transition-colors">{s.value}</div>
-                        <div className="text-sm md:text-base text-foreground/80">{s.label}</div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </motion.div>
-              ))}
-            </div>
-          )}
-        </div>
-
+        </motion.div>
         {/* Call to action */}
         <motion.div
           initial={{ opacity: 0, y: 24 }}
@@ -540,5 +515,6 @@ const ProjectDetailPage: React.FC = () => {
 };
 
 export default ProjectDetailPage;
+
 
 
