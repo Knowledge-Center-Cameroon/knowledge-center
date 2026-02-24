@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { useNavigate, Link } from "react-router-dom";
 import { projects } from "@/data/projects";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ArrowRight, Search, Tags, ExternalLink, Star } from "lucide-react";
+import { ArrowRight, Search, Tags, ExternalLink, Star, Compass } from "lucide-react";
 import StemBackground from "@/components/StemBackground";
 import { useParallax, Parallax } from "@/hooks/use-parallax";
 import { Input } from "@/components/ui/input";
@@ -80,6 +80,11 @@ const ProjectsPage: React.FC = () => {
     });
   }, [searchQuery, selectedCategory]);
 
+  const sortedProjects = React.useMemo(
+    () => [...projects].sort((a, b) => a.title.localeCompare(b.title)),
+    []
+  );
+
   const { ref, y } = useParallax(40);
   return (
     <motion.div
@@ -91,7 +96,7 @@ const ProjectsPage: React.FC = () => {
       <div className="absolute inset-0 -z-10">
         <StemBackground opacity={0.1} density={50} lineDistance={130} speed={0.45} showIcons={true} />
       </div>
-      <section id="projects" className="py-16 lg:py-24">
+      <section id="projects" className="py-10 md:py-12 lg:py-14">
         <div className="container mx-auto px-4 lg:px-8 max-w-6xl">
           {/* Header */}
           <Parallax ref={ref as React.Ref<HTMLDivElement>} style={{ y }} className="text-center mb-10 md:mb-12">
@@ -167,13 +172,22 @@ const ProjectsPage: React.FC = () => {
               transition={{ delay: 0.6, duration: 0.4 }}
               className="max-w-md mx-auto"
             >
+              <div className="mb-2 flex items-center justify-center gap-2 text-xs font-semibold uppercase tracking-[0.14em] text-kc-blue">
+                <Compass className="h-3.5 w-3.5" />
+                Quick Project Jump
+              </div>
               <Select onValueChange={(slug) => navigate(`/projects/${slug}`)}>
-                <SelectTrigger className="transition-all duration-300 hover:shadow-md focus:ring-2 focus:ring-kc-blue/50">
-                  <SelectValue placeholder="Or jump directly to a project..." />
+                <SelectTrigger className="h-12 transition-all duration-300 hover:shadow-md focus:ring-2 focus:ring-kc-blue/50">
+                  <SelectValue placeholder="Choose a project and press Enter..." />
                 </SelectTrigger>
-                <SelectContent>
-                  {projects.map((p) => (
-                    <SelectItem key={p.slug} value={p.slug}>{p.title}</SelectItem>
+                <SelectContent className="max-h-72">
+                  {sortedProjects.map((p, idx) => (
+                    <SelectItem key={p.slug} value={p.slug}>
+                      <div className="flex w-full items-center justify-between gap-3">
+                        <span>{p.title}</span>
+                        <span className="text-xs text-muted-foreground">#{idx + 1}</span>
+                      </div>
+                    </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
