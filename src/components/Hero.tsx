@@ -97,7 +97,7 @@ const Hero = () => {
     <section
       ref={parRef as React.Ref<HTMLElement>}
       id="home"
-      className="relative pt-24 md:pt-28 lg:pt-32 min-h-[70svh] sm:min-h-[75svh] md:min-h-[80svh] lg:min-h-[88svh] flex items-center justify-center overflow-hidden bg-background"
+      className="relative pt-16 md:pt-20 lg:pt-24 min-h-[70svh] sm:min-h-[75svh] md:min-h-[80svh] lg:min-h-[88svh] flex items-center justify-center overflow-hidden bg-background"
     >
       {/* Desktop Parallax Background */}
       <div className="pointer-events-none hidden md:block absolute inset-y-6 right-0 left-2/5 lg:left-[45%] rounded-l-[2.75rem] md:rounded-l-[3.25rem] overflow-hidden shadow-2xl shadow-black/30">

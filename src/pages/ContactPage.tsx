@@ -33,11 +33,11 @@ const ContactPage: React.FC = () => {
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-      className="min-h-[60vh] relative py-12 md:py-16 lg:py-20"
+      className="min-h-[60vh] relative py-8 md:py-10 lg:py-12"
     >
       {/* Decorative STEM background */}
       <div className="absolute inset-0 -z-10 pointer-events-none">
-        <StemBackground opacity={0.08} density={40} lineDistance={120} speed={0.4} showIcons={true} />
+        <StemBackground opacity={0.12} density={40} lineDistance={120} speed={0.4} showIcons={true} />
       </div>
 
       {/* Content with parallax effect */}

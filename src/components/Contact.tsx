@@ -132,10 +132,10 @@ const Contact = () => {
   ];
 
   return (
-    <section id="contact" className="pt-24 md:pt-28 lg:pt-32 pb-16 lg:pb-24">
+    <section id="contact" className="pt-10 md:pt-12 lg:pt-14 pb-10 lg:pb-12">
       <div className="container mx-auto px-4 lg:px-8 max-w-6xl">
         {/* Header */}
-        <div className="text-center mb-10 md:mb-16">
+        <div className="text-center mb-8 md:mb-12">
           <div className="h-1 w-28 mx-auto mb-3 bg-kc-blue rounded-full" />
           <h2 className="heading-2 mb-6">
             <span className="text-kc-blue">Contact Us</span>

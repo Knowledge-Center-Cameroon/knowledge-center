@@ -4,18 +4,34 @@ import { Atom, FlaskConical, Rocket } from "lucide-react";
 import AnimatedLogo from "./AnimatedLogo";
 
 const providedFacts = [
-  "Fun fact: Bananas are naturally radioactive — proof science hides in everyday life.",
-  "Fun fact: Sharks are older than trees — nature shows true resilience.",
-  "Fun fact: Octopuses have three hearts — efficiency comes in unexpected forms.",
-  "Fun fact: The first computer bug was a moth — small flaws can spark big lessons.",
-  "Fun fact: Most internet traffic runs under the sea — solutions are often unseen.",
-  "Fun fact: Your phone outpowers the Apollo 11 computer — constraints drive innovation.",
-  "Fun fact: The Eiffel Tower grows taller in heat — designs should adapt, not resist.",
-  "Fun fact: Velcro came from burrs — nature is the best engineer.",
-  "Fun fact: Bridges can wobble with rhythm — harmony and imbalance shape systems.",
-  "Fun fact: Zero changed civilization — sometimes nothing is everything.",
-  "Fun fact: Prime numbers protect the internet — randomness can be strength.",
-  "Fun fact: The golden ratio appears in shells and galaxies — math is nature’s design.",
+  "Fun fact: Bananas are naturally radioactive - proof science hides in everyday life.",
+  "Fun fact: Sharks are older than trees - nature shows true resilience.",
+  "Fun fact: Octopuses have three hearts - efficiency comes in unexpected forms.",
+  "Fun fact: The first computer bug was a moth - small flaws can spark big lessons.",
+  "Fun fact: Most internet traffic runs under the sea - solutions are often unseen.",
+  "Fun fact: Your phone outpowers the Apollo 11 computer - constraints drive innovation.",
+  "Fun fact: The Eiffel Tower grows taller in heat - designs should adapt, not resist.",
+  "Fun fact: Velcro came from burrs - nature is the best engineer.",
+  "Fun fact: Bridges can wobble with rhythm - harmony and imbalance shape systems.",
+  "Fun fact: Zero changed civilization - sometimes nothing is everything.",
+  "Fun fact: Prime numbers protect the internet - randomness can be strength.",
+  "Fun fact: The golden ratio appears in shells and galaxies - math is nature's design.",
+  "STEM fact: A DNA strand in one human cell is about 2 meters long when fully stretched.",
+  "STEM fact: Lightning can heat air to around 30,000C - hotter than the Sun's surface.",
+  "STEM fact: The human brain runs on about 20 watts of power - close to a small light bulb.",
+  "STEM fact: Graphene is one atom thick yet stronger than steel by weight.",
+  "STEM fact: The ISS travels at about 28,000 km/h and circles Earth every 90 minutes.",
+  "STEM fact: Sound cannot travel in space because there is no medium to carry vibrations.",
+  "STEM fact: Bees solve complex navigation problems using tiny brains and pattern memory.",
+  "STEM fact: A day on Venus is longer than a year on Venus.",
+  "STEM fact: CRISPR gene editing came from bacteria defending themselves from viruses.",
+  "STEM fact: Neurons can transmit signals faster than 100 meters per second.",
+  "STEM fact: Satellites help predict weather by measuring clouds, moisture, and temperature.",
+  "STEM fact: Clean water technologies rely heavily on chemistry and material science.",
+  "STEM fact: Coding teaches decomposition - breaking big problems into smaller steps.",
+  "STEM fact: The periodic table is organized by atomic number, not mass.",
+  "STEM fact: Most modern medical imaging combines physics, math, and computing.",
+  "STEM fact: Renewable energy systems depend on advances in batteries and power electronics.",
 ];
 
 function shuffle<T>(arr: T[]): T[] {
@@ -143,3 +159,4 @@ const EngagingLoader: React.FC = () => {
 };
 
 export default EngagingLoader;
+
