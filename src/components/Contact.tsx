@@ -1,94 +1,50 @@
-import React, { useState } from "react";
+﻿import React, { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { 
-  MapPin, 
-  Phone, 
-  Mail, 
-  Send,
-  MessageSquare,
-  Users,
-  HelpCircle
-} from "lucide-react";
-import { toast } from "@/hooks/use-toast";
+import { Send, MapPin, Phone, Mail } from "lucide-react";
+import { useToast } from "@/components/ui/use-toast";
 
-const Contact = () => {
+const Contact: React.FC = () => {
+  const { toast } = useToast();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     subject: "",
-    message: ""
+    message: "",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [messageCount, setMessageCount] = useState(0);
-  const WEB3FORMS_KEY = (import.meta as any).env?.VITE_WEB3FORMS_ACCESS_KEY as string | undefined;
+  const web3formsKey = import.meta.env.VITE_WEB3FORMS_ACCESS_KEY;
 
-  const handleInputChange = (field: string, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
-    if (field === "message") {
-      setMessageCount(value.length);
-    }
+  const handleInputChange = (field: keyof typeof formData, value: string) => {
+    setFormData((prev) => ({ ...prev, [field]: value }));
+    if (field === "message") setMessageCount(value.length);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.name || !formData.email || !formData.message) {
-      toast({ title: "Please fill all required fields", description: "Name, Email and Message are required." });
+      toast({
+        title: "Please fill all required fields",
+        description: "Name, Email and Message are required.",
+      });
       return;
     }
     if (!formData.subject) {
-      toast({ title: "Select a subject", description: "Please choose a subject so we can route your message." });
+      toast({
+        title: "Select a subject",
+        description: "Please choose a subject so we can route your message.",
+      });
       return;
     }
 
     setIsSubmitting(true);
 
-    // Submit to Web3Forms if configured
-    if (WEB3FORMS_KEY) {
-      try {
-        const res = await fetch("https://api.web3forms.com/submit", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Accept: "application/json",
-          },
-          body: JSON.stringify({
-            access_key: WEB3FORMS_KEY,
-            name: formData.name,
-            email: formData.email,
-            subject: formData.subject,
-            message: formData.message,
-          }),
-        });
-
-        const data = await res.json().catch(() => ({} as any));
-        if (res.ok && data?.success) {
-          toast({
-            title: "Message Sent Successfully!",
-            description: "We'll get back to you soon. Thank you for contacting KC!",
-          });
-          setFormData({ name: "", email: "", subject: "", message: "" });
-          setMessageCount(0);
-        } else {
-          toast({
-            title: "Failed to send message",
-            description: data?.message || "Please try again or email us directly at kcstemhub@gmail.com",
-          });
-        }
-      } catch (err) {
-        toast({
-          title: "Network error",
-          description: "Please check your connection and try again.",
-        });
-      } finally {
-        setIsSubmitting(false);
-      }
-    } else {
-      // Fallback if not configured
+    if (!web3formsKey) {
       setTimeout(() => {
         toast({
           title: "Demo: Message not actually sent",
@@ -96,6 +52,48 @@ const Contact = () => {
         });
         setIsSubmitting(false);
       }, 600);
+      return;
+    }
+
+    try {
+      const res = await fetch("https://api.web3forms.com/submit", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify({
+          access_key: web3formsKey,
+          name: formData.name,
+          email: formData.email,
+          subject: formData.subject,
+          message: formData.message,
+        }),
+      });
+      const data = await res.json().catch(() => ({}));
+
+      if (res.ok && data?.success) {
+        toast({
+          title: "Message Sent Successfully!",
+          description: "We will get back to you soon. Thank you for contacting KC!",
+        });
+        setFormData({ name: "", email: "", subject: "", message: "" });
+        setMessageCount(0);
+      } else {
+        toast({
+          title: "Failed to send message",
+          description: data?.message || "Please try again or email us directly at kcstemhub@gmail.com",
+          variant: "destructive" as any,
+        });
+      }
+    } catch {
+      toast({
+        title: "Network error",
+        description: "Please check your connection and try again.",
+        variant: "destructive" as any,
+      });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -104,57 +102,50 @@ const Contact = () => {
       icon: MapPin,
       title: "Visit Us",
       details: ["Buea, Southwest Region", "Cameroon"],
-      color: "text-kc-blue"
     },
     {
       icon: Phone,
       title: "Call Us",
       details: ["+237 680 789 894", "+237 650 986 127"],
-      color: "text-kc-blue"
     },
     {
       icon: Mail,
       title: "Email Us",
       details: ["kcstemhub@gmail.com"],
-      color: "text-kc-black"
     },
-
   ];
 
   const subjects = [
     { value: "general", label: "General Inquiry" },
-    { value: "admissions", label: "Admissions & Enrollment" },
+    { value: "admissions", label: "Admissions and Enrollment" },
     { value: "programs", label: "Academic Programs" },
     { value: "stem-competition", label: "STEM Competition" },
     { value: "partnership", label: "Partnership Opportunities" },
     { value: "support", label: "Technical Support" },
-    { value: "other", label: "Other" }
+    { value: "other", label: "Other" },
   ];
 
   return (
     <section id="contact" className="pt-10 md:pt-12 lg:pt-14 pb-10 lg:pb-12">
       <div className="container mx-auto px-4 lg:px-8 max-w-6xl">
-        {/* Header */}
         <div className="text-center mb-8 md:mb-12">
           <div className="h-1 w-28 mx-auto mb-3 bg-kc-blue rounded-full" />
           <h2 className="heading-2 mb-6">
             <span className="text-kc-blue">Contact Us</span>
           </h2>
           <p className="subheading max-w-3xl mx-auto leading-relaxed">
-            Ready to join our STEM community or have questions? We'd love to hear from you. 
-            Get in touch and let's start the conversation.
+            Ready to join our STEM community or have questions? We would love to hear from you.
           </p>
         </div>
 
         <div className="grid lg:grid-cols-3 gap-10 lg:gap-12">
-          {/* Contact Form (first on mobile) */}
           <div className="lg:col-span-2 order-1 lg:order-2">
             <div className="max-w-2xl mx-auto w-full">
-              <Card className="bg-white border border-border shadow-card">
+              <Card className="bg-white/95 border border-kc-blue/10 ring-1 ring-kc-blue/5 shadow-card rounded-3xl">
                 <CardContent className="p-6 md:p-8">
                   <div className="flex items-center space-x-3 mb-8">
-                    <div className="w-12 h-12 bg-kc-blue rounded-full flex items-center justify-center">
-                      <Send className="h-6 w-6 text-white" />
+                    <div className="w-12 h-12 bg-kc-blue/10 text-kc-blue rounded-2xl flex items-center justify-center ring-1 ring-kc-blue/20">
+                      <Send className="h-6 w-6" />
                     </div>
                     <h3 className="heading-3 text-kc-blue">Send us a Message</h3>
                   </div>
@@ -170,10 +161,9 @@ const Contact = () => {
                           onChange={(e) => handleInputChange("name", e.target.value)}
                           placeholder="Enter your full name"
                           required
-                          className="mt-2"
+                          className="mt-2 rounded-2xl bg-white/95 border border-kc-blue/10 ring-1 ring-kc-blue/5 focus-visible:ring-2 focus-visible:ring-kc-blue/40"
                         />
                       </div>
-                      
                       <div>
                         <Label htmlFor="email">Email Address *</Label>
                         <Input
@@ -183,21 +173,21 @@ const Contact = () => {
                           onChange={(e) => handleInputChange("email", e.target.value)}
                           placeholder="Enter your email address"
                           required
-                          className="mt-2"
+                          className="mt-2 rounded-2xl bg-white/95 border border-kc-blue/10 ring-1 ring-kc-blue/5 focus-visible:ring-2 focus-visible:ring-kc-blue/40"
                         />
                       </div>
                     </div>
 
                     <div>
                       <Label htmlFor="subject">Subject *</Label>
-                      <Select value={formData.subject} onValueChange={(value) => handleInputChange("subject", value)}>
-                        <SelectTrigger className="mt-2" id="subject">
+                      <Select value={formData.subject} onValueChange={(v) => handleInputChange("subject", v)}>
+                        <SelectTrigger id="subject" className="mt-2 rounded-2xl bg-white/95 border border-kc-blue/10 ring-1 ring-kc-blue/5 focus:ring-2 focus:ring-kc-blue/40">
                           <SelectValue placeholder="Select a subject" />
                         </SelectTrigger>
                         <SelectContent>
-                          {subjects.map((subject) => (
-                            <SelectItem key={subject.value} value={subject.value}>
-                              {subject.label}
+                          {subjects.map((s) => (
+                            <SelectItem key={s.value} value={s.value}>
+                              {s.label}
                             </SelectItem>
                           ))}
                         </SelectContent>
@@ -213,7 +203,7 @@ const Contact = () => {
                         placeholder="Tell us how we can help you..."
                         rows={6}
                         required
-                        className="mt-2 resize-none"
+                        className="mt-2 resize-none rounded-2xl bg-white/95 border border-kc-blue/10 ring-1 ring-kc-blue/5 focus-visible:ring-2 focus-visible:ring-kc-blue/40"
                       />
                       <div className="mt-1 text-xs text-muted-foreground text-right">{messageCount} / 1000</div>
                     </div>
@@ -227,24 +217,21 @@ const Contact = () => {
             </div>
           </div>
 
-          {/* Contact Information (second on mobile, side on desktop) */}
           <div className="lg:col-span-1 space-y-8 order-2 lg:order-1">
             <div>
               <h3 className="heading-3 mb-6 text-kc-blue">Get In Touch</h3>
-              <p className="text-kc-black/70 mb-8">
-                Whether you're interested in our programs, have questions about admissions, 
-                or want to explore partnership opportunities, we're here to help.
-              </p>
             </div>
 
-            {/* Contact Details */}
             <div className="space-y-6">
               {contactInfo.map((info, index) => (
-                <Card key={index} className="bg-white border border-border shadow-card transition-all duration-300 hover:-translate-y-1.5">
+                <Card
+                  key={index}
+                  className="bg-white/95 border border-kc-blue/10 ring-1 ring-kc-blue/5 shadow-card transition-all duration-300 hover:-translate-y-1.5 rounded-3xl"
+                >
                   <CardContent className="p-6">
                     <div className="flex items-start space-x-4">
-                      <div className="w-12 h-12 bg-kc-blue rounded-full flex items-center justify-center flex-shrink-0">
-                        <info.icon className="h-6 w-6 text-white" />
+                      <div className="w-12 h-12 bg-kc-blue/10 text-kc-blue rounded-2xl flex items-center justify-center flex-shrink-0 ring-1 ring-kc-blue/20">
+                        <info.icon className="h-6 w-6" />
                       </div>
                       <div>
                         <h4 className="font-semibold mb-2 text-kc-blue">{info.title}</h4>
@@ -257,16 +244,12 @@ const Contact = () => {
                 </Card>
               ))}
             </div>
-
-            {/* Quick Actions removed as requested */}
           </div>
-
         </div>
 
-        {/* Google Maps Embed */}
         <div className="mt-12 md:mt-16">
           <h3 className="heading-3 text-center mb-6 md:mb-8 text-kc-blue">Find Us in Buea</h3>
-          <Card className="shadow-card overflow-hidden bg-white border border-border">
+          <Card className="shadow-card overflow-hidden bg-white/95 border border-kc-blue/10 ring-1 ring-kc-blue/5 rounded-3xl">
             <CardContent className="p-0">
               <div className="relative w-full aspect-[16/9]">
                 <iframe
@@ -287,4 +270,3 @@ const Contact = () => {
 };
 
 export default Contact;
-

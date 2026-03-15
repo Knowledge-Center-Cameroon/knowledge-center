@@ -153,7 +153,7 @@ const Stats = () => {
         >
           {statsData.map((stat, i) => (
             <motion.div key={i} variants={itemVariants}>
-              <Card className="h-full bg-white border border-border rounded-2xl shadow-card hover:shadow-hover transition">
+              <Card className="h-full bg-white/95 border border-kc-blue/10 ring-1 ring-kc-blue/5 rounded-3xl shadow-card hover:shadow-hover transition">
                 <CardContent className="p-8 text-center">
                   <div
                     className="w-16 h-16 mx-auto mb-6 rounded-2xl bg-kc-blue/10 flex items-center justify-center"
@@ -182,7 +182,7 @@ const Stats = () => {
           initial={{ opacity: 0, y: 30 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.8 }}
-          className="bg-white border border-border rounded-3xl p-10 shadow-card"
+          className="bg-white/95 border border-kc-blue/10 ring-1 ring-kc-blue/5 rounded-3xl p-10 shadow-card"
         >
           <div className="text-center mb-10">
             <Award className="h-10 w-10 text-kc-blue mx-auto mb-3" />

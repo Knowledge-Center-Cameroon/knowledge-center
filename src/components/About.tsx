@@ -1,4 +1,4 @@
-/**
+﻿/**
  * About Component - Organization story, mission, vision, and values
  * 
  * Sections:
@@ -67,7 +67,7 @@ const CameroonMap = () => {
   ];
 
   return (
-    <div className="relative w-full aspect-[992/1429] max-w-md mx-auto bg-white rounded-2xl border border-border p-2 shadow-card overflow-hidden group">
+    <div className="relative w-full aspect-[992/1429] max-w-md mx-auto bg-white/95 rounded-3xl border border-kc-blue/10 ring-1 ring-kc-blue/5 p-2 shadow-card overflow-hidden group">
       {/* Actual Cameroon Map Image */}
       <img 
         src="/cameroon.svg" 
@@ -254,7 +254,7 @@ const About = () => {
     <section id="about" className="py-10 md:py-14 lg:py-20">
       <div className="container mx-auto px-4 lg:px-8 max-w-6xl">
         {/* Header */}
-        <Parallax ref={ref as any} style={{ y }} className="relative overflow-hidden rounded-2xl mb-12">
+        <Parallax ref={ref as any} style={{ y }} className="relative overflow-hidden rounded-3xl border border-kc-blue/10 bg-white/80 backdrop-blur-sm shadow-card mb-12">
           <StemBackground opacity={0.2} density={36} lineDistance={120} speed={0.45} showIcons={true} />
           <div className="relative z-10 text-center py-6 md:py-7">
             <div className="h-1 w-28 mx-auto mb-3 bg-kc-blue rounded-full" />
@@ -315,7 +315,7 @@ const About = () => {
           </div>
 
           <div className="animate-slide-up mt-4 lg:mt-0">
-            <Carousel setApi={setIntroApi} className="rounded-2xl shadow-card bg-white border border-border p-2">
+            <Carousel setApi={setIntroApi} className="rounded-3xl shadow-card bg-white/95 border border-kc-blue/10 ring-1 ring-kc-blue/5 p-2">
               <CarouselContent>
                 {[about1, about, hero2, hero4, hero5].map((img, i) => (
                   <CarouselItem key={i}>
@@ -330,11 +330,10 @@ const About = () => {
             </Carousel>
           </div>
         </div>
-
         {/* Why we are different: image left on desktop, text right */}
         <div className="grid lg:grid-cols-2 gap-6 sm:gap-8 md:gap-12 items-start mb-14 md:mb-20">
           <div className="animate-slide-up mt-4 lg:mt-0 order-2 lg:order-1">
-            <Carousel setApi={setPhiloApi} className="rounded-2xl shadow-card bg-white border border-border p-2">
+            <Carousel setApi={setPhiloApi} className="rounded-3xl shadow-card bg-white/95 border border-kc-blue/10 ring-1 ring-kc-blue/5 p-2">
               <CarouselContent>
                 {[hero6, hero7, hero8, hero9, hero10, hero12].map((img, i) => (
                   <CarouselItem key={i}>
@@ -412,7 +411,7 @@ const About = () => {
           </div>
 
           <div className="animate-slide-up mt-4 lg:mt-0 order-2">
-            <Carousel setApi={setMattersApi} className="rounded-2xl shadow-card bg-white border border-border p-2">
+            <Carousel setApi={setMattersApi} className="rounded-3xl shadow-card bg-white/95 border border-kc-blue/10 ring-1 ring-kc-blue/5 p-2">
               <CarouselContent>
                 {[about1, hero2, hero3, hero4, hero5, hero8].map((img, i) => (
                   <CarouselItem key={i}>
@@ -430,7 +429,7 @@ const About = () => {
 
         {/* Mission & Vision */}
         <div className="grid md:grid-cols-2 gap-6 md:gap-8 mb-16 md:mb-20">
-          <Card className="shadow-card transition-all hover:shadow-hover hover:-translate-y-1 bg-white border border-border">
+          <Card className="shadow-card transition-all hover:shadow-hover hover:-translate-y-1 bg-white/95 border border-kc-blue/10 ring-1 ring-kc-blue/5 rounded-3xl">
             <CardContent className="p-6 md:p-8">
               <motion.div 
                 className="relative w-16 h-16 rounded-full flex items-center justify-center mb-6"
@@ -450,7 +449,7 @@ const About = () => {
             </CardContent>
           </Card>
 
-          <Card className="shadow-card transition-all hover:shadow-hover hover:-translate-y-1 bg-white border border-border">
+          <Card className="shadow-card transition-all hover:shadow-hover hover:-translate-y-1 bg-white/95 border border-kc-blue/10 ring-1 ring-kc-blue/5 rounded-3xl">
             <CardContent className="p-6 md:p-8">
               <motion.div 
                 className="relative w-16 h-16 rounded-full flex items-center justify-center mb-6"
@@ -487,9 +486,9 @@ const About = () => {
                 whileHover={{ y: -8, scale: 1.02 }}
                 key={index}
               >
-                <Card className="h-full shadow-card transition-all hover:shadow-hover bg-white border border-border">
+                <Card className="h-full shadow-card transition-all hover:shadow-hover bg-white/95 border border-kc-blue/10 ring-1 ring-kc-blue/5 rounded-3xl">
                 <CardContent className="p-5 md:p-6 flex flex-col h-full">
-                  <div className="w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4 bg-kc-blue text-white">
+                  <div className="w-12 h-12 rounded-2xl flex items-center justify-center mx-auto mb-4 bg-kc-blue/10 text-kc-blue ring-1 ring-kc-blue/20">
                     <value.icon className="h-6 w-6" />
                   </div>
                   <h4 className="text-base md:text-lg font-heading font-semibold mb-2 md:mb-3 text-center text-kc-blue">{value.title}</h4>
@@ -515,7 +514,7 @@ const About = () => {
               >
                 <AccordionItem 
                   value={`item-${index}`} 
-                  className="border border-border rounded-xl mb-3 md:mb-4 overflow-hidden bg-white transition-all duration-300 hover:border-kc-blue/40"
+                  className="border border-kc-blue/10 rounded-2xl mb-3 md:mb-4 overflow-hidden bg-white/95 shadow-sm transition-all duration-300 hover:border-kc-blue/40"
                 >
                 <AccordionTrigger className="px-4 md:px-6 pb-4 md:pb-6 text-left font-normal hover:no-underline">
                   <span className="text-body md:text-body-lg font-body text-kc-black">{faq.question}</span>
@@ -531,7 +530,7 @@ const About = () => {
 
         {/* KC STEM Hubs - solid accent colors */}
         <div className="mt-16 md:mt-24">
-          <div className="relative overflow-hidden rounded-3xl shadow-card border border-border bg-white">
+          <div className="relative overflow-hidden rounded-3xl shadow-card border border-kc-blue/10 ring-1 ring-kc-blue/5 bg-white/95">
             <div className="relative p-6 md:p-8 lg:p-10">
 
               {/* Enhanced header with better typography hierarchy */}
@@ -541,7 +540,7 @@ const About = () => {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.6 }}
-                  className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white border border-kc-blue/40 mb-4"
+                  className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-kc-blue/5 border border-kc-blue/30 mb-4 shadow-sm"
                 >
                   <MapPin className="h-4 w-4 text-kc-blue" />
                   <span className="text-sm font-semibold text-kc-blue">Locations Across Cameroon</span>
@@ -575,17 +574,17 @@ const About = () => {
                         viewport={{ once: true }}
                         transition={{ duration: 0.4, delay: i * 0.05 }}
                         whileHover={{ y: -2, x: 2 }}
-                        className="group flex items-center gap-3 p-3 rounded-xl bg-kc-blue/5 border border-kc-blue/15 hover:border-kc-blue/35 hover:bg-white transition-all duration-200"
+                        className="group flex items-start gap-3 p-3 rounded-xl bg-kc-blue/5 border border-kc-blue/15 hover:border-kc-blue/35 hover:bg-white transition-all duration-200 min-w-0"
                       >
                         <span className="flex-shrink-0 inline-flex h-8 w-8 items-center justify-center rounded-lg bg-white text-kc-blue border border-kc-blue/20 group-hover:bg-kc-blue group-hover:text-white transition-colors">
                           <MapPin className="h-4 w-4" />
                         </span>
-                        <span className="text-sm md:text-base font-semibold text-kc-black group-hover:text-kc-blue transition-colors">{city}</span>
+                        <span className="text-sm md:text-base font-semibold text-kc-black group-hover:text-kc-blue transition-colors break-words leading-snug">{city}</span>
                       </motion.div>
                     ))}
                   </div>
                   
-                  <div className="mt-8 p-6 rounded-2xl bg-white border border-border">
+                  <div className="mt-8 p-6 rounded-3xl bg-white/95 border border-kc-blue/10 ring-1 ring-kc-blue/5 shadow-sm">
                     <h4 className="font-bold text-kc-blue mb-2 flex items-center gap-2">
                       <Rocket className="h-4 w-4" />
                       Expansion in Progress
@@ -637,5 +636,3 @@ const About = () => {
 };
 
 export default About;
-
-

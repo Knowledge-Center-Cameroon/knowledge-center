@@ -103,7 +103,7 @@ const TimelineEvent: React.FC<{ event: Event; index: number; isUpcoming: boolean
       <div className={`flex-1 ${isLeft ? "md:order-first md:flex md:justify-end md:pr-6" : ""}`}>
           <motion.div
             whileHover={{ y: -6 }}
-            className="group relative max-w-xs w-full overflow-hidden rounded-2xl border border-border bg-white shadow-card transition-all duration-300 hover:shadow-hover"
+            className="group relative max-w-xs w-full overflow-hidden rounded-3xl border border-kc-blue/10 ring-1 ring-kc-blue/5 bg-white/95 shadow-card transition-all duration-300 hover:shadow-hover"
           >
             <div className="relative p-4 md:p-5 z-10">
               {event.badge && (

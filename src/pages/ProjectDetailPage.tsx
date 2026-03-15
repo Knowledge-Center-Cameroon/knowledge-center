@@ -1,4 +1,4 @@
-import React from "react";
+﻿import React from "react";
 import { motion } from "framer-motion";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { projects, type Project } from "@/data/projects";
@@ -27,10 +27,10 @@ const ProjectDetailContent: React.FC<ProjectDetailContentProps> = ({ project }) 
       { value: "515", label: "Total number of young science learners directly impacted through this program." },
       { value: "264", label: "Total number of girls impacted." },
       { value: "251", label: "Total number of boys impacted." },
-      { value: "51", label: "Participants during the main 2021 edition – Buea only." },
-      { value: "122", label: "Participants during the 2022 edition – Buea only." },
-      { value: "153", label: "Participants during the summer of 2023 – Buea and Limbe." },
-      { value: "189", label: "Participants during the summer of 2024 – Buea and Limbe." },
+      { value: "51", label: "Participants during the main 2021 edition - Buea only." },
+      { value: "122", label: "Participants during the 2022 edition - Buea only." },
+      { value: "153", label: "Participants during the summer of 2023 - Buea and Limbe." },
+      { value: "189", label: "Participants during the summer of 2024 - Buea and Limbe." },
     ],
     "weekend-school": [
       { value: "423", label: "Total number of young science learners directly impacted through this program." },
@@ -43,6 +43,7 @@ const ProjectDetailContent: React.FC<ProjectDetailContentProps> = ({ project }) 
     ],
   };
   const impactStats = impactStatsBySlug[project.slug] ?? [];
+  const impactStatsDisplay = impactStats.slice(0, 4);
 
   // Carousel api for embla-based UI carousel
   const [api, setApi] = React.useState<CarouselApi | null>(null);
@@ -75,19 +76,19 @@ const ProjectDetailContent: React.FC<ProjectDetailContentProps> = ({ project }) 
   const stemSections = [
     {
       title: `What the STEM is?`,
-      body: `A national reasoning-first competition where students tackle authentic, multi‑step STEM problems across Math, Physics, Chemistry, Biology and Computing. It's less about memorizing and more about thinking clearly, communicating methods, and defending ideas.`,
+      body: `A national reasoning-first competition where students tackle authentic, multi-step STEM problems across Math, Physics, Chemistry, Biology and Computing. It's less about memorizing and more about thinking clearly, communicating methods, and defending ideas.`,
     },
     {
       title: `What impact has the STEM had?`,
-      body: `2000+ students reached so far with 95% reporting improved problem‑solving confidence. Alumni have gone on to lead school clubs, win regional fairs, and secure scholarships after demonstrating rigorous thinking.`,
+      body: `2000+ students reached so far with 95% reporting improved problem-solving confidence. Alumni have gone on to lead school clubs, win regional fairs, and secure scholarships after demonstrating rigorous thinking.`,
     },
     {
       title: `What we ask students and how questions look like?`,
-      body: `Questions are scenario‑based and cross‑disciplinary. Students analyze a situation, choose a method, compute carefully, and justify assumptions. Solutions value clarity, defensible steps, and insight—not just the final number.`,
+      body: `Questions are scenario-based and cross-disciplinary. Students analyze a situation, choose a method, compute carefully, and justify assumptions. Solutions value clarity, defensible steps, and insight, not just the final number.`,
     },
     {
       title: `Our effort in the STEM`,
-      body: `We run mentor clinics, publish past papers with annotated solutions, and host team workshops. Regional qualifiers build momentum towards a December grand final—with feedback loops at every stage.`,
+      body: `We run mentor clinics, publish past papers with annotated solutions, and host team workshops. Regional qualifiers build momentum towards a December grand final, with feedback loops at every stage.`,
     },
     {
       title: `What people say about the STEM`,
@@ -126,9 +127,16 @@ const ProjectDetailContent: React.FC<ProjectDetailContentProps> = ({ project }) 
       },
     ] as const;
 
+    const toShortTitle = (text: string) => {
+      const base = text.split(/[—–-]|:/)[0].trim();
+      const words = base.split(/\s+/).filter(Boolean);
+      return words.length <= 4 ? base : words.slice(0, 4).join(" ");
+    };
+
     return templates.map((template, idx) => ({
       ...template,
-      title: project.features[idx] ?? project.features[0] ?? `Benefit ${idx + 1}`,
+      title: toShortTitle(project.features[idx] ?? project.features[0] ?? `Benefit ${idx + 1}`),
+      description: project.features[idx] ?? project.features[0] ?? `Benefit ${idx + 1}`,
     }));
   }, [project.features]);
 
@@ -249,7 +257,6 @@ const ProjectDetailContent: React.FC<ProjectDetailContentProps> = ({ project }) 
               </CardContent>
             </Card>
           </motion.div>
-
           <div className="grid lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)] gap-8 md:gap-10 items-start">
             <motion.div
               className="space-y-5"
@@ -289,7 +296,7 @@ const ProjectDetailContent: React.FC<ProjectDetailContentProps> = ({ project }) 
               ))}
             </motion.div>
 
-            {impactStats.length > 0 && (
+            {impactStatsDisplay.length > 0 && (
               <motion.div
                 initial={{ opacity: 0, x: 20 }}
                 whileInView={{ opacity: 1, x: 0 }}
@@ -301,12 +308,12 @@ const ProjectDetailContent: React.FC<ProjectDetailContentProps> = ({ project }) 
                   Impact in numbers
                 </p>
                 <div className="grid sm:grid-cols-2 gap-3 md:gap-4">
-                  {impactStats.map((stat, idx) => (
+                  {impactStatsDisplay.map((stat, idx) => (
                     <motion.div
                       key={idx}
                       whileHover={{ y: -2, scale: 1.01 }}
                       transition={{ duration: 0.2 }}
-                      className={`rounded-2xl px-4 py-5 flex flex-col justify-between shadow-card bg-kc-blue text-white`}
+                      className="rounded-3xl px-4 py-5 flex flex-col justify-between shadow-card bg-kc-blue text-white"
                     >
                       <div className="text-h4 md:text-h3 font-heading font-bold leading-none mb-2">{stat.value}</div>
                       <p className="text-xs md:text-sm text-white/90">
@@ -362,18 +369,21 @@ const ProjectDetailContent: React.FC<ProjectDetailContentProps> = ({ project }) 
                 }}
                 className="group relative"
               >
-                <div className="h-full rounded-2xl border border-border/90 bg-white p-6 md:p-7 shadow-card transition-all duration-300 hover:shadow-hover">
-                  <div className="flex flex-col items-center text-center">
+                <div className="h-full rounded-3xl border border-kc-blue/10 ring-1 ring-kc-blue/5 bg-white/95 p-6 md:p-7 shadow-card transition-all duration-300 hover:shadow-hover">
+                  <div className="flex flex-col items-center text-center gap-3">
                     <motion.div
                       whileHover={{ scale: 1.08 }}
                       transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
-                      className="mb-5 inline-flex h-16 w-16 items-center justify-center rounded-full bg-kc-blue text-white shadow-md"
+                      className="inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-kc-blue/10 text-kc-blue ring-1 ring-kc-blue/20 shadow-sm"
                     >
                       <benefit.icon className="h-7 w-7" />
                     </motion.div>
-                    <h3 className="text-h4 font-heading font-bold text-kc-blue leading-tight">
+                    <h3 className="text-base md:text-lg font-heading font-semibold text-kc-blue leading-tight">
                       {benefit.title}
                     </h3>
+                    <p className="text-sm text-kc-black/70 leading-relaxed">
+                      {benefit.description}
+                    </p>
                   </div>
                 </div>
               </motion.div>
@@ -515,6 +525,3 @@ const ProjectDetailPage: React.FC = () => {
 };
 
 export default ProjectDetailPage;
-
-
-

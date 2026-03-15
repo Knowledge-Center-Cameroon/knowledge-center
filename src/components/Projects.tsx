@@ -200,7 +200,7 @@ const Projects = () => {
 
         {/* Tabs Navigation */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="relative w-full mb-6 p-1.5 rounded-2xl bg-white border border-border shadow-sm overflow-x-auto md:overflow-visible hidden md:grid md:grid-cols-3 gap-1.5">
+          <TabsList className="relative w-full mb-6 p-1.5 rounded-2xl bg-white/95 border border-kc-blue/10 ring-1 ring-kc-blue/5 shadow-sm overflow-x-auto md:overflow-visible hidden md:grid md:grid-cols-3 gap-1.5">
             <motion.div whileHover={{ y: -2 }} transition={{ type: "spring", stiffness: 260, damping: 18 }}>
               <TabsTrigger 
                 value="stem" 
@@ -236,7 +236,7 @@ const Projects = () => {
           {/* Tab Content */}
           <TabsContent value={activeTab} className="mt-0">
             <motion.div whileHover={{ scale: 1.003 }} transition={{ duration: 0.2 }}>
-              <Card className="shadow-md overflow-hidden bg-white border border-border rounded-3xl">
+              <Card className="shadow-md overflow-hidden bg-white/95 border border-kc-blue/10 ring-1 ring-kc-blue/5 rounded-3xl">
                 <CardContent className="p-0">
                   <div className="grid lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1.1fr)] min-h-[320px]">
                     {/* Image Section */}
@@ -253,7 +253,7 @@ const Projects = () => {
                     {/* Content Section */}
                     <div className="p-5 sm:p-7 lg:p-8 flex flex-col justify-center bg-white">
                       <div className="inline-flex items-center gap-3 mb-5">
-                        <div className="w-12 h-12 rounded-2xl bg-kc-blue text-white flex items-center justify-center">
+                        <div className="w-12 h-12 rounded-2xl bg-kc-blue/10 text-kc-blue ring-1 ring-kc-blue/20 flex items-center justify-center">
                           <Icon className="h-6 w-6" />
                         </div>
                         <div className="text-xs font-semibold tracking-[0.18em] uppercase text-kc-black/60">
@@ -380,7 +380,7 @@ const Projects = () => {
 
         {/* STEM Competition Section */}
         <div className="mt-20">
-          <Card className="relative overflow-hidden bg-white text-kc-black border border-border shadow-card">
+          <Card className="relative overflow-hidden bg-white/95 text-kc-black border border-kc-blue/10 ring-1 ring-kc-blue/5 shadow-card">
             {/* subtle glow accents */}
             <div className="pointer-events-none absolute -top-32 -left-24 h-64 w-64 rounded-full bg-kc-blue/25 blur-3xl" />
             <div className="pointer-events-none absolute -bottom-32 -right-24 h-64 w-64 rounded-full bg-kc-blue/10 blur-3xl" />
@@ -448,7 +448,7 @@ const Projects = () => {
                 >
                   <div className="grid grid-cols-2 gap-4">
                     <motion.div
-                      className="bg-white rounded-2xl p-4 text-center border border-kc-blue/20 shadow-card"
+                      className="bg-white/95 rounded-3xl p-4 text-center border border-kc-blue/10 ring-1 ring-kc-blue/5 shadow-card"
                       whileHover={{ y: -3, scale: 1.02 }}
                       transition={{ type: "spring", stiffness: 260, damping: 22 }}
                     >
@@ -457,7 +457,7 @@ const Projects = () => {
                       <div className="text-xs sm:text-sm text-kc-black/70">Competition</div>
                     </motion.div>
                     <motion.div
-                      className="bg-white rounded-2xl p-4 text-center border border-kc-blue/20 shadow-card"
+                      className="bg-white/95 rounded-3xl p-4 text-center border border-kc-blue/10 ring-1 ring-kc-blue/5 shadow-card"
                       whileHover={{ y: -3, scale: 1.02 }}
                       transition={{ type: "spring", stiffness: 260, damping: 22 }}
                     >
@@ -468,7 +468,7 @@ const Projects = () => {
                   </div>
                   
                   <motion.div
-                    className="relative bg-white rounded-2xl p-5 sm:p-6 border border-kc-blue/20 shadow-card overflow-hidden"
+                    className="relative bg-white/95 rounded-3xl p-5 sm:p-6 border border-kc-blue/10 ring-1 ring-kc-blue/5 shadow-card overflow-hidden"
                     whileHover={{ y: -3 }}
                     transition={{ type: "spring", stiffness: 260, damping: 22 }}
                   >

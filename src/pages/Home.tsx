@@ -59,7 +59,7 @@ const Home: React.FC = () => {
               { icon: BookOpen, label: "Programs" },
               { icon: Rocket, label: "Innovation" },
             ].map((item) => (
-              <div key={item.label} className="flex items-center justify-center gap-2 rounded-xl border border-border/80 bg-white py-3 px-3">
+              <div key={item.label} className="flex items-center justify-center gap-2 rounded-2xl border border-kc-blue/10 ring-1 ring-kc-blue/5 bg-white/95 py-3 px-3 shadow-sm">
                 <item.icon className="h-4 w-4 text-kc-blue" />
                 <span className="text-xs md:text-sm font-semibold text-kc-blue">{item.label}</span>
               </div>

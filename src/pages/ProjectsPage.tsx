@@ -1,14 +1,13 @@
-import React from "react";
+﻿import React from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useNavigate, Link } from "react-router-dom";
 import { projects } from "@/data/projects";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ArrowRight, Search, Tags, ExternalLink, Star, Compass } from "lucide-react";
+import { ArrowRight, ExternalLink, Star, Compass } from "lucide-react";
 import StemBackground from "@/components/StemBackground";
 import { useParallax, Parallax } from "@/hooks/use-parallax";
-import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { useSeo } from "@/hooks/useSeo";
 
@@ -49,13 +48,12 @@ const cardVariants = {
  * 
  * Design:
  * - Grid layout with card hover effects
- * - Search and filter functionality
+ * - Category filtering for improved navigation
  * - Smooth animations on load
  * - Responsive design (1, 2, 3 columns)
  */
 const ProjectsPage: React.FC = () => {
   const navigate = useNavigate();
-  const [searchQuery, setSearchQuery] = React.useState("");
   const [selectedCategory, setSelectedCategory] = React.useState<string>("all");
   
   useSeo({
@@ -73,12 +71,10 @@ const ProjectsPage: React.FC = () => {
   // Filter projects
   const filteredProjects = React.useMemo(() => {
     return projects.filter(project => {
-      const matchesSearch = project.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        project.summary.toLowerCase().includes(searchQuery.toLowerCase());
       const matchesCategory = selectedCategory === "all" || project.categories?.includes(selectedCategory);
-      return matchesSearch && matchesCategory;
+      return matchesCategory;
     });
-  }, [searchQuery, selectedCategory]);
+  }, [selectedCategory]);
 
   const sortedProjects = React.useMemo(
     () => [...projects].sort((a, b) => a.title.localeCompare(b.title)),
@@ -110,34 +106,18 @@ const ProjectsPage: React.FC = () => {
           </Parallax>
 
 
-          {/* Search and Filters */}
+          {/* Filters */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
             className="mb-12 space-y-6"
           >
-            {/* Search Bar */}
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.3, duration: 0.4 }}
-              className="max-w-2xl mx-auto relative"
-            >
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground transition-colors duration-300" />
-              <Input
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search projects..."
-                className="pl-10 py-6 text-lg shadow-sm transition-all duration-300 focus-visible:shadow-md focus-visible:ring-2 focus-visible:ring-kc-blue/50"
-              />
-            </motion.div>
-
             {/* Category Pills */}
             <motion.div
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4, duration: 0.5 }}
+              transition={{ delay: 0.3, duration: 0.5 }}
               className="flex flex-wrap justify-center gap-3"
             >
               {categories.map((category, index) => (
@@ -146,7 +126,7 @@ const ProjectsPage: React.FC = () => {
                   initial={{ opacity: 0, scale: 0.8 }}
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{
-                    delay: 0.5 + (index * 0.05),
+                    delay: 0.4 + (index * 0.05),
                     duration: 0.3,
                     ease: [0.22, 1, 0.36, 1]
                   }}
@@ -154,10 +134,10 @@ const ProjectsPage: React.FC = () => {
                   whileTap={{ scale: 0.95 }}
                   onClick={() => setSelectedCategory(category)}
                   className={`
-                    px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 relative overflow-hidden
+                    px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 relative overflow-hidden border
                     ${selectedCategory === category
-                      ? 'bg-kc-blue text-white shadow-md transform scale-105'
-                      : 'bg-white text-foreground hover:bg-white hover:shadow-sm'}
+                      ? 'bg-kc-blue text-white border-kc-blue shadow-md transform scale-105'
+                      : 'bg-kc-blue/5 text-foreground border-kc-blue/15 hover:bg-white hover:shadow-sm'}
                   `}
                 >
                   {category.charAt(0).toUpperCase() + category.slice(1)}
@@ -169,7 +149,7 @@ const ProjectsPage: React.FC = () => {
             <motion.div
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.6, duration: 0.4 }}
+              transition={{ delay: 0.5, duration: 0.4 }}
               className="max-w-md mx-auto"
             >
               <div className="mb-2 flex items-center justify-center gap-2 text-xs font-semibold uppercase tracking-[0.14em] text-kc-blue">
@@ -177,15 +157,14 @@ const ProjectsPage: React.FC = () => {
                 Quick Project Jump
               </div>
               <Select onValueChange={(slug) => navigate(`/projects/${slug}`)}>
-                <SelectTrigger className="h-12 transition-all duration-300 hover:shadow-md focus:ring-2 focus:ring-kc-blue/50">
+                <SelectTrigger className="h-12 rounded-full bg-white/95 border border-kc-blue/10 ring-1 ring-kc-blue/5 transition-all duration-300 hover:shadow-md focus:ring-2 focus:ring-kc-blue/50">
                   <SelectValue placeholder="Choose a project and press Enter..." />
                 </SelectTrigger>
                 <SelectContent className="max-h-72">
-                  {sortedProjects.map((p, idx) => (
+                  {sortedProjects.map((p) => (
                     <SelectItem key={p.slug} value={p.slug}>
                       <div className="flex w-full items-center justify-between gap-3">
                         <span>{p.title}</span>
-                        <span className="text-xs text-muted-foreground">#{idx + 1}</span>
                       </div>
                     </SelectItem>
                   ))}
@@ -193,7 +172,6 @@ const ProjectsPage: React.FC = () => {
               </Select>
             </motion.div>
           </motion.div>
-
           {/* Project Cards */}
           <motion.div
             className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8"
@@ -222,7 +200,7 @@ const ProjectsPage: React.FC = () => {
                     transition: { duration: 0.3 }
                   }}
                 >
-                  <Card className="group h-full overflow-hidden bg-white border border-border shadow-card rounded-2xl transition-all duration-500 hover:border-kc-blue/40 hover:shadow-hover">
+                  <Card className="group h-full overflow-hidden bg-white/95 border border-kc-blue/10 ring-1 ring-kc-blue/5 shadow-card rounded-3xl transition-all duration-500 hover:border-kc-blue/40 hover:shadow-hover">
                     <CardContent className="p-0 h-full flex flex-col">
                       <div className="relative aspect-[4/3] w-full overflow-hidden">
                         <motion.img
@@ -244,7 +222,7 @@ const ProjectsPage: React.FC = () => {
                         {/* Featured Badge */}
                         {p.featured && (
                           <motion.div
-                            className="absolute top-4 right-4 flex items-center gap-1 bg-kc-blue text-white px-3 py-1.5 rounded-full text-sm font-medium "
+                            className="absolute top-4 right-4 flex items-center gap-1 bg-kc-blue text-white px-3 py-1.5 rounded-full text-sm font-medium shadow-sm"
                             initial={{ scale: 0, rotate: -10 }}
                             animate={{ scale: 1, rotate: 0 }}
                             transition={{ delay: 0.2 + (index * 0.05), type: "spring", stiffness: 260 }}
@@ -272,7 +250,7 @@ const ProjectsPage: React.FC = () => {
                               >
                                 <Badge
                                   variant="secondary"
-                                  className="bg-kc-blue/10 text-kc-blue hover:bg-kc-blue hover:text-white transition-colors duration-300 cursor-pointer"
+                                  className="rounded-full bg-kc-blue/10 text-kc-blue ring-1 ring-kc-blue/20 hover:bg-kc-blue hover:text-white transition-colors duration-300 cursor-pointer"
                                   onClick={() => setSelectedCategory(cat)}
                                 >
                                   {cat}
@@ -352,13 +330,12 @@ const ProjectsPage: React.FC = () => {
               className="text-center py-12"
             >
               <p className="text-lg text-muted-foreground">
-                No projects found matching your criteria.
+                No projects found in this category.
               </p>
               <Button 
                 variant="outline" 
                 className="mt-4"
                 onClick={() => {
-                  setSearchQuery("");
                   setSelectedCategory("all");
                 }}
               >
@@ -373,6 +350,3 @@ const ProjectsPage: React.FC = () => {
 };
 
 export default ProjectsPage;
-
-
-

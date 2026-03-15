@@ -273,7 +273,7 @@ const BlogPage: React.FC = () => {
             placeholder="Search posts..." 
             value={query} 
             onChange={(e) => setQuery(e.target.value)} 
-            className="shadow-sm transition-all duration-300 focus-visible:shadow-md"
+            className="rounded-2xl bg-white/95 border border-kc-blue/10 ring-1 ring-kc-blue/5 shadow-sm transition-all duration-300 focus-visible:shadow-md focus-visible:ring-2 focus-visible:ring-kc-blue/40"
           />
         </div>
         <div className="flex-1 flex flex-wrap items-center gap-3 justify-between md:justify-end">
@@ -281,7 +281,7 @@ const BlogPage: React.FC = () => {
             <div className="flex flex-wrap gap-2">
               <button
                 onClick={() => setActiveTag(null)}
-                className={`px-3 py-1.5 rounded-full text-xs sm:text-sm border transition-all duration-300 ${activeTag === null ? 'bg-kc-blue text-white border-kc-blue shadow-md' : 'bg-white text-foreground border-border hover:bg-white hover:shadow-sm'}`}
+                className={`px-3 py-1.5 rounded-full text-xs sm:text-sm border transition-all duration-300 ${activeTag === null ? 'bg-kc-blue text-white border-kc-blue shadow-md' : 'bg-kc-blue/5 text-foreground border-kc-blue/10 hover:bg-white hover:shadow-sm'}`}
               >
                 All
               </button>
@@ -289,7 +289,7 @@ const BlogPage: React.FC = () => {
                 <button
                   key={t}
                   onClick={() => setActiveTag(t)}
-                  className={`px-3 py-1.5 rounded-full text-xs sm:text-sm border transition-all duration-300 ${activeTag === t ? 'bg-kc-blue text-white border-kc-blue shadow-md' : 'bg-white text-foreground border-border hover:bg-white hover:shadow-sm'}`}
+                  className={`px-3 py-1.5 rounded-full text-xs sm:text-sm border transition-all duration-300 ${activeTag === t ? 'bg-kc-blue text-white border-kc-blue shadow-md' : 'bg-kc-blue/5 text-foreground border-kc-blue/10 hover:bg-white hover:shadow-sm'}`}
                 >
                   {t}
                 </button>
@@ -327,7 +327,7 @@ const BlogPage: React.FC = () => {
               const commentCount = commentCounts[pid] || 0;
               return (
                 <motion.div key={post.id} initial={{ opacity: 0, y: 8 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.2 }} transition={{ duration: 0.35, delay: idx * 0.05 }}>
-                  <Card className="group relative overflow-hidden border-border/60 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1.5 hover:shadow-hover hover:border-kc-blue/40">
+                  <Card className="group relative overflow-hidden border-kc-blue/10 ring-1 ring-kc-blue/5 bg-white/95 shadow-sm transition-all duration-300 hover:-translate-y-1.5 hover:shadow-hover hover:border-kc-blue/40">
                     {post.cover && (
                       <div className="relative overflow-hidden">
                         <img 
@@ -366,7 +366,7 @@ const BlogPage: React.FC = () => {
                           {post.tags.map((t) => (
                             <span 
                               key={t} 
-                              className="text-xs px-3 py-1.5 rounded-full bg-kc-blue/10 text-kc-blue font-medium transition-all duration-300 hover:bg-kc-blue hover:text-white cursor-pointer"
+                              className="text-xs px-3 py-1.5 rounded-full bg-kc-blue/10 text-kc-blue ring-1 ring-kc-blue/20 font-medium transition-all duration-300 hover:bg-kc-blue hover:text-white cursor-pointer"
                               onClick={() => setActiveTag(t)}
                             >
                               {t}
