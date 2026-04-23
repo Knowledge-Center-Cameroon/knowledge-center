@@ -153,11 +153,18 @@ const Navigation = () => {
               </Link>
             </Button>
             <Button
+              asChild
               variant="blue"
               size="sm"
               className="font-semibold"
             >
-              STEM Reg.
+              <Link
+                to="/stem"
+                onMouseEnter={handlePrefetch("/stem")}
+                onFocus={handlePrefetch("/stem")}
+              >
+                STEM Reg.
+              </Link>
             </Button>
           </div>
 
@@ -231,12 +238,18 @@ const Navigation = () => {
                   </Link>
                 </Button>
                 <Button
+                  asChild
                   variant="blue"
                   className="w-full font-semibold"
                   onClick={closeMobile}
-                  disabled
                 >
-                  STEM
+                  <Link
+                    to="/stem"
+                    onMouseEnter={handlePrefetch("/stem")}
+                    onFocus={handlePrefetch("/stem")}
+                  >
+                    STEM
+                  </Link>
                 </Button>
               </div>
             </motion.div>
