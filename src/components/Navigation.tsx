@@ -156,7 +156,6 @@ const Navigation = () => {
               variant="blue"
               size="sm"
               className="font-semibold"
-              disabled
             >
               STEM Reg.
             </Button>
