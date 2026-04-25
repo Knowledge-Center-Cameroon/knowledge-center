@@ -486,6 +486,18 @@ const ProjectDetailContent: React.FC<ProjectDetailContentProps> = ({ project }) 
                     Get Registered
                   </MotionButton>
                 )}
+                {project.slug === "gsp" && (
+                  <MotionButton
+                    asChild
+                    variant="blue"
+                    size="lg"
+                    className="px-8 text-base rounded-full"
+                    whileHover={{ y: -2, scale: 1.03 }}
+                    whileTap={{ scale: 0.97 }}
+                  >
+                    <Link to="/gsp">Start Application Portal</Link>
+                  </MotionButton>
+                )}
                 <MotionButton 
                   asChild 
                   variant="blackOutline" 

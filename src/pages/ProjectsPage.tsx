@@ -55,6 +55,9 @@ const cardVariants = {
 const ProjectsPage: React.FC = () => {
   const navigate = useNavigate();
   const [selectedCategory, setSelectedCategory] = React.useState<string>("all");
+  const projectPriority: Record<string, number> = {
+    gsp: 0,
+  };
   
   useSeo({
     title: "Our Projects | Knowledge Center - STEM Programs",
@@ -70,9 +73,16 @@ const ProjectsPage: React.FC = () => {
 
   // Filter projects
   const filteredProjects = React.useMemo(() => {
-    return projects.filter(project => {
+    return projects
+    .filter(project => {
       const matchesCategory = selectedCategory === "all" || project.categories?.includes(selectedCategory);
       return matchesCategory;
+    })
+    .sort((a, b) => {
+      const aPriority = projectPriority[a.slug] ?? 100;
+      const bPriority = projectPriority[b.slug] ?? 100;
+      if (aPriority !== bPriority) return aPriority - bPriority;
+      return projects.findIndex((p) => p.slug === a.slug) - projects.findIndex((p) => p.slug === b.slug);
     });
   }, [selectedCategory]);
 

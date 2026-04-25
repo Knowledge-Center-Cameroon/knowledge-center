@@ -117,7 +117,7 @@ export const projects: Project[] = [
     ]
   },
   {
-    slug: "global-scholars-program",
+    slug: "gsp",
     title: "Global Scholars Program",
     summary:
     "We prepare scholars for opportunities beyond borders—competitive scholarships, exchange programs, and global leadership.",

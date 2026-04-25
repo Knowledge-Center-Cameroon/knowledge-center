@@ -3,6 +3,7 @@ import EngagingLoader from "@/components/EngagingLoader";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { UserProvider } from "./contexts/UserContext";
+import { GspAuthProvider } from "./contexts/GspAuthContext";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
@@ -22,9 +23,15 @@ const StemRegistrationManagePage = React.lazy(() => import("./pages/StemRegistra
 const PrivacyPage = React.lazy(() => import("./pages/PrivacyPage"));
 const TermsPage = React.lazy(() => import("./pages/TermsPage"));
 const EventsPage = React.lazy(() => import("./pages/EventsPage"));
+const GspAuthPage = React.lazy(() => import("./pages/GspAuthPage"));
+const GspDashboardPage = React.lazy(() => import("./pages/GspDashboardPage"));
+const GspApplicationPage = React.lazy(() => import("./pages/GspApplicationPage"));
+const GspDecisionPage = React.lazy(() => import("./pages/GspDecisionPage"));
+const GspAdminPage = React.lazy(() => import("./pages/GspAdminPage"));
 const NotFound = React.lazy(() => import("./pages/NotFound"));
 
 const queryClient = new QueryClient();
+const MIN_BOOT_LOADER_MS = 1400;
 
 const ScrollToTop = () => {
   const location = useLocation();
@@ -34,41 +41,79 @@ const ScrollToTop = () => {
   return null;
 };
 
-const App = () => (
+const AppShell: React.FC = () => (
   <QueryClientProvider client={queryClient}>
     <UserProvider>
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <ScrollToTop />
-          <Suspense fallback={<EngagingLoader />}>
-            <Routes>
-              <Route element={<Layout />}>
-                <Route index element={<Home />} />
-                <Route path="about" element={<AboutPage />} />
-                <Route path="projects" element={<ProjectsPage />} />
-                <Route path="projects/:slug" element={<ProjectDetailPage />} />
-                <Route path="events" element={<EventsPage />} />
-                <Route path="blog" element={<BlogPage />} />
-                <Route path="blog/:slug" element={<BlogDetailPage />} />
-                <Route path="contact" element={<ContactPage />} />
-                <Route path="donate" element={<DonatePage />} />
-                <Route path="stem" element={<StemRegistrationPage />} />
-                <Route path="stem/register" element={<StemRegistrationApplyPage />} />
-                <Route path="stem/success" element={<StemRegistrationSuccessPage />} />
-                <Route path="stem/manage" element={<StemRegistrationManagePage />} />
-                <Route path="privacy" element={<PrivacyPage />} />
-                <Route path="terms" element={<TermsPage />} />
-              </Route>
-              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </Suspense>
-        </BrowserRouter>
-      </TooltipProvider>
+      <GspAuthProvider>
+        <TooltipProvider>
+          <Toaster />
+          <Sonner />
+          <BrowserRouter>
+            <ScrollToTop />
+            <Suspense fallback={<EngagingLoader />}>
+              <Routes>
+                <Route element={<Layout />}>
+                  <Route index element={<Home />} />
+                  <Route path="about" element={<AboutPage />} />
+                  <Route path="projects" element={<ProjectsPage />} />
+                  <Route path="projects/:slug" element={<ProjectDetailPage />} />
+                  <Route path="events" element={<EventsPage />} />
+                  <Route path="blog" element={<BlogPage />} />
+                  <Route path="blog/:slug" element={<BlogDetailPage />} />
+                  <Route path="contact" element={<ContactPage />} />
+                  <Route path="donate" element={<DonatePage />} />
+                  <Route path="stem" element={<StemRegistrationPage />} />
+                  <Route path="stem/register" element={<StemRegistrationApplyPage />} />
+                  <Route path="stem/success" element={<StemRegistrationSuccessPage />} />
+                  <Route path="stem/manage" element={<StemRegistrationManagePage />} />
+                  <Route path="gsp" element={<GspAuthPage />} />
+                  <Route path="gsp/dashboard" element={<GspDashboardPage />} />
+                  <Route path="gsp/application" element={<GspApplicationPage />} />
+                  <Route path="gsp/decision" element={<GspDecisionPage />} />
+                  <Route path="gsp/admin" element={<GspAdminPage />} />
+                  <Route path="privacy" element={<PrivacyPage />} />
+                  <Route path="terms" element={<TermsPage />} />
+                </Route>
+                {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </Suspense>
+          </BrowserRouter>
+        </TooltipProvider>
+      </GspAuthProvider>
     </UserProvider>
   </QueryClientProvider>
 );
+
+const App: React.FC = () => {
+  const [isBootReady, setIsBootReady] = React.useState(false);
+
+  React.useEffect(() => {
+    let mounted = true;
+
+    const waitForWindowLoad = new Promise<void>((resolve) => {
+      if (document.readyState === "complete") {
+        resolve();
+        return;
+      }
+      window.addEventListener("load", () => resolve(), { once: true });
+    });
+
+    const waitForMinimumDelay = new Promise<void>((resolve) => {
+      window.setTimeout(() => resolve(), MIN_BOOT_LOADER_MS);
+    });
+
+    Promise.all([waitForWindowLoad, waitForMinimumDelay]).then(() => {
+      if (mounted) setIsBootReady(true);
+    });
+
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  if (!isBootReady) return <EngagingLoader />;
+  return <AppShell />;
+};
 
 export default App;
