@@ -1,4 +1,4 @@
-const BASE_URL = (import.meta as any).env?.VITE_API_BASE_URL || "http://localhost:8080";
+const BASE_URL = (import.meta as any).env?.VITE_API_BASE_URL || "kcbackend-production-7ae5.up.railway.app";
 const TOKEN_KEY = "kc_gsp_token";
 
 export type GspUser = {
