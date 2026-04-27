@@ -91,15 +91,20 @@ export async function addTimelineEvent(event: Omit<TimelineEvent, "id">): Promis
 // STEM registration & payment stubs
 export type StemRegistrationPayload = {
   fullName: string;
+  email: string;
   phone: string;
+  payerPhone: string;
   guardianPhone: string;
   dobISO: string;
   gender: "male" | "female" | "other";
   school: string;
+  region: string;
+  examLocation: string;
+  subjects: string[];
+  expectations: string;
   schoolClass: string;
-  motivation?: string;
   level: "olevel" | "alevel";
-  paymentMethod?: "mtn" | "orange";
+  paymentMethod: "mtn" | "orange";
 };
 
 export type PaymentInitResponse = {
