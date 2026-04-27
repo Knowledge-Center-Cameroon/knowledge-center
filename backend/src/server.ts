@@ -1,4 +1,4 @@
-import express, { Request, Response } from 'express';
+import express, { NextFunction, Request, Response } from 'express';
 import cors from 'cors';
 import axios from 'axios';
 import dotenv from 'dotenv';
@@ -11,6 +11,7 @@ import validator from 'validator';
 import { body, validationResult } from 'express-validator';
 
 dotenv.config();
+mongoose.set('bufferCommands', false);
 
 const app = express();
 const PORT = Number(process.env.PORT || 8080);
@@ -18,6 +19,7 @@ const CORS_ORIGIN = process.env.CORS_ORIGIN || 'http://localhost:5173';
 const NKWA_BASE_URL = process.env.NKWA_BASE_URL || 'https://api.mynkwa.com';
 const NKWA_API_KEY = process.env.NKWA_API_KEY || '';
 const APP_BASE_URL = process.env.APP_BASE_URL || CORS_ORIGIN;
+const BACKEND_PUBLIC_URL = process.env.BACKEND_PUBLIC_URL || `http://localhost:${PORT}`;
 const APP_AUTH_SECRET = process.env.APP_AUTH_SECRET || 'dev-only-secret-change-in-prod';
 const RESEND_API_KEY = process.env.RESEND_API_KEY || '';
 const RESEND_FROM_EMAIL = process.env.RESEND_FROM_EMAIL || 'onboarding@resend.dev';
@@ -79,15 +81,92 @@ app.use(cors({
 app.use(express.json({ limit: '20mb' }));
 app.use(express.urlencoded({ extended: true }));
 
+const STEM_GRADES = ['Form 1', 'Form 2', 'Form 3', 'Form 4', 'Form 5', 'Lower Sixth', 'Upper Sixth'] as const;
+const STEM_PAYMENT_METHODS = ['mtn', 'orange'] as const;
+type StemPaymentMethod = typeof STEM_PAYMENT_METHODS[number];
+type StemGrade = typeof STEM_GRADES[number];
+
+function normalizeCameroonPhone(raw: unknown): string | null {
+  const digits = String(raw || '').replace(/[^\d+]/g, '').trim();
+  if (!digits) return null;
+  if (/^\+237[6-9]\d{8}$/.test(digits)) return digits;
+  if (/^237[6-9]\d{8}$/.test(digits)) return `+${digits}`;
+  if (/^[6-9]\d{8}$/.test(digits)) return `+237${digits}`;
+  return null;
+}
+
+function splitFullName(fullName: string): { firstName: string; lastName: string } | null {
+  const parts = fullName.split(/\s+/).filter(Boolean);
+  if (parts.length < 2) return null;
+  return {
+    firstName: parts[0],
+    lastName: parts.slice(1).join(' '),
+  };
+}
+
+function normalizeStemRegistrationPayload(payload: any) {
+  const fullName = String(payload?.fullName || '').trim();
+  const nameParts = fullName ? splitFullName(fullName) : null;
+  const firstName = String(payload?.firstName || nameParts?.firstName || '').trim();
+  const lastName = String(payload?.lastName || nameParts?.lastName || '').trim();
+  const email = String(payload?.email || '').toLowerCase().trim();
+  const studentPhone = normalizeCameroonPhone(payload?.phone);
+  const payerPhone = normalizeCameroonPhone(payload?.payerPhone || payload?.phone);
+  const guardianPhone = normalizeCameroonPhone(payload?.guardianPhone);
+  const school = String(payload?.school || '').trim();
+  const grade = String(payload?.grade || payload?.schoolClass || '').trim();
+  const paymentMethod = String(payload?.paymentMethod || '').trim().toLowerCase() as StemPaymentMethod;
+  const gender = String(payload?.gender || '').trim().toLowerCase();
+  const level = String(payload?.level || '').trim().toLowerCase();
+  const dobISO = String(payload?.dobISO || '').trim();
+  const region = String(payload?.region || '').trim();
+  const examLocation = String(payload?.examLocation || '').trim();
+  const expectations = String(payload?.expectations || payload?.motivation || '').trim();
+  const subjects = Array.isArray(payload?.subjects) ? payload.subjects.map((item: unknown) => String(item).trim()).filter(Boolean) : [];
+
+  if (!firstName || firstName.length < 2 || !/^[a-zA-Z\s'-]+$/.test(firstName)) return { error: 'First name must be at least 2 valid characters' } as const;
+  if (!lastName || lastName.length < 2 || !/^[a-zA-Z\s'-]+$/.test(lastName)) return { error: 'Last name must be at least 2 valid characters' } as const;
+  if (!validator.isEmail(email)) return { error: 'Please provide a valid email address' } as const;
+  if (!studentPhone) return { error: 'Student phone number must be a valid Cameroonian number' } as const;
+  if (!payerPhone) return { error: 'Payer phone number must be a valid Cameroonian number' } as const;
+  if (guardianPhone === null && payload?.guardianPhone) return { error: 'Guardian phone number must be a valid Cameroonian number' } as const;
+  if (!school || school.length < 2 || school.length > 100) return { error: 'School name must be between 2 and 100 characters' } as const;
+  if (!(STEM_GRADES as readonly string[]).includes(grade)) return { error: 'Please select a valid grade level' } as const;
+  if (!(STEM_PAYMENT_METHODS as readonly string[]).includes(paymentMethod)) return { error: 'Payment method must be either MTN or Orange' } as const;
+  if (dobISO && Number.isNaN(new Date(dobISO).getTime())) return { error: 'Date of birth must be a valid ISO date' } as const;
+  if (gender && !['male', 'female', 'other'].includes(gender)) return { error: 'Gender must be male, female, or other' } as const;
+  if (level && !['olevel', 'alevel'].includes(level)) return { error: 'Level must be olevel or alevel' } as const;
+
+  return {
+    value: {
+      firstName,
+      lastName,
+      email,
+      phone: studentPhone,
+      payerPhone,
+      guardianPhone: guardianPhone || '',
+      dobISO,
+      gender,
+      school,
+      grade: grade as StemGrade,
+      paymentMethod,
+      schoolClass: String(payload?.schoolClass || grade).trim(),
+      level,
+      region,
+      examLocation,
+      expectations,
+      subjects,
+    },
+  } as const;
+}
+
 const validateRegistration = [
-  body('payload.firstName').trim().isLength({ min: 2, max: 50 }).withMessage('First name must be between 2 and 50 characters').matches(/^[a-zA-Z\s'-]+$/).withMessage('First name can only contain letters, spaces, hyphens, and apostrophes'),
-  body('payload.lastName').trim().isLength({ min: 2, max: 50 }).withMessage('Last name must be between 2 and 50 characters').matches(/^[a-zA-Z\s'-]+$/).withMessage('Last name can only contain letters, spaces, hyphens, and apostrophes'),
-  body('payload.email').isEmail().normalizeEmail().withMessage('Please provide a valid email address'),
-  body('payload.phone').matches(/^\+237[6-9]\d{8}$/).withMessage('Phone number must be in Cameroon format: +237XXXXXXXXX'),
-  body('payload.school').trim().isLength({ min: 2, max: 100 }).withMessage('School name must be between 2 and 100 characters'),
-  body('payload.grade').isIn(['Form 1', 'Form 2', 'Form 3', 'Form 4', 'Form 5', 'Lower Sixth', 'Upper Sixth']).withMessage('Please select a valid grade level'),
+  body('payload').custom((payload) => {
+    const normalized = normalizeStemRegistrationPayload(payload);
+    if ('error' in normalized) throw new Error(normalized.error);
+    return true;
+  }),
   body('amount').isInt({ min: 1000, max: 100000 }).withMessage('Amount must be between 1000 and 100000 FCFA'),
-  body('payload.paymentMethod').isIn(['mtn', 'orange']).withMessage('Payment method must be either MTN or Orange'),
 ];
 
 const SubscriberSchema = new Schema({
@@ -111,9 +190,19 @@ const RegistrationSchema = new Schema({
     lastName: { type: String, required: true },
     email: { type: String, required: true, validate: { validator: (email: string) => validator.isEmail(email), message: 'Please provide a valid email address' } },
     phone: { type: String, required: true, validate: { validator: (phone: string) => /^\+237[6-9]\d{8}$/.test(phone), message: 'Phone number must be in Cameroon format: +237XXXXXXXXX' } },
+    payerPhone: { type: String, required: true, validate: { validator: (phone: string) => /^\+237[6-9]\d{8}$/.test(phone), message: 'Payer phone number must be in Cameroon format: +237XXXXXXXXX' } },
+    guardianPhone: { type: String },
+    dobISO: { type: String },
+    gender: { type: String },
     school: { type: String, required: true },
     grade: { type: String, required: true },
     paymentMethod: { type: String, required: true, enum: ['mtn', 'orange'] },
+    schoolClass: { type: String },
+    level: { type: String },
+    region: { type: String },
+    examLocation: { type: String },
+    expectations: { type: String },
+    subjects: { type: [String], default: [] },
   },
   status: { type: String, enum: ['pending', 'processing', 'success', 'failed', 'cancelled'], default: 'pending' },
   nkwaTransactionId: { type: String },
@@ -257,6 +346,15 @@ function getBearerToken(req: Request): string | null {
   const raw = req.headers.authorization;
   if (!raw || !raw.startsWith('Bearer ')) return null;
   return raw.slice(7).trim();
+}
+function isDatabaseConnected(): boolean {
+  return mongoose.connection.readyState === 1;
+}
+function requireDatabase(_req: Request, res: Response, next: NextFunction) {
+  if (!isDatabaseConnected()) {
+    return res.status(503).json({ error: 'Database unavailable', message: 'Configure a valid MongoDB connection to use this endpoint.' });
+  }
+  next();
 }
 function countWords(value: string): number {
   return value.trim().split(/\s+/).filter(Boolean).length;
@@ -440,6 +538,15 @@ app.get('/health', async (_req: Request, res: Response) => {
   res.status(healthCheck.ok ? 200 : 503).json(healthCheck);
 });
 
+app.use('/api/newsletter', requireDatabase);
+app.use('/api/auth', requireDatabase);
+app.use('/api/gsp', requireDatabase);
+app.use('/api/admin', requireDatabase);
+app.use('/api/stem/register', requireDatabase);
+app.use('/api/nkwa/webhook', requireDatabase);
+app.use('/api/timeline', requireDatabase);
+app.use('/api/blog', requireDatabase);
+
 app.post('/api/newsletter',
   body('email').isEmail().normalizeEmail().withMessage('Please provide a valid email address'),
   async (req: Request, res: Response) => {
@@ -498,7 +605,11 @@ app.post('/api/auth/register', async (req: Request, res: Response) => {
       String(user._id),
       { verifyLink },
     );
-    return res.status(201).json({ success: true, message: 'Account created. Please verify your email.' });
+    return res.status(201).json({
+      success: true,
+      message: 'Account created. Please verify your email.',
+      ...(process.env.NODE_ENV !== 'production' ? { debugVerifyToken: rawToken } : {}),
+    });
   } catch (error) {
     console.error('register error', error);
     return res.status(500).json({ error: 'Failed to create account' });
@@ -578,7 +689,10 @@ app.post('/api/auth/forgot-password', async (req: Request, res: Response) => {
       String(user._id),
       { resetLink },
     );
-    return res.json({ success: true });
+    return res.json({
+      success: true,
+      ...(process.env.NODE_ENV !== 'production' ? { debugResetToken: rawToken } : {}),
+    });
   } catch (error) {
     console.error('forgot password error', error);
     return res.status(500).json({ error: 'Failed to request password reset' });
@@ -901,26 +1015,38 @@ app.post('/api/stem/register', validateRegistration, async (req: Request, res: R
     if (!errors.isEmpty()) return res.status(400).json({ error: 'Validation failed', details: errors.array() });
     const { payload, amount } = req.body;
     if (!payload || !amount) return res.status(400).json({ error: 'Missing required fields', message: 'Payload and amount are required' });
+    const normalized = normalizeStemRegistrationPayload(payload);
+    if ('error' in normalized) return res.status(400).json({ error: normalized.error });
     if (!NKWA_API_KEY) return res.status(500).json({ error: 'Payment service unavailable', message: 'Payment integration not configured' });
     const sanitizedPayload = {
-      firstName: validator.escape(payload.firstName.trim()),
-      lastName: validator.escape(payload.lastName.trim()),
-      email: payload.email.toLowerCase().trim(),
-      phone: payload.phone.trim(),
-      school: validator.escape(payload.school.trim()),
-      grade: payload.grade,
-      paymentMethod: payload.paymentMethod,
+      firstName: validator.escape(normalized.value.firstName),
+      lastName: validator.escape(normalized.value.lastName),
+      email: normalized.value.email,
+      phone: normalized.value.phone,
+      payerPhone: normalized.value.payerPhone,
+      guardianPhone: normalized.value.guardianPhone,
+      dobISO: normalized.value.dobISO,
+      gender: normalized.value.gender,
+      school: validator.escape(normalized.value.school),
+      grade: normalized.value.grade,
+      paymentMethod: normalized.value.paymentMethod,
+      schoolClass: normalized.value.schoolClass,
+      level: normalized.value.level,
+      region: normalized.value.region,
+      examLocation: normalized.value.examLocation,
+      expectations: normalized.value.expectations,
+      subjects: normalized.value.subjects,
     };
     const reference = `KC-STEM-${Date.now()}-${Math.random().toString(36).slice(2, 8).toUpperCase()}`;
     await Registration.create({ reference, amount, payload: sanitizedPayload, status: 'pending', created_at: new Date() });
     const nkwaPayload = {
       amount,
-      payer: sanitizedPayload.phone,
+      payer: sanitizedPayload.payerPhone,
       operator: sanitizedPayload.paymentMethod,
       reference,
       currency: 'XAF',
       description: `KC STEM Registration - ${sanitizedPayload.firstName} ${sanitizedPayload.lastName}`,
-      callback_url: `${process.env.CORS_ORIGIN || 'http://localhost:5173'}/api/nkwa/webhook`,
+      callback_url: `${BACKEND_PUBLIC_URL}/api/nkwa/webhook`,
     };
     try {
       const nkwaResponse = await axios.post(`${NKWA_BASE_URL}/nkwapay/collect`, nkwaPayload, {
@@ -1033,7 +1159,7 @@ app.get('/api/blog/:postId/likes', async (req: Request, res: Response) => {
     const { postId } = req.params;
     const { userId } = req.query;
     const likeCount = await BlogLike.countDocuments({ postId });
-    const isLiked = userId ? await BlogLike.exists({ postId, userId: userId as string }) : false;
+    const isLiked = userId ? Boolean(await BlogLike.exists({ postId, userId: userId as string })) : false;
     res.json({ likeCount, isLiked });
   } catch (error) {
     console.error('Get likes error:', error);
@@ -1112,13 +1238,17 @@ app.delete('/api/blog/comments/:commentId', async (req: Request, res: Response) 
 
 async function start() {
   try {
-    const uri = process.env.MONGODB_URI;
-    if (!uri) console.warn('Warning: MONGODB_URI not set. Connect before production use.');
-    else {
+    const uri = String(process.env.MONGODB_URI || '').trim();
+    const hasConfiguredMongoUri = uri.length > 0
+      && uri !== 'your_mongodb_connection_string_here'
+      && (uri.startsWith('mongodb://') || uri.startsWith('mongodb+srv://'));
+    if (!hasConfiguredMongoUri) {
+      console.warn('Warning: MONGODB_URI not configured. Starting without MongoDB connection.');
+    } else {
       await mongoose.connect(uri);
       console.log('Connected to MongoDB');
+      await ensureDecisionConfig();
     }
-    await ensureDecisionConfig();
     app.listen(PORT, () => {
       console.log(`KC backend listening on http://localhost:${PORT}`);
     });

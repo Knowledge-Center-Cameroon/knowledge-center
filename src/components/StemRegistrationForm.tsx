@@ -48,6 +48,7 @@ const calculateSubjectPrice = (count: number): number => {
 
 const schema = z.object({
   fullName: z.string().min(2, "Full name is required"),
+  email: z.string().email("Enter a valid email address"),
   phone: cmPhone,
   guardianPhone: cmPhone,
   dob: z.date().min(minDOB, "Invalid date of birth").max(maxDOB, "You cannot be born in the future"),
@@ -60,17 +61,18 @@ const schema = z.object({
   subjects: z.array(z.string()).min(1, "Please select at least one subject"),
   expectations: z.string().min(10, "Please share your expectations (at least 10 characters)"),
   payerPhone: cmPhone,
+  paymentMethod: z.enum(["mtn", "orange"], { required_error: "Select a mobile money operator" }),
 });
 
 export type StemRegistrationData = z.infer<typeof schema>;
 
 const steps: Array<{ key: string; title: string; fields: (keyof StemRegistrationData)[] }> = [
-  { key: "personal", title: "Personal Details", fields: ["fullName", "phone", "guardianPhone"] },
+  { key: "personal", title: "Personal Details", fields: ["fullName", "email", "phone", "guardianPhone"] },
   { key: "profile", title: "Profile", fields: ["dob", "gender"] },
   { key: "education", title: "Education", fields: ["educationLevel", "schoolClass", "school", "region", "examLocation"] },
   { key: "subjects", title: "Subjects", fields: ["subjects"] },
   { key: "expectations", title: "Expectations", fields: ["expectations"] },
-  { key: "payment", title: "Payment", fields: ["payerPhone"] },
+  { key: "payment", title: "Payment", fields: ["payerPhone", "paymentMethod"] },
 ];
 
 interface Props {
@@ -89,6 +91,7 @@ const StemRegistrationForm: React.FC<Props> = ({ onSubmitted, initialValues, mod
     resolver: zodResolver(schema),
     defaultValues: {
       fullName: "",
+      email: "",
       phone: "",
       guardianPhone: "",
       dob: undefined,
@@ -101,6 +104,7 @@ const StemRegistrationForm: React.FC<Props> = ({ onSubmitted, initialValues, mod
       subjects: [],
       expectations: "",
       payerPhone: "",
+      paymentMethod: undefined as any,
       ...(initialValues || {}),
     },
     mode: "onTouched",
@@ -136,14 +140,20 @@ const StemRegistrationForm: React.FC<Props> = ({ onSubmitted, initialValues, mod
     try {
       const payload: StemRegistrationPayload = {
         fullName: data.fullName,
-        phone: data.payerPhone || data.phone,
+        email: data.email,
+        phone: data.phone,
+        payerPhone: data.payerPhone || data.phone,
         guardianPhone: data.guardianPhone,
         dobISO: data.dob.toISOString(),
         gender: data.gender,
         school: data.school,
+        region: data.region,
+        examLocation: data.examLocation,
+        subjects: data.subjects,
+        expectations: data.expectations,
         schoolClass: data.schoolClass,
-        motivation: data.expectations,
         level: data.educationLevel,
+        paymentMethod: data.paymentMethod,
       };
 
       const amount = totalAmount;
@@ -216,6 +226,7 @@ const StemRegistrationForm: React.FC<Props> = ({ onSubmitted, initialValues, mod
             {stepIndex === 0 && (
               <>
                 <FormField control={form.control} name="fullName" render={({ field }) => (<FormItem><FormLabel>Full Name</FormLabel><FormControl><Input placeholder="Your Full Name" {...field} /></FormControl><FormMessage /></FormItem>)} />
+                <FormField control={form.control} name="email" render={({ field }) => (<FormItem><FormLabel>Email Address</FormLabel><FormControl><Input type="email" placeholder="you@example.com" {...field} /></FormControl><FormMessage /></FormItem>)} />
                 <FormField control={form.control} name="phone" render={({ field }) => (<FormItem><FormLabel>Phone Number</FormLabel><FormControl><Input placeholder="e.g. 670123456" {...field} /></FormControl><FormMessage /></FormItem>)} />
                 <FormField control={form.control} name="guardianPhone" render={({ field }) => (<FormItem><FormLabel>Guardian's Phone Number</FormLabel><FormControl><Input placeholder="e.g. 670123456" {...field} /></FormControl><FormMessage /></FormItem>)} />
               </>
@@ -413,7 +424,7 @@ const StemRegistrationForm: React.FC<Props> = ({ onSubmitted, initialValues, mod
                       </p>
                     </div>
                     <p className="text-xs text-muted-foreground">
-                      Enter the mobile money number that will be charged. We will automatically detect whether it is MTN or Orange and send a payment prompt to that phone.
+                      Enter the mobile money number that will be charged and choose the operator for that number.
                     </p>
                   </div>
                 </div>
@@ -426,6 +437,32 @@ const StemRegistrationForm: React.FC<Props> = ({ onSubmitted, initialValues, mod
                       <FormLabel>Payer's Mobile Money Number</FormLabel>
                       <FormControl>
                         <Input placeholder="e.g. 670123456" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="paymentMethod"
+                  render={({ field }) => (
+                    <FormItem className="space-y-3">
+                      <FormLabel>Mobile Money Operator</FormLabel>
+                      <FormControl>
+                        <RadioGroup onValueChange={field.onChange} value={field.value} className="flex flex-col space-y-1">
+                          <FormItem className="flex items-center space-x-3 space-y-0">
+                            <FormControl>
+                              <RadioGroupItem value="mtn" />
+                            </FormControl>
+                            <FormLabel className="font-normal">MTN MoMo</FormLabel>
+                          </FormItem>
+                          <FormItem className="flex items-center space-x-3 space-y-0">
+                            <FormControl>
+                              <RadioGroupItem value="orange" />
+                            </FormControl>
+                            <FormLabel className="font-normal">Orange Money</FormLabel>
+                          </FormItem>
+                        </RadioGroup>
                       </FormControl>
                       <FormMessage />
                     </FormItem>

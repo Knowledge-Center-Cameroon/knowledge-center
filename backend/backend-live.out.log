@@ -1,0 +1,17 @@
+Connected to MongoDB
+KC backend listening on http://localhost:8080
+[0mGET /health [32m200[0m 2057.381 ms - 134[0m
+[0mGET /health [32m200[0m 99.025 ms - 135[0m
+[0mPOST /api/newsletter [33m400[0m 267.603 ms - 150[0m
+[0mPOST /api/newsletter [32m200[0m 3099.962 ms - 66[0m
+[0mPOST /api/newsletter [33m409[0m 135.381 ms - 36[0m
+[0mGET /api/timeline [32m200[0m 107.202 ms - 2[0m
+[0mPOST /api/blog/test-post/like [32m200[0m 332.604 ms - 28[0m
+[0mGET /api/blog/test-post/likes?userId=user-1 [32m200[0m 309.942 ms - 60[0m
+[0mPOST /api/blog/test-post/comments [32m201[0m 135.481 ms - 210[0m
+[0mGET /api/blog/test-post/comments?page=1&limit=10 [32m200[0m 372.421 ms - 308[0m
+[0mPOST /api/auth/register [32m201[0m 2560.324 ms - 153[0m
+[0mPOST /api/auth/login [33m403[0m 222.393 ms - 49[0m
+[0mPOST /api/auth/forgot-password [32m200[0m 1426.099 ms - 97[0m
+[0mGET /api/admin/gsp/users [33m401[0m 0.792 ms - 35[0m
+[0mPOST /api/stem/register [31m500[0m 6.295 ms - 86[0m
