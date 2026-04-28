@@ -1,4 +1,4 @@
-const BASE_URL = (import.meta as any).env?.VITE_API_BASE_URL || "http://localhost:8080";
+const BASE_URL = (import.meta as any).env?.VITE_API_BASE_URL || "https://kcbackend-production-7ae5.up.railway.app";
 const TOKEN_KEY = "kc_gsp_token";
 
 export type GspUser = {
@@ -57,16 +57,23 @@ export function hasAuthToken() {
 }
 
 export async function registerGsp(payload: { name: string; email: string; password: string }) {
-  return apiRequest<{ success: boolean; message: string }>("/api/auth/register", {
+  return apiRequest<{ success: boolean; message: string; email: string; requiresVerification: boolean; debugVerificationCode?: string }>("/api/auth/register", {
     method: "POST",
     body: JSON.stringify(payload),
   });
 }
 
-export async function verifyEmailToken(token: string) {
-  return apiRequest<{ success: boolean; message: string }>("/api/auth/verify-email", {
+export async function verifyEmailCode(payload: { email: string; code: string }) {
+  return apiRequest<{ success: boolean; message: string; token: string; user: GspUser }>("/api/auth/verify-email", {
     method: "POST",
-    body: JSON.stringify({ token }),
+    body: JSON.stringify(payload),
+  });
+}
+
+export async function resendVerificationCode(email: string) {
+  return apiRequest<{ success: boolean; message: string; debugVerificationCode?: string }>("/api/auth/resend-verification-code", {
+    method: "POST",
+    body: JSON.stringify({ email }),
   });
 }
 

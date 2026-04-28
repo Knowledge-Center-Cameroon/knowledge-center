@@ -9,27 +9,30 @@ import { useToast } from "@/components/ui/use-toast";
 import {
   forgotPassword,
   registerGsp,
+  resendVerificationCode,
   resetPassword,
-  verifyEmailToken,
+  saveAuthToken,
+  verifyEmailCode,
 } from "@/services/gspApi";
 import { useGspAuth } from "@/contexts/GspAuthContext";
 import { useSeo } from "@/hooks/useSeo";
 
 const GspAuthPage: React.FC = () => {
-  const { user, signIn } = useGspAuth();
+  const { user, refreshUser, signIn } = useGspAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
   const [searchParams] = useSearchParams();
-  const verifyToken = searchParams.get("verifyToken");
   const resetToken = searchParams.get("resetToken");
 
-  const [mode, setMode] = React.useState<"login" | "signup" | "forgot" | "reset">(resetToken ? "reset" : "login");
+  const [mode, setMode] = React.useState<"login" | "signup" | "verify" | "forgot" | "reset">(resetToken ? "reset" : "login");
   const [loading, setLoading] = React.useState(false);
+  const [resendingCode, setResendingCode] = React.useState(false);
   const [form, setForm] = React.useState({
     name: "",
     email: "",
     password: "",
     confirmPassword: "",
+    verificationCode: "",
   });
 
   useSeo({
@@ -40,27 +43,6 @@ const GspAuthPage: React.FC = () => {
   React.useEffect(() => {
     if (user) navigate("/gsp/dashboard");
   }, [user, navigate]);
-
-  React.useEffect(() => {
-    if (!verifyToken) return;
-    let mounted = true;
-    (async () => {
-      try {
-        await verifyEmailToken(verifyToken);
-        if (mounted) {
-          toast({ title: "Email verified", description: "You can now sign in to continue your application." });
-          setMode("login");
-        }
-      } catch (error: any) {
-        if (mounted) {
-          toast({ title: "Verification failed", description: error.message || "Invalid verification link", variant: "destructive" as any });
-        }
-      }
-    })();
-    return () => {
-      mounted = false;
-    };
-  }, [verifyToken, toast]);
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -76,10 +58,23 @@ const GspAuthPage: React.FC = () => {
           password: form.password,
         });
         toast({
-          title: "Account created",
-          description: "Check your email and verify your account before login.",
+          title: "Verification code sent",
+          description: "Enter the code from your email to finish creating your account.",
         });
-        setMode("login");
+        setForm((prev) => ({ ...prev, password: "", confirmPassword: "", verificationCode: "" }));
+        setMode("verify");
+      } else if (mode === "verify") {
+        const data = await verifyEmailCode({
+          email: form.email,
+          code: form.verificationCode,
+        });
+        saveAuthToken(data.token);
+        await refreshUser();
+        toast({
+          title: "Account verified",
+          description: "Your account has been created and you are now signed in.",
+        });
+        navigate("/gsp/dashboard");
       } else if (mode === "login") {
         await signIn(form.email, form.password);
         navigate("/gsp/dashboard");
@@ -93,14 +88,35 @@ const GspAuthPage: React.FC = () => {
         toast({ title: "Password updated", description: "You can now sign in with your new password." });
         setMode("login");
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : "Please try again."
       toast({
         title: "Request failed",
-        description: error.message || "Please try again.",
-        variant: "destructive" as any,
+        description: message,
+        variant: "destructive",
       });
     } finally {
       setLoading(false);
+    }
+  };
+
+  const onResendCode = async () => {
+    setResendingCode(true);
+    try {
+      await resendVerificationCode(form.email);
+      toast({
+        title: "Code resent",
+        description: "A new verification code has been sent to your email.",
+      });
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : "Please try again.";
+      toast({
+        title: "Unable to resend code",
+        description: message,
+        variant: "destructive",
+      });
+    } finally {
+      setResendingCode(false);
     }
   };
 
@@ -134,7 +150,8 @@ const GspAuthPage: React.FC = () => {
         <Card className="rounded-3xl border-kc-blue/10 shadow-card">
           <CardHeader>
             <CardTitle className="text-2xl font-heading">
-              {mode === "signup" && "Create your account"}
+              {mode === "signup" && "Start your account"}
+              {mode === "verify" && "Verify your email"}
               {mode === "login" && "Sign in"}
               {mode === "forgot" && "Reset password"}
               {mode === "reset" && "Choose a new password"}
@@ -152,7 +169,20 @@ const GspAuthPage: React.FC = () => {
                 <Label htmlFor="email">Email</Label>
                 <Input id="email" type="email" value={form.email} onChange={(e) => setForm((p) => ({ ...p, email: e.target.value }))} required />
               </div>
-              {mode !== "forgot" && (
+              {mode === "verify" && (
+                <div className="space-y-2">
+                  <Label htmlFor="verificationCode">Verification code</Label>
+                  <Input
+                    id="verificationCode"
+                    inputMode="numeric"
+                    maxLength={6}
+                    value={form.verificationCode}
+                    onChange={(e) => setForm((p) => ({ ...p, verificationCode: e.target.value.replace(/\D/g, "").slice(0, 6) }))}
+                    required
+                  />
+                </div>
+              )}
+              {mode !== "forgot" && mode !== "verify" && (
                 <div className="space-y-2">
                   <Label htmlFor="password">Password</Label>
                   <Input id="password" type="password" value={form.password} onChange={(e) => setForm((p) => ({ ...p, password: e.target.value }))} required />
@@ -168,14 +198,21 @@ const GspAuthPage: React.FC = () => {
                 {loading ? "Please wait..." : "Continue"}
               </Button>
             </form>
+            {mode === "verify" && (
+              <div className="mt-4">
+                <Button type="button" variant="outline" className="rounded-full w-full" onClick={onResendCode} disabled={resendingCode}>
+                  {resendingCode ? "Sending..." : "Resend verification code"}
+                </Button>
+              </div>
+            )}
             <div className="mt-4 text-sm flex flex-wrap gap-3 text-muted-foreground">
               {mode !== "login" && (
                 <button className="underline" onClick={() => setMode("login")} type="button">Sign in</button>
               )}
-              {mode !== "signup" && (
+              {mode !== "signup" && mode !== "verify" && (
                 <button className="underline" onClick={() => setMode("signup")} type="button">Create account</button>
               )}
-              {mode !== "forgot" && mode !== "reset" && (
+              {mode !== "forgot" && mode !== "reset" && mode !== "verify" && (
                 <button className="underline" onClick={() => setMode("forgot")} type="button">Forgot password</button>
               )}
             </div>
