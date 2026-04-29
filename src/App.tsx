@@ -66,7 +66,7 @@ const AppShell: React.FC = () => (
                   <Route path="stem/register" element={<StemRegistrationApplyPage />} />
                   <Route path="stem/success" element={<StemRegistrationSuccessPage />} />
                   <Route path="stem/manage" element={<StemRegistrationManagePage />} />
-                  <Route path="gsp" element={<Navigate to="/gsp/dashboard" replace />} />
+                  {/* <Route path="gsp" element={<Navigate to="/gsp/dashboard" replace />} /> */}
                   <Route path="gsp/dashboard" element={<GspDashboardPage />} />
                   <Route path="gsp/application" element={<GspApplicationPage />} />
                   <Route path="gsp/decision" element={<GspDecisionPage />} />
