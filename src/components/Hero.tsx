@@ -267,6 +267,27 @@ const Hero = () => {
           <div className="hidden md:block" aria-hidden="true" />
         </motion.div>
       </motion.div>
+
+      {/* Floating Explore Programs Popup */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 1, duration: 0.5 }}
+        className="absolute bottom-6 md:bottom-8 left-1/2 -translate-x-1/2 z-30"
+      >
+        <motion.div
+          animate={{ y: [0, -8, 0] }}
+          transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
+        >
+          <Link
+            to="/projects"
+            className="flex items-center gap-2 bg-white text-kc-blue px-6 py-3 rounded-full shadow-[0_8px_30px_rgb(0,0,0,0.12)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.2)] transition-all hover:scale-105 border border-kc-blue/10"
+          >
+            <span className="text-sm font-semibold tracking-wide">Explore Our Programs</span>
+            <ChevronRight className="h-4 w-4" />
+          </Link>
+        </motion.div>
+      </motion.div>
     </section>
   );
 };

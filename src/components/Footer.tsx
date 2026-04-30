@@ -124,17 +124,24 @@ const Footer = () => {
                 Platform
               </h4>
               <ul className="space-y-4">
-                {["Home", "About Us", "Our Projects", "Blog", "Contact Us"].map((item) => (
-                  <li key={item}>
+                {[
+                  { label: "Home", to: "/" },
+                  { label: "About Us", to: "/about" },
+                  { label: "Projects", to: "/projects" },
+                  { label: "Events", to: "/events" },
+                  { label: "Blog", to: "/blog" },
+                  { label: "Contact Us", to: "/contact" },
+                ].map((item) => (
+                  <li key={item.label}>
                     <NavLink
-                      to={`/${item.toLowerCase().replace(" ", "")}`}
+                      to={item.to}
                       className={({ isActive }) =>
                         isActive
                           ? "text-kc-blue font-semibold"
                           : "text-kc-black/80 hover:text-kc-blue transition-colors"
                       }
                     >
-                      {item}
+                      {item.label}
                     </NavLink>
                   </li>
                 ))}
