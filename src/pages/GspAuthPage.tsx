@@ -16,17 +16,19 @@ import {
 } from "@/services/gspApi";
 import { useGspAuth } from "@/contexts/GspAuthContext";
 import { useSeo } from "@/hooks/useSeo";
+import { SignInButton, useUser } from "@clerk/react";
+import { useSession, SignOutButton } from "@clerk/react";
 
 const GspAuthPage: React.FC = () => {
-  const { user, refreshUser, signIn } = useGspAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
   const [searchParams] = useSearchParams();
   const resetToken = searchParams.get("resetToken");
-
+  
   const [mode, setMode] = React.useState<"login" | "signup" | "verify" | "forgot" | "reset">(resetToken ? "reset" : "login");
   const [loading, setLoading] = React.useState(false);
   const [resendingCode, setResendingCode] = React.useState(false);
+  const [googleLoading, setGoogleLoading] = React.useState(false);
   const [form, setForm] = React.useState({
     name: "",
     email: "",
@@ -35,70 +37,129 @@ const GspAuthPage: React.FC = () => {
     verificationCode: "",
   });
 
+  
+  let {isSignedIn, user: clerkUser } = useUser();
+  const { user, refreshUser, signIn } = useGspAuth();
+
+  const { session } = useSession();
+
+  const clerkLogin = async () => {
+    if (isSignedIn && clerkUser) {
+      const token = clerkUser.externalAccounts[0].providerUserId;
+      
+      console.log(token);
+      registerGsp({ google_id: token, username: clerkUser.fullName, email: clerkUser.primaryEmailAddress.emailAddress })
+      .then((data) => data as { success: boolean; refresh: string; access: string; user: JSON })
+      .then((data) => {
+        console.log("GSP registration response:", data);
+        if (data?.success) {
+          saveAuthToken(data?.access);
+          refreshUser().then(() => {
+            navigate("/gsp/dashboard");
+          });
+        } else {
+          toast({
+            title: "Google sign-in failed",
+            description: "Unable to register with Google account. Please try signing in with email and password.",
+            variant: "destructive",
+          });
+        }
+      })
+      .catch((error) => {
+        console.error("Error during GSP registration:", error);
+        toast({
+          title: "Google sign-in failed",
+          description: error.message || "Unable to register with Google account. Please try signing in with email and password.",
+          variant: "destructive",
+        });
+      });
+    }
+  }
+
+  React.useEffect(() => {
+    clerkLogin();
+  }, []);
+  // if (!user) {
+  //   let {isSignedIn, user} = useUser();
+  //   // let {user} = useUser();
+  //   // registerGsp({ googleID: user?.externalAccounts?.providerUserId || "" }).then((data) => {
+  //   //   console.log("GSP registration response:", data);
+  //   // });
+  //   console.log(user?.externalAccounts);
+
+  //   // clerkLogin();
+
+  // }
+
+  
+
   useSeo({
     title: "GSP Portal | Knowledge Center",
     description: "Sign in or create an account for the Knowledge Center Global Scholars Programme portal.",
   });
 
+
   React.useEffect(() => {
     if (user) navigate("/gsp/dashboard");
+
   }, [user, navigate]);
 
-  const onSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    try {
-      if (mode === "signup") {
-        if (form.password !== form.confirmPassword) {
-          throw new Error("Passwords do not match");
-        }
-        await registerGsp({
-          name: form.name,
-          email: form.email,
-          password: form.password,
-        });
-        toast({
-          title: "Verification code sent",
-          description: "Enter the code from your email to finish creating your account.",
-        });
-        setForm((prev) => ({ ...prev, password: "", confirmPassword: "", verificationCode: "" }));
-        setMode("verify");
-      } else if (mode === "verify") {
-        const data = await verifyEmailCode({
-          email: form.email,
-          code: form.verificationCode,
-        });
-        saveAuthToken(data.token);
-        await refreshUser();
-        toast({
-          title: "Account verified",
-          description: "Your account has been created and you are now signed in.",
-        });
-        navigate("/gsp/dashboard");
-      } else if (mode === "login") {
-        await signIn(form.email, form.password);
-        navigate("/gsp/dashboard");
-      } else if (mode === "forgot") {
-        await forgotPassword(form.email);
-        toast({ title: "Reset link sent", description: "If your account exists, a password reset link has been sent." });
-      } else if (mode === "reset") {
-        if (!resetToken) throw new Error("Missing reset token");
-        if (form.password !== form.confirmPassword) throw new Error("Passwords do not match");
-        await resetPassword(resetToken, form.password);
-        toast({ title: "Password updated", description: "You can now sign in with your new password." });
-        setMode("login");
-      }
-    } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : "Please try again."
-      toast({
-        title: "Request failed",
-        description: message,
-        variant: "destructive",
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
+
+  // const onSubmit = async (e: React.FormEvent) => {
+  //   e.preventDefault();
+  //   setLoading(true);
+  //   try {
+  //     if (mode === "signup") {
+  //       if (form.password !== form.confirmPassword) {
+  //         throw new Error("Passwords do not match");
+  //       }
+  //       await registerGsp({
+  //         name: form.name,
+  //         email: form.email,
+  //         password: form.password,
+  //       });
+  //       toast({
+  //         title: "Verification code sent",
+  //         description: "Enter the code from your email to finish creating your account.",
+  //       });
+  //       setForm((prev) => ({ ...prev, password: "", confirmPassword: "", verificationCode: "" }));
+  //       setMode("verify");
+  //     } else if (mode === "verify") {
+  //       const data = await verifyEmailCode({
+  //         email: form.email,
+  //         code: form.verificationCode,
+  //       });
+  //       saveAuthToken(data.token);
+  //       await refreshUser();
+  //       toast({
+  //         title: "Account verified",
+  //         description: "Your account has been created and you are now signed in.",
+  //       });
+  //       navigate("/gsp/dashboard");
+  //     } else if (mode === "login") {
+  //       await signIn(form.email, form.password);
+  //       navigate("/gsp/dashboard");
+  //     } else if (mode === "forgot") {
+  //       await forgotPassword(form.email);
+  //       toast({ title: "Reset link sent", description: "If your account exists, a password reset link has been sent." });
+  //     } else if (mode === "reset") {
+  //       if (!resetToken) throw new Error("Missing reset token");
+  //       if (form.password !== form.confirmPassword) throw new Error("Passwords do not match");
+  //       await resetPassword(resetToken, form.password);
+  //       toast({ title: "Password updated", description: "You can now sign in with your new password." });
+  //       setMode("login");
+  //     }
+  //   } catch (error: unknown) {
+  //     const message = error instanceof Error ? error.message : "Please try again."
+  //     toast({
+  //       title: "Request failed",
+  //       description: message,
+  //       variant: "destructive",
+  //     });
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
 
   const onResendCode = async () => {
     setResendingCode(true);
@@ -158,7 +219,7 @@ const GspAuthPage: React.FC = () => {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <form onSubmit={onSubmit} className="space-y-4">
+            <form className="space-y-4">
               {mode === "signup" && (
                 <div className="space-y-2">
                   <Label htmlFor="name">Full name</Label>
@@ -216,6 +277,29 @@ const GspAuthPage: React.FC = () => {
                 <button className="underline" onClick={() => setMode("forgot")} type="button">Forgot password</button>
               )}
             </div>
+            {(mode === "login" || mode === "signup") && (
+              <>
+                <div className="mt-6 flex items-center gap-3">
+                  <div className="flex-1 h-px bg-border" />
+                  <span className="text-xs text-muted-foreground">or</span>
+                  <div className="flex-1 h-px bg-border" />
+                </div>
+                <SignInButton mode="modal" forceRedirectUrl="gsp/auth/">
+                  <button
+                  type="button"
+                  className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-white border border-gray-300 rounded-full text-gray-700 font-medium hover:bg-gray-50 transition-colors disabled:opacity-50"
+                >
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+                    <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+                    <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+                    <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+                  </svg>
+                  {googleLoading ? "Please wait..." : "Continue with Google"}
+                </button>
+                </SignInButton>
+              </>
+            )}
           </CardContent>
         </Card>
       </div>

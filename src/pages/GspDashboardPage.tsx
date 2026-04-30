@@ -27,7 +27,7 @@ const GspDashboardPage: React.FC = () => {
     })();
   }, [user, toast]);
 
-  if (!loading && !user) return <Navigate to="/gsp" replace />;
+  if (!loading && !user) return <Navigate to="/gsp/auth" replace />;
 
   return (
     <motion.section

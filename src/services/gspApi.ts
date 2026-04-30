@@ -1,3 +1,5 @@
+import { string } from "zod";
+
 const BASE_URL = (import.meta as any).env?.VITE_API_BASE_URL || "https://kcbackend-production-7ae5.up.railway.app";
 const TOKEN_KEY = "kc_gsp_token";
 
@@ -20,7 +22,7 @@ export type UploadedDocument = {
 
 export type GspDecisionStatus = "pending" | "accepted" | "waitlisted" | "not_admitted";
 
-function getToken() {
+export function getToken() {
   return localStorage.getItem(TOKEN_KEY);
 }
 
@@ -56,11 +58,25 @@ export function hasAuthToken() {
   return Boolean(getToken());
 }
 
-export async function registerGsp(payload: { name: string; email: string; password: string }) {
-  return apiRequest<{ success: boolean; message: string; email: string; requiresVerification: boolean; debugVerificationCode?: string }>("/api/auth/register", {
+export async function registerGsp(payload: { google_id: string; username: string; email: string }) {
+  return fetch(`${import.meta.env.VITE_API_BASE_URL}/api/v2/auth/google-login/`, {
+    headers: {
+      "Content-Type": "application/json",
+    },
     method: "POST",
     body: JSON.stringify(payload),
+  }).then((data) => data.json())
+  .then((data) => data as { success: boolean; refresh: string; access: string; user: JSON })
+  .then((data) => {return data})
+  .catch((e) => {
+    console.error(e);
   });
+
+
+  // return apiRequest<{ success: boolean; refresh: string; access: string; user: JSON }>("/api/v2/auth/google-login", {
+  //   method: "POST",
+  //   body: JSON.stringify(payload),
+  // });
 }
 
 export async function verifyEmailCode(payload: { email: string; code: string }) {
@@ -78,7 +94,7 @@ export async function resendVerificationCode(email: string) {
 }
 
 export async function loginGsp(payload: { email: string; password: string }) {
-  return apiRequest<{ token: string; user: GspUser }>("/api/auth/login", {
+  return apiRequest<{ token: string; user: GspUser }>("/api/v2/auth/google-login", {
     method: "POST",
     body: JSON.stringify(payload),
   });
@@ -99,19 +115,19 @@ export async function resetPassword(token: string, newPassword: string) {
 }
 
 export async function getCurrentUser() {
-  return apiRequest<{ user: GspUser }>("/api/auth/me");
+  return apiRequest<{ user: GspUser }>("/api/v2/auth/me");
 }
 
 export async function getGspApplication() {
-  return apiRequest<{ application: any }>("/api/gsp/application");
+  return apiRequest<{ application: any }>("/api/v2/gsp/registration");
 }
 
 export async function saveGspDraft(data: any, sectionState: Record<string, boolean>) {
-  return apiRequest<{ success: boolean; application: any }>("/api/gsp/application/draft", {
+  return apiRequest<{ success: boolean; application: any }>("/api/gsp/application", {
     method: "PUT",
     body: JSON.stringify({ data, sectionState }),
   });
-}
+} 
 
 export async function submitGspApplication(data: any, sectionState: Record<string, boolean>) {
   return apiRequest<{ success: boolean; reference: string; application: any }>("/api/gsp/application/submit", {

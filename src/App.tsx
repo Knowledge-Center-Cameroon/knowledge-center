@@ -6,7 +6,7 @@ import { UserProvider } from "./contexts/UserContext";
 import { GspAuthProvider } from "./contexts/GspAuthContext";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation, Navigate } from "react-router-dom";
 const Layout = React.lazy(() => import("./components/Layout"));
 const Home = React.lazy(() => import("./pages/Home"));
 const AboutPage = React.lazy(() => import("./pages/AboutPage"));
@@ -25,6 +25,7 @@ const TermsPage = React.lazy(() => import("./pages/TermsPage"));
 const EventsPage = React.lazy(() => import("./pages/EventsPage"));
 const GspAuthPage = React.lazy(() => import("./pages/GspAuthPage"));
 const GspDashboardPage = React.lazy(() => import("./pages/GspDashboardPage"));
+const AuthCallbackPage = React.lazy(() => import("./pages/AuthCallbackPage"));
 const GspApplicationPage = React.lazy(() => import("./pages/GspApplicationPage"));
 const GspDecisionPage = React.lazy(() => import("./pages/GspDecisionPage"));
 const GspAdminPage = React.lazy(() => import("./pages/GspAdminPage"));
@@ -66,7 +67,9 @@ const AppShell: React.FC = () => (
                   <Route path="stem/register" element={<StemRegistrationApplyPage />} />
                   <Route path="stem/success" element={<StemRegistrationSuccessPage />} />
                   <Route path="stem/manage" element={<StemRegistrationManagePage />} />
-                  {/* <Route path="gsp" element={<Navigate to="/gsp/dashboard" replace />} /> */}
+                  <Route path="gsp" element={<Navigate to="/gsp/dashboard" replace />} />
+                  <Route path="gsp/auth" element={<GspAuthPage />} />
+                  <Route path="gsp/auth/callback" element={<AuthCallbackPage />} />
                   <Route path="gsp/dashboard" element={<GspDashboardPage />} />
                   <Route path="gsp/application" element={<GspApplicationPage />} />
                   <Route path="gsp/decision" element={<GspDecisionPage />} />
