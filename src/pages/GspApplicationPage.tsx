@@ -152,6 +152,7 @@ const GspApplicationPage: React.FC = () => {
       try {
         setSaving(true);
         const res = await saveGspDraft(data, next, data.r_id);
+        localStorage.setItem('gsp_reg_rid', data.r_id)
         if (res?.application?.r_id && !data.r_id) {
           setData((prev: any) => ({ ...prev, r_id: res.application.r_id }));
         }
@@ -183,6 +184,8 @@ const GspApplicationPage: React.FC = () => {
     });
   };
 
+  console.log("Draft saved with r_id:", );
+
   const addActivity = () => {
     setData((prev: any) => {
       if (prev.activities.length >= 3) return prev;
@@ -200,7 +203,7 @@ const GspApplicationPage: React.FC = () => {
   const uploadDocument = async (field: "reportCard" | "olSlip" | "alSlip", file?: File | null) => {
     if (!file) return;
     try {
-      const uploaded = await uploadGspDocument(file);
+      const uploaded = await uploadGspDocument({ file: file, application: data.r_id });
       setData((prev: any) => ({
         ...prev,
         documents: { ...prev.documents, [field]: uploaded },
