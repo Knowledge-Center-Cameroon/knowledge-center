@@ -254,6 +254,90 @@ const GspApplicationPage: React.FC = () => {
     setData((prev: any) => ({ ...prev, activities: prev.activities.filter((_: any, i: number) => i !== idx) }));
   };
 
+  const getMissingFields = (section: number) => {
+    const missing: string[] = [];
+    const get = (k: string) => (data[k] ? true : false);
+    if (section === 1) {
+      if (!data.firstName) missing.push("First name");
+      if (!data.lastName) missing.push("Last name");
+      if (!data.dob) missing.push("Date of birth");
+      if (!data.phone) missing.push("Phone number");
+      if (!data.email) missing.push("Email");
+      if (!data.gender) missing.push("Gender");
+      if (!data.nationality) missing.push("Nationality");
+      if (!data.city) missing.push("City");
+      if (!data.region) missing.push("Region");
+    }
+    if (section === 2) {
+      if (!data.householdSize) missing.push("Household size");
+      if (!data.primaryGuardianOccupation) missing.push("Primary guardian occupation");
+      if (!data.highestFamilyEducation) missing.push("Highest family education");
+      if (!data.familyStudiedAbroad) missing.push("Family studied abroad?");
+      if (data.familyStudiedAbroad === "yes" && !data.familyAbroadDetails) missing.push("Family abroad details");
+    }
+    if (section === 3) {
+      if (!data.schoolName) missing.push("School name");
+      if (!data.schoolCity) missing.push("School city");
+      if (!data.schoolRegion) missing.push("School region");
+      if (!data.currentClass) missing.push("Current class");
+      if (data.currentClass === "lower_sixth" && !data.lowerSixthPathwayChoice) missing.push("Fallback preference for Lower Sixth");
+      if (!data.intendedFieldWhy || words(data.intendedFieldWhy) === 0) missing.push("Intended field and reason");
+      if (!Array.isArray(data.topSubjects) || data.topSubjects.length !== 5) missing.push("Top 5 subjects");
+      else {
+        data.topSubjects.forEach((s: any, i: number) => {
+          if (!s.name || !s.score || !s.examTerm) missing.push(`Subject ${i + 1} (name/score/term)`);
+        });
+      }
+    }
+    if (section === 4) {
+      const wc = words(data.communityEssay);
+      if (wc < 75 || wc > 225) missing.push("Community challenge essay (75-225 words)");
+    }
+    if (section === 5) {
+      if (!Array.isArray(data.activities) || data.activities.length < 1) missing.push("At least one activity");
+      else {
+        data.activities.forEach((a: any, i: number) => {
+          if (!a.title) missing.push(`Activity ${i + 1}: title`);
+          if (!a.roleDescription) missing.push(`Activity ${i + 1}: role description`);
+          if (!a.duration) missing.push(`Activity ${i + 1}: duration`);
+          if (!a.hoursPerWeek) missing.push(`Activity ${i + 1}: hours/week`);
+          if (!a.weeksPerYear) missing.push(`Activity ${i + 1}: weeks/year`);
+          if (!a.isStillDoing) missing.push(`Activity ${i + 1}: still doing?`);
+          if (a.isStillDoing === "no" && !a.stoppedIn) missing.push(`Activity ${i + 1}: stopped in`);
+        });
+      }
+    }
+    if (section === 6) {
+      if (!data.housingOption) missing.push("Housing option");
+      if (data.housingOption === "B") {
+        if (!data.housingContactRelation) missing.push("Housing contact relationship");
+        if (!data.housingContactAware) missing.push("Housing contact aware?");
+      }
+      if (data.housingOption === "C" && !data.canCoverHousingCost) missing.push("Can cover housing cost");
+      if (!data.participationConstraint && data.participationConstraint !== "no" ) missing.push("Participation constraint");
+      if (data.participationConstraint === "yes" && !data.participationConstraintExplain) missing.push("Participation constraint explanation");
+    }
+    if (section === 8) {
+      if (!data.monthlyIncomeRange) missing.push("Monthly household income range");
+      if (!data.worksToSupportFamily) missing.push("Works to support family?");
+      if (data.worksToSupportFamily === "yes" && !data.workSupportDetails) missing.push("Work support details");
+      if (!data.costChallenge) missing.push("Cost challenge response");
+    }
+    if (section === 9) {
+      if (!data.applyingScholarship) missing.push("Applying for financial aid?");
+      if (data.applyingScholarship === "yes" && !data.scholarshipEssay) missing.push("Scholarship essay");
+    }
+    if (section === 10) {
+      if (!data.documents?.reportCard?.url) missing.push("Report card upload");
+      if (!data.documents?.olSlip?.url) missing.push("Ordinary Level slip upload");
+    }
+    if (section === 11) {
+      if (!data.declarationConfirmed) missing.push("Declaration confirmation");
+    }
+
+    return missing;
+  };
+
   const uploadDocument = async (field: "reportCard" | "olSlip" | "alSlip", file?: File | null) => {
     if (!file) return;
     try {
@@ -285,7 +369,7 @@ const GspApplicationPage: React.FC = () => {
   return (
     <motion.section initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="container mx-auto px-4 lg:px-8 py-12 lg:py-16">
       <div className="max-w-6xl mx-auto grid lg:grid-cols-[280px_minmax(0,1fr)] gap-6">
-        <Card className="rounded-3xl h-fit sticky top-24">
+        <Card className="rounded-3xl h-fit md:sticky md:top-24">
           <CardHeader>
             <CardTitle className="text-xl">GSP Application</CardTitle>
           </CardHeader>
@@ -518,6 +602,7 @@ const GspApplicationPage: React.FC = () => {
                 <Card className="rounded-3xl">
                   <CardHeader><CardTitle>Section 5: Activities (up to 3)</CardTitle></CardHeader>
                   <CardContent className="space-y-5">
+                    <div className="col-span-full text-sm text-muted-foreground">{GUIDANCE_TEXT[5]}</div>
                     {data.activities.map((activity: any, i: number) => (
                       <div key={i} className="border rounded-2xl p-4 space-y-3">
                         <div className="flex justify-between items-center">
@@ -554,9 +639,10 @@ const GspApplicationPage: React.FC = () => {
                 <Card className="rounded-3xl">
                   <CardHeader><CardTitle>Section 6: Logistics and Programme Fit</CardTitle></CardHeader>
                   <CardContent className="space-y-4">
+                    <div className="col-span-full text-sm text-muted-foreground">{GUIDANCE_TEXT[6]}</div>
                     <div>
                       <Label>Housing option</Label>
-                      <Select value={data.housingOption} onValueChange={(val) => setField("housingOption", val)}>
+                      <Select disabled={!editable} value={data.housingOption} onValueChange={(val) => setField("housingOption", val)}>
                         <SelectTrigger><SelectValue placeholder="Select housing option" /></SelectTrigger>
                         <SelectContent>
                           <SelectItem value="A">A: With family</SelectItem>
@@ -568,10 +654,10 @@ const GspApplicationPage: React.FC = () => {
                     </div>
                     {data.housingOption === "B" && (
                       <div className="grid md:grid-cols-2 gap-4 mt-2">
-                        <div><Label>Relationship to contact</Label><Input value={data.housingContactRelation} onChange={(e) => setField("housingContactRelation", e.target.value)} /></div>
+                        <div><Label>Relationship to contact</Label><Input disabled={!editable} value={data.housingContactRelation} onChange={(e) => setField("housingContactRelation", e.target.value)} /></div>
                         <div>
                           <Label>Are they aware?</Label>
-                          <Select value={data.housingContactAware} onValueChange={(val) => setField("housingContactAware", val)}>
+                          <Select disabled={!editable} value={data.housingContactAware} onValueChange={(val) => setField("housingContactAware", val)}>
                             <SelectTrigger><SelectValue placeholder="Select option" /></SelectTrigger>
                             <SelectContent>
                               <SelectItem value="yes">Yes</SelectItem>
@@ -585,7 +671,7 @@ const GspApplicationPage: React.FC = () => {
                     {data.housingOption === "C" && (
                       <div className="mt-2">
                         <Label>Can cover 60,000 FCFA/month?</Label>
-                        <Select value={data.canCoverHousingCost} onValueChange={(val) => setField("canCoverHousingCost", val)}>
+                        <Select disabled={!editable} value={data.canCoverHousingCost} onValueChange={(val) => setField("canCoverHousingCost", val)}>
                           <SelectTrigger><SelectValue placeholder="Select option" /></SelectTrigger>
                           <SelectContent>
                             <SelectItem value="yes">Yes</SelectItem>
@@ -596,7 +682,7 @@ const GspApplicationPage: React.FC = () => {
                     )}
                     <div>
                       <Label>Any circumstance affecting participation?</Label>
-                      <Select value={data.participationConstraint} onValueChange={(val) => setField("participationConstraint", val)}>
+                      <Select disabled={!editable} value={data.participationConstraint} onValueChange={(val) => setField("participationConstraint", val)}>
                         <SelectTrigger><SelectValue placeholder="Select option" /></SelectTrigger>
                         <SelectContent>
                           <SelectItem value="yes">Yes</SelectItem>
@@ -607,7 +693,7 @@ const GspApplicationPage: React.FC = () => {
                     {data.participationConstraint === "yes" && (
                       <div className="mt-2">
                         <Label>Please explain (max 200 words)</Label>
-                        <Textarea value={data.participationConstraintExplain} onChange={(e) => setField("participationConstraintExplain", e.target.value)} />
+                        <Textarea disabled={!editable} value={data.participationConstraintExplain} onChange={(e) => setField("participationConstraintExplain", e.target.value)} />
                         <p className="text-xs text-muted-foreground mt-1">{words(data.participationConstraintExplain)} / 200 words</p>
                       </div>
                     )}
@@ -679,7 +765,7 @@ const GspApplicationPage: React.FC = () => {
                     </div>
                     {data.applyingScholarship === "yes" && (
                       <div className="mt-2">
-                        <Label>Scholarship essay</Label>
+                        <Label>Finanacial aid essay</Label>
                         <Textarea className="min-h-[200px]" value={data.scholarshipEssay} onChange={(e) => setField("scholarshipEssay", e.target.value)} />
                       </div>
                     )}
