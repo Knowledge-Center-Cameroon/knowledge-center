@@ -1,4 +1,4 @@
-﻿import React from "react";
+import React from "react";
 import { motion } from "framer-motion";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { projects, type Project } from "@/data/projects";
@@ -143,7 +143,7 @@ const ProjectDetailContent: React.FC<ProjectDetailContentProps> = ({ project }) 
   const navigate = useNavigate();
 
   return (
-    <section className="pt-24 md:pt-28 lg:pt-32 pb-12 md:pb-16 lg:pb-20">
+    <section className="pt-12 md:pt-16 lg:pt-20 pb-12 md:pb-16 lg:pb-20">
       <div className="relative container mx-auto px-4 lg:px-8 max-w-6xl">
         {/* Background decor */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none -z-10">
@@ -217,47 +217,48 @@ const ProjectDetailContent: React.FC<ProjectDetailContentProps> = ({ project }) 
         </motion.div>
 
         {/* Media + Content split */}
-        <div className="space-y-10 mb-12">
-          <motion.div initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.2 }} transition={{ duration: 0.45 }}>
-            <Card className="overflow-hidden shadow-card">
-              <CardContent className="p-0">
-                <Carousel setApi={setApi} className="rounded-3xl shadow-card bg-white border border-border relative">
-                  <CarouselContent className="">
-                    {project.images.map((src, i) => (
-                      <CarouselItem key={i}>
-                        <div className="relative overflow-hidden aspect-[16/9] w-full">
-                          <img
-                            src={src}
-                            alt={`${project.title} image ${i + 1}`}
-                            className="w-full h-full object-cover"
-                            loading={i === 0 ? "eager" : "lazy"}
-                            decoding="async"
-                            sizes="(min-width: 1024px) 80vw, 100vw"
-                          />
-                          <div className="absolute inset-0 bg-kc-blue/20" />
-                        </div>
-                      </CarouselItem>
-                    ))}
-                  </CarouselContent>
-                  <CarouselPrevious className="hidden sm:flex bg-kc-blue text-white border-0 hover:bg-kc-blue-dark" />
-                  <CarouselNext className="hidden sm:flex bg-kc-blue text-white border-0 hover:bg-kc-blue-dark" />
-                  <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-10">
-                    {project.images.map((_, idx) => (
-                      <motion.button
-                        key={idx}
-                        onClick={() => api?.scrollTo(idx)}
-                        aria-label={`Go to image ${idx + 1}`}
-                        className={`w-2.5 h-2.5 rounded-full border border-white/50 transition-all duration-300 ${idx === activeIndex ? "bg-white scale-125" : "bg-white/20 hover:bg-white/60"}`}
-                        whileHover={{ scale: 1.2 }}
-                        whileTap={{ scale: 0.9 }}
-                      />
-                    ))}
-                  </div>
-                </Carousel>
-              </CardContent>
-            </Card>
-          </motion.div>
-          <div className="grid lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)] gap-8 md:gap-10 items-start">
+        <div className="grid lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)] gap-8 md:gap-12 items-start mb-12">
+          <div className="space-y-10">
+            <motion.div initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.2 }} transition={{ duration: 0.45 }}>
+              <Card className="overflow-hidden shadow-card">
+                <CardContent className="p-0">
+                  <Carousel setApi={setApi} className="rounded-3xl shadow-card bg-white border border-border relative">
+                    <CarouselContent className="">
+                      {project.images.map((src, i) => (
+                        <CarouselItem key={i}>
+                          <div className="relative overflow-hidden aspect-[16/9] w-full">
+                            <img
+                              src={src}
+                              alt={`${project.title} image ${i + 1}`}
+                              className="w-full h-full object-cover"
+                              loading={i === 0 ? "eager" : "lazy"}
+                              decoding="async"
+                              sizes="(min-width: 1024px) 80vw, 100vw"
+                            />
+                            <div className="absolute inset-0 bg-kc-blue/20" />
+                          </div>
+                        </CarouselItem>
+                      ))}
+                    </CarouselContent>
+                    <CarouselPrevious className="hidden sm:flex bg-kc-blue text-white border-0 hover:bg-kc-blue-dark" />
+                    <CarouselNext className="hidden sm:flex bg-kc-blue text-white border-0 hover:bg-kc-blue-dark" />
+                    <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-10">
+                      {project.images.map((_, idx) => (
+                        <motion.button
+                          key={idx}
+                          onClick={() => api?.scrollTo(idx)}
+                          aria-label={`Go to image ${idx + 1}`}
+                          className={`w-2.5 h-2.5 rounded-full border border-white/50 transition-all duration-300 ${idx === activeIndex ? "bg-white scale-125" : "bg-white/20 hover:bg-white/60"}`}
+                          whileHover={{ scale: 1.2 }}
+                          whileTap={{ scale: 0.9 }}
+                        />
+                      ))}
+                    </div>
+                  </Carousel>
+                </CardContent>
+              </Card>
+            </motion.div>
+            
             <motion.div
               className="space-y-5"
               initial={{ opacity: 0, x: -20 }}
@@ -295,37 +296,102 @@ const ProjectDetailContent: React.FC<ProjectDetailContentProps> = ({ project }) 
                 </motion.div>
               ))}
             </motion.div>
+          </div>
 
-            {impactStatsDisplay.length > 0 && (
+          <div className="space-y-8 lg:sticky lg:top-28 z-10 self-start">
+              {/* Sticky CTA Card */}
               <motion.div
+                className="bg-kc-blue text-white rounded-3xl p-6 md:p-8 shadow-xl relative overflow-hidden"
                 initial={{ opacity: 0, x: 20 }}
                 whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true, amount: 0.2 }}
-                transition={{ duration: 0.6, delay: 0.2 }}
-                className="space-y-4"
+                viewport={{ once: true }}
+                transition={{ duration: 0.6 }}
               >
-                <p className="text-xs font-semibold tracking-[0.18em] uppercase text-muted-foreground">
-                  Impact in numbers
-                </p>
-                <div className="grid sm:grid-cols-2 gap-3 md:gap-4">
-                  {impactStatsDisplay.map((stat, idx) => (
-                    <motion.div
-                      key={idx}
-                      whileHover={{ y: -2, scale: 1.01 }}
-                      transition={{ duration: 0.2 }}
-                      className="rounded-3xl px-4 py-5 flex flex-col justify-between shadow-card bg-kc-blue text-white"
+                <div className="pointer-events-none absolute -top-20 -right-20 w-48 h-48 bg-white/20 blur-3xl rounded-full" />
+                <div className="relative z-10">
+                  <div className="inline-flex items-center gap-2 rounded-full bg-white/20 px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-white mb-4">
+                    <span className="inline-block h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                    Next Step
+                  </div>
+                  
+                  <h3 className="text-2xl md:text-3xl font-bold font-heading mb-3 leading-tight">
+                    Ready to Start?
+                  </h3>
+                  <p className="text-white/90 text-sm md:text-base mb-6 leading-relaxed">
+                    Take the next step with {project.title} and be part of something extraordinary.
+                  </p>
+                  
+                  <div className="flex flex-col gap-3">
+                    {project.slug === "stem" && (
+                      <Button
+                        size="lg"
+                        className="w-full font-bold text-base bg-white text-kc-blue hover:bg-gray-50 h-14 shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all"
+                        asChild
+                      >
+                        <Link to="/stem">Get Registered</Link>
+                      </Button>
+                    )}
+                    {project.slug === "gsp" && (
+                      <Button
+                        size="lg"
+                        className="w-full font-bold text-base bg-white text-kc-blue hover:bg-gray-50 h-14 shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all"
+                        asChild
+                      >
+                        <Link to="/gsp">Start Application Portal</Link>
+                      </Button>
+                    )}
+                    {(project.slug !== "gsp" && project.slug !== "stem") && (
+                      <Button
+                        size="lg"
+                        className="w-full font-bold text-base bg-white text-kc-blue hover:bg-gray-50 h-14 shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all"
+                        asChild
+                      >
+                        <Link to="/contact">Contact Us to Enroll</Link>
+                      </Button>
+                    )}
+                    <Button 
+                      variant="outline" 
+                      size="lg"
+                      className="w-full font-semibold border-white/20 bg-transparent text-white hover:bg-white/10 hover:text-white h-12 transition-all"
+                      asChild
                     >
-                      <div className="text-h4 md:text-h3 font-heading font-bold leading-none mb-2">{stat.value}</div>
-                      <p className="text-xs md:text-sm text-white/90">
-                        {stat.label}
-                      </p>
-                    </motion.div>
-                  ))}
+                      <Link to="/donate">Support the mission</Link>
+                    </Button>
+                  </div>
                 </div>
               </motion.div>
-            )}
+
+              {/* Impact stats */}
+              {impactStatsDisplay.length > 0 && (
+                <motion.div
+                  initial={{ opacity: 0, x: 20 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true, amount: 0.2 }}
+                  transition={{ duration: 0.6, delay: 0.2 }}
+                  className="space-y-4"
+                >
+                  <p className="text-xs font-semibold tracking-[0.18em] uppercase text-muted-foreground">
+                    Impact in numbers
+                  </p>
+                  <div className="grid sm:grid-cols-2 gap-3 md:gap-4">
+                    {impactStatsDisplay.map((stat, idx) => (
+                      <motion.div
+                        key={idx}
+                        whileHover={{ y: -2, scale: 1.01 }}
+                        transition={{ duration: 0.2 }}
+                        className="rounded-3xl px-4 py-5 flex flex-col justify-between shadow-card bg-kc-blue text-white"
+                      >
+                        <div className="text-h4 md:text-h3 font-heading font-bold leading-none mb-2">{stat.value}</div>
+                        <p className="text-xs md:text-sm text-white/90">
+                          {stat.label}
+                        </p>
+                      </motion.div>
+                    ))}
+                  </div>
+                </motion.div>
+              )}
+            </div>
           </div>
-        </div>
 
         {/* Key Benefits */}
         <motion.div
@@ -421,96 +487,6 @@ const ProjectDetailContent: React.FC<ProjectDetailContentProps> = ({ project }) 
               </ul>
             </CardContent>
           </Card>
-        </motion.div>
-        {/* Call to action */}
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-          className="relative mt-16 md:mt-20"
-        >
-          <div className="absolute inset-0 bg-kc-blue rounded-3xl " />
-          <motion.div
-            className="relative bg-white  border border-border rounded-3xl p-8 md:p-10 lg:p-12 overflow-hidden shadow-2xl"
-            initial={{ opacity: 0, y: 16 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
-          >
-            <div className="pointer-events-none absolute top-0 right-0 w-full h-full bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.12),transparent_50%)]" />
-            
-            <div className="flex flex-col md:flex-row items-center justify-between gap-6 md:gap-8 ">
-              <div className="text-center md:text-left space-y-3">
-                <div className="inline-flex items-center gap-2 rounded-full bg-white px-3 py-1 text-xs font-medium text-white/90 mb-1">
-                  <span className="inline-block h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                  <span>Next step with Knowledge Center</span>
-                </div>
-                <div>
-                  <motion.h3
-                    className="heading-2 mb-2"
-                    initial={{ opacity: 0, y: 8 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.4, delay: 0.1 }}
-                  >
-                    Ready to Get Started?
-                  </motion.h3>
-                  <motion.div
-                    className="h-0.5 w-20 rounded-full bg-kc-blue md:ml-0 mx-auto mb-2"
-                    initial={{ scaleX: 0, opacity: 0 }}
-                    whileInView={{ scaleX: 1, opacity: 1 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.5, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
-                  />
-                  <motion.p
-                    className="text-lg text-white/90 max-w-xl"
-                    initial={{ opacity: 0, y: 6 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.45, delay: 0.18 }}
-                  >
-                    Take the next step with {project.title} and be part of something extraordinary.
-                  </motion.p>
-                </div>
-              </div>
-              
-              <div className="flex flex-col sm:flex-row gap-4">
-                {project.slug === "stem" && (
-                  <MotionButton
-                    variant="blackOutline"
-                    size="lg"
-                    className="px-8 text-base rounded-full"
-                    disabled
-                  >
-                    Get Registered
-                  </MotionButton>
-                )}
-                {project.slug === "gsp" && (
-                  <MotionButton
-                    asChild
-                    variant="blue"
-                    size="lg"
-                    className="px-8 text-base rounded-full"
-                    whileHover={{ y: -2, scale: 1.03 }}
-                    whileTap={{ scale: 0.97 }}
-                  >
-                    <Link to="/gsp">Start Application Portal</Link>
-                  </MotionButton>
-                )}
-                <MotionButton 
-                  asChild 
-                  variant="blackOutline" 
-                  size="lg"
-                  className="sm:w-auto px-8 text-base rounded-full"
-                  whileHover={{ y: -2, scale: 1.03 }}
-                  whileTap={{ scale: 0.97 }}
-                >
-                  <Link to="/donate">Support the mission</Link>
-                </MotionButton>
-              </div>
-            </div>
-          </motion.div>
         </motion.div>
       </div>
     </section>

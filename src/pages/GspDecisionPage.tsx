@@ -31,7 +31,7 @@ const GspDecisionPage: React.FC = () => {
     })();
   }, [user, toast]);
 
-  if (!loading && !user) return <Navigate to="/gsp" replace />;
+  if (!loading && !user) return <Navigate to="/auth?redirect=/gsp/decision" replace />;
 
   const status = state?.decisionStatus;
   const accepted = state?.released && status === "accepted";

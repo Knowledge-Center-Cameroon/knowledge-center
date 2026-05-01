@@ -7,6 +7,7 @@ import {
   loginGsp,
   saveAuthToken,
 } from "@/services/gspApi";
+import { getToken } from "@/services/gspApi";
 
 type AuthContextValue = {
   user: GspUser | null;
@@ -28,6 +29,7 @@ export const GspAuthProvider: React.FC<{ children: React.ReactNode }> = ({ child
       return;
     }
     try {
+
       const me = await getCurrentUser();
       setUser(me.user);
     } catch {
