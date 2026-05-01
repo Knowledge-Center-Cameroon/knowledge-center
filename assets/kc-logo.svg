@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="240" height="80" viewBox="0 0 240 80">
+  <defs>
+    <linearGradient id="grad" x1="0" x2="1" y1="0" y2="1">
+      <stop stop-color="#0b6b9d" offset="0"/>
+      <stop stop-color="#1b9bd5" offset="1"/>
+    </linearGradient>
+  </defs>
+  <rect width="240" height="80" rx="12" ry="12" fill="url(#grad)"/>
+  <g fill="#fff" font-family="Arial, Helvetica, sans-serif" font-weight="bold">
+    <text x="60" y="50" font-size="28">KC</text>
+    <text x="110" y="50" font-size="16" font-weight="normal">Knowledge Center</text>
+  </g>
+</svg>

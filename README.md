@@ -1,125 +1,160 @@
-# Knowledge Center Website
+A polished front-end for the Knowledge Center's multi-program portal (initially supporting the Global Scholars Programme, with future programs). It provides a user-facing application flow, administration dashboards, authentication, document uploads, and offline draft saving to ensure a seamless user experience even with intermittent connectivity.
 
-A modern, responsive website for Knowledge Center Cameroon built with Vite + React + TypeScript and Tailwind CSS. It includes a hero carousel, projects showcase, blog, contact form (Web3Forms), and more.
+# Knowledge Center Frontend (KC Portal)
 
-## Tech Stack
+<img src="./public/logo.png" alt="Knowledge Center Logo" width="200" />
 
-- React + TypeScript (Vite)
-- Tailwind CSS + shadcn/ui
-- Framer Motion for animations
-- React Router for routing
-- Lucide icons
+---
 
-## Quick Start
+## Overview
 
-1. Install dependencies
+- The Knowledge Center frontend is the client-side interface for the Knowledge Center platform. It enables applicants to complete multi-program applications, staff to review and manage applications, and users to authenticate and interact with KC services.
+- Key capabilities include:
+  - Multi-program application flow with autosave drafts
+  - Admin dashboard for managing applications, releases, and program data
+  - Google-based authentication flow and token management
+  - File uploads (documents such as reports, slips, etc.)
+  - Local storage-based offline draft persistence and recovery
 
-```
-npm install
-```
+---
 
-2. Configure environment variables
+## Tech stack & integrations
 
-- Copy `.env.example` to `.env` and fill in values:
+- Frontend framework and language: React with TypeScript, Vite for build/dev server
+- Styling and UI: Tailwind CSS, Framer Motion for animations, React Quill for rich text inputs
+- Routing & state: React Router, custom React Contexts for auth and user state
+- API layer: Centralized API client (src/services/gspApi.ts) and backend endpoints for program registrations, authentication, admin operations, and uploads
+- Data handling: LocalStorage-based drafts (gsp_draft_<email>), domain helpers in src/lib/gspUtils.ts
+- Runtime validation/types: Zod (types alongside runtime checks in the API layer)
 
-```
-cp .env.example .env
-```
+- Environment: Backend base URL configured via VITE_API_BASE_URL
+- Token management: kc_gsp_token in localStorage
 
-The contact form uses Web3Forms for submissions. Obtain your access key from https://web3forms.com/ and set:
+Note: All code is designed to be type-safe and maintainable, with clear boundaries between UI, state, and server interactions.
 
-```
-VITE_WEB3FORMS_ACCESS_KEY=your_access_key_here
-```
+---
 
-3. Start the dev server
-
-```
-npm run dev
-```
-
-Open the URL printed in your terminal (usually http://localhost:5173).
-
-## Environment Variables
-
-- `VITE_WEB3FORMS_ACCESS_KEY` (required for Contact form)
-  - Purpose: Enables form submissions in `src/components/Contact.tsx` via Web3Forms API.
-  - Where used: Web3Forms `https://api.web3forms.com/submit` POST.
-  - How to get: Sign up at Web3Forms and create a form to obtain an `access_key`.
-
-Optionally, you can also add site metadata overrides, e.g. `VITE_SITE_NAME` and `VITE_SITE_URL` if you plan to use them in future.
-
-## Notable Features
-
-- Hero with autoplay slides and smooth CTA buttons.
-- Projects section with responsive tabs (mobile scroll + snap, auto-center active tab).
-- STEM Competition CTA linking to registration at `/stem`.
-- Contact form with validation, character counter, constrained width, and Web3Forms submission.
-- Blog listing page that renders posts from `src/data/blogs.ts`, sorted by date (newest first).
-- Team section integrated under the About page; the `/team` route redirects to About.
-
-## Scripts
-
-```
-npm run dev       # Start development server
-npm run build     # Build for production
-npm run preview   # Preview the production build locally
-```
-
-## Project Structure
+## Folder structure (top level)
 
 ```
 src/
-  assets/                # Images and static assets
-  components/            # Reusable UI and sections (Hero, Projects, Contact, etc.)
-  data/
-    blogs.ts             # Blog posts seed data
-    projects.ts          # Projects data
-  pages/                 # Route pages
-    Home.tsx
-    AboutPage.tsx        # Includes Team section
-    BlogPage.tsx
-    ContactPage.tsx
-    ProjectsPage.tsx
-    ProjectDetailPage.tsx
-  hooks/
-  styles/
+  pages/          # Route-driven pages (GspApplicationPage.tsx, GspAdminPage.tsx, AuthPage.tsx, etc.)
+  services/       # API clients and service wrappers (gspApi.ts)
+  contexts/       # React Contexts (authentication, user data)
+  lib/            # Utilities and domain helpers (gspUtils.ts)
+  components/     # Reusable UI components
+  components/ui/  # UI primitives (Card, Button, Input, Label, Select, Textarea, etc.)
+  assets/         # Static assets (logos, icons)
+dist/             # Build output (generated)
+.env.local        # Local environment overrides (not committed)
+.env              # Shared environment variables
+package.json      # Project dependencies and scripts
 ```
 
-## Contact Form (Web3Forms)
+For a quick map of files, see the repository tree and the comments in each module.
 
-- Component: `src/components/Contact.tsx`
-- API: `POST https://api.web3forms.com/submit`
-- Required payload:
+---
 
-```json
-{
-  "access_key": "YOUR_ACCESS_KEY",
-  "name": "Your Name",
-  "email": "you@example.com",
-  "subject": "general | admissions | programs | stem-competition | partnership | support | other",
-  "message": "Your message"
-}
-```
+## Setup and running locally
 
-If `VITE_WEB3FORMS_ACCESS_KEY` is missing, the form will show a demo toast and not submit.
+Prerequisites
+- Node.js (LTS, e.g., 18+)
+- npm or yarn
 
-## Routing
+Quick start
+   - npm install
+   - or yarn install
+2. Configure environment
+   - Copy or create a local environment file:
+     - cp .env.example .env.local
+   - Update VITE_API_BASE_URL to point to the backend API
+3. Run the development server
+   - npm run dev
+   - The app will be available at http://localhost:5173 (port may vary)
+4. Build for production
+   - npm run build
+   - npm run preview (to serve the built app locally)
 
-- `/` Home
-- `/about` About (includes Team)
-- `/projects` Projects
-- `/projects/:slug` Project details
-- `/blog` Blog
-- `/contact` Contact
-- `/stem` STEM registration
+Environment notes
+- VITE_API_BASE_URL is read by the API client to construct requests.
+- Authentication tokens are stored in localStorage under kc_gsp_token.
+- Drafts are persisted in localStorage under keys like gsp_draft_<email>.
 
-## Contributing
+---
 
-1. Create a new branch: `git checkout -b feature/your-change`
-2. Make your changes and write clear commit messages
-3. Push your branch and open a PR
+## How to use the frontend
+
+- Authentication
+  - Google-based login endpoints and token management are used for session handling.
+- KC Program Application flow
+  - Multi-section form with autosave drafts to the backend via saveGspDraft.
+  - The application uses r_id when editing an existing submission; if a new draft is created, the backend returns an r_id which is stored locally.
+- Admin features
+  - Admin dashboard for reviewing applications, managing release states, and exporting data (CSV).
+- File uploads
+  - Users can upload documents (report cards, slips, etc.) via the backend uploads endpoint.
+
+---
+
+## Environment & configuration
+
+- VITE_API_BASE_URL: Base URL for the backend API. Set in .env.local.
+- kc_gsp_token: Token stored in localStorage for authenticated requests.
+- gsp_draft_<email>: Local draft persistence key for offline edits.
+
+---
+
+## Contributors Guide
+
+This project welcomes contributions from engineers of all levels. Follow these guidelines to ensure clean, fast, and maintainable changes.
+
+Onboarding
+- Fork the repository if contributing from a fork.
+- Create a feature branch: git checkout -b feature/your-change
+- Install dependencies: npm install
+- Run linters and tests (if configured): npm run lint, npm test
+- Run the app locally: npm run dev
+- Open a pull request with a clear description of the changes and the rationale.
+
+PR & Code Standards
+- Commit messages should be concise and describe the intent (feat:, fix:, docs:, refactor:).
+- Include a brief rationale in the PR description: what was changed, why, and any risks or follow-ups.
+- Provide minimal tests or validation notes when introducing new behavior or breaking changes.
+
+Code Quality
+- Type-safe data handling with clear types for API payloads.
+- Clear component boundaries and small, testable units.
+- Avoid unnecessary re-renders; prefer minimal, explicit state updates.
+
+On-boarding Checklist
+- [ ] Install dependencies
+- [ ] Validate environment config (VITE_API_BASE_URL)
+- [ ] Run the app and verify core flows (auth, application draft, admin flow if applicable)
+- [ ] Add or update tests if you touch logic heavily used by the app
+
+Contributors
+- Please add your name to a CONTRIBUTORS.md file in a future PR to be listed here.
+
+---
+
+## Intellectual Property
+
+- This frontend is copyright Knowledge Center. All rights reserved.
+- Any external usage should comply with Knowledge Center licensing and attribution requirements.
+
+---
+
+## Troubleshooting
+
+- Backend not reachable
+  - Verify VITE_API_BASE_URL in .env.local
+- Frontend errors on startup
+  - Ensure dependencies are installed and environment variables are set
+- Drafts not syncing
+  - Check localStorage availability and network requests for saveGspDraft
+
+---
 
 ## License
 
-This project is licensed under the MIT License. See `LICENSE` for details.
+- This project is distributed under the Knowledge Center license. See LICENSE for details.
