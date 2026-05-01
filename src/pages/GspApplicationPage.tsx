@@ -353,6 +353,18 @@ const GspApplicationPage: React.FC = () => {
   };
 
   const onSubmit = async () => {
+    // Validate all sections and provide exact missing-field feedback
+    const sections = [1,2,3,4,5,6,8,9,10,11];
+    const allMissing: string[] = [];
+    sections.forEach((s) => {
+      const miss = getMissingFields(s);
+      if (miss.length) allMissing.push(...miss.map(m => `Section ${s}: ${m}`));
+    });
+    if (allMissing.length) {
+      toast({ title: "Cannot submit — missing fields", description: allMissing.slice(0,6).join('; ')+ (allMissing.length>6? '...': ''), variant: "destructive" as any });
+      return;
+    }
+
     try {
       setSubmitting(true);
       await submitGspApplication(data, sectionState, data.r_id);
@@ -369,7 +381,7 @@ const GspApplicationPage: React.FC = () => {
   return (
     <motion.section initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="container mx-auto px-4 lg:px-8 py-12 lg:py-16">
       <div className="max-w-6xl mx-auto grid lg:grid-cols-[280px_minmax(0,1fr)] gap-6">
-        <Card className="rounded-3xl h-fit md:sticky md:top-24">
+        <Card className="rounded-3xl h-fit lg:sticky lg:top-24">
           <CardHeader>
             <CardTitle className="text-xl">GSP Application</CardTitle>
           </CardHeader>
@@ -386,7 +398,7 @@ const GspApplicationPage: React.FC = () => {
                     className={`text-left px-3 py-2 rounded-lg border flex justify-between items-center ${activeSection === s ? "border-kc-blue bg-kc-blue/5" : "border-border"} ${!canEdit ? "opacity-80" : "hover:border-kc-blue"}`} 
                     onClick={() => setActiveSection(s)}
                   >
-                    <span>{label}</span>
+                    <span className="truncate max-w-[180px]">{label}</span>
                     <div className="flex items-center gap-2">
                       {!canEdit && <span className="text-xs text-muted-foreground">🔒</span>}
                       {sectionState[s === 11 ? "review" : `section${s}`] && <span>✅</span>}
@@ -404,6 +416,16 @@ const GspApplicationPage: React.FC = () => {
         </Card>
 
         <div className="space-y-6">
+          {/* Before You Begin guidance — placed at the top of the form */}
+          <Card className="rounded-3xl">
+            <CardHeader><CardTitle>Before You Begin</CardTitle></CardHeader>
+            <CardContent>
+              <p>This application is for the KC Global Scholars Programme. We admit a small cohort each year. Selection is competitive.</p>
+              <p className="mt-2">Answer every question in your own words. We are not looking for the most polished answers. We are looking for the clearest picture of who you are, where you come from, and what you intend to do.</p>
+              <p className="mt-2">The programme runs from Summer 2026 (on-site) through May 2027. Make sure you are available for this full period before applying.</p>
+              <p className="mt-2">Set aside enough time to do this properly. Most students take between 3 days and a week to complete the application.</p>
+            </CardContent>
+          </Card>
           {fetching ? (
             <Card className="rounded-3xl"><CardContent className="p-8">Loading application...</CardContent></Card>
           ) : (
@@ -463,10 +485,10 @@ const GspApplicationPage: React.FC = () => {
                       </Select>
                     </div>
                     {data.isPhoneOnWhatsApp === "no" && <div><Label>Alternate WhatsApp</Label><Input disabled={!editable} value={data.alternateWhatsApp} onChange={(e) => setField("alternateWhatsApp", e.target.value)} /></div>}
-                    <div><Label>City</Label><Input value={data.city} onChange={(e) => setField("city", e.target.value)} /></div>
+                    <div><Label>City</Label><Input disabled={!editable} value={data.city} onChange={(e) => setField("city", e.target.value)} /></div>
                     <div>
                       <Label>Region</Label>
-                      <Select value={data.region} onValueChange={(val) => setField("region", val)}>
+                      <Select disabled={!editable} value={data.region} onValueChange={(val) => setField("region", val)}>
                         <SelectTrigger><SelectValue placeholder="Select region" /></SelectTrigger>
                         <SelectContent>
                           {CAMEROON_REGIONS.map(r => <SelectItem key={r} value={r}>{r}</SelectItem>)}
@@ -705,9 +727,10 @@ const GspApplicationPage: React.FC = () => {
                 <Card className="rounded-3xl">
                   <CardHeader><CardTitle>Section 8: Financial Context</CardTitle></CardHeader>
                   <CardContent className="space-y-4">
+                    <div className="text-sm text-muted-foreground">{GUIDANCE_TEXT[8]}</div>
                     <div>
                       <Label>Monthly household income range</Label>
-                      <Select value={data.monthlyIncomeRange} onValueChange={(val) => setField("monthlyIncomeRange", val)}>
+                      <Select disabled={!editable} value={data.monthlyIncomeRange} onValueChange={(val) => setField("monthlyIncomeRange", val)}>
                         <SelectTrigger><SelectValue placeholder="Select income range" /></SelectTrigger>
                         <SelectContent>
                           <SelectItem value="under_50k">Under 50,000 XAF</SelectItem>
@@ -719,7 +742,7 @@ const GspApplicationPage: React.FC = () => {
                     </div>
                     <div>
                       <Label>Do you work to support family?</Label>
-                      <Select value={data.worksToSupportFamily} onValueChange={(val) => setField("worksToSupportFamily", val)}>
+                      <Select disabled={!editable} value={data.worksToSupportFamily} onValueChange={(val) => setField("worksToSupportFamily", val)}>
                         <SelectTrigger><SelectValue placeholder="Select option" /></SelectTrigger>
                         <SelectContent>
                           <SelectItem value="yes">Yes</SelectItem>
@@ -730,13 +753,13 @@ const GspApplicationPage: React.FC = () => {
                     {data.worksToSupportFamily === "yes" && (
                       <div className="mt-2">
                         <Label>Describe your work (max 100 words)</Label>
-                        <Textarea value={data.workSupportDetails} onChange={(e) => setField("workSupportDetails", e.target.value)} />
+                        <Textarea disabled={!editable} value={data.workSupportDetails} onChange={(e) => setField("workSupportDetails", e.target.value)} />
                         <p className="text-xs text-muted-foreground mt-1">{words(data.workSupportDetails)} / 100 words</p>
                       </div>
                     )}
                     <div>
                       <Label>Would 500,000 XAF still be a challenge?</Label>
-                      <Select value={data.costChallenge} onValueChange={(val) => setField("costChallenge", val)}>
+                      <Select disabled={!editable} value={data.costChallenge} onValueChange={(val) => setField("costChallenge", val)}>
                         <SelectTrigger><SelectValue placeholder="Select option" /></SelectTrigger>
                         <SelectContent>
                           <SelectItem value="yes">Yes</SelectItem>
@@ -753,9 +776,10 @@ const GspApplicationPage: React.FC = () => {
                 <Card className="rounded-3xl">
                   <CardHeader><CardTitle>Section 9: Financial Aid (Optional)</CardTitle></CardHeader>
                   <CardContent className="space-y-4">
+                    <div className="text-sm text-muted-foreground">{GUIDANCE_TEXT[9]}</div>
                     <div>
                       <Label>Applying for Financial Aid?</Label>
-                      <Select value={data.applyingScholarship} onValueChange={(val) => setField("applyingScholarship", val)}>
+                      <Select disabled={!editable} value={data.applyingScholarship} onValueChange={(val) => setField("applyingScholarship", val)}>
                         <SelectTrigger><SelectValue placeholder="Select option" /></SelectTrigger>
                         <SelectContent>
                           <SelectItem value="yes">Yes</SelectItem>
@@ -765,8 +789,15 @@ const GspApplicationPage: React.FC = () => {
                     </div>
                     {data.applyingScholarship === "yes" && (
                       <div className="mt-2">
-                        <Label>Finanacial aid essay</Label>
-                        <Textarea className="min-h-[200px]" value={data.scholarshipEssay} onChange={(e) => setField("scholarshipEssay", e.target.value)} />
+                        <Label>Financial aid essay</Label>
+                        <ReactQuill
+                          theme="snow"
+                          value={data.scholarshipEssay}
+                          onChange={(content) => setField("scholarshipEssay", content)}
+                          readOnly={!editable}
+                          modules={editable ? EDITABLE_QUILL_MODULES : QUIET_QUILL_MODULES}
+                          className="min-h-[180px]"
+                        />
                       </div>
                     )}
                   </CardContent>
@@ -777,19 +808,20 @@ const GspApplicationPage: React.FC = () => {
                 <Card className="rounded-3xl">
                   <CardHeader><CardTitle>Section 10: Documents</CardTitle></CardHeader>
                   <CardContent className="space-y-4">
+                    <div className="text-sm text-muted-foreground">{GUIDANCE_TEXT[10]}</div>
                     <div>
                       <Label>Most recent report card (required)</Label>
-                      <Input type="file" accept=".pdf,.png,.jpg,.jpeg" onChange={(e) => uploadDocument("reportCard", e.target.files?.[0])} />
+                      <Input disabled={!editable} type="file" accept=".pdf,.png,.jpg,.jpeg" onChange={(e) => uploadDocument("reportCard", e.target.files?.[0])} />
                       {data.documents?.reportCard?.url && <p className="text-xs text-emerald-600 mt-1">Uploaded</p>}
                     </div>
                     <div>
                       <Label>Ordinary Level Slip (required)</Label>
-                      <Input type="file" accept=".pdf,.png,.jpg,.jpeg" onChange={(e) => uploadDocument("olSlip", e.target.files?.[0])} />
+                      <Input disabled={!editable} type="file" accept=".pdf,.png,.jpg,.jpeg" onChange={(e) => uploadDocument("olSlip", e.target.files?.[0])} />
                       {data.documents?.olSlip?.url && <p className="text-xs text-emerald-600 mt-1">Uploaded</p>}
                     </div>
                     <div>
                       <Label>Advanced Level Slip (optional)</Label>
-                      <Input type="file" accept=".pdf,.png,.jpg,.jpeg" onChange={(e) => uploadDocument("alSlip", e.target.files?.[0])} />
+                      <Input disabled={!editable} type="file" accept=".pdf,.png,.jpg,.jpeg" onChange={(e) => uploadDocument("alSlip", e.target.files?.[0])} />
                     </div>
                   </CardContent>
                 </Card>
@@ -799,8 +831,9 @@ const GspApplicationPage: React.FC = () => {
                 <Card className="rounded-3xl border-kc-blue/20">
                   <CardHeader><CardTitle>Review and Submit</CardTitle></CardHeader>
                   <CardContent className="space-y-4">
+                    <div className="text-sm text-muted-foreground">{GUIDANCE_TEXT[11]}</div>
                     <label className="flex gap-2 items-start text-sm">
-                      <input type="checkbox" checked={data.declarationConfirmed} onChange={(e) => setField("declarationConfirmed", e.target.checked)} />
+                      <input disabled={!editable} type="checkbox" checked={data.declarationConfirmed} onChange={(e) => setField("declarationConfirmed", e.target.checked)} />
                       <span>I confirm all information in this application is accurate and my own.</span>
                     </label>
                     <div className="flex flex-wrap justify-between gap-3">
@@ -827,9 +860,10 @@ const GspApplicationPage: React.FC = () => {
                 const next = computeSectionState(data);
                 // Validate current section before attempting to save
                 if (!next[currentSecKey]) {
+                  const missing = getMissingFields(activeSection);
                   toast({
                     title: "Incomplete Section",
-                    description: "Please fill out all required fields in this section before proceeding.",
+                    description: missing.length ? `Missing: ${missing.join(', ')}` : "Please fill out all required fields in this section before proceeding.",
                     variant: "destructive" as any,
                   });
                   return;
