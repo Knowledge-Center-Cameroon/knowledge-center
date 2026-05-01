@@ -1,4 +1,4 @@
-﻿import React, { useState } from "react";
+import React, { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -7,6 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Send, MapPin, Phone, Mail } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
+import emailjs from '@emailjs/browser';
 
 const Contact: React.FC = () => {
   const { toast } = useToast();
@@ -18,7 +19,9 @@ const Contact: React.FC = () => {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [messageCount, setMessageCount] = useState(0);
-  const web3formsKey = import.meta.env.VITE_WEB3FORMS_ACCESS_KEY;
+  const emailjsServiceId = import.meta.env.VITE_EMAILJS_SERVICE_ID;
+  const emailjsTemplateId = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
+  const emailjsPublicKey = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
 
   const handleInputChange = (field: keyof typeof formData, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -44,11 +47,11 @@ const Contact: React.FC = () => {
 
     setIsSubmitting(true);
 
-    if (!web3formsKey) {
+    if (!emailjsServiceId || !emailjsTemplateId || !emailjsPublicKey) {
       setTimeout(() => {
         toast({
           title: "Demo: Message not actually sent",
-          description: "Set VITE_WEB3FORMS_ACCESS_KEY in your .env to enable real submissions.",
+          description: "Set VITE_EMAILJS_* keys in your .env to enable real submissions.",
         });
         setIsSubmitting(false);
       }, 600);
@@ -56,23 +59,19 @@ const Contact: React.FC = () => {
     }
 
     try {
-      const res = await fetch("https://api.web3forms.com/submit", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        },
-        body: JSON.stringify({
-          access_key: web3formsKey,
+      const res = await emailjs.send(
+        emailjsServiceId,
+        emailjsTemplateId,
+        {
           name: formData.name,
           email: formData.email,
           subject: formData.subject,
           message: formData.message,
-        }),
-      });
-      const data = await res.json().catch(() => ({}));
+        },
+        emailjsPublicKey
+      );
 
-      if (res.ok && data?.success) {
+      if (res.status === 200) {
         toast({
           title: "Message Sent Successfully!",
           description: "We will get back to you soon. Thank you for contacting KC!",
@@ -80,16 +79,12 @@ const Contact: React.FC = () => {
         setFormData({ name: "", email: "", subject: "", message: "" });
         setMessageCount(0);
       } else {
-        toast({
-          title: "Failed to send message",
-          description: data?.message || "Please try again or email us directly at kcstemhub@gmail.com",
-          variant: "destructive" as any,
-        });
+        throw new Error(res.text || "Unknown error");
       }
-    } catch {
+    } catch (error: any) {
       toast({
-        title: "Network error",
-        description: "Please check your connection and try again.",
+        title: "Failed to send message",
+        description: error.text || error.message || "Please check your connection and try again.",
         variant: "destructive" as any,
       });
     } finally {

@@ -214,7 +214,7 @@ const GspApplicationPage: React.FC = () => {
   const onSubmit = async () => {
     try {
       setSubmitting(true);
-      await submitGspApplication(data, sectionState);
+      await submitGspApplication(data, sectionState, data.r_id);
       localStorage.removeItem(`gsp_draft_${user?.email}`);
       toast({ title: "Application submitted", description: "Your application is now locked for review." });
       navigate("/gsp/dashboard");

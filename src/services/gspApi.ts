@@ -146,10 +146,18 @@ export async function saveGspDraft(data: any, sectionState: Record<string, boole
   }
 } 
 
-export async function submitGspApplication(data: any, sectionState: Record<string, boolean>) {
-  return apiRequest<{ success: boolean; reference: string; application: any }>("/api/gsp/application/submit", {
-    method: "POST",
-    body: JSON.stringify({ data, sectionState }),
+export async function submitGspApplication(data: any, sectionState: Record<string, boolean>, r_id: string) {
+  const payload = {
+    ...data,
+    phoneNumber: `${data.phoneCode || "+237"} ${data.phone || ""}`.trim(),
+    secondaryGuardianOccupation: data.secondGuardianOccupation,
+    sectionState,
+    submitted: true,
+    status: "submitted",
+  };
+  return apiRequest<{ success: boolean; reference: string; application: any }>(`/api/v2/gsp/registration/${r_id}/`, {
+    method: "PATCH",
+    body: JSON.stringify(payload),
   });
 }
 
