@@ -14,7 +14,6 @@ import heroImage5 from "@/assets/hero-image5.jpeg";
 import { useParallax } from "@/hooks/use-parallax";
 import AnimatedLogo from "@/components/AnimatedLogo";
 import { ArrowButton } from "@/components/arrowbtn";
-import Sparkle from "@/components/ui/Sparkle";
 
 const slides = [
   {
@@ -181,8 +180,6 @@ const Hero = () => {
 
               {/* Dynamic Content */}
               <div className="relative mb-4 md:mb-5 mt-2">
-                <Sparkle color="#FFD700" className="absolute -top-6 -left-6 w-8 h-8 md:w-10 md:h-10 animate-bounce" />
-                <Sparkle color="#71F5A2" className="absolute -bottom-4 right-10 w-6 h-6 md:w-8 md:h-8" style={{ animationDelay: '0.5s' }} />
                 <AnimatePresence mode="wait">
                   <motion.h1
                     key={`title-${currentSlide}`}
