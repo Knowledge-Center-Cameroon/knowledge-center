@@ -124,12 +124,18 @@ const GspApplicationPage: React.FC = () => {
       try {
         const resp = await getGspApplication();
         const serverData = resp.application?.data || {};
-        
         // Use server data if no local draft exists to prevent overwriting recent offline edits
         if (!loadedLocal) {
-          const payload = { ...defaultData, ...serverData, email: serverData.email || user.email };
-          setData(payload);
-          const nextSectionState = resp.application?.sectionState || computeSectionState(payload);
+          // If the server provides an r_id for this application, include it in the local state
+          const appRId = resp.application?.r_id;
+          const mergedData = {
+            ...defaultData,
+            ...serverData,
+            email: serverData.email || user.email,
+            ...(appRId ? { r_id: appRId } : {}),
+          };
+          setData(mergedData);
+          const nextSectionState = resp.application?.sectionState || computeSectionState(mergedData);
           setSectionState(nextSectionState);
         }
       } catch (error: any) {
@@ -652,31 +658,36 @@ const GspApplicationPage: React.FC = () => {
                   <Button
                     variant="blue"
                     className="rounded-full px-8"
-                    onClick={() => {
-                      const next = computeSectionState(data);
-                      saveGspDraft(data, next, data.r_id).then((res) => {
-                        if (res?.application?.r_id && !data.r_id) {
-                          setData((prev: any) => ({ ...prev, r_id: res.application.r_id }));
-                        }
-                      }).catch(() => {});
-                      
-                      const currentSecKey = activeSection === 11 ? "review" : `section${activeSection}`;
-                      if (!next[currentSecKey]) {
-                        toast({
-                          title: "Incomplete Section",
-                          description: "Please fill out all required fields in this section before proceeding.",
-                          variant: "destructive"
-                        });
-                        return;
-                      }
+              onClick={async () => {
+                const currentSecKey = activeSection === 11 ? "review" : `section${activeSection}`;
+                const next = computeSectionState(data);
+                // Validate current section before attempting to save
+                if (!next[currentSecKey]) {
+                  toast({
+                    title: "Incomplete Section",
+                    description: "Please fill out all required fields in this section before proceeding.",
+                    variant: "destructive" as any,
+                  });
+                  return;
+                }
+                // Attempt to save draft and only continue after a successful response
+                try {
+                  const res = await saveGspDraft(data, next, data.r_id);
+                  if (res?.application?.r_id && !data.r_id) {
+                    setData((prev: any) => ({ ...prev, r_id: res.application.r_id }));
+                  }
+                } catch (error: any) {
+                  toast({ title: "Save failed", description: error?.message || "Could not save draft. Please try again.", variant: "destructive" as any });
+                  return;
+                }
 
-                      const sections = [1, 2, 3, 4, 5, 6, 8, 9, 10, 11];
-                      const currentIndex = sections.indexOf(activeSection);
-                      if (currentIndex < sections.length - 1) {
-                        window.scrollTo({ top: 0, behavior: 'smooth' });
-                        setActiveSection(sections[currentIndex + 1]);
-                      }
-                    }}
+                const sections = [1, 2, 3, 4, 5, 6, 8, 9, 10, 11];
+                const currentIndex = sections.indexOf(activeSection);
+                if (currentIndex < sections.length - 1) {
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                  setActiveSection(sections[currentIndex + 1]);
+                }
+              }}
                   >
                     Save & Continue
                   </Button>
