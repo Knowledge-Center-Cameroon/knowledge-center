@@ -163,7 +163,7 @@ const GspApplicationPage: React.FC = () => {
     return () => clearTimeout(id);
   }, [data, user, fetching]);
 
-  if (!loading && !user) return <Navigate to="/gsp" replace />;
+  if (!loading && !user) return <Navigate to="/auth?redirect=/gsp/application" replace />;
 
   const setField = (key: string, value: any) => setData((prev: any) => ({ ...prev, [key]: value }));
 

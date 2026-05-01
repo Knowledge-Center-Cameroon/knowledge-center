@@ -45,7 +45,7 @@ const GspAdminPage: React.FC = () => {
     load();
   }, [user, load]);
 
-  if (!loading && !user) return <Navigate to="/gsp" replace />;
+  if (!loading && !user) return <Navigate to="/auth?redirect=/gsp/admin" replace />;
   if (user?.role !== "admin") return <Navigate to="/gsp/dashboard" replace />;
 
   const setDecision = async (id: string, decisionStatus: "accepted" | "waitlisted" | "not_admitted" | "pending") => {

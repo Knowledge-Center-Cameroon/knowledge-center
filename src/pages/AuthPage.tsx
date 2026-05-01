@@ -19,11 +19,12 @@ import { useSeo } from "@/hooks/useSeo";
 import { SignInButton, useUser } from "@clerk/react";
 import { useSession, SignOutButton } from "@clerk/react";
 
-const GspAuthPage: React.FC = () => {
+const AuthPage: React.FC = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [searchParams] = useSearchParams();
   const resetToken = searchParams.get("resetToken");
+  const redirectUrl = searchParams.get("redirect") || "/gsp/dashboard";
   
   const [mode, setMode] = React.useState<"login" | "signup" | "verify" | "forgot" | "reset">(resetToken ? "reset" : "login");
   const [loading, setLoading] = React.useState(false);
@@ -55,7 +56,7 @@ const GspAuthPage: React.FC = () => {
         if (data?.success) {
           saveAuthToken(data?.access);
           refreshUser().then(() => {
-            navigate("/gsp/dashboard");
+            navigate(redirectUrl);
           });
         } else {
           toast({
@@ -100,9 +101,10 @@ const GspAuthPage: React.FC = () => {
 
 
   React.useEffect(() => {
-    if (user) navigate("/gsp/dashboard");
+    if (user) navigate(redirectUrl);
+  }, [user, navigate, redirectUrl]);
 
-  }, [user, navigate]);
+
 
 
   // const onSubmit = async (e: React.FormEvent) => {
@@ -191,18 +193,15 @@ const GspAuthPage: React.FC = () => {
       <div className="max-w-5xl mx-auto grid lg:grid-cols-[1.1fr_1fr] gap-8 items-stretch">
         <Card className="rounded-3xl border-kc-blue/10 shadow-card bg-white">
           <CardHeader>
-            <CardTitle className="heading-2">KC Global Scholars Programme</CardTitle>
+            <CardTitle className="heading-2">Knowledge Center Portal</CardTitle>
           </CardHeader>
           <CardContent className="text-foreground/80 space-y-4">
             <p>
-              Build your application in your own dashboard, save as you go, and submit once all sections are complete.
-            </p>
-            <p className="text-sm text-muted-foreground">
-              Programme period: Summer 2026 through May 2027.
+              Sign in or create an account to access your personalized Knowledge Center dashboard.
             </p>
             <div className="pt-4">
               <Button asChild variant="outline" className="rounded-full">
-                <Link to="/projects/gsp">Read about GSP</Link>
+                <Link to="/">Back to Home</Link>
               </Button>
             </div>
           </CardContent>
@@ -284,7 +283,7 @@ const GspAuthPage: React.FC = () => {
                   <span className="text-xs text-muted-foreground">or</span>
                   <div className="flex-1 h-px bg-border" />
                 </div>
-                <SignInButton mode="modal" forceRedirectUrl="gsp/auth/">
+                <SignInButton mode="modal" forceRedirectUrl="/auth/callback">
                   <button
                   type="button"
                   className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-white border border-gray-300 rounded-full text-gray-700 font-medium hover:bg-gray-50 transition-colors disabled:opacity-50"
@@ -307,4 +306,4 @@ const GspAuthPage: React.FC = () => {
   );
 };
 
-export default GspAuthPage;
+export default AuthPage;

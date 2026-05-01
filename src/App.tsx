@@ -23,7 +23,7 @@ const StemRegistrationManagePage = React.lazy(() => import("./pages/StemRegistra
 const PrivacyPage = React.lazy(() => import("./pages/PrivacyPage"));
 const TermsPage = React.lazy(() => import("./pages/TermsPage"));
 const EventsPage = React.lazy(() => import("./pages/EventsPage"));
-const GspAuthPage = React.lazy(() => import("./pages/GspAuthPage"));
+const AuthPage = React.lazy(() => import("./pages/AuthPage"));
 const GspDashboardPage = React.lazy(() => import("./pages/GspDashboardPage"));
 const AuthCallbackPage = React.lazy(() => import("./pages/AuthCallbackPage"));
 const GspApplicationPage = React.lazy(() => import("./pages/GspApplicationPage"));
@@ -68,8 +68,8 @@ const AppShell: React.FC = () => (
                   <Route path="stem/success" element={<StemRegistrationSuccessPage />} />
                   <Route path="stem/manage" element={<StemRegistrationManagePage />} />
                   <Route path="gsp" element={<Navigate to="/gsp/dashboard" replace />} />
-                  <Route path="gsp/auth" element={<GspAuthPage />} />
-                  <Route path="gsp/auth/callback" element={<AuthCallbackPage />} />
+                  <Route path="auth" element={<AuthPage />} />
+                  <Route path="auth/callback" element={<AuthCallbackPage />} />
                   <Route path="gsp/dashboard" element={<GspDashboardPage />} />
                   <Route path="gsp/application" element={<GspApplicationPage />} />
                   <Route path="gsp/decision" element={<GspDecisionPage />} />
