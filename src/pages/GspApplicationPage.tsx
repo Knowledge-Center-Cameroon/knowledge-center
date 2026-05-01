@@ -104,6 +104,19 @@ const GUIDANCE_TEXT: Record<number, string> = {
   11: `Review carefully before submitting. Once submitted, the application will be locked for review.`,
 };
 
+const SECTION_LABELS: Record<number, string> = {
+  1: "Personal Information",
+  2: "Family Background",
+  3: "Academic Background",
+  4: "Short Answer",
+  5: "Activities",
+  6: "Logistics & Programme Fit",
+  8: "Financial Context",
+  9: "Financial Aid",
+  10: "Documents",
+  11: "Review & Submit",
+};
+
 const QUIET_QUILL_MODULES = { toolbar: false };
 const EDITABLE_QUILL_MODULES = {
   toolbar: [
@@ -282,13 +295,14 @@ const GspApplicationPage: React.FC = () => {
             <div className="pt-2 grid gap-2 text-sm">
               {[1, 2, 3, 4, 5, 6, 8, 9, 10, 11].map((s, index, arr) => {
                 const canEdit = index === 0 || arr.slice(0, index).every((prevSec) => sectionState[prevSec === 11 ? "review" : `section${prevSec}`]);
+                const label = SECTION_LABELS[s] ? `Section ${s}: ${SECTION_LABELS[s]}` : `Section ${s}`;
                 return (
                   <button 
                     key={s}
                     className={`text-left px-3 py-2 rounded-lg border flex justify-between items-center ${activeSection === s ? "border-kc-blue bg-kc-blue/5" : "border-border"} ${!canEdit ? "opacity-80" : "hover:border-kc-blue"}`} 
                     onClick={() => setActiveSection(s)}
                   >
-                    <span>{s === 11 ? "Review & Submit" : `Section ${s}`}</span>
+                    <span>{label}</span>
                     <div className="flex items-center gap-2">
                       {!canEdit && <span className="text-xs text-muted-foreground">🔒</span>}
                       {sectionState[s === 11 ? "review" : `section${s}`] && <span>✅</span>}
