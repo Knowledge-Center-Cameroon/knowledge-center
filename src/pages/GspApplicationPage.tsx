@@ -12,6 +12,7 @@ import { getGspApplication, saveGspDraft, submitGspApplication, uploadGspDocumen
 import { useToast } from "@/components/ui/use-toast";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
+import { words, computeSectionState, computeProgressPct } from "@/lib/gspUtils";
 
 const CAMEROON_REGIONS = [
   "Adamawa", "Centre", "East", "Far North", "Littoral", 
@@ -85,14 +86,6 @@ const defaultData = {
     alSlip: null as any,
   },
   declarationConfirmed: false,
-};
-
-function words(v: string) {
-  if (!v) return 0;
-  const text = v.replace(/<[^>]*>/g, '');
-  return text.trim().split(/\s+/).filter(Boolean).length;
-}
-
 const GspApplicationPage: React.FC = () => {
   const { user, loading } = useGspAuth();
   const { toast } = useToast();
@@ -104,34 +97,8 @@ const GspApplicationPage: React.FC = () => {
   const [submitting, setSubmitting] = React.useState(false);
   const [activeSection, setActiveSection] = React.useState(1);
 
-  const computeSectionState = React.useCallback((source: any) => {
-    const st: Record<string, boolean> = {
-      section1: Boolean(source.firstName && source.lastName && source.dob && source.phoneCode && source.phone && source.email && source.gender && source.nationality && source.city && source.region),
-      section2: Boolean(source.householdSize && source.primaryGuardianOccupation && source.highestFamilyEducation && source.familyStudiedAbroad && (source.familyStudiedAbroad !== "yes" || source.familyAbroadDetails)),
-      section3: Boolean(source.schoolName && source.schoolCity && source.schoolRegion && source.currentClass && source.intendedFieldWhy),
-      section4: words(source.communityEssay) >= 75 && words(source.communityEssay) <= 225,
-      section5: Array.isArray(source.activities) && source.activities.length >= 1 && source.activities.every((a: any) => a.title && a.roleDescription && a.duration && a.hoursPerWeek && a.weeksPerYear && a.isStillDoing && (a.isStillDoing !== "no" || a.stoppedIn)),
-      section6: Boolean(source.housingOption && source.participationConstraint && (source.housingOption !== "B" || (source.housingContactRelation && source.housingContactAware)) && (source.housingOption !== "C" || source.canCoverHousingCost) && (source.participationConstraint !== "yes" || source.participationConstraintExplain)),
-      section8: Boolean(source.monthlyIncomeRange && source.worksToSupportFamily && (source.worksToSupportFamily !== "yes" || source.workSupportDetails) && source.costChallenge),
-      section9: Boolean(source.applyingScholarship && (source.applyingScholarship !== "yes" || source.scholarshipEssay)),
-      section10: Boolean(source.documents?.reportCard?.url && source.documents?.olSlip?.url),
-      review: Boolean(source.declarationConfirmed),
-    };
-    if (source.currentClass === "lower_sixth") {
-      st.section3 = st.section3 && Boolean(source.lowerSixthPathwayChoice);
-    }
-    if (Array.isArray(source.topSubjects) && source.topSubjects.length === 5) {
-      st.section3 = st.section3 && source.topSubjects.every((s: any) => s.name && s.score && s.examTerm);
-    } else {
-      st.section3 = false;
-    }
-    return st;
-  }, []);
-
   const progressPct = React.useMemo(() => {
-    const total = Object.keys(sectionState).length || 10;
-    const done = Object.values(sectionState).filter(Boolean).length;
-    return Math.round((done / total) * 100);
+    return computeProgressPct(sectionState);
   }, [sectionState]);
 
   React.useEffect(() => {
@@ -168,7 +135,7 @@ const GspApplicationPage: React.FC = () => {
         setFetching(false);
       }
     })();
-  }, [user, toast, computeSectionState]);
+  }, [user, toast]);
 
   React.useEffect(() => {
     if (!user || fetching) return;
@@ -188,7 +155,7 @@ const GspApplicationPage: React.FC = () => {
       }
     }, 1200);
     return () => clearTimeout(id);
-  }, [data, user, fetching, computeSectionState]);
+  }, [data, user, fetching]);
 
   if (!loading && !user) return <Navigate to="/gsp" replace />;
 

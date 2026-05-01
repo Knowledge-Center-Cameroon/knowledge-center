@@ -6,15 +6,27 @@ import { Button } from "@/components/ui/button";
 import { useGspAuth } from "@/contexts/GspAuthContext";
 import { getGspApplication } from "@/services/gspApi";
 import { useToast } from "@/components/ui/use-toast";
+import { computeSectionState, computeProgressPct } from "@/lib/gspUtils";
 
 const GspDashboardPage: React.FC = () => {
   const { user, loading, signOut } = useGspAuth();
   const { toast } = useToast();
   const [application, setApplication] = React.useState<any>(null);
   const [fetching, setFetching] = React.useState(true);
+  const [localProgress, setLocalProgress] = React.useState<number | null>(null);
 
   React.useEffect(() => {
     if (!user) return;
+    const draftKey = `gsp_draft_${user.email}`;
+    const localDraft = localStorage.getItem(draftKey);
+    if (localDraft) {
+      try {
+        const parsed = JSON.parse(localDraft);
+        const st = computeSectionState(parsed);
+        setLocalProgress(computeProgressPct(st));
+      } catch (e) {}
+    }
+
     (async () => {
       try {
         const data = await getGspApplication();
@@ -61,7 +73,7 @@ const GspDashboardPage: React.FC = () => {
             ) : (
               <>
                 <p>Status: <span className="font-semibold uppercase">{application?.status || "draft"}</span></p>
-                <p>Progress: <span className="font-semibold">{application?.progressPct || 0}%</span></p>
+                <p>Progress: <span className="font-semibold">{application?.status === "submitted" ? 100 : (localProgress !== null ? Math.max(localProgress, application?.progressPct || 0) : (application?.progressPct || 0))}%</span></p>
                 <p>Reference: <span className="font-semibold">{application?.reference || "Not submitted yet"}</span></p>
                 <div className="flex flex-wrap gap-3 pt-2">
                   <Button asChild variant="blue" className="rounded-full">
