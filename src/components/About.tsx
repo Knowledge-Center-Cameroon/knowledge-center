@@ -1,4 +1,4 @@
-﻿/**
+/**
  * About Component - Organization story, mission, vision, and values
  * 
  * Sections:
@@ -67,7 +67,7 @@ const CameroonMap = () => {
   ];
 
   return (
-    <div className="relative w-full aspect-[992/1429] max-w-md mx-auto bg-white/95 rounded-3xl border border-kc-blue/10 ring-1 ring-kc-blue/5 p-2 shadow-card overflow-hidden group">
+    <div className="relative w-full aspect-[992/1429] max-w-md mx-auto bg-white/95 rounded-3xl border border-kc-blue/10 ring-1 ring-kc-blue/5 p-2 shadow-card overflow-hidden">
       {/* Actual Cameroon Map Image */}
       <img 
         src="/cameroon.svg" 
@@ -80,7 +80,7 @@ const CameroonMap = () => {
         {hubs.map((hub, i) => (
           <div
             key={hub.name}
-            className="absolute"
+            className="absolute group/dot cursor-pointer"
             style={{ left: `${hub.x}%`, top: `${hub.y}%` }}
           >
             <motion.div
@@ -88,21 +88,24 @@ const CameroonMap = () => {
               whileInView={{ scale: 1 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.05, type: "spring", stiffness: 200 }}
-              className="relative"
+              className="relative flex items-center justify-center -translate-x-1/2 -translate-y-1/2"
             >
+              {/* Hit area for easier hovering */}
+              <div className="absolute inset-[-12px] bg-transparent z-30" />
+              
               {/* Core pulse dot */}
-              <div className="w-2 h-2 bg-kc-blue rounded-full shadow-sm z-20" />
+              <div className="w-2.5 h-2.5 bg-kc-blue rounded-full shadow-sm z-20" />
               
               {/* Pulsing ring animation */}
               <motion.div
                 animate={{ scale: [1, 2.5], opacity: [0.5, 0] }}
                 transition={{ duration: 2, repeat: Infinity, ease: "easeOut" }}
-                className="absolute inset-0 bg-kc-blue rounded-full -z-10"
+                className="absolute w-2.5 h-2.5 bg-kc-blue rounded-full -z-10"
               />
               
-              {/* Tooltip-style label on hover or key hubs */}
+              {/* Tooltip-style label on individual dot hover */}
               <div 
-                className={`absolute left-1/2 -translate-x-1/2 bottom-full mb-1.5 px-1.5 py-0.5 bg-white border border-border rounded shadow-md text-[8px] font-bold whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none ${i % 3 === 0 || hub.name === "Buea" ? 'opacity-100' : ''} ${hub.name === "Buea" ? 'text-kc-blue' : 'text-kc-black'}`}
+                className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 px-2 py-1 bg-white border border-border rounded shadow-lg text-[10px] font-bold whitespace-nowrap opacity-0 group-hover/dot:opacity-100 transition-all duration-300 pointer-events-none z-50 text-kc-blue translate-y-1 group-hover/dot:translate-y-0"
               >
                 {hub.name}
               </div>

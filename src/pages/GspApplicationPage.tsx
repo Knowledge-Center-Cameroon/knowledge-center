@@ -10,11 +10,40 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useGspAuth } from "@/contexts/GspAuthContext";
 import { getGspApplication, saveGspDraft, submitGspApplication, uploadGspDocument } from "@/services/gspApi";
 import { useToast } from "@/components/ui/use-toast";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
+
+const CAMEROON_REGIONS = [
+  "Adamawa", "Centre", "East", "Far North", "Littoral", 
+  "North", "North West", "West", "South", "South West"
+];
+
+const NATIONS = [
+  "Cameroon", "Nigeria", "Ghana", "Kenya", "South Africa", 
+  "Rwanda", "Uganda", "Senegal", "Other"
+];
+
+const COUNTRY_CODES = [
+  { code: "+237", country: "CM" },
+  { code: "+234", country: "NG" },
+  { code: "+233", country: "GH" },
+  { code: "+254", country: "KE" },
+  { code: "+27", country: "ZA" },
+  { code: "+250", country: "RW" },
+  { code: "+256", country: "UG" },
+  { code: "+221", country: "SN" },
+];
+
+const EDUCATION_LEVELS = [
+  "None", "Primary School", "Secondary School (O-Level/A-Level)", 
+  "Vocational/Technical", "Bachelor's Degree", "Master's Degree", "Doctorate (PhD)"
+];
 
 const defaultData = {
   firstName: "",
   lastName: "",
   dob: "",
+  phoneCode: "+237",
   phone: "",
   email: "",
   gender: "",
@@ -59,7 +88,9 @@ const defaultData = {
 };
 
 function words(v: string) {
-  return v.trim().split(/\s+/).filter(Boolean).length;
+  if (!v) return 0;
+  const text = v.replace(/<[^>]*>/g, '');
+  return text.trim().split(/\s+/).filter(Boolean).length;
 }
 
 const GspApplicationPage: React.FC = () => {
@@ -75,7 +106,7 @@ const GspApplicationPage: React.FC = () => {
 
   const computeSectionState = React.useCallback((source: any) => {
     const st: Record<string, boolean> = {
-      section1: Boolean(source.firstName && source.lastName && source.dob && source.phone && source.email && source.gender && source.nationality && source.city && source.region),
+      section1: Boolean(source.firstName && source.lastName && source.dob && source.phoneCode && source.phone && source.email && source.gender && source.nationality && source.city && source.region),
       section2: Boolean(source.householdSize && source.primaryGuardianOccupation && source.highestFamilyEducation && source.familyStudiedAbroad && (source.familyStudiedAbroad !== "yes" || source.familyAbroadDetails)),
       section3: Boolean(source.schoolName && source.schoolCity && source.schoolRegion && source.currentClass && source.intendedFieldWhy),
       section4: words(source.communityEssay) >= 75 && words(source.communityEssay) <= 225,
@@ -105,13 +136,32 @@ const GspApplicationPage: React.FC = () => {
 
   React.useEffect(() => {
     if (!user) return;
+    
+    // Attempt to load from localStorage first for instant recovery
+    const draftKey = `gsp_draft_${user.email}`;
+    const localDraft = localStorage.getItem(draftKey);
+    let loadedLocal = false;
+
+    if (localDraft) {
+      try {
+        const parsed = JSON.parse(localDraft);
+        setData((prev: any) => ({ ...prev, ...parsed }));
+        loadedLocal = true;
+      } catch (e) {}
+    }
+
     (async () => {
       try {
         const resp = await getGspApplication();
-        const payload = { ...defaultData, ...(resp.application?.data || {}), email: resp.application?.data?.email || user.email };
-        setData(payload);
-        const nextSectionState = resp.application?.sectionState || computeSectionState(payload);
-        setSectionState(nextSectionState);
+        const serverData = resp.application?.data || {};
+        
+        // Use server data if no local draft exists to prevent overwriting recent offline edits
+        if (!loadedLocal) {
+          const payload = { ...defaultData, ...serverData, email: serverData.email || user.email };
+          setData(payload);
+          const nextSectionState = resp.application?.sectionState || computeSectionState(payload);
+          setSectionState(nextSectionState);
+        }
       } catch (error: any) {
         toast({ title: "Failed to load application", description: error.message || "Please try again.", variant: "destructive" as any });
       } finally {
@@ -124,6 +174,10 @@ const GspApplicationPage: React.FC = () => {
     if (!user || fetching) return;
     const next = computeSectionState(data);
     setSectionState(next);
+    
+    // Save to local storage synchronously on every data change
+    localStorage.setItem(`gsp_draft_${user.email}`, JSON.stringify(data));
+
     const id = setTimeout(async () => {
       try {
         setSaving(true);
@@ -188,6 +242,7 @@ const GspApplicationPage: React.FC = () => {
     try {
       setSubmitting(true);
       await submitGspApplication(data, sectionState);
+      localStorage.removeItem(`gsp_draft_${user?.email}`);
       toast({ title: "Application submitted", description: "Your application is now locked for review." });
       navigate("/gsp/dashboard");
     } catch (error: any) {
@@ -208,11 +263,20 @@ const GspApplicationPage: React.FC = () => {
             <p className="text-sm text-muted-foreground">Progress: <span className="font-semibold text-kc-blue">{progressPct}%</span></p>
             <p className="text-xs text-muted-foreground">{saving ? "Autosaving..." : "All changes saved automatically"}</p>
             <div className="pt-2 grid gap-2 text-sm">
-              {[1, 2, 3, 4, 5, 6, 8, 9, 10, 11].map((s) => (
-                <button key={s} className={`text-left px-3 py-2 rounded-lg border ${activeSection === s ? "border-kc-blue bg-kc-blue/5" : "border-border"}`} onClick={() => setActiveSection(s)}>
-                  {s === 11 ? "Review & Submit" : `Section ${s}`}
-                </button>
-              ))}
+              {[1, 2, 3, 4, 5, 6, 8, 9, 10, 11].map((s, index, arr) => {
+                const canAccess = index === 0 || arr.slice(0, index).every((prevSec) => sectionState[prevSec === 11 ? "review" : `section${prevSec}`]);
+                return (
+                  <button 
+                    key={s} 
+                    disabled={!canAccess}
+                    className={`text-left px-3 py-2 rounded-lg border flex justify-between items-center ${activeSection === s ? "border-kc-blue bg-kc-blue/5" : "border-border"} ${!canAccess ? "opacity-50 cursor-not-allowed" : "hover:border-kc-blue"}`} 
+                    onClick={() => setActiveSection(s)}
+                  >
+                    <span>{s === 11 ? "Review & Submit" : `Section ${s}`}</span>
+                    {sectionState[s === 11 ? "review" : `section${s}`] && <span>✅</span>}
+                  </button>
+                );
+              })}
             </div>
             <div className="pt-3">
               <Button asChild variant="outline" className="rounded-full w-full">
@@ -234,7 +298,18 @@ const GspApplicationPage: React.FC = () => {
                     <div><Label>First name</Label><Input value={data.firstName} onChange={(e) => setField("firstName", e.target.value)} /></div>
                     <div><Label>Last name</Label><Input value={data.lastName} onChange={(e) => setField("lastName", e.target.value)} /></div>
                     <div><Label>Date of birth</Label><Input type="date" value={data.dob} onChange={(e) => setField("dob", e.target.value)} /></div>
-                    <div><Label>Phone (+237)</Label><Input value={data.phone} onChange={(e) => setField("phone", e.target.value)} /></div>
+                    <div>
+                      <Label>Phone</Label>
+                      <div className="flex gap-2">
+                        <Select value={data.phoneCode} onValueChange={(val) => setField("phoneCode", val)}>
+                          <SelectTrigger className="w-[100px]"><SelectValue placeholder="Code" /></SelectTrigger>
+                          <SelectContent>
+                            {COUNTRY_CODES.map((c) => <SelectItem key={c.code} value={c.code}>{c.country} {c.code}</SelectItem>)}
+                          </SelectContent>
+                        </Select>
+                        <Input className="flex-1" value={data.phone} onChange={(e) => setField("phone", e.target.value)} />
+                      </div>
+                    </div>
                     <div><Label>Email</Label><Input type="email" value={data.email} onChange={(e) => setField("email", e.target.value)} /></div>
                     <div>
                       <Label>Gender</Label>
@@ -246,7 +321,15 @@ const GspApplicationPage: React.FC = () => {
                         </SelectContent>
                       </Select>
                     </div>
-                    <div><Label>Nationality</Label><Input value={data.nationality} onChange={(e) => setField("nationality", e.target.value)} /></div>
+                    <div>
+                      <Label>Nationality</Label>
+                      <Select value={data.nationality} onValueChange={(val) => setField("nationality", val)}>
+                        <SelectTrigger><SelectValue placeholder="Select nationality" /></SelectTrigger>
+                        <SelectContent>
+                          {NATIONS.map(n => <SelectItem key={n} value={n}>{n}</SelectItem>)}
+                        </SelectContent>
+                      </Select>
+                    </div>
                     <div>
                       <Label>Primary number on WhatsApp?</Label>
                       <Select value={data.isPhoneOnWhatsApp} onValueChange={(val) => setField("isPhoneOnWhatsApp", val)}>
@@ -259,7 +342,15 @@ const GspApplicationPage: React.FC = () => {
                     </div>
                     {data.isPhoneOnWhatsApp === "no" && <div><Label>Alternate WhatsApp</Label><Input value={data.alternateWhatsApp} onChange={(e) => setField("alternateWhatsApp", e.target.value)} /></div>}
                     <div><Label>City</Label><Input value={data.city} onChange={(e) => setField("city", e.target.value)} /></div>
-                    <div><Label>Region</Label><Input value={data.region} onChange={(e) => setField("region", e.target.value)} /></div>
+                    <div>
+                      <Label>Region</Label>
+                      <Select value={data.region} onValueChange={(val) => setField("region", val)}>
+                        <SelectTrigger><SelectValue placeholder="Select region" /></SelectTrigger>
+                        <SelectContent>
+                          {CAMEROON_REGIONS.map(r => <SelectItem key={r} value={r}>{r}</SelectItem>)}
+                        </SelectContent>
+                      </Select>
+                    </div>
                   </CardContent>
                 </Card>
               )}
@@ -271,7 +362,15 @@ const GspApplicationPage: React.FC = () => {
                     <div><Label>Household size</Label><Input type="number" value={data.householdSize} onChange={(e) => setField("householdSize", e.target.value)} /></div>
                     <div><Label>Primary guardian occupation</Label><Input value={data.primaryGuardianOccupation} onChange={(e) => setField("primaryGuardianOccupation", e.target.value)} /></div>
                     <div><Label>Second guardian occupation (optional)</Label><Input value={data.secondGuardianOccupation} onChange={(e) => setField("secondGuardianOccupation", e.target.value)} /></div>
-                    <div><Label>Highest family education</Label><Input value={data.highestFamilyEducation} onChange={(e) => setField("highestFamilyEducation", e.target.value)} /></div>
+                    <div>
+                      <Label>Highest family education</Label>
+                      <Select value={data.highestFamilyEducation} onValueChange={(val) => setField("highestFamilyEducation", val)}>
+                        <SelectTrigger><SelectValue placeholder="Select education" /></SelectTrigger>
+                        <SelectContent>
+                          {EDUCATION_LEVELS.map(e => <SelectItem key={e} value={e}>{e}</SelectItem>)}
+                        </SelectContent>
+                      </Select>
+                    </div>
                     <div>
                       <Label>Family studied abroad?</Label>
                       <Select value={data.familyStudiedAbroad} onValueChange={(val) => setField("familyStudiedAbroad", val)}>
@@ -300,7 +399,15 @@ const GspApplicationPage: React.FC = () => {
                     <div className="grid md:grid-cols-3 gap-4">
                       <div><Label>School name</Label><Input value={data.schoolName} onChange={(e) => setField("schoolName", e.target.value)} /></div>
                       <div><Label>Town/City</Label><Input value={data.schoolCity} onChange={(e) => setField("schoolCity", e.target.value)} /></div>
-                      <div><Label>Region</Label><Input value={data.schoolRegion} onChange={(e) => setField("schoolRegion", e.target.value)} /></div>
+                      <div>
+                        <Label>Region</Label>
+                        <Select value={data.schoolRegion} onValueChange={(val) => setField("schoolRegion", val)}>
+                          <SelectTrigger><SelectValue placeholder="Select region" /></SelectTrigger>
+                          <SelectContent>
+                            {CAMEROON_REGIONS.map(r => <SelectItem key={r} value={r}>{r}</SelectItem>)}
+                          </SelectContent>
+                        </Select>
+                      </div>
                     </div>
                     <div>
                       <Label>Current class</Label>
@@ -338,9 +445,14 @@ const GspApplicationPage: React.FC = () => {
                 <Card className="rounded-3xl">
                   <CardHeader><CardTitle>Section 4: Short Answer</CardTitle></CardHeader>
                   <CardContent>
-                    <Label>Community challenge essay (75-225 words)</Label>
-                    <Textarea className="min-h-[180px]" value={data.communityEssay} onChange={(e) => setField("communityEssay", e.target.value)} />
-                    <p className="text-xs text-muted-foreground mt-1">{words(data.communityEssay)} words</p>
+                    <Label className="mb-2 block">Community challenge essay (75-225 words)</Label>
+                    <ReactQuill 
+                      theme="snow" 
+                      value={data.communityEssay} 
+                      onChange={(content) => setField("communityEssay", content)} 
+                      className="mb-14 h-[200px]"
+                    />
+                    <p className="text-xs text-muted-foreground mt-12">{words(data.communityEssay)} words</p>
                   </CardContent>
                 </Card>
               )}
@@ -568,6 +680,19 @@ const GspApplicationPage: React.FC = () => {
                     variant="blue"
                     className="rounded-full px-8"
                     onClick={() => {
+                      const next = computeSectionState(data);
+                      saveGspDraft(data, next).catch(() => {});
+                      
+                      const currentSecKey = activeSection === 11 ? "review" : `section${activeSection}`;
+                      if (!next[currentSecKey]) {
+                        toast({
+                          title: "Incomplete Section",
+                          description: "Please fill out all required fields in this section before proceeding.",
+                          variant: "destructive"
+                        });
+                        return;
+                      }
+
                       const sections = [1, 2, 3, 4, 5, 6, 8, 9, 10, 11];
                       const currentIndex = sections.indexOf(activeSection);
                       if (currentIndex < sections.length - 1) {
