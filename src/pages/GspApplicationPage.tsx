@@ -87,6 +87,8 @@ const defaultData = {
     alSlip: null as any,
   },
   declarationConfirmed: false,
+};
+
 const GspApplicationPage: React.FC = () => {
   const { user, loading } = useGspAuth();
   const { toast } = useToast();
