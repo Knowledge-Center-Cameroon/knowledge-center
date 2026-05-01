@@ -165,18 +165,19 @@ export async function getGspDecision() {
   return apiRequest<{ released: boolean; decisionStatus: GspDecisionStatus | null; reference?: string; lowerSixthPathwayChoice?: string | null }>("/api/gsp/application/decision");
 }
 
-export async function uploadGspDocument(file: File) {
+export async function uploadGspDocument({ file, application }: { file: File; application: string }) {
   const dataUrl = await new Promise<string>((resolve, reject) => {
     const reader = new FileReader();
     reader.onload = () => resolve(String(reader.result || ""));
     reader.onerror = () => reject(new Error("Failed to read file"));
     reader.readAsDataURL(file);
   });
-  return apiRequest<UploadedDocument>("/api/gsp/uploads", {
+  return apiRequest<UploadedDocument>("/api/gsp/registration/document-upload", {
     method: "POST",
     body: JSON.stringify({
       fileName: file.name,
-      mimeType: file.type,
+      category: file.type,
+      application: application,
       dataUrl,
     }),
   });
