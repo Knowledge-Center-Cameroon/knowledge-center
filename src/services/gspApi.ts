@@ -119,14 +119,31 @@ export async function getCurrentUser() {
 }
 
 export async function getGspApplication() {
-  return apiRequest<{ application: any }>("/api/v2/gsp/registration");
+  const res = await apiRequest<any>("/api/v2/gsp/registration/");
+  // If it's an array (ListCreateAPIView), get the first one
+  const app = Array.isArray(res) ? (res.length > 0 ? res[0] : null) : res;
+  return { application: app };
 }
 
-export async function saveGspDraft(data: any, sectionState: Record<string, boolean>) {
-  return apiRequest<{ success: boolean; application: any }>("/api/gsp/application", {
-    method: "PUT",
-    body: JSON.stringify({ data, sectionState }),
-  });
+export async function saveGspDraft(data: any, sectionState: Record<string, boolean>, r_id?: string) {
+  const payload = {
+    ...data,
+    phoneNumber: `${data.phoneCode || "+237"} ${data.phone || ""}`.trim(),
+    secondaryGuardianOccupation: data.secondGuardianOccupation,
+    sectionState,
+  };
+
+  if (r_id) {
+    return apiRequest<{ success: boolean; application: any }>(`/api/v2/gsp/registration/${r_id}/`, {
+      method: "PATCH",
+      body: JSON.stringify(payload),
+    });
+  } else {
+    return apiRequest<{ success: boolean; application: any }>("/api/v2/gsp/registration/", {
+      method: "POST",
+      body: JSON.stringify(payload),
+    });
+  }
 } 
 
 export async function submitGspApplication(data: any, sectionState: Record<string, boolean>) {

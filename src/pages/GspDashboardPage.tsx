@@ -77,7 +77,7 @@ const GspDashboardPage: React.FC = () => {
                 <p>Reference: <span className="font-semibold">{application?.reference || "Not submitted yet"}</span></p>
                 <div className="flex flex-wrap gap-3 pt-2">
                   <Button asChild variant="blue" className="rounded-full">
-                    <Link to="/gsp/application">{application?.status === "submitted" ? "View Application" : "Continue Application"}</Link>
+                    <Link to="/gsp/application">{application?.status === "submitted" ? "View Application" : (!application && localProgress === null ? "Create Application" : "Continue Application")}</Link>
                   </Button>
                   <Button asChild variant="outline" className="rounded-full">
                     <Link to="/gsp/decision">View Decision</Link>

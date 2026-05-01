@@ -41,6 +41,7 @@ const EDUCATION_LEVELS = [
 ];
 
 const defaultData = {
+  r_id: "",
   firstName: "",
   lastName: "",
   dob: "",
@@ -148,7 +149,10 @@ const GspApplicationPage: React.FC = () => {
     const id = setTimeout(async () => {
       try {
         setSaving(true);
-        await saveGspDraft(data, next);
+        const res = await saveGspDraft(data, next, data.r_id);
+        if (res?.application?.r_id && !data.r_id) {
+          setData((prev: any) => ({ ...prev, r_id: res.application.r_id }));
+        }
       } catch {
       } finally {
         setSaving(false);
@@ -648,7 +652,11 @@ const GspApplicationPage: React.FC = () => {
                     className="rounded-full px-8"
                     onClick={() => {
                       const next = computeSectionState(data);
-                      saveGspDraft(data, next).catch(() => {});
+                      saveGspDraft(data, next, data.r_id).then((res) => {
+                        if (res?.application?.r_id && !data.r_id) {
+                          setData((prev: any) => ({ ...prev, r_id: res.application.r_id }));
+                        }
+                      }).catch(() => {});
                       
                       const currentSecKey = activeSection === 11 ? "review" : `section${activeSection}`;
                       if (!next[currentSecKey]) {
