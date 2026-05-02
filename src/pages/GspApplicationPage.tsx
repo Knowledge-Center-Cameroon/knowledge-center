@@ -1,4 +1,5 @@
 import React from "react";
+import { CheckCircle } from "lucide-react";
 import { Navigate, Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -67,6 +68,387 @@ const defaultData = {
   lowerSixthPathwayChoice: "",
   lowerSixthAlternatives: "",
   section7: "",
+  topSubjects: Array.from({ length: 5 }).map(() => ({ name: "", score: "", examTerm: "" })),
+  intendedFieldWhy: "",
+  communityEssay: "",
+  activities: [{ title: "", roleDescription: "", duration: "", hoursPerWeek: "", weeksPerYear: "", isStillDoing: "", stoppedIn: "" }],
+  housingOption: "",
+  housingContactRelation: "",
+  housingContactAware: "",
+  canCoverHousingCost: "",
+  participationConstraint: "",
+  participationConstraintExplain: "",
+  monthlyIncomeRange: "",
+  worksToSupportFamily: "",
+  workSupportDetails: "",
+  costChallenge: "",
+  applyingScholarship: "",
+  scholarshipEssay: "",
+  documents: {
+    reportCard: null as any,
+    olSlip: null as any,
+    alSlip: null as any,
+  },
+  declarationConfirmed: false,
+};
+
+// Inline guidance placeholders. Replace the strings below with exact text
+// from the attached PDF where appropriate.
+const GUIDANCE_TEXT: Record<number, string> = {
+  1: `Provide your legal name, date of birth, contact details and where you live. Be accurate — this information is used for identification and logistics.`,
+  2: `Describe your household and guardian occupations. If any family members studied abroad, say who, where and when (brief).`,
+  3: `List your school, region and top 5 subjects (include scores and exam/term). Explain briefly what you want to study and why (concise).`,
+  4: `Community challenge essay: describe a real challenge in your community and your involvement or proposed solutions. Aim for clarity and concrete examples.`,
+  5: `List up to three activities. For each, state your role, duration and weekly time commitment. Be specific about responsibilities.`,
+  6: `Indicate housing preference and whether a contact/host is aware. Note any constraints that may affect your participation in the programme.`,
+  7: `Section 7 placeholder: replace with exact guidance from the official application document.`,
+  8: `Provide an accurate estimate of monthly household income and explain any work you do to support your family.`,
+  9: `If applying for financial aid, explain why the support is needed and how it will be used.`,
+  10: `Upload required documents: recent report card and Ordinary Level slip are mandatory. PDF or image formats accepted.`,
+  11: `Review carefully before submitting. Once submitted, the application will be locked for review.`,
+};
+
+const SECTION_LABELS: Record<number, string> = {
+  0: "Getting Started",
+  1: "Personal Information",
+  2: "Family Background",
+  3: "Academic Background",
+  4: "Short Answer",
+  5: "Activities",
+  6: "Logistics & Programme Fit",
+  8: "Financial Context",
+  9: "Financial Aid",
+  10: "Documents",
+  7: "Other Information",
+  11: "Review & Submit",
+};
+
+const QUIET_QUILL_MODULES = { toolbar: false };
+const EDITABLE_QUILL_MODULES = {
+  toolbar: [
+    [{ header: [1, 2, 3, false] }],
+    ["bold", "italic", "underline"],
+    ["link", "blockquote", "code-block"],
+    [{ list: "ordered" }, { list: "bullet" }],
+  ],
+};
+
+const GspApplicationPage: React.FC = () => {
+  const { user, loading } = useGspAuth();
+  const { toast } = useToast();
+  const navigate = useNavigate();
+  const [data, setData] = React.useState<any>(defaultData);
+  const [sectionState, setSectionState] = React.useState<Record<string, boolean>>({});
+  const [fetching, setFetching] = React.useState(true);
+  const [saving, setSaving] = React.useState(false);
+  const [submitting, setSubmitting] = React.useState(false);
+  const [activeSection, setActiveSection] = React.useState(1);
+
+  const progressPct = React.useMemo(() => {
+    return computeProgressPct(sectionState);
+  }, [sectionState]);
+
+  React.useEffect(() => {
+    if (!user) return;
+    
+    // Attempt to load from localStorage first for instant recovery
+    const draftKey = `gsp_draft_${user.email}`;
+    const localDraft = localStorage.getItem(draftKey);
+    let loadedLocal = false;
+
+    if (localDraft) {
+      try {
+        const parsed = JSON.parse(localDraft);
+        setData((prev: any) => ({ ...prev, ...parsed }));
+        loadedLocal = true;
+      } catch (e) {}
+    }
+
+    (async () => {
+      try {
+        const resp = await getGspApplication();
+        const serverData = resp.application?.data || {};
+        // Use server data if no local draft exists to prevent overwriting recent offline edits
+        if (!loadedLocal) {
+          // If the server provides an r_id for this application, include it in the local state
+          const appRId = resp.application?.r_id;
+          const mergedData = {
+            ...defaultData,
+            ...serverData,
+            email: serverData.email || user.email,
+            ...(appRId ? { r_id: appRId } : {}),
+          };
+          setData(mergedData);
+          const nextSectionState = resp.application?.sectionState || computeSectionState(mergedData);
+          setSectionState(nextSectionState);
+        }
+      } catch (error: any) {
+        toast({ title: "Failed to load application", description: error.message || "Please try again.", variant: "destructive" as any });
+      } finally {
+        setFetching(false);
+      }
+    })();
+  }, [user, toast]);
+
+  React.useEffect(() => {
+    if (!user || fetching) return;
+    const next = computeSectionState(data);
+    setSectionState(next);
+    
+    // Save to local storage synchronously on every data change
+    localStorage.setItem(`gsp_draft_${user.email}`, JSON.stringify(data));
+
+    const id = setTimeout(async () => {
+      try {
+        setSaving(true);
+        const res = await saveGspDraft(data, next, data.r_id);
+        localStorage.setItem('gsp_reg_rid', data.r_id)
+        if (res?.application?.r_id && !data.r_id) {
+          setData((prev: any) => ({ ...prev, r_id: res.application.r_id }));
+        }
+      } catch {
+      } finally {
+        setSaving(false);
+      }
+    }, 1200);
+    return () => clearTimeout(id);
+  }, [data, user, fetching]);
+
+  if (!loading && !user) return <Navigate to="/auth?redirect=/gsp/application" replace />;
+
+  const setField = (key: string, value: any) => setData((prev: any) => ({ ...prev, [key]: value }));
+
+  const canEditSection = (s: number) => {
+    // Allow editing of all sections regardless of completion order per user request.
+    return true;
+  };
+
+  const updateSubject = (index: number, key: "name" | "score" | "examTerm", value: string) => {
+    setData((prev: any) => {
+      const topSubjects = [...prev.topSubjects];
+      topSubjects[index] = { ...topSubjects[index], [key]: value };
+      return { ...prev, topSubjects };
+    });
+  };
+
+  const updateActivity = (index: number, key: string, value: string) => {
+    setData((prev: any) => {
+      const activities = [...prev.activities];
+      activities[index] = { ...activities[index], [key]: value };
+      return { ...prev, activities };
+    });
+  };
+
+  console.log("Draft saved with r_id:", );
+
+  const editable = canEditSection(activeSection);
+
+  const addActivity = () => {
+    setData((prev: any) => {
+      if (prev.activities.length >= 3) return prev;
+      return {
+        ...prev,
+        activities: [...prev.activities, { title: "", roleDescription: "", duration: "", hoursPerWeek: "", weeksPerYear: "", isStillDoing: "", stoppedIn: "" }],
+      };
+    });
+  };
+
+  const removeActivity = (idx: number) => {
+    setData((prev: any) => ({ ...prev, activities: prev.activities.filter((_: any, i: number) => i !== idx) }));
+  };
+
+  const getMissingFields = (section: number) => {
+    const missing: string[] = [];
+
+    if (section === 1) {
+      if (!data.firstName) missing.push("First name");
+      if (!data.lastName) missing.push("Last name");
+      if (!data.dob) missing.push("Date of birth");
+      if (!data.phone) missing.push("Phone");
+      if (!data.email) missing.push("Email");
+      if (!data.city) missing.push("City");
+      if (!data.region) missing.push("Region");
+    }
+
+    if (section === 2) {
+      if (!data.householdSize) missing.push("Household size");
+      if (!data.primaryGuardianOccupation) missing.push("Primary guardian occupation");
+    }
+
+    if (section === 3) {
+      if (!data.schoolName) missing.push("School name");
+      if (!data.schoolCity) missing.push("School town/city");
+      if (!data.schoolRegion) missing.push("School region");
+      if (!data.currentClass) missing.push("Current class");
+      if (data.currentClass === "lower_sixth" && !data.lowerSixthAlternatives) missing.push("Lower Sixth alternatives response");
+
+      // Top subjects
+      if (!Array.isArray(data.topSubjects) || data.topSubjects.length < 5) {
+        missing.push("Top 5 subjects (provide subject, score and exam/term)");
+      } else {
+        data.topSubjects.forEach((s: any, i: number) => {
+          if (!s.name) missing.push(`Subject ${i + 1}: name`);
+          if (!s.score) missing.push(`Subject ${i + 1}: score`);
+          if (!s.examTerm) missing.push(`Subject ${i + 1}: exam/term`);
+        });
+      }
+    }
+
+    if (section === 4) {
+      if (!data.communityEssay) missing.push("Community challenge essay");
+    }
+
+    if (section === 5) {
+      if (!Array.isArray(data.activities) || data.activities.length === 0) missing.push("At least one activity");
+      else {
+        data.activities.forEach((a: any, i: number) => {
+          if (!a.title) missing.push(`Activity ${i + 1}: title`);
+          if (!a.roleDescription) missing.push(`Activity ${i + 1}: role description`);
+          if (!a.duration) missing.push(`Activity ${i + 1}: duration`);
+          if (!a.hoursPerWeek) missing.push(`Activity ${i + 1}: hours/week`);
+          if (!a.weeksPerYear) missing.push(`Activity ${i + 1}: weeks/year`);
+          if (!a.isStillDoing) missing.push(`Activity ${i + 1}: still doing?`);
+          if (a.isStillDoing === "no" && !a.stoppedIn) missing.push(`Activity ${i + 1}: stopped in`);
+        });
+      }
+    }
+
+    if (section === 6) {
+      if (!data.housingOption) missing.push("Housing option");
+      if (data.housingOption === "B") {
+        if (!data.housingContactRelation) missing.push("Housing contact relationship");
+        if (!data.housingContactAware) missing.push("Housing contact aware?");
+      }
+      if (data.housingOption === "C" && !data.canCoverHousingCost) missing.push("Can cover housing cost");
+      if (!data.participationConstraint && data.participationConstraint !== "no" ) missing.push("Participation constraint");
+      if (data.participationConstraint === "yes" && !data.participationConstraintExplain) missing.push("Participation constraint explanation");
+    }
+    if (section === 8) {
+      if (!data.monthlyIncomeRange) missing.push("Monthly household income range");
+      if (!data.worksToSupportFamily) missing.push("Works to support family?");
+      if (data.worksToSupportFamily === "yes" && !data.workSupportDetails) missing.push("Work support details");
+      if (!data.costChallenge) missing.push("Cost challenge response");
+    }
+    if (section === 9) {
+      if (!data.applyingScholarship) missing.push("Applying for financial aid?");
+      if (data.applyingScholarship === "yes" && !data.scholarshipEssay) missing.push("Scholarship essay");
+    }
+    if (section === 10) {
+      if (!data.documents?.reportCard?.url) missing.push("Report card upload");
+      if (!data.documents?.olSlip?.url) missing.push("Ordinary Level slip upload");
+    }
+    if (section === 11) {
+      if (!data.declarationConfirmed) missing.push("Declaration confirmation");
+    }
+
+    return missing;
+  };
+
+  const uploadDocument = async (field: "reportCard" | "olSlip" | "alSlip", file?: File | null) => {
+    if (!file) return;
+    try {
+      const uploaded = await uploadGspDocument({ file: file, application: data.r_id });
+      setData((prev: any) => ({
+        ...prev,
+        documents: { ...prev.documents, [field]: uploaded },
+      }));
+      toast({ title: "Upload complete", description: `${file.name} uploaded successfully.` });
+    } catch (error: any) {
+      toast({ title: "Upload failed", description: error.message || "Please try another file.", variant: "destructive" as any });
+    }
+  };
+
+  const onSubmit = async () => {
+    // Validate all sections and provide exact missing-field feedback
+    const sections = [1,2,3,4,5,6,7,8,9,10,11];
+    const allMissing: string[] = [];
+    sections.forEach((s) => {
+      const miss = getMissingFields(s);
+      if (miss.length) allMissing.push(...miss.map(m => `Section ${s}: ${m}`));
+    });
+    if (allMissing.length) {
+      toast({ title: "Cannot submit — missing fields", description: allMissing.slice(0,6).join('; ')+ (allMissing.length>6? '...': ''), variant: "destructive" as any });
+      return;
+    }
+
+    try {
+      setSubmitting(true);
+      await submitGspApplication(data, sectionState, data.r_id);
+      localStorage.removeItem(`gsp_draft_${user?.email}`);
+      toast({ title: "Application submitted", description: "Your application is now locked for review." });
+      navigate("/gsp/dashboard");
+    } catch (error: any) {
+      toast({ title: "Submission failed", description: error.message || "Please review required sections.", variant: "destructive" as any });
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  return (
+    <motion.section initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="container mx-auto px-4 lg:px-8 py-12 lg:py-16">
+      <div className="max-w-6xl mx-auto grid lg:grid-cols-[280px_minmax(0,1fr)] gap-6">
+        <Card className="rounded-3xl h-fit lg:sticky lg:top-24">
+          <CardHeader>
+            <CardTitle className="text-xl">GSP Application</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-2">
+            <p className="text-sm text-muted-foreground">Progress: <span className="font-semibold text-kc-blue">{progressPct}%</span></p>
+            <p className="text-xs text-muted-foreground">{saving ? "Autosaving..." : "All changes saved automatically"}</p>
+            <div className="pt-2 grid gap-2 text-sm">
+              {[0,1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].map((s, index, arr) => {
+                const key = s === 11 ? "review" : `section${s}`;
+                const completed = !!sectionState[key];
+                const label = SECTION_LABELS[s] ? `Section ${s}: ${SECTION_LABELS[s]}` : (s===0? 'Getting Started' : `Section ${s}`);
+                return (
+                  <button 
+                    key={s}
+                    className={`text-left px-3 py-2 rounded-lg border flex justify-between items-center ${activeSection === s ? "border-kc-blue bg-kc-blue/5" : (completed ? "border-kc-blue bg-kc-blue/10" : "border-border")} hover:border-kc-blue`} 
+                    onClick={() => setActiveSection(s)}
+                  >
+                    <span className="truncate max-w-[180px]">{label}</span>
+                    <div className="flex items-center gap-2">
+                      {completed && <CheckCircle className="w-5 h-5 text-kc-blue" />}
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+            <div className="pt-3">
+              <Button asChild variant="outline" className="rounded-full w-full">
+                <Link to="/gsp/dashboard">Back to Dashboard</Link>
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+
+        <div className="space-y-6">
+          {/* Section 0: Getting Started (moved into its own section) */}
+          {activeSection === 0 && (
+            <Card className="rounded-3xl">
+              <CardHeader><CardTitle>Section 0: Getting Started</CardTitle></CardHeader>
+              <CardContent>
+                <p>This application is for the KC Global Scholars Programme. We admit a small cohort each year. Selection is competitive.</p>
+                <p className="mt-2">Answer every question in your own words. We are not looking for the most polished answers. We are looking for the clearest picture of who you are, where you come from, and what you intend to do.</p>
+                <p className="mt-2">The programme runs from Summer 2026 (on-site) through May 2027. Make sure you are available for this full period before applying.</p>
+                <p className="mt-2">Set aside enough time to do this properly. Most students take between 3 days and a week to complete the application.</p>
+              </CardContent>
+            </Card>
+          )}
+          {fetching ? (
+            <Card className="rounded-3xl"><CardContent className="p-8">Loading application...</CardContent></Card>
+          ) : (
+            <>
+              {activeSection === 1 && (
+                <Card className="rounded-3xl">
+                  <CardHeader><CardTitle>Section 1: Personal Information</CardTitle></CardHeader>
+                  <CardContent className="grid md:grid-cols-2 gap-4">
+                    <div className="col-span-full text-sm text-muted-foreground mb-2">{GUIDANCE_TEXT[1]}</div>
+                    {/* determine editability for this section */}
+                    {/** inputs will be disabled when section locked */}
+                    
+                    
+                    <div><Label>First name</Label><Input disabled={!editable} value={data.firstName} onChange={(e) => setField("firstName", e.target.value)} /></div>
+                    <div><Label>Last name</Label><Input disabled={!editable} value={data.lastName} onChange={(e) => setField("lastName", e.  section7: "",
   topSubjects: Array.from({ length: 5 }).map(() => ({ name: "", score: "", examTerm: "" })),
   intendedFieldWhy: "",
   communityEssay: "",
