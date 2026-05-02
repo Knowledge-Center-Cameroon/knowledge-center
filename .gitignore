@@ -2,6 +2,7 @@
 build/
 build.log
 node_modules
+dist/
 
 # Environment variables
 .env

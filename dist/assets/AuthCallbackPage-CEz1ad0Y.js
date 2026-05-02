@@ -1,1 +1,0 @@
-import{a9 as o,j as r,ah as t}from"./index-C6w8Fnr3.js";const n=()=>{const{isSignedIn:e,user:s,isLoaded:a}=o();return console.log("Clerk auth state loaded:",{isLoaded:a,isSignedIn:e,user:s}),e&&console.log("User info from Clerk:",s),r.jsx(t,{to:"/gsp/dashboard",replace:!0})};export{n as default};
