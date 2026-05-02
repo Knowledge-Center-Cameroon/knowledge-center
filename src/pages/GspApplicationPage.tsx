@@ -65,6 +65,8 @@ const defaultData = {
   schoolRegion: "",
   currentClass: "",
   lowerSixthPathwayChoice: "",
+  lowerSixthAlternatives: "",
+  section7: "",
   topSubjects: Array.from({ length: 5 }).map(() => ({ name: "", score: "", examTerm: "" })),
   intendedFieldWhy: "",
   communityEssay: "",
@@ -98,6 +100,7 @@ const GUIDANCE_TEXT: Record<number, string> = {
   4: `Community challenge essay: describe a real challenge in your community and your involvement or proposed solutions. Aim for clarity and concrete examples.`,
   5: `List up to three activities. For each, state your role, duration and weekly time commitment. Be specific about responsibilities.`,
   6: `Indicate housing preference and whether a contact/host is aware. Note any constraints that may affect your participation in the programme.`,
+  7: `Section 7 placeholder: replace with exact guidance from the official application document.`,
   8: `Provide an accurate estimate of monthly household income and explain any work you do to support your family.`,
   9: `If applying for financial aid, explain why the support is needed and how it will be used.`,
   10: `Upload required documents: recent report card and Ordinary Level slip are mandatory. PDF or image formats accepted.`,
@@ -114,6 +117,7 @@ const SECTION_LABELS: Record<number, string> = {
   8: "Financial Context",
   9: "Financial Aid",
   10: "Documents",
+  7: "Other Information",
   11: "Review & Submit",
 };
 
@@ -280,7 +284,10 @@ const GspApplicationPage: React.FC = () => {
       if (!data.schoolCity) missing.push("School city");
       if (!data.schoolRegion) missing.push("School region");
       if (!data.currentClass) missing.push("Current class");
-      if (data.currentClass === "lower_sixth" && !data.lowerSixthPathwayChoice) missing.push("Fallback preference for Lower Sixth");
+      if (data.currentClass === "lower_sixth") {
+        if (!data.lowerSixthPathwayChoice) missing.push("Fallback preference for Lower Sixth");
+        if (!data.lowerSixthAlternatives) missing.push("Lower Sixth alternatives preference");
+      }
       if (!data.intendedFieldWhy || words(data.intendedFieldWhy) === 0) missing.push("Intended field and reason");
       if (!Array.isArray(data.topSubjects) || data.topSubjects.length !== 5) missing.push("Top 5 subjects");
       else {
@@ -354,7 +361,7 @@ const GspApplicationPage: React.FC = () => {
 
   const onSubmit = async () => {
     // Validate all sections and provide exact missing-field feedback
-    const sections = [1,2,3,4,5,6,8,9,10,11];
+    const sections = [1,2,3,4,5,6,7,8,9,10,11];
     const allMissing: string[] = [];
     sections.forEach((s) => {
       const miss = getMissingFields(s);
@@ -389,7 +396,7 @@ const GspApplicationPage: React.FC = () => {
             <p className="text-sm text-muted-foreground">Progress: <span className="font-semibold text-kc-blue">{progressPct}%</span></p>
             <p className="text-xs text-muted-foreground">{saving ? "Autosaving..." : "All changes saved automatically"}</p>
             <div className="pt-2 grid gap-2 text-sm">
-              {[1, 2, 3, 4, 5, 6, 8, 9, 10, 11].map((s, index, arr) => {
+              {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].map((s, index, arr) => {
                 const canEdit = index === 0 || arr.slice(0, index).every((prevSec) => sectionState[prevSec === 11 ? "review" : `section${prevSec}`]);
                 const label = SECTION_LABELS[s] ? `Section ${s}: ${SECTION_LABELS[s]}` : `Section ${s}`;
                 return (
@@ -573,14 +580,44 @@ const GspApplicationPage: React.FC = () => {
                       </Select>
                     </div>
                     {data.currentClass === "lower_sixth" && (
-                      <div><Label>If not admitted, fallback preference</Label><Input disabled={!editable} value={data.lowerSixthPathwayChoice} onChange={(e) => setField("lowerSixthPathwayChoice", e.target.value)} /></div>
+                      <>
+                        <div><Label>If not admitted, fallback preference</Label><Input disabled={!editable} value={data.lowerSixthPathwayChoice} onChange={(e) => setField("lowerSixthPathwayChoice", e.target.value)} /></div>
+                        <div className="mt-2 p-3 rounded-md border border-border bg-background">
+                          <div className="text-xs font-semibold">CONDITIONAL — SHOW ONLY IF: student selects Lower Sixth in Q1.5</div>
+                          <div className="text-sm text-muted-foreground mt-1">Lower Sixth students are fully eligible for the KC GSP. If you are not admitted to this cohort, KC offers two ways to keep building toward your goal.</div>
+                          <ul className="text-sm mt-2 list-disc list-inside space-y-1">
+                            <li>The KC Summer Programme, to strengthen your preparation</li>
+                            <li>One-on-one mentorship during your Upper Sixth year</li>
+                          </ul>
+                          <div className="mt-3">
+                            <Label>Would you be open to either of these if you are not admitted this cycle?</Label>
+                            <Select disabled={!editable} value={data.lowerSixthAlternatives} onValueChange={(val) => setField("lowerSixthAlternatives", val)}>
+                              <SelectTrigger><SelectValue placeholder="Select option" /></SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="both">Yes, I am open to both</SelectItem>
+                                <SelectItem value="summer">Yes — the Summer Programme</SelectItem>
+                                <SelectItem value="mentorship">Yes — mentorship support</SelectItem>
+                                <SelectItem value="none">Main cohort only — I am not interested in the alternatives</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </div>
+                        </div>
+                      </>
                     )}
                     <div className="space-y-3">
                       <Label>Top 5 subjects with score and exam term</Label>
                       {data.topSubjects.map((subject: any, i: number) => (
                         <div key={i} className="grid md:grid-cols-3 gap-3">
                           <Input disabled={!editable} placeholder={`Subject ${i + 1}`} value={subject.name} onChange={(e) => updateSubject(i, "name", e.target.value)} />
-                          <Input disabled={!editable} placeholder="Score" value={subject.score} onChange={(e) => updateSubject(i, "score", e.target.value)} />
+                          <Select disabled={!editable} value={subject.score} onValueChange={(val) => updateSubject(i, "score", val)}>
+                            <SelectTrigger><SelectValue placeholder="Score" /></SelectTrigger>
+                            <SelectContent>
+                              {Array.from({ length: 20 }).map((_, idx) => {
+                                const num = (idx + 1).toString();
+                                return <SelectItem key={num} value={num}>{num} / 20</SelectItem>;
+                              })}
+                            </SelectContent>
+                          </Select>
                           <Input disabled={!editable} placeholder="Exam/Term" value={subject.examTerm} onChange={(e) => updateSubject(i, "examTerm", e.target.value)} />
                         </div>
                       ))}
@@ -719,6 +756,24 @@ const GspApplicationPage: React.FC = () => {
                         <p className="text-xs text-muted-foreground mt-1">{words(data.participationConstraintExplain)} / 200 words</p>
                       </div>
                     )}
+                  </CardContent>
+                </Card>
+              )}
+
+              {activeSection === 7 && (
+                <Card className="rounded-3xl">
+                  <CardHeader><CardTitle>Section 7: {SECTION_LABELS[7]}</CardTitle></CardHeader>
+                  <CardContent>
+                    <div className="text-sm text-muted-foreground mb-3">{GUIDANCE_TEXT[7]}</div>
+                    <Label>Notes / additional information</Label>
+                    <ReactQuill
+                      theme="snow"
+                      value={data.section7}
+                      onChange={(content) => setField("section7", content)}
+                      readOnly={!editable}
+                      modules={editable ? EDITABLE_QUILL_MODULES : QUIET_QUILL_MODULES}
+                      className="min-h-[160px]"
+                    />
                   </CardContent>
                 </Card>
               )}
@@ -879,7 +934,7 @@ const GspApplicationPage: React.FC = () => {
                   return;
                 }
 
-                const sections = [1, 2, 3, 4, 5, 6, 8, 9, 10, 11];
+                const sections = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
                 const currentIndex = sections.indexOf(activeSection);
                 if (currentIndex < sections.length - 1) {
                   window.scrollTo({ top: 0, behavior: 'smooth' });
