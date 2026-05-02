@@ -45,7 +45,6 @@ src/
   components/     # Reusable UI components
   components/ui/  # UI primitives (Card, Button, Input, Label, Select, Textarea, etc.)
   assets/         # Static assets (logos, icons)
-dist/             # Build output (generated)
 .env.local        # Local environment overrides (not committed)
 .env              # Shared environment variables
 package.json      # Project dependencies and scripts
