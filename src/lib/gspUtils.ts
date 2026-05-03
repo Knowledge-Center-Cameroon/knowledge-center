@@ -14,16 +14,11 @@ export function computeSectionState(source: any): Record<string, boolean> {
     section4: words(source.communityEssay) >= 75 && words(source.communityEssay) <= 225,
     section5: Array.isArray(source.activities) && source.activities.length >= 1 && source.activities.every((a: any) => a.title && a.roleDescription && a.duration && a.hoursPerWeek && a.weeksPerYear && a.isStillDoing && (a.isStillDoing !== "no" || a.stoppedIn)),
     section6: Boolean(source.housingOption && source.participationConstraint && (source.housingOption !== "B" || (source.housingContactRelation && source.housingContactAware)) && (source.housingOption !== "C" || source.canCoverHousingCost) && (source.participationConstraint !== "yes" || source.participationConstraintExplain)),
-      section7: true,
     section8: Boolean(source.monthlyIncomeRange && source.worksToSupportFamily && (source.worksToSupportFamily !== "yes" || source.workSupportDetails) && source.costChallenge),
     section9: Boolean(source.applyingScholarship && (source.applyingScholarship !== "yes" || source.scholarshipEssay)),
     section10: Boolean(source.documents?.reportCard?.url && source.documents?.olSlip?.url),
     review: Boolean(source.declarationConfirmed),
   };
-  
-  if (source.currentClass === "lower_sixth") {
-    st.section3 = st.section3 && Boolean(source.lowerSixthPathwayChoice) && Boolean(source.lowerSixthAlternatives);
-  }
   
   if (Array.isArray(source.topSubjects) && source.topSubjects.length === 5) {
     st.section3 = st.section3 && source.topSubjects.every((s: any) => s.name && s.score && s.examTerm);
