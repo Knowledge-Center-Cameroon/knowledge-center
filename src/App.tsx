@@ -44,8 +44,8 @@ const ScrollToTop = () => {
 
 const AppShell: React.FC = () => (
   <QueryClientProvider client={queryClient}>
-    <UserProvider>
-      <GspAuthProvider>
+    <GspAuthProvider>
+      <UserProvider>
         <TooltipProvider>
           <Toaster />
           <Sonner />
@@ -83,8 +83,8 @@ const AppShell: React.FC = () => (
             </Suspense>
           </BrowserRouter>
         </TooltipProvider>
-      </GspAuthProvider>
-    </UserProvider>
+      </UserProvider>
+    </GspAuthProvider>
   </QueryClientProvider>
 );
 

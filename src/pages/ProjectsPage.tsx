@@ -10,6 +10,8 @@ import StemBackground from "@/components/StemBackground";
 import { useParallax, Parallax } from "@/hooks/use-parallax";
 import { Badge } from "@/components/ui/badge";
 import { useSeo } from "@/hooks/useSeo";
+import { useToast } from "@/components/ui/use-toast";
+import { Bell, CalendarDays } from "lucide-react";
 
 const cardVariants = {
   hidden: {
@@ -54,6 +56,7 @@ const cardVariants = {
  */
 const ProjectsPage: React.FC = () => {
   const navigate = useNavigate();
+  const { toast } = useToast();
   const [selectedCategory, setSelectedCategory] = React.useState<string>("all");
   const projectPriority: Record<string, number> = {
     gsp: 0,
@@ -64,6 +67,13 @@ const ProjectsPage: React.FC = () => {
     description:
       "Discover Knowledge Center's innovative STEM programs: National STEM Competition, Summer Education Program, Weekend School, KC Prepa, and Global Scholars Program.",
   });
+
+  React.useEffect(() => {
+    toast({
+      title: "Applications open",
+      description: "The Global Scholars Program is currently accepting applications.",
+    });
+  }, [toast]);
   
   // Get unique categories
   const categories = React.useMemo(() => {
@@ -115,6 +125,39 @@ const ProjectsPage: React.FC = () => {
             </p>
           </Parallax>
 
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.15, duration: 0.45 }}
+            className="mb-10 rounded-2xl border border-kc-blue/20 bg-white/95 p-4 shadow-sm ring-1 ring-kc-blue/5"
+          >
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+              <div className="flex gap-3">
+                <div className="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-kc-blue text-white">
+                  <Bell className="h-5 w-5" />
+                </div>
+                <div>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <h2 className="text-lg font-semibold text-foreground">Global Scholars Program applications are open</h2>
+                    <Badge className="rounded-full bg-kc-blue text-white hover:bg-kc-blue">Accepting applications</Badge>
+                  </div>
+                  <p className="mt-1 text-sm text-muted-foreground">
+                    Students can start or continue their KC Global Scholars Program application from the portal.
+                  </p>
+                  <div className="mt-2 flex items-center gap-2 text-xs font-medium text-kc-blue">
+                    <CalendarDays className="h-4 w-4" />
+                    Current program cycle
+                  </div>
+                </div>
+              </div>
+              <Button asChild variant="blue" className="rounded-full gap-2">
+                <Link to="/gsp/dashboard">
+                  Apply now
+                  <ArrowRight className="h-4 w-4" />
+                </Link>
+              </Button>
+            </div>
+          </motion.div>
 
           {/* Filters */}
           <motion.div

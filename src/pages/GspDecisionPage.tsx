@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { useGspAuth } from "@/contexts/GspAuthContext";
 import { getGspDecision } from "@/services/gspApi";
 import { useToast } from "@/components/ui/use-toast";
+import { Loader2 } from "lucide-react";
 
 const confettiPieces = Array.from({ length: 80 }).map((_, i) => ({
   id: i,
@@ -18,6 +19,8 @@ const GspDecisionPage: React.FC = () => {
   const { user, loading } = useGspAuth();
   const { toast } = useToast();
   const [state, setState] = React.useState<any>(null);
+  const [fetching, setFetching] = React.useState(true);
+  const [loadError, setLoadError] = React.useState<string | null>(null);
 
   React.useEffect(() => {
     if (!user) return;
@@ -26,7 +29,13 @@ const GspDecisionPage: React.FC = () => {
         const resp = await getGspDecision();
         setState(resp);
       } catch (error: any) {
-        toast({ title: "Failed to load decision", description: error.message || "Please refresh.", variant: "destructive" as any });
+        const message = error.message || "Your decision is not available yet.";
+        setLoadError(message);
+        if (!/not found|not submitted|decision/i.test(message)) {
+          toast({ title: "Failed to load decision", description: message, variant: "destructive" as any });
+        }
+      } finally {
+        setFetching(false);
       }
     })();
   }, [user, toast]);
@@ -58,7 +67,19 @@ const GspDecisionPage: React.FC = () => {
       <div className="max-w-3xl mx-auto">
         <Card className="rounded-3xl border-kc-blue/20 shadow-card">
           <CardContent className="p-8 md:p-12 text-center space-y-4">
-            {!state?.released && (
+            {fetching && (
+              <div className="flex flex-col items-center gap-3 py-8 text-muted-foreground">
+                <Loader2 className="h-6 w-6 animate-spin text-kc-blue" />
+                Checking your decision status...
+              </div>
+            )}
+            {!fetching && loadError && (
+              <>
+                <h1 className="heading-2">Decision Not Available</h1>
+                <p className="text-muted-foreground">We could not find a released decision for this account yet.</p>
+              </>
+            )}
+            {!fetching && !loadError && !state?.released && (
               <>
                 <h1 className="heading-2">Decision Not Yet Released</h1>
                 <p className="text-muted-foreground">Your application is received. Decisions will appear here once the cycle is released.</p>

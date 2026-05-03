@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/components/ui/use-toast";
 import {
+  createPortalAccount,
   forgotPassword,
   registerGsp,
   resendVerificationCode,
@@ -39,7 +40,7 @@ const AuthPage: React.FC = () => {
   });
 
   
-  let {isSignedIn, user: clerkUser } = useUser();
+  const { isSignedIn, user: clerkUser } = useUser();
   const { user, refreshUser, signIn } = useGspAuth();
 
   const { session } = useSession();
@@ -107,61 +108,61 @@ const AuthPage: React.FC = () => {
 
 
 
-  // const onSubmit = async (e: React.FormEvent) => {
-  //   e.preventDefault();
-  //   setLoading(true);
-  //   try {
-  //     if (mode === "signup") {
-  //       if (form.password !== form.confirmPassword) {
-  //         throw new Error("Passwords do not match");
-  //       }
-  //       await registerGsp({
-  //         name: form.name,
-  //         email: form.email,
-  //         password: form.password,
-  //       });
-  //       toast({
-  //         title: "Verification code sent",
-  //         description: "Enter the code from your email to finish creating your account.",
-  //       });
-  //       setForm((prev) => ({ ...prev, password: "", confirmPassword: "", verificationCode: "" }));
-  //       setMode("verify");
-  //     } else if (mode === "verify") {
-  //       const data = await verifyEmailCode({
-  //         email: form.email,
-  //         code: form.verificationCode,
-  //       });
-  //       saveAuthToken(data.token);
-  //       await refreshUser();
-  //       toast({
-  //         title: "Account verified",
-  //         description: "Your account has been created and you are now signed in.",
-  //       });
-  //       navigate("/gsp/dashboard");
-  //     } else if (mode === "login") {
-  //       await signIn(form.email, form.password);
-  //       navigate("/gsp/dashboard");
-  //     } else if (mode === "forgot") {
-  //       await forgotPassword(form.email);
-  //       toast({ title: "Reset link sent", description: "If your account exists, a password reset link has been sent." });
-  //     } else if (mode === "reset") {
-  //       if (!resetToken) throw new Error("Missing reset token");
-  //       if (form.password !== form.confirmPassword) throw new Error("Passwords do not match");
-  //       await resetPassword(resetToken, form.password);
-  //       toast({ title: "Password updated", description: "You can now sign in with your new password." });
-  //       setMode("login");
-  //     }
-  //   } catch (error: unknown) {
-  //     const message = error instanceof Error ? error.message : "Please try again."
-  //     toast({
-  //       title: "Request failed",
-  //       description: message,
-  //       variant: "destructive",
-  //     });
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
+  const onSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    try {
+      if (mode === "signup") {
+        if (form.password !== form.confirmPassword) throw new Error("Passwords do not match");
+        const data = await createPortalAccount({
+          name: form.name,
+          email: form.email,
+          password: form.password,
+        });
+        if (data.token) {
+          saveAuthToken(data.token);
+          await refreshUser();
+          navigate(redirectUrl);
+          return;
+        }
+        toast({
+          title: "Verification code sent",
+          description: data.message || "Enter the code from your email to finish creating your account.",
+        });
+        setForm((prev) => ({ ...prev, password: "", confirmPassword: "", verificationCode: "" }));
+        setMode("verify");
+      } else if (mode === "verify") {
+        const data = await verifyEmailCode({
+          email: form.email,
+          code: form.verificationCode,
+        });
+        saveAuthToken(data.token);
+        await refreshUser();
+        navigate(redirectUrl);
+      } else if (mode === "login") {
+        await signIn(form.email, form.password);
+        navigate(redirectUrl);
+      } else if (mode === "forgot") {
+        await forgotPassword(form.email);
+        toast({ title: "Reset link sent", description: "If your account exists, a password reset link has been sent." });
+      } else if (mode === "reset") {
+        if (!resetToken) throw new Error("Missing reset token");
+        if (form.password !== form.confirmPassword) throw new Error("Passwords do not match");
+        await resetPassword(resetToken, form.password);
+        toast({ title: "Password updated", description: "You can now sign in with your new password." });
+        setMode("login");
+      }
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : "Please try again.";
+      toast({
+        title: "Request failed",
+        description: message,
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const onResendCode = async () => {
     setResendingCode(true);
@@ -218,7 +219,7 @@ const AuthPage: React.FC = () => {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <form className="space-y-4">
+            <form className="space-y-4" onSubmit={onSubmit}>
               {mode === "signup" && (
                 <div className="space-y-2">
                   <Label htmlFor="name">Full name</Label>

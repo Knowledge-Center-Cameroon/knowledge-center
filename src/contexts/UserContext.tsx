@@ -1,8 +1,11 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { useGspAuth } from './GspAuthContext';
+import { updateCurrentUser } from '@/services/gspApi';
 
 interface User {
   id: string;
   name?: string;
+  email?: string;
   isAnonymous: boolean;
 }
 
@@ -28,6 +31,7 @@ interface UserProviderProps {
 
 export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
+  const { user: portalUser } = useGspAuth();
 
   // Generate a unique user ID for this browser session
   const generateUserId = (): string => {
@@ -51,17 +55,31 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
 
   // Set custom user name
   const setUserName = (name: string) => {
+    const cleanName = name.trim();
     if (!user) {
       generateAnonymousUser();
       return;
     }
 
-    const updatedUser = { ...user, name: name.trim() || undefined };
+    const updatedUser = { ...user, name: cleanName || undefined, isAnonymous: !cleanName && user.isAnonymous };
     setUser(updatedUser);
-    localStorage.setItem('kc_user_name', name);
+    localStorage.setItem('kc_user_name', cleanName);
+    if (portalUser && cleanName) {
+      updateCurrentUser({ name: cleanName }).catch(() => undefined);
+    }
   };
 
   useEffect(() => {
+    if (portalUser) {
+      setUser({
+        id: portalUser.id,
+        name: portalUser.name || portalUser.email?.split("@")[0],
+        email: portalUser.email,
+        isAnonymous: false,
+      });
+      return;
+    }
+
     // Check if user already exists in localStorage
     const storedUserId = localStorage.getItem('kc_user_id');
     const storedUserName = localStorage.getItem('kc_user_name');
@@ -76,7 +94,7 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
       // Generate anonymous user if none exists
       generateAnonymousUser();
     }
-  }, []);
+  }, [portalUser]);
 
   const value: UserContextType = {
     user,

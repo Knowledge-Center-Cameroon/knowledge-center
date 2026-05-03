@@ -118,6 +118,20 @@ export async function getCurrentUser() {
   return apiRequest<{ user: GspUser }>("/api/v2/auth/me");
 }
 
+export async function createPortalAccount(payload: { name: string; email: string; password: string }) {
+  return apiRequest<{ success: boolean; message?: string; token?: string; user?: GspUser }>("/api/auth/register", {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
+}
+
+export async function updateCurrentUser(payload: { name?: string }) {
+  return apiRequest<{ user: GspUser }>("/api/v2/auth/me", {
+    method: "PATCH",
+    body: JSON.stringify(payload),
+  });
+}
+
 export async function getGspApplication() {
   const res = await apiRequest<any>("/api/v2/gsp/registration/");
   // If it's an array (ListCreateAPIView), get the first one
