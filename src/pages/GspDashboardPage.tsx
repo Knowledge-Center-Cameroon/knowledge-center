@@ -16,6 +16,8 @@ const GspDashboardPage: React.FC = () => {
   const [application, setApplication] = React.useState<any>(null);
   const [fetching, setFetching] = React.useState(true);
   const [localProgress, setLocalProgress] = React.useState<number | null>(null);
+  const displayName = user?.name?.trim() || user?.email?.split("@")[0] || "Applicant";
+  const hasApplication = Boolean(application?.r_id || application?.id || application?.status || application?.reference);
 
   React.useEffect(() => {
     if (!user) return;
@@ -53,7 +55,8 @@ const GspDashboardPage: React.FC = () => {
         <div className="flex flex-wrap justify-between items-center gap-3">
           <div>
             <h1 className="heading-2">Application Dashboard</h1>
-            <p className="text-muted-foreground">{user?.name} ({user?.email})</p>
+            <p className="text-muted-foreground">Welcome, <span className="font-medium text-foreground">{displayName}</span></p>
+            <p className="text-sm text-muted-foreground">{user?.email}</p>
           </div>
           <div className="flex items-center gap-3">
             {user?.role === "admin" && (
@@ -119,7 +122,7 @@ const GspDashboardPage: React.FC = () => {
                         <Link to="/gsp/application">
                           {application?.status === "submitted"
                             ? "View Application"
-                            : (!application && localProgress === null
+                            : (!hasApplication && localProgress === null
                               ? "Start Application"
                               : "Continue Application")}
                         </Link>

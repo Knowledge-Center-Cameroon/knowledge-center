@@ -1,9 +1,10 @@
 import React from "react";
-import { CheckCircle } from "lucide-react";
+import { CheckCircle, Circle, Loader2 } from "lucide-react";
 import { Navigate, Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -39,6 +40,17 @@ const COUNTRY_CODES = [
 const EDUCATION_LEVELS = [
   "None", "Primary School", "Secondary School (O-Level/A-Level)", 
   "Vocational/Technical", "Bachelor's Degree", "Master's Degree", "Doctorate (PhD)"
+];
+
+const GSP_SECTIONS = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
+const SUBMITTABLE_SECTIONS = GSP_SECTIONS.filter((section) => section !== 0);
+const EXAM_TERM_OPTIONS = [
+  "First Term",
+  "Second Term",
+  "Third Term",
+  "Mock Exam",
+  "Ordinary Level",
+  "Advanced Level",
 ];
 
 const defaultData = {
@@ -140,7 +152,8 @@ const GspApplicationPage: React.FC = () => {
   const [fetching, setFetching] = React.useState(true);
   const [saving, setSaving] = React.useState(false);
   const [submitting, setSubmitting] = React.useState(false);
-  const [activeSection, setActiveSection] = React.useState(1);
+  const [activeSection, setActiveSection] = React.useState(0);
+  const [sectionTransitioning, setSectionTransitioning] = React.useState(false);
 
   const progressPct = React.useMemo(() => {
     return computeProgressPct(sectionState);
@@ -212,12 +225,7 @@ const GspApplicationPage: React.FC = () => {
 
   const setField = (key: string, value: any) => setData((prev: any) => ({ ...prev, [key]: value }));
 
-  const canEditSection = (s: number) => {
-    const sections = [1, 2, 3, 4, 5, 6, 8, 9, 10, 11];
-    const index = sections.indexOf(s);
-    if (index === 0) return true;
-    return sections.slice(0, index).every((prevSec) => sectionState[prevSec === 11 ? "review" : `section${prevSec}`]);
-  };
+  const canEditSection = (_s: number) => true;
 
   const updateSubject = (index: number, key: "name" | "score" | "examTerm", value: string) => {
     setData((prev: any) => {
@@ -236,6 +244,16 @@ const GspApplicationPage: React.FC = () => {
   };
 
   const editable = canEditSection(activeSection);
+
+  const goToSection = (section: number) => {
+    if (section === activeSection || sectionTransitioning) return;
+    setSectionTransitioning(true);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    window.setTimeout(() => {
+      setActiveSection(section);
+      setSectionTransitioning(false);
+    }, 350);
+  };
 
   const addActivity = () => {
     setData((prev: any) => {
@@ -352,9 +370,8 @@ const GspApplicationPage: React.FC = () => {
   };
 
   const onSubmit = async () => {
-    const sections = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
     const allMissing: string[] = [];
-    sections.forEach((s) => {
+    SUBMITTABLE_SECTIONS.forEach((s) => {
       const miss = getMissingFields(s);
       if (miss.length) allMissing.push(...miss.map(m => `Section ${s}: ${m}`));
     });
@@ -379,7 +396,7 @@ const GspApplicationPage: React.FC = () => {
   return (
     <motion.section initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="container mx-auto px-4 lg:px-8 py-12 lg:py-16">
       <div className="max-w-6xl mx-auto grid lg:grid-cols-[280px_minmax(0,1fr)] gap-6">
-        <Card className="rounded-3xl h-fit lg:sticky lg:top-24">
+        <Card className="rounded-2xl h-fit lg:sticky lg:top-24">
           <CardHeader>
             <CardTitle className="text-xl">GSP Application</CardTitle>
           </CardHeader>
@@ -387,19 +404,18 @@ const GspApplicationPage: React.FC = () => {
             <p className="text-sm text-muted-foreground">Progress: <span className="font-semibold text-kc-blue">{progressPct}%</span></p>
             <p className="text-xs text-muted-foreground">{saving ? "Autosaving..." : "All changes saved automatically"}</p>
             <div className="pt-2 grid gap-2 text-sm">
-              {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].map((s, index, arr) => {
-                const canEdit = index === 0 || arr.slice(0, index).every((prevSec) => sectionState[prevSec === 11 ? "review" : `section${prevSec}`]);
+              {GSP_SECTIONS.map((s) => {
+                const completed = s === 0 || Boolean(sectionState[s === 11 ? "review" : `section${s}`]);
                 const label = SECTION_LABELS[s] ? `Section ${s}: ${SECTION_LABELS[s]}` : `Section ${s}`;
                 return (
                   <button
                     key={s}
-                    className={`text-left px-3 py-2 rounded-lg border flex justify-between items-center ${activeSection === s ? "border-kc-blue bg-kc-blue/5" : "border-border"} ${!canEdit ? "opacity-80" : "hover:border-kc-blue"}`}
-                    onClick={() => setActiveSection(s)}
+                    className={`text-left px-3 py-2 rounded-lg border flex justify-between items-center transition-all ${completed ? "border-kc-blue bg-kc-blue text-white shadow-sm" : activeSection === s ? "border-kc-blue bg-kc-blue/5 text-foreground" : "border-border bg-white text-foreground"} hover:border-kc-blue`}
+                    onClick={() => goToSection(s)}
                   >
                     <span className="truncate max-w-[180px]">{label}</span>
                     <div className="flex items-center gap-2">
-                      {!canEdit && <span className="text-xs text-muted-foreground">🔒</span>}
-                      {sectionState[s === 11 ? "review" : `section${s}`] && <span>✅</span>}
+                      {completed ? <CheckCircle className="h-4 w-4" /> : <Circle className="h-4 w-4 opacity-60" />}
                     </div>
                   </button>
                 );
@@ -414,19 +430,43 @@ const GspApplicationPage: React.FC = () => {
         </Card>
 
         <div className="space-y-6">
-          <Card className="rounded-3xl">
-            <CardHeader><CardTitle>Before You Begin</CardTitle></CardHeader>
-            <CardContent>
-              <p>This application is for the KC Global Scholars Programme. We admit a small cohort each year. Selection is competitive.</p>
-              <p className="mt-2">Answer every question in your own words. We are not looking for the most polished answers. We are looking for the clearest picture of who you are, where you come from, and what you intend to do.</p>
-              <p className="mt-2">The programme runs from Summer 2026 (on-site) through May 2027. Make sure you are available for this full period before applying.</p>
-              <p className="mt-2">Set aside enough time to do this properly. Most students take between 3 days and a week to complete the application.</p>
-            </CardContent>
-          </Card>
           {fetching ? (
-            <Card className="rounded-3xl"><CardContent className="p-8">Loading application...</CardContent></Card>
+            <Card className="rounded-2xl">
+              <CardContent className="space-y-5 p-6 md:p-8">
+                <div className="flex items-center gap-3 text-sm font-medium text-kc-blue">
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  Preparing your application
+                </div>
+                <Skeleton className="h-8 w-2/3" />
+                <Skeleton className="h-4 w-full" />
+                <Skeleton className="h-4 w-5/6" />
+                <div className="grid gap-4 md:grid-cols-2">
+                  <Skeleton className="h-12 w-full" />
+                  <Skeleton className="h-12 w-full" />
+                  <Skeleton className="h-12 w-full" />
+                  <Skeleton className="h-12 w-full" />
+                </div>
+              </CardContent>
+            </Card>
           ) : (
             <>
+              {sectionTransitioning && (
+                <div className="rounded-2xl border border-kc-blue/15 bg-kc-blue/5 p-4 text-sm text-kc-blue flex items-center gap-3">
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  Opening {SECTION_LABELS[activeSection]}...
+                </div>
+              )}
+              {activeSection === 0 && (
+                <Card className="rounded-2xl">
+                  <CardHeader><CardTitle>Section 0: Before You Begin</CardTitle></CardHeader>
+                  <CardContent>
+                    <p>This application is for the KC Global Scholars Programme. We admit a small cohort each year. Selection is competitive.</p>
+                    <p className="mt-2">Answer every question in your own words. We are looking for the clearest picture of who you are, where you come from, and what you intend to do.</p>
+                    <p className="mt-2">The programme runs from Summer 2026 (on-site) through May 2027. Make sure you are available for this full period before applying.</p>
+                    <p className="mt-2">Set aside enough time to do this properly. Most students take between 3 days and a week to complete the application.</p>
+                  </CardContent>
+                </Card>
+              )}
               {activeSection === 1 && (
                 <Card className="rounded-3xl">
                   <CardHeader><CardTitle>Section 1: Personal Information</CardTitle></CardHeader>
@@ -604,7 +644,12 @@ const GspApplicationPage: React.FC = () => {
                               })}
                             </SelectContent>
                           </Select>
-                          <Input disabled={!editable} placeholder="Exam/Term" value={subject.examTerm} onChange={(e) => updateSubject(i, "examTerm", e.target.value)} />
+                          <Select disabled={!editable} value={subject.examTerm} onValueChange={(val) => updateSubject(i, "examTerm", val)}>
+                            <SelectTrigger><SelectValue placeholder="Exam/Term" /></SelectTrigger>
+                            <SelectContent>
+                              {EXAM_TERM_OPTIONS.map((term) => <SelectItem key={term} value={term}>{term}</SelectItem>)}
+                            </SelectContent>
+                          </Select>
                         </div>
                       ))}
                     </div>
@@ -879,8 +924,7 @@ const GspApplicationPage: React.FC = () => {
                     </label>
                     <div className="flex flex-wrap justify-between gap-3">
                       <Button variant="outline" className="rounded-full" onClick={() => {
-                        window.scrollTo({ top: 0, behavior: 'smooth' });
-                        setActiveSection(10);
+                        goToSection(10);
                       }}>Back</Button>
                       <Button variant="blue" className="rounded-full" onClick={onSubmit} disabled={submitting}>
                         {submitting ? "Submitting..." : "Submit Application"}
@@ -897,36 +941,31 @@ const GspApplicationPage: React.FC = () => {
                     variant="blue"
                     className="rounded-full px-8"
                     onClick={async () => {
-                      const currentSecKey = activeSection === 11 ? "review" : `section${activeSection}`;
                       const next = computeSectionState(data);
-                      if (!next[currentSecKey]) {
-                        const missing = getMissingFields(activeSection);
-                        toast({
-                          title: "Incomplete Section",
-                          description: missing.length ? `Missing: ${missing.join(', ')}` : "Please fill out all required fields in this section before proceeding.",
-                          variant: "destructive" as any,
-                        });
-                        return;
-                      }
+                      const missing = activeSection === 0 ? [] : getMissingFields(activeSection);
                       try {
                         const res = await saveGspDraft(data, next, data.r_id);
                         if (res?.application?.r_id && !data.r_id) {
                           setData((prev: any) => ({ ...prev, r_id: res.application.r_id }));
+                        }
+                        if (missing.length) {
+                          toast({
+                            title: "Draft saved",
+                            description: `This section still needs: ${missing.slice(0, 3).join(", ")}${missing.length > 3 ? "..." : ""}`,
+                          });
                         }
                       } catch (error: any) {
                         toast({ title: "Save failed", description: error?.message || "Could not save draft. Please try again.", variant: "destructive" as any });
                         return;
                       }
 
-                      const sections = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
-                      const currentIndex = sections.indexOf(activeSection);
-                      if (currentIndex < sections.length - 1) {
-                        window.scrollTo({ top: 0, behavior: 'smooth' });
-                        setActiveSection(sections[currentIndex + 1]);
+                      const currentIndex = GSP_SECTIONS.indexOf(activeSection);
+                      if (currentIndex < GSP_SECTIONS.length - 1) {
+                        goToSection(GSP_SECTIONS[currentIndex + 1]);
                       }
                     }}
                   >
-                    Save & Continue
+                    {activeSection === 0 ? "Begin Application" : "Save & Continue"}
                   </Button>
                 </div>
               )}
