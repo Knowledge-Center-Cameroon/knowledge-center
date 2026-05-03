@@ -11,6 +11,7 @@ import {
   adminSetDecision,
   adminToggleRelease,
 } from "@/services/gspApi";
+import { adminGetBlogComments, adminModerateBlogComment, type BlogComment } from "@/services/blogApi";
 import { useToast } from "@/components/ui/use-toast";
 
 const GspAdminPage: React.FC = () => {
@@ -19,19 +20,22 @@ const GspAdminPage: React.FC = () => {
   const [query, setQuery] = React.useState("");
   const [applications, setApplications] = React.useState<any[]>([]);
   const [users, setUsers] = React.useState<any[]>([]);
+  const [blogComments, setBlogComments] = React.useState<BlogComment[]>([]);
   const [isReleased, setIsReleased] = React.useState(false);
   const [fetching, setFetching] = React.useState(true);
 
   const load = React.useCallback(async () => {
     setFetching(true);
     try {
-      const [apps, usersResp] = await Promise.all([
+      const [apps, usersResp, commentResp] = await Promise.all([
         adminGetApplications(query),
         adminGetUsers(),
+        adminGetBlogComments("pending"),
       ]);
       const releaseResp = await adminGetRelease();
       setApplications(apps.applications || []);
       setUsers(usersResp.users || []);
+      setBlogComments(commentResp.comments || []);
       setIsReleased(Boolean(releaseResp.release?.isReleased));
     } catch (error: any) {
       toast({ title: "Admin load failed", description: error.message || "Please refresh.", variant: "destructive" as any });
@@ -75,6 +79,19 @@ const GspAdminPage: React.FC = () => {
     a.download = "gsp-applications.csv";
     a.click();
     URL.revokeObjectURL(url);
+  };
+
+  const moderateComment = async (commentId: string, status: "approved" | "rejected") => {
+    try {
+      await adminModerateBlogComment(commentId, status);
+      setBlogComments((prev) => prev.filter((comment) => comment._id !== commentId));
+      toast({
+        title: status === "approved" ? "Comment approved" : "Comment rejected",
+        description: "The blog comment moderation queue has been updated.",
+      });
+    } catch (error: any) {
+      toast({ title: "Moderation failed", description: error.message || "Please retry.", variant: "destructive" as any });
+    }
   };
 
   return (
@@ -150,6 +167,37 @@ const GspAdminPage: React.FC = () => {
                     ))}
                   </tbody>
                 </table>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        <Card className="rounded-3xl">
+          <CardHeader><CardTitle>Blog Comment Approvals</CardTitle></CardHeader>
+          <CardContent className="space-y-4">
+            {fetching ? (
+              <p className="text-muted-foreground">Loading comments...</p>
+            ) : blogComments.length === 0 ? (
+              <p className="text-muted-foreground">No pending blog comments.</p>
+            ) : (
+              <div className="space-y-3">
+                {blogComments.map((comment) => (
+                  <div key={comment._id} className="rounded-2xl border p-4 space-y-3">
+                    <div className="flex flex-wrap items-center justify-between gap-3">
+                      <div>
+                        <div className="font-semibold">{comment.author}</div>
+                        <div className="text-xs text-muted-foreground">
+                          Blog: {comment.postId || "Unknown"} · {new Date(comment.created_at).toLocaleString()}
+                        </div>
+                      </div>
+                      <div className="flex gap-2">
+                        <Button size="sm" variant="outline" onClick={() => moderateComment(comment._id, "approved")}>Approve</Button>
+                        <Button size="sm" variant="outline" onClick={() => moderateComment(comment._id, "rejected")}>Reject</Button>
+                      </div>
+                    </div>
+                    <p className="text-sm text-foreground/90 whitespace-pre-wrap">{comment.content}</p>
+                  </div>
+                ))}
               </div>
             )}
           </CardContent>

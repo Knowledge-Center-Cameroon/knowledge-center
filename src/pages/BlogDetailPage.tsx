@@ -9,15 +9,19 @@ import { ArrowLeft, Calendar, User, Tag, Heart, MessageSquare, Loader2, Send, Ed
 import StemBackground from "@/components/StemBackground";
 import { useParallax, Parallax } from "@/hooks/use-parallax";
 import { useUser } from "@/contexts/UserContext";
+import { useGspAuth } from "@/contexts/GspAuthContext";
 import { toggleBlogLike, getBlogLikeStatus, getBlogComments, addBlogComment, updateBlogComment, deleteBlogComment, type BlogComment } from "@/services/blogApi";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useSeo } from "@/hooks/useSeo";
+import { useToast } from "@/components/ui/use-toast";
 
 const BlogDetailPage: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
   const { user, setUserName } = useUser();
+  const { user: portalUser, loading: authLoading } = useGspAuth();
+  const { toast } = useToast();
   const { ref, y } = useParallax(40);
 
   const [isLiked, setIsLiked] = React.useState(false);
@@ -29,6 +33,10 @@ const BlogDetailPage: React.FC = () => {
   const [loading, setLoading] = React.useState(false);
   const [submittingComment, setSubmittingComment] = React.useState(false);
   const [displayName, setDisplayName] = React.useState<string>(user?.name || "");
+  const isSignedIn = Boolean(portalUser);
+  const canInteract = Boolean(user?.id);
+  const approvedComments = comments.filter((comment) => comment.status !== "pending" && comment.status !== "rejected");
+  const visibleComments = comments.filter((comment) => comment.status !== "rejected");
 
   const post = blogPosts.find(p => p.id === slug);
 
@@ -39,17 +47,17 @@ const BlogDetailPage: React.FC = () => {
 
   // Load like status and comments when component mounts
   React.useEffect(() => {
-    if (!post || !user?.id) return;
+    if (!post) return;
 
     const loadInteractions = async () => {
       try {
         // Load like status
-        const likeStatus = await getBlogLikeStatus(post.id, user.id);
+        const likeStatus = await getBlogLikeStatus(post.id, user?.id);
         setIsLiked(likeStatus.isLiked);
         setLikeCount(likeStatus.likeCount);
 
         // Load comments
-        const commentsData = await getBlogComments(post.id);
+        const commentsData = await getBlogComments(post.id, 1, 25, user?.id);
         setComments(commentsData.comments);
       } catch (error) {
         console.error('Error loading interactions:', error);
@@ -58,6 +66,10 @@ const BlogDetailPage: React.FC = () => {
 
     loadInteractions();
   }, [post, user?.id]);
+
+  React.useEffect(() => {
+    setDisplayName(user?.name || "");
+  }, [user?.name]);
 
   const handleLike = async () => {
     if (!post || !user?.id) return;
@@ -69,7 +81,7 @@ const BlogDetailPage: React.FC = () => {
       setLikeCount(response.likeCount);
     } catch (error) {
       console.error('Error toggling like:', error);
-      alert('Failed to update like. Please try again.');
+      toast({ title: "Could not update like", description: "Please try again.", variant: "destructive" as any });
     } finally {
       setLoading(false);
     }
@@ -95,9 +107,13 @@ const BlogDetailPage: React.FC = () => {
 
       setComments(prev => [newComment, ...prev]);
       setCommentText("");
+      toast({
+        title: "Comment submitted",
+        description: "Your comment is awaiting admin approval before it appears publicly.",
+      });
     } catch (error) {
       console.error('Error adding comment:', error);
-      alert('Failed to add comment. Please try again.');
+      toast({ title: "Could not submit comment", description: "Please try again.", variant: "destructive" as any });
     } finally {
       setSubmittingComment(false);
     }
@@ -122,7 +138,7 @@ const BlogDetailPage: React.FC = () => {
       setEditingText("");
     } catch (error) {
       console.error('Error updating comment:', error);
-      alert('Failed to update comment. Please try again.');
+      toast({ title: "Could not update comment", description: "Please try again.", variant: "destructive" as any });
     }
   };
 
@@ -137,7 +153,7 @@ const BlogDetailPage: React.FC = () => {
       setComments(prev => prev.filter(c => c._id !== commentId));
     } catch (error) {
       console.error('Error deleting comment:', error);
-      alert('Failed to delete comment. Please try again.');
+      toast({ title: "Could not delete comment", description: "Please try again.", variant: "destructive" as any });
     }
   };
 
@@ -290,7 +306,7 @@ const BlogDetailPage: React.FC = () => {
               <Button
                 variant="outline"
                 onClick={handleLike}
-                disabled={loading || !user?.id}
+                disabled={loading || !canInteract}
                 className="gap-2"
               >
                 {loading ? (
@@ -302,7 +318,7 @@ const BlogDetailPage: React.FC = () => {
               </Button>
               <Button variant="outline" className="gap-2">
                 <MessageSquare className="h-4 w-4" />
-                Comments ({comments.length})
+                Comments ({approvedComments.length})
               </Button>
             </div>
             <div className="flex gap-2">
@@ -319,10 +335,10 @@ const BlogDetailPage: React.FC = () => {
           transition={{ duration: 0.4, delay: 0.5 }}
           className="mt-12 pt-8 border-t border-border/50"
         >
-          <h3 className="heading-3 mb-6">Comments ({comments.length})</h3>
+          <h3 className="heading-3 mb-6">Comments ({approvedComments.length})</h3>
 
           {/* Comment Form */}
-          {user?.id ? (
+          {canInteract ? (
             <form onSubmit={handleSubmitComment} className="mb-8 space-y-4">
               <div className="flex gap-4">
                 <Avatar className="h-10 w-10 flex-shrink-0">
@@ -337,6 +353,7 @@ const BlogDetailPage: React.FC = () => {
                       onChange={(e) => setDisplayName(e.target.value)}
                       placeholder="Your name (required)"
                       className="sm:max-w-xs"
+                      disabled={isSignedIn}
                     />
                   </div>
                   <Textarea
@@ -360,7 +377,7 @@ const BlogDetailPage: React.FC = () => {
                       ) : (
                         <Send className="h-4 w-4" />
                       )}
-                      Comment
+                      Submit for approval
                     </Button>
                   </div>
                 </div>
@@ -368,21 +385,23 @@ const BlogDetailPage: React.FC = () => {
             </form>
           ) : (
             <div className="mb-8 p-4 bg-muted/50 rounded-lg text-center">
-              <p className="text-muted-foreground mb-2">Sign in to join the conversation</p>
-              <Button variant="outline" onClick={() => alert('User identification in progress...')}>
-                Continue as Guest
-              </Button>
+              <p className="text-muted-foreground mb-3">Sign in to join the conversation.</p>
+              {!authLoading && !isSignedIn && (
+                <Button variant="outline" onClick={() => window.location.reload()}>
+                  Continue as Guest
+                </Button>
+              )}
             </div>
           )}
 
           {/* Comments List */}
           <div className="space-y-6">
-            {comments.length === 0 ? (
+            {visibleComments.length === 0 ? (
               <p className="text-muted-foreground text-center py-8">
                 No comments yet. Be the first to share your thoughts!
               </p>
             ) : (
-              comments.map((comment) => (
+              visibleComments.map((comment) => (
                 <motion.div
                   key={comment._id}
                   initial={{ opacity: 0, y: 10 }}
@@ -400,6 +419,11 @@ const BlogDetailPage: React.FC = () => {
                       <span className="text-sm text-muted-foreground">
                         {new Date(comment.created_at).toLocaleDateString()}
                       </span>
+                      {comment.status === "pending" && (
+                        <span className="text-xs px-2 py-0.5 rounded-full bg-amber-100 text-amber-800">
+                          Awaiting approval
+                        </span>
+                      )}
                       {user?.id === comment.userId && (
                         <div className="opacity-0 group-hover:opacity-100 transition-opacity flex gap-1">
                           <Button
