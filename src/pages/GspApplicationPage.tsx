@@ -42,17 +42,8 @@ const EDUCATION_LEVELS = [
   "Vocational/Technical", "Bachelor's Degree", "Master's Degree", "Doctorate (PhD)"
 ];
 
-const GSP_SECTIONS = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
+const GSP_SECTIONS = [0, 1, 2, 3, 4, 5, 6, 8, 9, 10, 11];
 const SUBMITTABLE_SECTIONS = GSP_SECTIONS.filter((section) => section !== 0);
-const EXAM_TERM_OPTIONS = [
-  "First Term",
-  "Second Term",
-  "Third Term",
-  "Mock Exam",
-  "Ordinary Level",
-  "Advanced Level",
-];
-
 const defaultData = {
   r_id: "",
   firstName: "",
@@ -77,9 +68,6 @@ const defaultData = {
   schoolCity: "",
   schoolRegion: "",
   currentClass: "",
-  lowerSixthPathwayChoice: "",
-  lowerSixthAlternatives: "",
-  section7: "",
   topSubjects: Array.from({ length: 5 }).map(() => ({ name: "", score: "", examTerm: "" })),
   intendedFieldWhy: "",
   communityEssay: "",
@@ -108,14 +96,13 @@ const GUIDANCE_TEXT: Record<number, string> = {
   1: `Provide your legal name, date of birth, contact details and where you live. Be accurate — this information is used for identification and logistics.`,
   2: `Describe your household and guardian occupations. If any family members studied abroad, say who, where and when (brief).`,
   3: `List your school, region and top 5 subjects (include scores and exam/term). Explain briefly what you want to study and why (concise).`,
-  4: `Community challenge essay: describe a real challenge in your community and your involvement or proposed solutions. Aim for clarity and concrete examples.`,
+  4: `Answer each question in your own words. We are not looking for perfect writing. We are looking for real thinking. 75 words minimum - 225 words maximum per answer.`,
   5: `List up to three activities. For each, state your role, duration and weekly time commitment. Be specific about responsibilities.`,
-  6: `Indicate housing preference and whether a contact/host is aware. Note any constraints that may affect your participation in the programme.`,
-  7: `Section 7 placeholder: replace with exact guidance from the official application document.`,
-  8: `Provide an accurate estimate of monthly household income and explain any work you do to support your family.`,
-  9: `If applying for financial aid, explain why the support is needed and how it will be used.`,
-  10: `Upload required documents: recent report card and Ordinary Level slip are mandatory. PDF or image formats accepted.`,
-  11: `Review carefully before submitting. Once submitted, the application will be locked for review.`,
+  6: `Knowledge Center is based in Buea, and we expect all admits to reside in Buea for our Summer Global Education Programme. The programme runs from Summer 2026 through May 2027.`,
+  8: `This information helps us understand your background and assess financial need for the scholarship. It will not be used to disqualify any applicant.`,
+  9: `The KC financial aid is awarded to the student who can most specifically and credibly show why they will make the most of this opportunity - for themselves, for the people around them, and eventually for this continent.`,
+  10: `Upload your most recent school report card, Ordinary Level slip, and Advanced Level slip if applicable. PDF, JPG, or PNG. Maximum 10MB.`,
+  11: `Before you submit, review your answers in each section. You can go back and edit anything. Once you submit, you will receive a confirmation email with your application reference number. You will not be able to edit your application after submission.`,
 };
 
 const SECTION_LABELS: Record<number, string> = {
@@ -129,7 +116,6 @@ const SECTION_LABELS: Record<number, string> = {
   8: "Financial Context",
   9: "Financial Aid",
   10: "Documents",
-  7: "Other Information",
   11: "Review & Submit",
 };
 
@@ -294,10 +280,6 @@ const GspApplicationPage: React.FC = () => {
       if (!data.schoolCity) missing.push("School city");
       if (!data.schoolRegion) missing.push("School region");
       if (!data.currentClass) missing.push("Current class");
-      if (data.currentClass === "lower_sixth") {
-        if (!data.lowerSixthPathwayChoice) missing.push("Fallback preference for Lower Sixth");
-        if (!data.lowerSixthAlternatives) missing.push("Lower Sixth alternatives preference");
-      }
       if (!data.intendedFieldWhy || words(data.intendedFieldWhy) === 0) missing.push("Intended field and reason");
       if (!Array.isArray(data.topSubjects) || data.topSubjects.length !== 5) missing.push("Top 5 subjects");
       else {
@@ -605,9 +587,8 @@ const GspApplicationPage: React.FC = () => {
                         </SelectContent>
                       </Select>
                     </div>
-                    {data.currentClass === "lower_sixth" && (
+                    {false && data.currentClass === "lower_sixth" && (
                       <>
-                        <div><Label>If not admitted, fallback preference</Label><Input disabled={!editable} value={data.lowerSixthPathwayChoice} onChange={(e) => setField("lowerSixthPathwayChoice", e.target.value)} /></div>
                         <div className="mt-2 p-3 rounded-md border border-border bg-background">
                           <div className="text-xs font-semibold">CONDITIONAL — SHOW ONLY IF: student selects Lower Sixth in Q1.5</div>
                           <div className="text-sm text-muted-foreground mt-1">Lower Sixth students are fully eligible for the KC GSP. If you are not admitted to this cohort, KC offers two ways to keep building toward your goal.</div>
@@ -631,25 +612,12 @@ const GspApplicationPage: React.FC = () => {
                       </>
                     )}
                     <div className="space-y-3">
-                      <Label>Top 5 subjects with score and exam term</Label>
+                      <Label>List your five strongest subjects and your most recent grade in each. Include the exam name or school term the grade is from. e.g. Mathematics / 18.8 / GCE Mock 2026</Label>
                       {data.topSubjects.map((subject: any, i: number) => (
                         <div key={i} className="grid md:grid-cols-3 gap-3">
                           <Input disabled={!editable} placeholder={`Subject ${i + 1}`} value={subject.name} onChange={(e) => updateSubject(i, "name", e.target.value)} />
-                          <Select disabled={!editable} value={subject.score} onValueChange={(val) => updateSubject(i, "score", val)}>
-                            <SelectTrigger><SelectValue placeholder="Score" /></SelectTrigger>
-                            <SelectContent>
-                              {Array.from({ length: 20 }).map((_, idx) => {
-                                const num = (idx + 1).toString();
-                                return <SelectItem key={num} value={num}>{num} / 20</SelectItem>;
-                              })}
-                            </SelectContent>
-                          </Select>
-                          <Select disabled={!editable} value={subject.examTerm} onValueChange={(val) => updateSubject(i, "examTerm", val)}>
-                            <SelectTrigger><SelectValue placeholder="Exam/Term" /></SelectTrigger>
-                            <SelectContent>
-                              {EXAM_TERM_OPTIONS.map((term) => <SelectItem key={term} value={term}>{term}</SelectItem>)}
-                            </SelectContent>
-                          </Select>
+                          <Input disabled={!editable} placeholder="Score" value={subject.score} onChange={(e) => updateSubject(i, "score", e.target.value)} />
+                          <Input disabled={!editable} placeholder="Exam or Term" value={subject.examTerm} onChange={(e) => updateSubject(i, "examTerm", e.target.value)} />
                         </div>
                       ))}
                     </div>
@@ -671,10 +639,12 @@ const GspApplicationPage: React.FC = () => {
 
               {activeSection === 4 && (
                 <Card className="rounded-3xl">
-                  <CardHeader><CardTitle>Section 4: Short Answer</CardTitle></CardHeader>
+                  <CardHeader><CardTitle>Section 4: Short Answer Questions</CardTitle></CardHeader>
                   <CardContent>
                     <div className="col-span-full text-sm text-muted-foreground mb-2">{GUIDANCE_TEXT[4]}</div>
-                    <Label className="mb-2 block">Community challenge essay (75-225 words)</Label>
+                    <Label className="mb-2 block">
+                      Every community has something broken that most people have learned to walk past. Tell us about something in yours that you could not walk past, a specific gap, failure, or absence. What have you done about it, or what would you do if you could?
+                    </Label>
                     <ReactQuill
                       theme="snow"
                       value={data.communityEssay}
@@ -731,20 +701,20 @@ const GspApplicationPage: React.FC = () => {
                   <CardContent className="space-y-4">
                     <div className="col-span-full text-sm text-muted-foreground">{GUIDANCE_TEXT[6]}</div>
                     <div>
-                      <Label>Housing option</Label>
+                      <Label>Where would you be staying during the programme?</Label>
                       <Select disabled={!editable} value={data.housingOption} onValueChange={(val) => setField("housingOption", val)}>
                         <SelectTrigger><SelectValue placeholder="Select housing option" /></SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="A">A: With family</SelectItem>
-                          <SelectItem value="B">B: With host/contact</SelectItem>
-                          <SelectItem value="C">C: Independent</SelectItem>
-                          <SelectItem value="D">D: Need full housing support</SelectItem>
+                          <SelectItem value="A">A - I already live in Buea</SelectItem>
+                          <SelectItem value="B">B - I have a relative or trusted contact in Buea I can stay with</SelectItem>
+                          <SelectItem value="C">C - I would need housing support from KC</SelectItem>
+                          <SelectItem value="D">D - I am not yet sure</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
                     {data.housingOption === "B" && (
                       <div className="grid md:grid-cols-2 gap-4 mt-2">
-                        <div><Label>Relationship to contact</Label><Input disabled={!editable} value={data.housingContactRelation} onChange={(e) => setField("housingContactRelation", e.target.value)} /></div>
+                        <div><Label>What is this person's relationship to you?</Label><Input disabled={!editable} value={data.housingContactRelation} onChange={(e) => setField("housingContactRelation", e.target.value)} /></div>
                         <div>
                           <Label>Are they aware?</Label>
                           <Select disabled={!editable} value={data.housingContactAware} onValueChange={(val) => setField("housingContactAware", val)}>
@@ -752,7 +722,7 @@ const GspApplicationPage: React.FC = () => {
                             <SelectContent>
                               <SelectItem value="yes">Yes</SelectItem>
                               <SelectItem value="no">No</SelectItem>
-                              <SelectItem value="not_yet">Not yet</SelectItem>
+                              <SelectItem value="not_yet">I have not told them yet</SelectItem>
                             </SelectContent>
                           </Select>
                         </div>
@@ -760,22 +730,28 @@ const GspApplicationPage: React.FC = () => {
                     )}
                     {data.housingOption === "C" && (
                       <div className="mt-2">
-                        <Label>Can cover 60,000 FCFA/month?</Label>
+                        <p className="text-sm text-muted-foreground mb-2">
+                          KC can provide on-campus housing in Buea for students who need it during the summer camp, at a cost of 60,000 FCFA per month. KC will cover feeding, internet, and associated living bills.
+                        </p>
+                        <Label>Would you be able to cover this cost if admitted?</Label>
                         <Select disabled={!editable} value={data.canCoverHousingCost} onValueChange={(val) => setField("canCoverHousingCost", val)}>
                           <SelectTrigger><SelectValue placeholder="Select option" /></SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="yes">Yes</SelectItem>
-                            <SelectItem value="no">No</SelectItem>
+                            <SelectItem value="yes">Yes, I can cover this</SelectItem>
+                            <SelectItem value="no">No, I would not be able to cover this</SelectItem>
                           </SelectContent>
                         </Select>
                       </div>
                     )}
                     <div>
-                      <Label>Any circumstance affecting participation?</Label>
+                      <Label>Is there anything in your circumstances that might affect your ability to fully participate in the programme?</Label>
+                      <p className="text-sm text-muted-foreground mt-1 mb-2">
+                        This includes your family situation, location, health, or displacement from the crisis. Be honest - this will not automatically affect your admission. It helps us plan support.
+                      </p>
                       <Select disabled={!editable} value={data.participationConstraint} onValueChange={(val) => setField("participationConstraint", val)}>
                         <SelectTrigger><SelectValue placeholder="Select option" /></SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="yes">Yes</SelectItem>
+                          <SelectItem value="yes">Yes - I will explain below</SelectItem>
                           <SelectItem value="no">No</SelectItem>
                         </SelectContent>
                       </Select>
@@ -791,24 +767,6 @@ const GspApplicationPage: React.FC = () => {
                 </Card>
               )}
 
-              {activeSection === 7 && (
-                <Card className="rounded-3xl">
-                  <CardHeader><CardTitle>Section 7: {SECTION_LABELS[7]}</CardTitle></CardHeader>
-                  <CardContent>
-                    <div className="text-sm text-muted-foreground mb-3">{GUIDANCE_TEXT[7]}</div>
-                    <Label>Notes / additional information</Label>
-                    <ReactQuill
-                      theme="snow"
-                      value={data.section7}
-                      onChange={(content) => setField("section7", content)}
-                      readOnly={!editable}
-                      modules={editable ? EDITABLE_QUILL_MODULES : QUIET_QUILL_MODULES}
-                      className="min-h-[160px]"
-                    />
-                  </CardContent>
-                </Card>
-              )}
-
               {activeSection === 8 && (
                 <Card className="rounded-3xl">
                   <CardHeader><CardTitle>Section 8: Financial Context</CardTitle></CardHeader>
@@ -819,15 +777,19 @@ const GspApplicationPage: React.FC = () => {
                       <Select disabled={!editable} value={data.monthlyIncomeRange} onValueChange={(val) => setField("monthlyIncomeRange", val)}>
                         <SelectTrigger><SelectValue placeholder="Select income range" /></SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="under_50k">Under 50,000 XAF</SelectItem>
-                          <SelectItem value="50k_to_150k">50,000 - 150,000 XAF</SelectItem>
-                          <SelectItem value="150k_to_300k">150,000 - 300,000 XAF</SelectItem>
-                          <SelectItem value="above_300k">Above 300,000 XAF</SelectItem>
+                          <SelectItem value="below_50k">Below 50,000 FCFA</SelectItem>
+                          <SelectItem value="50k_to_100k">50,000 to 100,000 FCFA</SelectItem>
+                          <SelectItem value="100k_to_200k">100,000 to 200,000 FCFA</SelectItem>
+                          <SelectItem value="200k_to_400k">200,000 to 400,000 FCFA</SelectItem>
+                          <SelectItem value="400k_to_800k">400,000 to 800,000 FCFA</SelectItem>
+                          <SelectItem value="800k_to_1_5m">800,000 to 1,500,000 FCFA</SelectItem>
+                          <SelectItem value="1_5m_plus">1,500,000+ FCFA</SelectItem>
+                          <SelectItem value="unknown">I do not know</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
                     <div>
-                      <Label>Do you work to support family?</Label>
+                      <Label>Do you currently work to support yourself or your family?</Label>
                       <Select disabled={!editable} value={data.worksToSupportFamily} onValueChange={(val) => setField("worksToSupportFamily", val)}>
                         <SelectTrigger><SelectValue placeholder="Select option" /></SelectTrigger>
                         <SelectContent>
@@ -844,7 +806,7 @@ const GspApplicationPage: React.FC = () => {
                       </div>
                     )}
                     <div>
-                      <Label>Would 500,000 XAF still be a challenge?</Label>
+                      <Label>The KC GSP has a full-package cost of 500,000 FCFA disproportionately distributed between your SAT exam registration cost, exam prep, and programme tuition. We normally charge 1.6 million XAF ($2,900) for international students. Would the 500,000 XAF cut-down price cause a significant challenge for your family?</Label>
                       <Select disabled={!editable} value={data.costChallenge} onValueChange={(val) => setField("costChallenge", val)}>
                         <SelectTrigger><SelectValue placeholder="Select option" /></SelectTrigger>
                         <SelectContent>
@@ -860,22 +822,25 @@ const GspApplicationPage: React.FC = () => {
 
               {activeSection === 9 && (
                 <Card className="rounded-3xl">
-                  <CardHeader><CardTitle>Section 9: Financial Aid (Optional)</CardTitle></CardHeader>
+                  <CardHeader><CardTitle>Section 9: Financial Aid Application (Optional)</CardTitle></CardHeader>
                   <CardContent className="space-y-4">
                     <div className="text-sm text-muted-foreground">{GUIDANCE_TEXT[9]}</div>
                     <div>
-                      <Label>Applying for Financial Aid?</Label>
+                      <Label>Are you applying for the KC GSP Financial aid?</Label>
                       <Select disabled={!editable} value={data.applyingScholarship} onValueChange={(val) => setField("applyingScholarship", val)}>
                         <SelectTrigger><SelectValue placeholder="Select option" /></SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="yes">Yes</SelectItem>
-                          <SelectItem value="no">No</SelectItem>
+                          <SelectItem value="yes">Yes - I want to apply for the aid</SelectItem>
+                          <SelectItem value="no">No - I am applying to the programme only</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
                     {data.applyingScholarship === "yes" && (
                       <div className="mt-2">
-                        <Label>Financial aid essay</Label>
+                        <Label>Financial aid application essay</Label>
+                        <p className="text-sm text-muted-foreground mb-2">
+                          Tell us: what does accessing this programme and a university education abroad actually mean for your life and for the people around you? What will you do with it that could not happen without it? Also ensure to state specifically how much of the programme cost your family can cover.
+                        </p>
                         <ReactQuill
                           theme="snow"
                           value={data.scholarshipEssay}
@@ -906,7 +871,7 @@ const GspApplicationPage: React.FC = () => {
                       {data.documents?.olSlip?.url && <p className="text-xs text-emerald-600 mt-1">Uploaded</p>}
                     </div>
                     <div>
-                      <Label>Advanced Level Slip (optional)</Label>
+                      <Label>Advanced Level Slip (if applicable)</Label>
                       <Input disabled={!editable} type="file" accept=".pdf,.png,.jpg,.jpeg" onChange={(e) => uploadDocument("alSlip", e.target.files?.[0])} />
                     </div>
                   </CardContent>
@@ -920,7 +885,7 @@ const GspApplicationPage: React.FC = () => {
                     <div className="text-sm text-muted-foreground">{GUIDANCE_TEXT[11]}</div>
                     <label className="flex gap-2 items-start text-sm">
                       <input disabled={!editable} type="checkbox" checked={data.declarationConfirmed} onChange={(e) => setField("declarationConfirmed", e.target.checked)} />
-                      <span>I confirm all information in this application is accurate and my own.</span>
+                      <span>I confirm that all information in this application is accurate and my own. I understand that providing false information may result in my application being disqualified.</span>
                     </label>
                     <div className="flex flex-wrap justify-between gap-3">
                       <Button variant="outline" className="rounded-full" onClick={() => {
@@ -930,7 +895,7 @@ const GspApplicationPage: React.FC = () => {
                         {submitting ? "Submitting..." : "Submit Application"}
                       </Button>
                     </div>
-                    <p className="text-xs text-muted-foreground">After submission, this application becomes read-only.</p>
+                    <p className="text-xs text-muted-foreground">I confirm the above declaration and I am ready to submit my application.</p>
                   </CardContent>
                 </Card>
               )}
