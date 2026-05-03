@@ -15,9 +15,23 @@ const GspDashboardPage: React.FC = () => {
   const { toast } = useToast();
   const [application, setApplication] = React.useState<any>(null);
   const [fetching, setFetching] = React.useState(true);
-  const [localProgress, setLocalProgress] = React.useState<number | null>(null);
+  const [localDraft, setLocalDraft] = React.useState<any>(null);
   const displayName = user?.name?.trim() || user?.email?.split("@")[0] || "Applicant";
-  const hasApplication = Boolean(application?.r_id || application?.id || application?.status || application?.reference);
+  const appPayload = React.useMemo(
+    () => ({ ...(application?.data || {}), ...(application || {}), ...(localDraft || {}) }),
+    [application, localDraft]
+  );
+  const derivedSectionState = React.useMemo(
+    () => application?.sectionState || appPayload.sectionState || computeSectionState(appPayload),
+    [application, appPayload]
+  );
+  const completedSections = Object.values(derivedSectionState || {}).filter(Boolean).length;
+  const totalSections = Object.keys(derivedSectionState || {}).length || 10;
+  const progressPct = application?.status === "submitted" ? 100 : computeProgressPct(derivedSectionState);
+  const submissionRef = application?.reference || application?.submissionReference || application?.ref || appPayload.reference || appPayload.r_id || application?.id;
+  const lastSavedRaw = application?.updatedAt || application?.updated_at || application?.modifiedAt || application?.modified_at || application?.createdAt || application?.created_at;
+  const lastSaved = lastSavedRaw ? new Date(lastSavedRaw).toLocaleString() : "Not saved yet";
+  const hasApplication = Boolean(application?.r_id || application?.id || application?.status || submissionRef || localDraft);
 
   React.useEffect(() => {
     if (!user) return;
@@ -26,8 +40,7 @@ const GspDashboardPage: React.FC = () => {
     if (localDraft) {
       try {
         const parsed = JSON.parse(localDraft);
-        const st = computeSectionState(parsed);
-        setLocalProgress(computeProgressPct(st));
+        setLocalDraft(parsed);
       } catch (e) {}
     }
 
@@ -94,25 +107,15 @@ const GspDashboardPage: React.FC = () => {
                           <div>
                             <div className="text-xs text-muted-foreground">Progress</div>
                             <div className="text-2xl font-bold">
-                              {application?.status === 'submitted'
-                                ? 100
-                                : (localProgress !== null
-                                  ? Math.max(localProgress, application?.progressPct || 0)
-                                  : (application?.progressPct || 0))}%
+                              {progressPct}%
                             </div>
                           </div>
                           <div className="w-1/2">
-                            <Progress
-                              value={application?.status === 'submitted'
-                                ? 100
-                                : (localProgress !== null
-                                  ? Math.max(localProgress, application?.progressPct || 0)
-                                  : (application?.progressPct || 0))}
-                            />
+                            <Progress value={progressPct} />
                           </div>
                         </div>
                         <div className="mt-3 text-sm text-muted-foreground">
-                          Reference: <span className="font-medium text-foreground">{application?.reference || 'Not submitted yet'}</span>
+                          Reference: <span className="font-medium text-foreground">{submissionRef || 'Not submitted yet'}</span>
                         </div>
                       </div>
                     </div>
@@ -122,7 +125,7 @@ const GspDashboardPage: React.FC = () => {
                         <Link to="/gsp/application">
                           {application?.status === "submitted"
                             ? "View Application"
-                            : (!hasApplication && localProgress === null
+                            : (!hasApplication
                               ? "Start Application"
                               : "Continue Application")}
                         </Link>
@@ -145,18 +148,16 @@ const GspDashboardPage: React.FC = () => {
               <div className="flex items-center justify-between">
                 <div className="text-sm text-muted-foreground">Completed Sections</div>
                 <div className="font-semibold">
-                  {application?.sectionState ? Object.values(application.sectionState).filter(Boolean).length : 0}/10
+                  {completedSections}/{totalSections}
                 </div>
               </div>
               <div className="flex items-center justify-between">
                 <div className="text-sm text-muted-foreground">Last saved</div>
-                <div className="font-semibold">
-                  {application?.updatedAt ? new Date(application.updatedAt).toLocaleString() : '—'}
-                </div>
+                <div className="font-semibold">{lastSaved}</div>
               </div>
               <div className="flex items-center justify-between">
                 <div className="text-sm text-muted-foreground">Submission Ref</div>
-                <div className="font-semibold text-foreground">{application?.reference || 'Not submitted'}</div>
+                <div className="font-semibold text-foreground">{submissionRef || 'Not submitted'}</div>
               </div>
             </CardContent>
           </Card>
