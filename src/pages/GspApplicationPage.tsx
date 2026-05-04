@@ -1,5 +1,5 @@
 import React from "react";
-import { CheckCircle, Circle, Loader2 } from "lucide-react";
+import { CheckCircle, Circle, Loader2, ArrowLeft, Menu, X } from "lucide-react";
 import { Navigate, Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -190,6 +190,7 @@ const GspApplicationPage: React.FC = () => {
   const [submitting, setSubmitting] = React.useState(false);
   const [activeSection, setActiveSection] = React.useState(0);
   const [sectionTransitioning, setSectionTransitioning] = React.useState(false);
+  const [mobileSidebarOpen, setMobileSidebarOpen] = React.useState(false);
 
   const progressPct = React.useMemo(() => {
     return computeProgressPct(sectionState);
@@ -502,60 +503,158 @@ const GspApplicationPage: React.FC = () => {
     }
   };
 
-  return (
-    <motion.section
-      initial={{ opacity: 0, y: 12 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="container mx-auto px-4 lg:px-8 py-12 lg:py-16"
-    >
-      <div className="max-w-6xl mx-auto grid lg:grid-cols-[280px_minmax(0,1fr)] gap-6">
-        <Card className="rounded-2xl h-fit lg:sticky lg:top-24">
-          <CardHeader>
-            <CardTitle className="text-xl">GSP Application</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-2">
-            <p className="text-sm text-muted-foreground">
-              Progress:{" "}
-              <span className="font-semibold text-kc-blue">{progressPct}%</span>
-            </p>
-            <p className="text-xs text-muted-foreground">
-              {saving ? "Autosaving..." : "All changes saved automatically"}
-            </p>
-            <div className="pt-2 grid gap-2 text-sm">
-              {GSP_SECTIONS.map((s) => {
-                const completed =
-                  s === 0 ||
-                  Boolean(sectionState[s === 11 ? "review" : `section${s}`]);
-                const label = SECTION_LABELS[s]
-                  ? `Section ${s}: ${SECTION_LABELS[s]}`
-                  : `Section ${s}`;
-                return (
-                  <button
-                    key={s}
-                    className={`text-left px-3 py-2 rounded-lg border flex justify-between items-center transition-all ${completed ? "border-kc-blue bg-kc-blue text-white shadow-sm" : activeSection === s ? "border-kc-blue bg-kc-blue/5 text-foreground" : "border-border bg-white text-foreground"} hover:border-kc-blue`}
-                    onClick={() => goToSection(s)}
-                  >
-                    <span className="truncate max-w-[180px]">{label}</span>
-                    <div className="flex items-center gap-2">
-                      {completed ? (
-                        <CheckCircle className="h-4 w-4" />
-                      ) : (
-                        <Circle className="h-4 w-4 opacity-60" />
-                      )}
-                    </div>
-                  </button>
-                );
-              })}
-            </div>
-            <div className="pt-3">
-              <Button asChild variant="outline" className="rounded-full w-full">
-                <Link to="/gsp/dashboard">Back to Dashboard</Link>
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
+  /* shared sidebar content renderer */
+  const sidebarContent = (
+    <>
+      <p className="text-sm text-muted-foreground">
+        Progress:{" "}
+        <span className="font-semibold text-kc-blue">{progressPct}%</span>
+      </p>
+      <div className="w-full h-2 rounded-full bg-muted overflow-hidden">
+        <div
+          className="h-full bg-kc-blue rounded-full transition-all duration-500"
+          style={{ width: `${progressPct}%` }}
+        />
+      </div>
+      <p className="text-xs text-muted-foreground">
+        {saving ? "Autosaving..." : "All changes saved automatically"}
+      </p>
+      <div className="pt-2 grid gap-1.5 text-sm">
+        {GSP_SECTIONS.map((s) => {
+          const completed =
+            s === 0 ||
+            Boolean(sectionState[s === 11 ? "review" : `section${s}`]);
+          const label = SECTION_LABELS[s]
+            ? `Section ${s}: ${SECTION_LABELS[s]}`
+            : `Section ${s}`;
+          return (
+            <button
+              key={s}
+              className={`text-left px-3 py-2 rounded-lg border flex justify-between items-center transition-all text-xs sm:text-sm ${completed ? "border-kc-blue bg-kc-blue text-white shadow-sm" : activeSection === s ? "border-kc-blue bg-kc-blue/5 text-foreground" : "border-border bg-white text-foreground"} hover:border-kc-blue`}
+              onClick={() => {
+                goToSection(s);
+                setMobileSidebarOpen(false);
+              }}
+            >
+              <span className="truncate max-w-[200px]">{label}</span>
+              <div className="flex items-center gap-2">
+                {completed ? (
+                  <CheckCircle className="h-4 w-4 shrink-0" />
+                ) : (
+                  <Circle className="h-4 w-4 opacity-60 shrink-0" />
+                )}
+              </div>
+            </button>
+          );
+        })}
+      </div>
+    </>
+  );
 
-        <div className="space-y-6">
+  return (
+    <div className="min-h-screen flex flex-col bg-background text-foreground">
+      {/* ── Portal Top Bar ── */}
+      <header className="sticky top-0 z-50 border-b border-border bg-white/95 backdrop-blur-md">
+        <div className="flex items-center justify-between px-4 py-3 max-w-7xl mx-auto">
+          <div className="flex items-center gap-3">
+            <Button
+              asChild
+              variant="ghost"
+              size="sm"
+              className="rounded-full gap-2 text-muted-foreground hover:text-foreground"
+            >
+              <Link to="/gsp/dashboard">
+                <ArrowLeft className="h-4 w-4" />
+                <span className="hidden sm:inline">Back to Dashboard</span>
+              </Link>
+            </Button>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <span className="text-sm font-semibold text-kc-blue hidden sm:block">
+              GSP Application
+            </span>
+            <span className="text-xs text-muted-foreground hidden sm:block">
+              — {progressPct}% complete
+            </span>
+          </div>
+
+          {/* Mobile: menu toggle */}
+          <button
+            className="lg:hidden flex items-center gap-2 px-3 py-2 rounded-full border border-border text-sm hover:bg-muted transition-colors"
+            onClick={() => setMobileSidebarOpen(!mobileSidebarOpen)}
+          >
+            {mobileSidebarOpen ? (
+              <X className="h-4 w-4" />
+            ) : (
+              <Menu className="h-4 w-4" />
+            )}
+            <span className="text-xs font-medium">{progressPct}%</span>
+          </button>
+
+          {/* Desktop: hidden placeholder for centering */}
+          <div className="hidden lg:block w-[120px]" />
+        </div>
+      </header>
+
+      {/* ── Mobile Sidebar Overlay ── */}
+      {mobileSidebarOpen && (
+        <div className="fixed inset-0 z-40 lg:hidden">
+          <div
+            className="absolute inset-0 bg-black/40 backdrop-blur-sm"
+            onClick={() => setMobileSidebarOpen(false)}
+          />
+          <motion.aside
+            initial={{ x: -280 }}
+            animate={{ x: 0 }}
+            exit={{ x: -280 }}
+            transition={{ type: "spring", damping: 25, stiffness: 300 }}
+            className="absolute top-0 left-0 bottom-0 w-[280px] bg-white border-r border-border shadow-xl overflow-y-auto"
+          >
+            <div className="p-4 border-b border-border flex items-center justify-between">
+              <h2 className="font-semibold text-base">Sections</h2>
+              <button
+                className="p-1.5 rounded-lg hover:bg-muted transition-colors"
+                onClick={() => setMobileSidebarOpen(false)}
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+            <div className="p-4 space-y-2">
+              {sidebarContent}
+              <div className="pt-3">
+                <Button asChild variant="outline" className="rounded-full w-full text-xs">
+                  <Link to="/gsp/dashboard">Back to Dashboard</Link>
+                </Button>
+              </div>
+            </div>
+          </motion.aside>
+        </div>
+      )}
+
+      {/* ── Main Content Area ── */}
+      <div className="flex-1">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 lg:py-10">
+          <div className="grid lg:grid-cols-[260px_minmax(0,1fr)] gap-6">
+            {/* Desktop Sidebar */}
+            <aside className="hidden lg:block">
+              <Card className="rounded-2xl h-fit sticky top-[72px]">
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-lg">Sections</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-2">
+                  {sidebarContent}
+                  <div className="pt-3">
+                    <Button asChild variant="outline" className="rounded-full w-full text-xs">
+                      <Link to="/gsp/dashboard">Back to Dashboard</Link>
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            </aside>
+
+            {/* Form Content */}
+            <div className="space-y-6 min-w-0">
           {fetching ? (
             <Card className="rounded-2xl">
               <CardContent className="space-y-5 p-6 md:p-8">
@@ -1743,8 +1842,10 @@ const GspApplicationPage: React.FC = () => {
             </>
           )}
         </div>
+          </div>
+        </div>
       </div>
-    </motion.section>
+    </div>
   );
 };
 

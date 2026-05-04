@@ -71,12 +71,13 @@ const AppShell: React.FC = () => (
                   <Route path="auth" element={<AuthPage />} />
                   <Route path="auth/callback" element={<AuthCallbackPage />} />
                   <Route path="gsp/dashboard" element={<GspDashboardPage />} />
-                  <Route path="gsp/application" element={<GspApplicationPage />} />
                   <Route path="gsp/decision" element={<GspDecisionPage />} />
                   <Route path="gsp/admin" element={<GspAdminPage />} />
                   <Route path="privacy" element={<PrivacyPage />} />
                   <Route path="terms" element={<TermsPage />} />
                 </Route>
+                {/* GSP Application — no navbar/footer, full-screen portal */}
+                <Route path="gsp/application" element={<GspApplicationPage />} />
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                 <Route path="*" element={<NotFound />} />
               </Routes>
