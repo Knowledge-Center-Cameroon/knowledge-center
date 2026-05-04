@@ -62,66 +62,64 @@ const GspDashboardPage: React.FC = () => {
     <motion.section
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      className="container mx-auto px-4 lg:px-8 py-14 lg:py-20"
+      className="container mx-auto px-4 lg:px-8 py-8 sm:py-14 lg:py-20"
     >
       <div className="max-w-5xl mx-auto space-y-6">
-        <div className="flex flex-wrap justify-between items-center gap-3">
+        <div className="flex flex-col sm:flex-row sm:flex-wrap sm:justify-between sm:items-center gap-3">
           <div>
-            <h1 className="heading-2">Application Dashboard</h1>
-            <p className="text-muted-foreground">Welcome, <span className="font-medium text-foreground">{displayName}</span></p>
-            <p className="text-sm text-muted-foreground">{user?.email}</p>
+            <h1 className="text-xl sm:text-2xl lg:text-3xl font-heading font-bold">Application Dashboard</h1>
+            <p className="text-muted-foreground text-sm sm:text-base">Welcome, <span className="font-medium text-foreground">{displayName}</span></p>
+            <p className="text-xs sm:text-sm text-muted-foreground break-all">{user?.email}</p>
           </div>
           <div className="flex items-center gap-3">
             {user?.role === "admin" && (
-              <Button asChild variant="outline" className="rounded-full">
+              <Button asChild variant="outline" className="rounded-full text-xs sm:text-sm">
                 <Link to="/gsp/admin">Admin</Link>
               </Button>
             )}
-            <Button variant="ghost" className="rounded-full" onClick={signOut}>Sign out</Button>
+            <Button variant="ghost" className="rounded-full text-xs sm:text-sm" onClick={signOut}>Sign out</Button>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
           <Card className="rounded-3xl md:col-span-2 p-0 overflow-hidden">
-            <div className="p-6 bg-gradient-to-r from-kc-blue/10 via-white to-kc-blue/5">
-              <div className="flex items-start justify-between gap-4">
+            <div className="p-4 sm:p-6 bg-gradient-to-r from-kc-blue/10 via-white to-kc-blue/5">
+              <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
                 <div>
-                  <h3 className="text-lg font-semibold">Global Scholars Programme 2026</h3>
-                  <p className="text-sm text-muted-foreground mt-1">Application overview and quick actions</p>
+                  <h3 className="text-base sm:text-lg font-semibold">Global Scholars Programme 2026</h3>
+                  <p className="text-xs sm:text-sm text-muted-foreground mt-1">Application overview and quick actions</p>
                 </div>
-                <div className="text-right">
+                <div className="sm:text-right">
                   <Badge variant={application?.status === 'submitted' ? 'default' : (application?.status === 'under_review' ? 'secondary' : 'outline')}>
                     {(application?.status || 'draft').toUpperCase()}
                   </Badge>
                 </div>
               </div>
 
-              <div className="mt-6">
+              <div className="mt-4 sm:mt-6">
                 {fetching ? (
                   <p className="text-muted-foreground">Loading application...</p>
                 ) : (
                   <>
-                    <div className="flex items-center justify-between gap-4">
-                      <div className="flex-1">
-                        <div className="flex items-center justify-between">
-                          <div>
-                            <div className="text-xs text-muted-foreground">Progress</div>
-                            <div className="text-2xl font-bold">
-                              {progressPct}%
-                            </div>
-                          </div>
-                          <div className="w-1/2">
-                            <Progress value={progressPct} />
+                    <div className="space-y-3">
+                      <div className="flex items-center justify-between gap-4">
+                        <div>
+                          <div className="text-xs text-muted-foreground">Progress</div>
+                          <div className="text-xl sm:text-2xl font-bold">
+                            {progressPct}%
                           </div>
                         </div>
-                        <div className="mt-3 text-sm text-muted-foreground">
-                          Reference: <span className="font-medium text-foreground">{submissionRef || 'Not submitted yet'}</span>
+                        <div className="flex-1 max-w-[200px]">
+                          <Progress value={progressPct} />
                         </div>
+                      </div>
+                      <div className="text-xs sm:text-sm text-muted-foreground">
+                        Reference: <span className="font-medium text-foreground">{submissionRef || 'Not submitted yet'}</span>
                       </div>
                     </div>
 
-                    <div className="flex flex-wrap gap-3 pt-4">
-                      <Button asChild variant="blue" className="rounded-full px-6 py-3">
+                    <div className="flex flex-col sm:flex-row flex-wrap gap-3 pt-4">
+                      <Button asChild variant="blue" className="rounded-full px-6 py-3 text-sm">
                         <Link to="/gsp/application">
                           {application?.status === "submitted"
                             ? "View Application"
@@ -130,7 +128,7 @@ const GspDashboardPage: React.FC = () => {
                               : "Continue Application")}
                         </Link>
                       </Button>
-                      <Button asChild variant="outline" className="rounded-full px-6 py-3">
+                      <Button asChild variant="outline" className="rounded-full px-6 py-3 text-sm">
                         <Link to="/gsp/decision">View Decision</Link>
                       </Button>
                     </div>
@@ -140,24 +138,24 @@ const GspDashboardPage: React.FC = () => {
             </div>
           </Card>
 
-          <Card className="rounded-3xl p-4">
-            <CardHeader>
-              <CardTitle>Quick Stats</CardTitle>
+          <Card className="rounded-3xl p-3 sm:p-4">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-base sm:text-lg">Quick Stats</CardTitle>
             </CardHeader>
             <CardContent className="space-y-3">
               <div className="flex items-center justify-between">
-                <div className="text-sm text-muted-foreground">Completed Sections</div>
-                <div className="font-semibold">
+                <div className="text-xs sm:text-sm text-muted-foreground">Completed Sections</div>
+                <div className="font-semibold text-sm sm:text-base">
                   {completedSections}/{totalSections}
                 </div>
               </div>
               <div className="flex items-center justify-between">
-                <div className="text-sm text-muted-foreground">Last saved</div>
-                <div className="font-semibold">{lastSaved}</div>
+                <div className="text-xs sm:text-sm text-muted-foreground">Last saved</div>
+                <div className="font-semibold text-xs sm:text-sm">{lastSaved}</div>
               </div>
               <div className="flex items-center justify-between">
-                <div className="text-sm text-muted-foreground">Submission Ref</div>
-                <div className="font-semibold text-foreground">{submissionRef || 'Not submitted'}</div>
+                <div className="text-xs sm:text-sm text-muted-foreground">Submission Ref</div>
+                <div className="font-semibold text-foreground text-xs sm:text-sm break-all">{submissionRef || 'Not submitted'}</div>
               </div>
             </CardContent>
           </Card>
