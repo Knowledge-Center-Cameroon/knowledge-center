@@ -31,6 +31,7 @@ const AuthPage: React.FC = () => {
   const [loading, setLoading] = React.useState(false);
   const [resendingCode, setResendingCode] = React.useState(false);
   const [googleLoading, setGoogleLoading] = React.useState(false);
+  const [redirecting, setRedirecting] = React.useState(false);
   const [form, setForm] = React.useState({
     name: "",
     email: "",
@@ -102,8 +103,18 @@ const AuthPage: React.FC = () => {
 
 
   React.useEffect(() => {
-    if (user) navigate(redirectUrl);
-  }, [user, navigate, redirectUrl]);
+    if (user) {
+      setRedirecting(true);
+      const slowTimer = setTimeout(() => {
+        toast({
+          title: "Loading your portal...",
+          description: "Please wait while we set things up. This may take a moment.",
+        });
+      }, 3000);
+      navigate(redirectUrl);
+      return () => clearTimeout(slowTimer);
+    }
+  }, [user, navigate, redirectUrl, toast]);
 
 
 
@@ -191,6 +202,12 @@ const AuthPage: React.FC = () => {
       transition={{ duration: 0.35 }}
       className="container mx-auto px-4 lg:px-8 py-16 lg:py-24"
     >
+      {redirecting && (
+        <div className="fixed inset-0 z-50 bg-white/80 backdrop-blur-sm flex flex-col items-center justify-center gap-4">
+          <div className="animate-spin h-8 w-8 border-4 border-kc-blue border-t-transparent rounded-full" />
+          <p className="text-sm text-muted-foreground font-medium">Redirecting to your portal...</p>
+        </div>
+      )}
       <div className="max-w-5xl mx-auto grid lg:grid-cols-[1.1fr_1fr] gap-8 items-stretch">
         <Card className="rounded-3xl border-kc-blue/10 shadow-card bg-white">
           <CardHeader>

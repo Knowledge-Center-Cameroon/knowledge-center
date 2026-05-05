@@ -375,3 +375,163 @@ export const adminModerateBlogComment = async (
     throw error;
   }
 };
+
+/* ====================================================================
+ * ADMIN BLOG POST MANAGEMENT
+ * ==================================================================== */
+
+export interface AdminBlogPost {
+  _id: string;
+  id: string;           // slug used in routing
+  title: string;
+  excerpt: string;
+  content: string;      // HTML from rich text editor
+  date: string;         // ISO string
+  author: string;
+  cover?: string;
+  dp?: string;
+  tags: string[];
+  published: boolean;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export type CreateBlogPostPayload = Omit<AdminBlogPost, "_id" | "createdAt" | "updatedAt">;
+
+const LOCAL_BLOG_POSTS_KEY = "kc_admin_blog_posts_v1";
+
+function readLocalBlogPosts(): AdminBlogPost[] {
+  try {
+    return JSON.parse(localStorage.getItem(LOCAL_BLOG_POSTS_KEY) || "[]") as AdminBlogPost[];
+  } catch {
+    return [];
+  }
+}
+
+function writeLocalBlogPosts(posts: AdminBlogPost[]) {
+  try {
+    localStorage.setItem(LOCAL_BLOG_POSTS_KEY, JSON.stringify(posts));
+  } catch {}
+}
+
+/** Fetch all blog posts (published + drafts for admin) */
+export async function adminGetBlogPosts(): Promise<AdminBlogPost[]> {
+  try {
+    const resp = await fetch(`${API_BASE_URL}/api/admin/blog/posts`, {
+      headers: { "Content-Type": "application/json", ...authHeaders() },
+    });
+    if (!resp.ok) throw new Error("Failed to load blog posts");
+    const data = await resp.json();
+    return Array.isArray(data) ? data : data.posts || [];
+  } catch (error) {
+    console.error("adminGetBlogPosts fallback to local:", error);
+    return readLocalBlogPosts();
+  }
+}
+
+/** Fetch published blog posts for the public blog page */
+export async function getPublishedBlogPosts(): Promise<AdminBlogPost[]> {
+  try {
+    const resp = await fetch(`${API_BASE_URL}/api/blog-posts`);
+    if (!resp.ok) throw new Error("Failed to load published blog posts");
+    const data = await resp.json();
+    return Array.isArray(data) ? data : data.posts || [];
+  } catch (error) {
+    console.error("getPublishedBlogPosts fallback to local:", error);
+    return readLocalBlogPosts().filter((p) => p.published);
+  }
+}
+
+/** Fetch a single blog post by slug */
+export async function getBlogPostBySlug(slug: string): Promise<AdminBlogPost | null> {
+  try {
+    const resp = await fetch(`${API_BASE_URL}/api/blog-posts/${slug}`);
+    if (!resp.ok) throw new Error("Failed to load blog post");
+    const data = await resp.json();
+    return data;
+  } catch (error) {
+    console.error("getBlogPostBySlug error:", error);
+    return readLocalBlogPosts().find(p => p.id === slug) || null;
+  }
+}
+
+/** Admin: Create a blog post */
+export async function adminCreateBlogPost(payload: CreateBlogPostPayload): Promise<AdminBlogPost> {
+  try {
+    const resp = await fetch(`${API_BASE_URL}/api/admin/blog/posts`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", ...authHeaders() },
+      body: JSON.stringify(payload),
+    });
+    if (!resp.ok) {
+      const errData = await resp.json().catch(() => ({}));
+      throw new Error(errData.error || errData.message || "Create blog post failed");
+    }
+    const data = await resp.json();
+    const post = data.post || data;
+    const local = readLocalBlogPosts();
+    local.push(post);
+    writeLocalBlogPosts(local);
+    return post;
+  } catch (error) {
+    console.error("adminCreateBlogPost fallback:", error);
+    const post: AdminBlogPost = {
+      _id: `local_${Date.now()}_${Math.random().toString(36).slice(2)}`,
+      ...payload,
+      createdAt: new Date().toISOString(),
+    };
+    const local = readLocalBlogPosts();
+    local.push(post);
+    writeLocalBlogPosts(local);
+    return post;
+  }
+}
+
+/** Admin: Update a blog post */
+export async function adminUpdateBlogPost(
+  postId: string,
+  payload: Partial<CreateBlogPostPayload>
+): Promise<AdminBlogPost> {
+  try {
+    const resp = await fetch(`${API_BASE_URL}/api/admin/blog/posts/${postId}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json", ...authHeaders() },
+      body: JSON.stringify(payload),
+    });
+    if (!resp.ok) {
+      const errData = await resp.json().catch(() => ({}));
+      throw new Error(errData.error || errData.message || "Update blog post failed");
+    }
+    const data = await resp.json();
+    return data.post || data;
+  } catch (error) {
+    console.error("adminUpdateBlogPost fallback:", error);
+    const local = readLocalBlogPosts();
+    const idx = local.findIndex((p) => p._id === postId);
+    if (idx !== -1) {
+      local[idx] = { ...local[idx], ...payload, updatedAt: new Date().toISOString() };
+      writeLocalBlogPosts(local);
+      return local[idx];
+    }
+    throw error;
+  }
+}
+
+/** Admin: Delete a blog post */
+export async function adminDeleteBlogPost(postId: string): Promise<{ deleted: boolean }> {
+  try {
+    const resp = await fetch(`${API_BASE_URL}/api/admin/blog/posts/${postId}`, {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json", ...authHeaders() },
+    });
+    if (!resp.ok) throw new Error("Delete blog post failed");
+    const local = readLocalBlogPosts().filter((p) => p._id !== postId);
+    writeLocalBlogPosts(local);
+    return { deleted: true };
+  } catch (error) {
+    console.error("adminDeleteBlogPost fallback:", error);
+    const local = readLocalBlogPosts().filter((p) => p._id !== postId);
+    writeLocalBlogPosts(local);
+    return { deleted: true };
+  }
+}

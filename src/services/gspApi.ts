@@ -115,7 +115,7 @@ export async function resetPassword(token: string, newPassword: string) {
 }
 
 export async function getCurrentUser() {
-  return apiRequest<{ user: GspUser }>("/api/v2/auth/me");
+  return apiRequest<{ user: GspUser }>("/api/v2/auth/me/");
 }
 
 export async function createPortalAccount(payload: { name: string; email: string; password: string }) {
@@ -126,7 +126,7 @@ export async function createPortalAccount(payload: { name: string; email: string
 }
 
 export async function updateCurrentUser(payload: { name?: string }) {
-  return apiRequest<{ user: GspUser }>("/api/v2/auth/me", {
+  return apiRequest<{ user: GspUser }>("/api/v2/auth/me/", {
     method: "PATCH",
     body: JSON.stringify(payload),
   });
