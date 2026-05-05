@@ -59,24 +59,18 @@ export function hasAuthToken() {
 }
 
 export async function registerGsp(payload: { google_id: string; username: string; email: string }) {
-  return fetch(`${import.meta.env.VITE_API_BASE_URL}/api/v2/auth/google-login/`, {
+  const res = await fetch(`${BASE_URL}/api/v2/auth/google-login/`, {
     headers: {
       "Content-Type": "application/json",
     },
     method: "POST",
     body: JSON.stringify(payload),
-  }).then((data) => data.json())
-  .then((data) => data as { success: boolean; refresh: string; access: string; user: JSON })
-  .then((data) => {return data})
-  .catch((e) => {
-    console.error(e);
   });
-
-
-  // return apiRequest<{ success: boolean; refresh: string; access: string; user: JSON }>("/api/v2/auth/google-login", {
-  //   method: "POST",
-  //   body: JSON.stringify(payload),
-  // });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    throw new Error(data?.error || data?.message || "Google sign-in failed");
+  }
+  return data as { success: boolean; refresh?: string; access?: string; token?: string; user: GspUser };
 }
 
 export async function verifyEmailCode(payload: { email: string; code: string }) {
