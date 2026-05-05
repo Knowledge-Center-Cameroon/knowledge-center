@@ -1,4 +1,4 @@
-import { string } from "zod";
+import { toast } from "sonner";
 
 const BASE_URL = (import.meta as any).env?.VITE_API_BASE_URL || "https://kcbackend-production-7ae5.up.railway.app";
 const TOKEN_KEY = "kc_gsp_token";
@@ -139,13 +139,30 @@ export async function getGspApplication() {
   return { application: app };
 }
 
-export async function saveGspDraft(data: any, sectionState: Record<string, boolean>, r_id?: string) {
-  const payload = {
-    ...data,
+function buildGspApplicationPayload(
+  data: any,
+  sectionState: Record<string, boolean>,
+  extras: Record<string, any> = {},
+) {
+  const {
+    documents: _documents,
+    reportCard: _reportCard,
+    olSlip: _olSlip,
+    alSlip: _alSlip,
+    ...applicationData
+  } = data;
+
+  return {
+    ...applicationData,
     phoneNumber: `${data.phoneCode || "+237"} ${data.phone || ""}`.trim(),
     secondaryGuardianOccupation: data.secondGuardianOccupation,
     sectionState,
+    ...extras,
   };
+}
+
+export async function saveGspDraft(data: any, sectionState: Record<string, boolean>, r_id?: string) {
+  const payload = buildGspApplicationPayload(data, sectionState);
 
   if (r_id) {
     return apiRequest<{ success: boolean; application: any }>(`/api/v2/gsp/registration/${r_id}/`, {
@@ -161,14 +178,10 @@ export async function saveGspDraft(data: any, sectionState: Record<string, boole
 } 
 
 export async function submitGspApplication(data: any, sectionState: Record<string, boolean>, r_id: string) {
-  const payload = {
-    ...data,
-    phoneNumber: `${data.phoneCode || "+237"} ${data.phone || ""}`.trim(),
-    secondaryGuardianOccupation: data.secondGuardianOccupation,
-    sectionState,
+  const payload = buildGspApplicationPayload(data, sectionState, {
     submitted: true,
     status: "submitted",
-  };
+  });
   return apiRequest<{ success: boolean; reference: string; application: any }>(`/api/v2/gsp/registration/${r_id}/`, {
     method: "PATCH",
     body: JSON.stringify(payload),
@@ -179,21 +192,31 @@ export async function getGspDecision() {
   return apiRequest<{ released: boolean; decisionStatus: GspDecisionStatus | null; reference?: string; lowerSixthPathwayChoice?: string | null }>("/api/gsp/application/decision");
 }
 
-export async function uploadGspDocument({ file, application }: { file: File; application: string }) {
-  const dataUrl = await new Promise<string>((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = () => resolve(String(reader.result || ""));
-    reader.onerror = () => reject(new Error("Failed to read file"));
-    reader.readAsDataURL(file);
-  });
-  return apiRequest<UploadedDocument>("/api/gsp/registration/document-upload", {
-    method: "POST",
-    body: JSON.stringify({
-      fileName: file.name,
-      category: file.type,
-      application: application,
-      dataUrl,
-    }),
+export async function uploadGspDocument({ file, application, field }: { file: File; application: string; field: "reportCard" | "olSlip" | "alSlip" }) {
+  const form = new FormData();
+  form.append(field, file);
+  // return apiRequest<UploadedDocument>(`/api/v2/gsp/registration/${application}`, {
+  //   method: "PATCH",
+  //   body: form
+  // });
+  return await fetch(`${BASE_URL}/api/v2/gsp/registration/${application}/`, {
+    method: "PATCH",
+    headers: {
+      Authorization: `Bearer ${getToken()}`,
+    },
+    body: form,
+  }).then(async (res) => {
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      throw new Error(data?.error || data?.message || "Failed to upload document");
+    }
+    return data;
+  })
+  .then(data => {return data})
+  .catch(e => {
+    console.error(e);
+    toast.error("Failed to upload document. Please try again.");
+    throw e;
   });
 }
 

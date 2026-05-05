@@ -8,41 +8,53 @@ import { Badge } from "@/components/ui/badge";
 import { useGspAuth } from "@/contexts/GspAuthContext";
 import { getGspApplication } from "@/services/gspApi";
 import { useToast } from "@/components/ui/use-toast";
-import { computeSectionState, computeProgressPct } from "@/lib/gspUtils";
+import {
+  computeSectionState,
+  computeProgressPct,
+  GSP_PROGRESS_KEYS,
+} from "@/lib/gspUtils";
+
+const getPersistedSectionState = (source: any): Record<string, boolean> | null => {
+  const state = source?.sectionState || source?.section_state;
+  return state && typeof state === "object" ? state : null;
+};
+
+const hasCompletedSection = (state: Record<string, boolean>) =>
+  GSP_PROGRESS_KEYS.some((key) => Boolean(state[key]));
 
 const GspDashboardPage: React.FC = () => {
   const { user, loading, signOut } = useGspAuth();
   const { toast } = useToast();
   const [application, setApplication] = React.useState<any>(null);
   const [fetching, setFetching] = React.useState(true);
-  const [localDraft, setLocalDraft] = React.useState<any>(null);
   const displayName = user?.name?.trim() || user?.email?.split("@")[0] || "Applicant";
   const appPayload = React.useMemo(
-    () => ({ ...(application?.data || {}), ...(application || {}), ...(localDraft || {}) }),
-    [application, localDraft]
+    () => ({ ...(application?.data || {}), ...(application || {}) }),
+    [application]
   );
-  const derivedSectionState = React.useMemo(
-    () => application?.sectionState || appPayload.sectionState || computeSectionState(appPayload),
-    [application, appPayload]
-  );
-  const completedSections = Object.values(derivedSectionState || {}).filter(Boolean).length;
-  const totalSections = Object.keys(derivedSectionState || {}).length || 10;
-  const progressPct = application?.status === "submitted" ? 100 : computeProgressPct(derivedSectionState);
+  const derivedSectionState = React.useMemo(() => {
+    const computed = computeSectionState(appPayload);
+    if (hasCompletedSection(computed)) return computed;
+    return (
+      getPersistedSectionState(application) ||
+      getPersistedSectionState(appPayload) ||
+      computed
+    );
+  }, [application, appPayload]);
+  const applicationStatus = String(application?.status || appPayload.status || "").toLowerCase();
+  const isSubmitted = applicationStatus === "submitted";
+  const completedSections = isSubmitted
+    ? GSP_PROGRESS_KEYS.length
+    : GSP_PROGRESS_KEYS.filter((key) => Boolean(derivedSectionState?.[key])).length;
+  const totalSections = GSP_PROGRESS_KEYS.length;
+  const progressPct = isSubmitted ? 100 : computeProgressPct(derivedSectionState);
   const submissionRef = application?.reference || application?.submissionReference || application?.ref || appPayload.reference || appPayload.r_id || application?.id;
   const lastSavedRaw = application?.updatedAt || application?.updated_at || application?.modifiedAt || application?.modified_at || application?.createdAt || application?.created_at;
   const lastSaved = lastSavedRaw ? new Date(lastSavedRaw).toLocaleString() : "Not saved yet";
-  const hasApplication = Boolean(application?.r_id || application?.id || application?.status || submissionRef || localDraft);
+  const hasApplication = Boolean(application?.r_id || application?.id || application?.status || submissionRef);
 
   React.useEffect(() => {
     if (!user) return;
-    const draftKey = `gsp_draft_${user.email}`;
-    const localDraft = localStorage.getItem(draftKey);
-    if (localDraft) {
-      try {
-        const parsed = JSON.parse(localDraft);
-        setLocalDraft(parsed);
-      } catch (e) {}
-    }
 
     (async () => {
       try {

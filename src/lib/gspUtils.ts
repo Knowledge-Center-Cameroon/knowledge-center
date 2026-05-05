@@ -4,19 +4,67 @@ export function words(v: string) {
   return text.trim().split(/\s+/).filter(Boolean).length;
 }
 
+function asRecord(value: unknown): Record<string, unknown> | null {
+  return value && typeof value === "object"
+    ? (value as Record<string, unknown>)
+    : null;
+}
+
+export function getDocumentUrl(document: unknown): string {
+  if (!document) return "";
+  if (typeof document === "string") return document;
+  const record = asRecord(document);
+  const url = record?.url || record?.file || record?.path;
+  return typeof url === "string" ? url : "";
+}
+
+export function hasUploadedDocument(source: unknown, field: string): boolean {
+  const sourceRecord = asRecord(source);
+  const documentsRecord = asRecord(sourceRecord?.documents);
+  return Boolean(
+    getDocumentUrl(documentsRecord?.[field]) ||
+      getDocumentUrl(sourceRecord?.[field])
+  );
+}
+
+function hasPhoneContact(source: any): boolean {
+  const phone = String(source?.phone || "").trim();
+  const phoneNumber = String(
+    source?.phoneNumber || source?.phone_number || source?.phone_number_display || "",
+  ).trim();
+
+  return Boolean(phone || phoneNumber);
+}
+
+export const GSP_PROGRESS_KEYS = [
+  "section1",
+  "section2",
+  "section3",
+  "section4",
+  "section5",
+  "section6",
+  "section7",
+  "section8",
+  "section9",
+  "section10",
+  "review",
+] as const;
+
 export function computeSectionState(source: any): Record<string, boolean> {
   if (!source) return {};
+  const hasPhone = hasPhoneContact(source);
   
   const st: Record<string, boolean> = {
-    section1: Boolean(source.firstName && source.lastName && source.dob && source.phoneCode && source.phone && source.email && source.gender && source.nationality && source.city && source.region),
+    section1: Boolean(source.firstName && source.lastName && source.dob && hasPhone && source.email && source.gender && source.nationality && source.city && source.region),
     section2: Boolean(source.householdSize && source.primaryGuardianOccupation && source.highestFamilyEducation && source.familyStudiedAbroad && (source.familyStudiedAbroad !== "yes" || source.familyAbroadDetails)),
     section3: Boolean(source.schoolName && source.schoolCity && source.schoolRegion && source.currentClass && source.intendedFieldWhy),
     section4: words(source.communityEssay) >= 75 && words(source.communityEssay) <= 225,
     section5: Array.isArray(source.activities) && source.activities.length >= 1 && source.activities.every((a: any) => a.title && a.roleDescription && a.duration && a.hoursPerWeek && a.weeksPerYear && a.isStillDoing && (a.isStillDoing !== "no" || a.stoppedIn)),
     section6: Boolean(source.housingOption && source.participationConstraint && (source.housingOption !== "B" || (source.housingContactRelation && source.housingContactAware)) && (source.housingOption !== "C" || source.canCoverHousingCost) && (source.participationConstraint !== "yes" || source.participationConstraintExplain)),
+    section7: Boolean(source.currentClass && (source.currentClass !== "lower_sixth" || source.lowerSixthAlternatives)),
     section8: Boolean(source.monthlyIncomeRange && source.worksToSupportFamily && (source.worksToSupportFamily !== "yes" || source.workSupportDetails) && source.costChallenge),
     section9: Boolean(source.applyingScholarship && (source.applyingScholarship !== "yes" || source.scholarshipEssay)),
-    section10: Boolean(source.documents?.reportCard?.url && source.documents?.olSlip?.url),
+    section10: hasUploadedDocument(source, "reportCard") && hasUploadedDocument(source, "olSlip"),
     review: Boolean(source.declarationConfirmed),
   };
   
@@ -31,7 +79,6 @@ export function computeSectionState(source: any): Record<string, boolean> {
 
 export function computeProgressPct(sectionState: Record<string, boolean>): number {
   if (!sectionState) return 0;
-  const total = Object.keys(sectionState).length || 10;
-  const done = Object.values(sectionState).filter(Boolean).length;
-  return Math.round((done / total) * 100);
+  const done = GSP_PROGRESS_KEYS.filter((key) => Boolean(sectionState[key])).length;
+  return Math.round((done / GSP_PROGRESS_KEYS.length) * 100);
 }
