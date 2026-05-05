@@ -2,17 +2,17 @@ import { createRoot } from 'react-dom/client'
 import App from './App.tsx'
 import './index.css'
 import ErrorBoundary from './ErrorBoundary'
-import { ClerkProvider } from "@clerk/react"
+import { GoogleOAuthProvider } from "@react-oauth/google"
 
-const clerkPubKey = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
-if (!clerkPubKey) {
-  throw new Error("VITE_CLERK_PUBLISHABLE_KEY is not set in environment variables");
+const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
+if (!googleClientId) {
+  throw new Error("VITE_GOOGLE_CLIENT_ID is not set in environment variables");
 }
 
 createRoot(document.getElementById("root")!).render(
   <ErrorBoundary>
-    <ClerkProvider publishableKey={clerkPubKey}>
+    <GoogleOAuthProvider clientId={googleClientId}>
       <App />
-    </ClerkProvider>
+    </GoogleOAuthProvider>
   </ErrorBoundary>
 );

@@ -4,6 +4,7 @@ import { Navigate, Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -25,7 +26,13 @@ import {
 import { useToast } from "@/components/ui/use-toast";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
-import { words, computeSectionState, computeProgressPct } from "@/lib/gspUtils";
+import {
+  words,
+  computeSectionState,
+  computeProgressPct,
+  getDocumentUrl,
+  hasUploadedDocument,
+} from "@/lib/gspUtils";
 
 const CAMEROON_REGIONS = [
   "Adamawa",
@@ -177,6 +184,198 @@ const EDITABLE_QUILL_MODULES = {
   ],
 };
 
+const normalizeYesNo = (value: any, fallback = "") => {
+  if (value === true) return "yes";
+  if (value === false) return "no";
+  if (value === null || value === undefined || value === "") return fallback;
+  const normalized = String(value).trim().toLowerCase();
+  if (["yes", "true", "1"].includes(normalized)) return "yes";
+  if (["no", "false", "0"].includes(normalized)) return "no";
+  return fallback || normalized;
+};
+
+const getFirstPresentValue = (source: any, keys: string[]) => {
+  for (const key of keys) {
+    if (source?.[key] !== undefined && source?.[key] !== null) {
+      return source[key];
+    }
+  }
+  return undefined;
+};
+
+const normalizeBoolean = (value: any, fallback = false) => {
+  if (value === true || value === false) return value;
+  if (value === null || value === undefined || value === "") return fallback;
+  const normalized = String(value).trim().toLowerCase();
+  if (["yes", "true", "1"].includes(normalized)) return true;
+  if (["no", "false", "0"].includes(normalized)) return false;
+  return fallback;
+};
+
+const normalizePhoneFields = (source: any) => {
+  const rawPhoneNumber =
+    source.phoneNumber ||
+    source.phone_number ||
+    source.phone_number_display ||
+    "";
+  const rawPhoneCode = source.phoneCode || source.phone_code || "";
+  const rawPhone = source.phone || "";
+  const rawPhoneText = String(rawPhone || "").trim();
+
+  if (rawPhoneCode) {
+    return {
+      phoneCode: rawPhoneCode,
+      phone: rawPhoneText,
+    };
+  }
+
+  const phoneNumber = String(rawPhoneNumber || rawPhoneText || "").trim();
+  if (!phoneNumber) {
+    return {
+      phoneCode: defaultData.phoneCode,
+      phone: "",
+    };
+  }
+
+  const matchingCode = COUNTRY_CODES.find((item) =>
+    phoneNumber.startsWith(item.code),
+  );
+  if (matchingCode) {
+    return {
+      phoneCode: matchingCode.code,
+      phone: phoneNumber.slice(matchingCode.code.length).trim(),
+    };
+  }
+
+  const [maybeCode, ...rest] = phoneNumber.split(/\s+/);
+  if (maybeCode?.startsWith("+") && rest.length) {
+    return {
+      phoneCode: maybeCode,
+      phone: rest.join(" "),
+    };
+  }
+
+  return {
+    phoneCode: defaultData.phoneCode,
+    phone: phoneNumber,
+  };
+};
+
+const normalizeGspApplicationData = (source: any, userEmail?: string) => {
+  const normalizedPhone = normalizePhoneFields(source);
+  const activities = Array.isArray(source.activities)
+    ? source.activities.map((activity: any) => ({
+        ...activity,
+        isStillDoing: normalizeYesNo(
+          getFirstPresentValue(activity, [
+            "isStillDoing",
+            "is_still_doing",
+            "stillDoing",
+            "still_doing",
+          ]),
+          "",
+        ),
+      }))
+    : source.activities;
+
+  return {
+    ...source,
+    ...normalizedPhone,
+    ...(activities ? { activities } : {}),
+    email: source.email || userEmail || "",
+    isPhoneOnWhatsApp: normalizeYesNo(
+      getFirstPresentValue(source, [
+        "isPhoneOnWhatsApp",
+        "isOnWhatsapp",
+        "isOnWhatsApp",
+        "is_phone_on_whatsapp",
+        "is_on_whatsapp",
+        "phoneOnWhatsApp",
+        "phone_on_whatsapp",
+      ]),
+      defaultData.isPhoneOnWhatsApp,
+    ),
+    familyStudiedAbroad: normalizeYesNo(
+      getFirstPresentValue(source, [
+        "familyStudiedAbroad",
+        "family_studied_abroad",
+      ]),
+      "",
+    ),
+    housingContactAware: normalizeYesNo(
+      getFirstPresentValue(source, [
+        "housingContactAware",
+        "housing_contact_aware",
+      ]),
+      "",
+    ),
+    canCoverHousingCost: normalizeYesNo(
+      getFirstPresentValue(source, [
+        "canCoverHousingCost",
+        "can_cover_housing_cost",
+      ]),
+      "",
+    ),
+    participationConstraint: normalizeYesNo(
+      getFirstPresentValue(source, [
+        "participationConstraint",
+        "participation_constraint",
+      ]),
+      "",
+    ),
+    worksToSupportFamily: normalizeYesNo(
+      getFirstPresentValue(source, [
+        "worksToSupportFamily",
+        "works_to_support_family",
+      ]),
+      "",
+    ),
+    costChallenge: normalizeYesNo(
+      getFirstPresentValue(source, [
+        "costChallenge",
+        "cost_challenge",
+      ]),
+      "",
+    ),
+    applyingScholarship: normalizeYesNo(
+      getFirstPresentValue(source, [
+        "applyingScholarship",
+        "applying_scholarship",
+      ]),
+      "",
+    ),
+    declarationConfirmed: normalizeBoolean(
+      getFirstPresentValue(source, [
+        "declarationConfirmed",
+        "declaration_confirmed",
+      ]),
+      false,
+    ),
+    alternateWhatsApp:
+      source.alternateWhatsApp ||
+      source.alternate_whatsapp ||
+      source.whatsappAlternate ||
+      "",
+  };
+};
+
+const mergeBackendApplicationData = (serverApp: any) => {
+  const nestedData = serverApp.data || {};
+  const phoneNumber =
+    nestedData.phoneNumber ||
+    nestedData.phone_number ||
+    serverApp.phoneNumber ||
+    serverApp.phone_number ||
+    serverApp.phone_number_display ||
+    nestedData.phone;
+
+  return {
+    ...serverApp,
+    ...nestedData,
+    ...(phoneNumber ? { phoneNumber } : {}),
+  };
+};
+
 const GspApplicationPage: React.FC = () => {
   const { user, loading } = useGspAuth();
   const { toast } = useToast();
@@ -195,39 +394,30 @@ const GspApplicationPage: React.FC = () => {
   const progressPct = React.useMemo(() => {
     return computeProgressPct(sectionState);
   }, [sectionState]);
+  const applicationStatus = String(data.status || "").toLowerCase();
+  const isApplicationSubmitted =
+    normalizeBoolean(data.submitted, false) || applicationStatus === "submitted";
 
   React.useEffect(() => {
     if (!user) return;
-
-    const draftKey = `gsp_draft_${user.email}`;
-    const localDraft = localStorage.getItem(draftKey);
-
-    // Load local draft as immediate preview while server fetch is in flight
-    if (localDraft) {
-      try {
-        const parsed = JSON.parse(localDraft);
-        setData((prev: any) => ({ ...prev, ...parsed }));
-      } catch (e) {}
-    }
 
     (async () => {
       try {
         const resp = await getGspApplication();
         const serverApp = resp.application;
         if (serverApp) {
-          const serverData = serverApp.data || serverApp;
+          const serverData = normalizeGspApplicationData(
+            mergeBackendApplicationData(serverApp),
+            user.email,
+          );
           const appRId = serverApp.r_id || serverApp.id;
           // Server data always wins — merge onto defaults and then overlay server fields
           const mergedData = {
             ...defaultData,
             ...serverData,
-            email: serverData.email || user.email,
             ...(appRId ? { r_id: appRId } : {}),
           };
           setData(mergedData);
-          // Persist to local so future loads are fast
-          localStorage.setItem(draftKey, JSON.stringify(mergedData));
-          if (appRId) localStorage.setItem("gsp_reg_rid", appRId);
           const nextSectionState =
             serverApp.sectionState || computeSectionState(mergedData);
           setSectionState(nextSectionState);
@@ -244,27 +434,23 @@ const GspApplicationPage: React.FC = () => {
     })();
   }, [user, toast]);
 
-  // Autosave: debounce writes to both localStorage and backend
+  // Autosave: debounce writes to the backend only.
   const autosaveTimer = React.useRef<ReturnType<typeof setTimeout> | null>(null);
   React.useEffect(() => {
     if (!user || fetching) return;
     const next = computeSectionState(data);
     setSectionState(next);
-
-    // Save to localStorage immediately for offline / fast reload
-    localStorage.setItem(`gsp_draft_${user.email}`, JSON.stringify(data));
+    if (isApplicationSubmitted) return;
 
     // Debounced backend save
     if (autosaveTimer.current) clearTimeout(autosaveTimer.current);
     autosaveTimer.current = setTimeout(async () => {
       try {
         setSaving(true);
-        const rid = data.r_id || localStorage.getItem("gsp_reg_rid") || undefined;
-        const res = await saveGspDraft(data, next, rid);
-        if (res?.application?.r_id && !data.r_id) {
-          const newRid = res.application.r_id;
+        const res = await saveGspDraft(data, next, data.r_id || undefined);
+        const newRid = res?.application?.r_id || res?.application?.id;
+        if (newRid && !data.r_id) {
           setData((prev: any) => ({ ...prev, r_id: newRid }));
-          localStorage.setItem("gsp_reg_rid", newRid);
         }
       } catch {
         // Silent fail — next autosave will retry
@@ -275,7 +461,7 @@ const GspApplicationPage: React.FC = () => {
     return () => {
       if (autosaveTimer.current) clearTimeout(autosaveTimer.current);
     };
-  }, [data, user, fetching]);
+  }, [data, user, fetching, isApplicationSubmitted]);
 
   if (!loading && !user)
     return <Navigate to="/auth?redirect=/gsp/application" replace />;
@@ -283,7 +469,26 @@ const GspApplicationPage: React.FC = () => {
   const setField = (key: string, value: any) =>
     setData((prev: any) => ({ ...prev, [key]: value }));
 
-  const canEditSection = (_s: number) => true;
+  const saveCurrentDraft = async (
+    payload = data,
+    nextSectionState = computeSectionState(payload),
+  ) => {
+    if (isApplicationSubmitted) {
+      throw new Error("Submitted applications cannot be edited.");
+    }
+    const res = await saveGspDraft(
+      payload,
+      nextSectionState,
+      payload.r_id || undefined,
+    );
+    const nextRId = res?.application?.r_id || res?.application?.id || payload.r_id;
+    if (nextRId && nextRId !== payload.r_id) {
+      setData((prev: any) => ({ ...prev, r_id: nextRId }));
+    }
+    return { response: res, r_id: nextRId };
+  };
+
+  const canEditSection = (_s: number) => !isApplicationSubmitted;
 
   const updateSubject = (
     index: number,
@@ -426,6 +631,13 @@ const GspApplicationPage: React.FC = () => {
       )
         missing.push("Participation constraint explanation");
     }
+    if (section === 7) {
+      if (
+        data.currentClass === "lower_sixth" &&
+        !data.lowerSixthAlternatives
+      )
+        missing.push("Lower Sixth alternative pathway preference");
+    }
     if (section === 8) {
       if (!data.monthlyIncomeRange)
         missing.push("Monthly household income range");
@@ -441,8 +653,9 @@ const GspApplicationPage: React.FC = () => {
         missing.push("Scholarship essay");
     }
     if (section === 10) {
-      if (!data.documents?.reportCard?.url) missing.push("Report card upload");
-      if (!data.documents?.olSlip?.url)
+      if (!hasUploadedDocument(data, "reportCard"))
+        missing.push("Report card upload");
+      if (!hasUploadedDocument(data, "olSlip"))
         missing.push("Ordinary Level slip upload");
     }
     if (section === 11) {
@@ -458,13 +671,29 @@ const GspApplicationPage: React.FC = () => {
   ) => {
     if (!file) return;
     try {
+      let applicationId = data.r_id;
+      if (!applicationId) {
+        const saved = await saveCurrentDraft();
+        applicationId = saved.r_id;
+      }
+      if (!applicationId) {
+        throw new Error("Please save your application before uploading documents.");
+      }
       const uploaded = await uploadGspDocument({
         file: file,
-        application: data.r_id,
+        field: field,
+        application: applicationId,
       });
+      const uploadedDocument =
+        uploaded?.application?.documents?.[field] ||
+        uploaded?.application?.[field] ||
+        uploaded?.documents?.[field] ||
+        uploaded?.[field] ||
+        uploaded;
       setData((prev: any) => ({
         ...prev,
-        documents: { ...prev.documents, [field]: uploaded },
+        r_id: prev.r_id || applicationId,
+        documents: { ...prev.documents, [field]: uploadedDocument },
       }));
       toast({
         title: "Upload complete",
@@ -480,6 +709,14 @@ const GspApplicationPage: React.FC = () => {
   };
 
   const onSubmit = async () => {
+    if (isApplicationSubmitted) {
+      toast({
+        title: "Application already submitted",
+        description: "Submitted applications are locked for review.",
+      });
+      return;
+    }
+
     const allMissing: string[] = [];
     SUBMITTABLE_SECTIONS.forEach((s) => {
       const miss = getMissingFields(s);
@@ -499,8 +736,17 @@ const GspApplicationPage: React.FC = () => {
 
     try {
       setSubmitting(true);
-      await submitGspApplication(data, sectionState, data.r_id);
-      localStorage.removeItem(`gsp_draft_${user?.email}`);
+      let applicationData = data;
+      let applicationId = data.r_id;
+      if (!applicationId) {
+        const saved = await saveCurrentDraft(data, sectionState);
+        applicationId = saved.r_id;
+        applicationData = { ...data, r_id: applicationId };
+      }
+      if (!applicationId) {
+        throw new Error("Could not create your backend application record.");
+      }
+      await submitGspApplication(applicationData, sectionState, applicationId);
       toast({
         title: "Application submitted",
         description: "Your application is now locked for review.",
@@ -531,7 +777,11 @@ const GspApplicationPage: React.FC = () => {
         />
       </div>
       <p className="text-xs text-muted-foreground">
-        {saving ? "Autosaving..." : "All changes saved automatically"}
+        {isApplicationSubmitted
+          ? "Submitted applications are locked for review"
+          : saving
+            ? "Autosaving..."
+            : "All changes saved automatically"}
       </p>
       <div className="pt-2 grid gap-1.5 text-sm">
         {GSP_SECTIONS.map((s) => {
@@ -929,9 +1179,9 @@ const GspApplicationPage: React.FC = () => {
                       </Label>
                       <Input
                         disabled={!editable}
-                        value={data.secondGuardianOccupation}
+                        value={data.secondaryGuardianOccupation}
                         onChange={(e) =>
-                          setField("secondGuardianOccupation", e.target.value)
+                          setField("secondaryGuardianOccupation", e.target.value)
                         }
                       />
                     </div>
@@ -1716,9 +1966,9 @@ const GspApplicationPage: React.FC = () => {
                           uploadDocument("reportCard", e.target.files?.[0])
                         }
                       />
-                      {data.documents?.reportCard?.url && (
+                      {hasUploadedDocument(data, "reportCard") && (
                         <p className="text-xs text-emerald-600 mt-1">
-                          Uploaded
+                          Uploaded{getDocumentUrl(data.documents?.reportCard) ? "" : " on backend"}
                         </p>
                       )}
                     </div>
@@ -1732,9 +1982,9 @@ const GspApplicationPage: React.FC = () => {
                           uploadDocument("olSlip", e.target.files?.[0])
                         }
                       />
-                      {data.documents?.olSlip?.url && (
+                      {hasUploadedDocument(data, "olSlip") && (
                         <p className="text-xs text-emerald-600 mt-1">
-                          Uploaded
+                          Uploaded{getDocumentUrl(data.documents?.olSlip) ? "" : " on backend"}
                         </p>
                       )}
                     </div>
@@ -1748,6 +1998,11 @@ const GspApplicationPage: React.FC = () => {
                           uploadDocument("alSlip", e.target.files?.[0])
                         }
                       />
+                      {hasUploadedDocument(data, "alSlip") && (
+                        <p className="text-xs text-emerald-600 mt-1">
+                          Uploaded{getDocumentUrl(data.documents?.alSlip) ? "" : " on backend"}
+                        </p>
+                      )}
                     </div>
                   </CardContent>
                 </Card>
@@ -1763,13 +2018,13 @@ const GspApplicationPage: React.FC = () => {
                       {GUIDANCE_TEXT[11]}
                     </div>
                     <label className="flex gap-2 items-start text-sm">
-                      <input
+                      <Checkbox
                         disabled={!editable}
-                        type="checkbox"
-                        checked={data.declarationConfirmed}
-                        onChange={(e) =>
-                          setField("declarationConfirmed", e.target.checked)
+                        checked={Boolean(data.declarationConfirmed)}
+                        onCheckedChange={(checked) =>
+                          setField("declarationConfirmed", checked === true)
                         }
+                        className="mt-0.5"
                       />
                       <span>
                         I confirm that all information in this application is
@@ -1792,9 +2047,13 @@ const GspApplicationPage: React.FC = () => {
                         variant="blue"
                         className="rounded-full"
                         onClick={onSubmit}
-                        disabled={submitting}
+                        disabled={submitting || isApplicationSubmitted}
                       >
-                        {submitting ? "Submitting..." : "Submit Application"}
+                        {isApplicationSubmitted
+                          ? "Submitted"
+                          : submitting
+                            ? "Submitting..."
+                            : "Submit Application"}
                       </Button>
                     </div>
                     <p className="text-xs text-muted-foreground">
@@ -1807,23 +2066,18 @@ const GspApplicationPage: React.FC = () => {
 
               {activeSection !== 11 && (
                 <div className="flex justify-end pt-4">
-                  <Button
-                    variant="blue"
-                    className="rounded-full px-8"
-                    onClick={async () => {
+	                  <Button
+	                    variant="blue"
+	                    className="rounded-full px-8"
+	                    disabled={isApplicationSubmitted}
+	                    onClick={async () => {
                       const next = computeSectionState(data);
                       const missing =
                         activeSection === 0
                           ? []
                           : getMissingFields(activeSection);
                       try {
-                        const res = await saveGspDraft(data, next, data.r_id);
-                        if (res?.application?.r_id && !data.r_id) {
-                          setData((prev: any) => ({
-                            ...prev,
-                            r_id: res.application.r_id,
-                          }));
-                        }
+                        await saveCurrentDraft(data, next);
                         if (missing.length) {
                           toast({
                             title: "Draft saved",

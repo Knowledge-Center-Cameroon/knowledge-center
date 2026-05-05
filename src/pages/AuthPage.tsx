@@ -17,8 +17,13 @@ import {
 } from "@/services/gspApi";
 import { useGspAuth } from "@/contexts/GspAuthContext";
 import { useSeo } from "@/hooks/useSeo";
-import { SignInButton, useUser } from "@clerk/react";
-import { useSession, SignOutButton } from "@clerk/react";
+import { useGoogleLogin, googleLogout } from "@react-oauth/google";
+
+type GoogleProfile = {
+  sub: string;
+  name?: string;
+  email?: string;
+};
 
 const AuthPage: React.FC = () => {
   const navigate = useNavigate();
@@ -41,58 +46,73 @@ const AuthPage: React.FC = () => {
   });
 
   
-  const { isSignedIn, user: clerkUser } = useUser();
   const { user, refreshUser, signIn } = useGspAuth();
 
-  const { session } = useSession();
-
-  const clerkLogin = async () => {
-    if (isSignedIn && clerkUser) {
-      const token = clerkUser.externalAccounts[0].providerUserId;
-      
-      console.log(token);
-      registerGsp({ google_id: token, username: clerkUser.fullName, email: clerkUser.primaryEmailAddress.emailAddress })
-      .then((data) => data as { success: boolean; refresh: string; access: string; user: JSON })
-      .then((data) => {
-        console.log("GSP registration response:", data);
-        if (data?.success) {
-          saveAuthToken(data?.access);
-          refreshUser().then(() => {
-            navigate(redirectUrl);
-          });
-        } else {
-          toast({
-            title: "Google sign-in failed",
-            description: "Unable to register with Google account. Please try signing in with email and password.",
-            variant: "destructive",
-          });
+  const handleGoogleAccessToken = React.useCallback(
+    async (accessToken: string) => {
+      setGoogleLoading(true);
+      try {
+        const profileRes = await fetch("https://www.googleapis.com/oauth2/v3/userinfo", {
+          headers: { Authorization: `Bearer ${accessToken}` },
+        });
+        const profile = (await profileRes.json().catch(() => ({}))) as GoogleProfile;
+        if (!profileRes.ok || !profile.sub || !profile.email) {
+          throw new Error("Could not read your Google profile.");
         }
-      })
-      .catch((error) => {
-        console.error("Error during GSP registration:", error);
+
+        const data = await registerGsp({
+          google_id: profile.sub,
+          username: profile.name || profile.email,
+          email: profile.email,
+        });
+        const token = data?.access || data?.token;
+        if (!data?.success || !token) {
+          throw new Error("Unable to register with Google account.");
+        }
+
+        saveAuthToken(token);
+        await refreshUser();
+        navigate(redirectUrl);
+      } catch (error: unknown) {
+        googleLogout();
+        const message =
+          error instanceof Error
+            ? error.message
+            : "Unable to register with Google account. Please try signing in with email and password.";
         toast({
           title: "Google sign-in failed",
-          description: error.message || "Unable to register with Google account. Please try signing in with email and password.",
+          description: message,
           variant: "destructive",
         });
+      } finally {
+        setGoogleLoading(false);
+      }
+    },
+    [navigate, redirectUrl, refreshUser, toast],
+  );
+
+  const googleLogin = useGoogleLogin({
+    scope: "openid email profile",
+    onSuccess: (tokenResponse) => {
+      handleGoogleAccessToken(tokenResponse.access_token);
+    },
+    onError: (errorResponse) => {
+      toast({
+        title: "Google sign-in failed",
+        description:
+          errorResponse.error_description ||
+          "Unable to authenticate with Google. Please try again.",
+        variant: "destructive",
       });
-    }
-  }
-
-  React.useEffect(() => {
-    clerkLogin();
-  }, []);
-  // if (!user) {
-  //   let {isSignedIn, user} = useUser();
-  //   // let {user} = useUser();
-  //   // registerGsp({ googleID: user?.externalAccounts?.providerUserId || "" }).then((data) => {
-  //   //   console.log("GSP registration response:", data);
-  //   // });
-  //   console.log(user?.externalAccounts);
-
-  //   // clerkLogin();
-
-  // }
+    },
+    onNonOAuthError: () => {
+      toast({
+        title: "Google sign-in cancelled",
+        description: "The Google sign-in window was closed before authentication finished.",
+        variant: "destructive",
+      });
+    },
+  });
 
   
 
@@ -252,10 +272,10 @@ const AuthPage: React.FC = () => {
                   <Label htmlFor="verificationCode">Verification code</Label>
                   <Input
                     id="verificationCode"
-                    inputMode="numeric"
-                    maxLength={6}
+                    // inputMode="numeric"
+                    // maxLength={6}
                     value={form.verificationCode}
-                    onChange={(e) => setForm((p) => ({ ...p, verificationCode: e.target.value.replace(/\D/g, "").slice(0, 6) }))}
+                    onChange={(e) => setForm((p) => ({ ...p, verificationCode: e.target.value }))}
                     required
                   />
                 </div>
@@ -301,9 +321,10 @@ const AuthPage: React.FC = () => {
                   <span className="text-xs text-muted-foreground">or</span>
                   <div className="flex-1 h-px bg-border" />
                 </div>
-                <SignInButton mode="modal" forceRedirectUrl="/auth/callback">
-                  <button
+                <button
                   type="button"
+                  onClick={() => googleLogin()}
+                  disabled={googleLoading}
                   className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-white border border-gray-300 rounded-full text-gray-700 font-medium hover:bg-gray-50 transition-colors disabled:opacity-50"
                 >
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -314,7 +335,6 @@ const AuthPage: React.FC = () => {
                   </svg>
                   {googleLoading ? "Please wait..." : "Continue with Google"}
                 </button>
-                </SignInButton>
               </>
             )}
           </CardContent>
