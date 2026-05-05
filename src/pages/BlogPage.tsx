@@ -12,7 +12,7 @@ import { Heart, MessageSquare, Loader2, Trash2, Share2, Linkedin } from "lucide-
 import React, { useState, useMemo, useEffect } from "react"; 
 import { useUser } from "@/contexts/UserContext";
 import { useToast } from "@/components/ui/use-toast";
-import { toggleBlogLike, getBlogLikeStatus, getBlogComments } from "@/services/blogApi";
+import { toggleBlogLike, getBlogLikeStatus, getBlogComments, getPublishedBlogPosts, type AdminBlogPost } from "@/services/blogApi";
 import { useSeo } from "@/hooks/useSeo";
 
 interface Post {
@@ -53,6 +53,7 @@ const BlogPage: React.FC = () => {
   const { toast } = useToast();
   const [query, setQuery] = useState("");
   const [activeTag, setActiveTag] = useState<string | null>(null);
+  const [dynamicPosts, setDynamicPosts] = useState<AdminBlogPost[]>([]);
   const [likedPosts, setLikedPosts] = useState<Record<string, boolean>>({});
   const [likeCounts, setLikeCounts] = useState<Record<string, number>>({});
   const [commentCounts, setCommentCounts] = useState<Record<string, number>>({});
@@ -60,15 +61,37 @@ const BlogPage: React.FC = () => {
   const [discardDraft, setDiscardDraft] = useState(false);
   const [comments, setComments] = useState<Record<string, string[]>>({});
 
+  useEffect(() => {
+    const fetchPosts = async () => {
+      try {
+        const data = await getPublishedBlogPosts();
+        setDynamicPosts(data);
+      } catch (error) {
+        console.error("Error fetching blog posts:", error);
+      }
+    };
+    fetchPosts();
+  }, []);
+
   useSeo({
     title: "Blog | Knowledge Center - STEM Education Insights",
     description:
       "Read articles and insights on STEM education, student success stories, and educational trends from Knowledge Center Cameroon.",
   });
 
-  const posts = useMemo(() => (
-    [...blogPosts].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-  ), []);
+  const posts = useMemo(() => {
+    const dynamicMapped = dynamicPosts.map(p => ({
+      id: p.slug, // use slug for detail routing
+      title: p.title,
+      date: p.date,
+      author: p.author,
+      dp: p.dp || "",
+      cover: p.cover || "",
+      tags: p.tags,
+      excerpt: p.excerpt
+    }));
+    return [...blogPosts, ...dynamicMapped].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+  }, [dynamicPosts]);
   const allTags = useMemo(() => {
     const s = new Set<string>();
     posts.forEach(p => (p.tags || []).forEach(t => s.add(t)));

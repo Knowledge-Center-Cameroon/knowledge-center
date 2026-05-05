@@ -201,22 +201,23 @@ const GspApplicationPage: React.FC = () => {
 
     const draftKey = `gsp_draft_${user.email}`;
     const localDraft = localStorage.getItem(draftKey);
-    let loadedLocal = false;
 
+    // Load local draft as immediate preview while server fetch is in flight
     if (localDraft) {
       try {
         const parsed = JSON.parse(localDraft);
         setData((prev: any) => ({ ...prev, ...parsed }));
-        loadedLocal = true;
       } catch (e) {}
     }
 
     (async () => {
       try {
         const resp = await getGspApplication();
-        const serverData = resp.application?.data || {};
-        if (!loadedLocal) {
-          const appRId = resp.application?.r_id;
+        const serverApp = resp.application;
+        if (serverApp) {
+          const serverData = serverApp.data || serverApp;
+          const appRId = serverApp.r_id || serverApp.id;
+          // Server data always wins — merge onto defaults and then overlay server fields
           const mergedData = {
             ...defaultData,
             ...serverData,
@@ -224,8 +225,11 @@ const GspApplicationPage: React.FC = () => {
             ...(appRId ? { r_id: appRId } : {}),
           };
           setData(mergedData);
+          // Persist to local so future loads are fast
+          localStorage.setItem(draftKey, JSON.stringify(mergedData));
+          if (appRId) localStorage.setItem("gsp_reg_rid", appRId);
           const nextSectionState =
-            resp.application?.sectionState || computeSectionState(mergedData);
+            serverApp.sectionState || computeSectionState(mergedData);
           setSectionState(nextSectionState);
         }
       } catch (error: any) {
@@ -240,27 +244,37 @@ const GspApplicationPage: React.FC = () => {
     })();
   }, [user, toast]);
 
+  // Autosave: debounce writes to both localStorage and backend
+  const autosaveTimer = React.useRef<ReturnType<typeof setTimeout> | null>(null);
   React.useEffect(() => {
     if (!user || fetching) return;
     const next = computeSectionState(data);
     setSectionState(next);
 
+    // Save to localStorage immediately for offline / fast reload
     localStorage.setItem(`gsp_draft_${user.email}`, JSON.stringify(data));
 
-    const id = setTimeout(async () => {
+    // Debounced backend save
+    if (autosaveTimer.current) clearTimeout(autosaveTimer.current);
+    autosaveTimer.current = setTimeout(async () => {
       try {
         setSaving(true);
-        const res = await saveGspDraft(data, next, data.r_id);
-        localStorage.setItem("gsp_reg_rid", data.r_id);
+        const rid = data.r_id || localStorage.getItem("gsp_reg_rid") || undefined;
+        const res = await saveGspDraft(data, next, rid);
         if (res?.application?.r_id && !data.r_id) {
-          setData((prev: any) => ({ ...prev, r_id: res.application.r_id }));
+          const newRid = res.application.r_id;
+          setData((prev: any) => ({ ...prev, r_id: newRid }));
+          localStorage.setItem("gsp_reg_rid", newRid);
         }
       } catch {
+        // Silent fail — next autosave will retry
       } finally {
         setSaving(false);
       }
-    }, 1200);
-    return () => clearTimeout(id);
+    }, 1500);
+    return () => {
+      if (autosaveTimer.current) clearTimeout(autosaveTimer.current);
+    };
   }, [data, user, fetching]);
 
   if (!loading && !user)

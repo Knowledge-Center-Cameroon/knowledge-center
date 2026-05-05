@@ -6,6 +6,31 @@ import { Button } from "@/components/ui/button";
 import StemBackground from "@/components/StemBackground";
 import { useParallax, Parallax } from "@/hooks/use-parallax";
 import { useSeo } from "@/hooks/useSeo";
+import { getEvents, type KCEvent } from "@/services/eventsApi";
+
+// Pre-seeded fallback events in case backend is empty
+const SEED_EVENTS: KCEvent[] = [
+  {
+    id: "seed-1",
+    title: "Opening of Knowledge Center Buea",
+    date: "Feb 9, 2026",
+    date_iso: "2026-02-09",
+    time: "10:00 - 14:00",
+    location: "KC Campus, Buea",
+    description: "Join us for the grand opening ceremony of the Knowledge Center Buea. Meet the team, explore our facilities, and discover opportunities for STEM learning and innovation.",
+    badge: "Upcoming",
+  },
+  {
+    id: "seed-2",
+    title: "National STEM Competition",
+    date: "Dec 28, 2025",
+    date_iso: "2025-12-28",
+    time: "09:00 - 18:00",
+    location: "KC Campus, Buea",
+    description: "A fast-paced build day where students prototype solutions to real local challenges with mentors on-site.",
+    badge: "Featured",
+  },
+];
 
 interface Event {
   title: string;
@@ -16,51 +41,6 @@ interface Event {
   description: string;
   badge?: string;
 }
-
-const EVENTS: Event[] = [
-  {
-    title: "Opening of Knowledge Center Buea",
-    date: "Feb 9, 2026",
-    dateObj: new Date("2026-02-09"),
-    time: "10:00 - 14:00",
-    location: "KC Campus, Buea",
-    description: "Join us for the grand opening ceremony of the Knowledge Center Buea. Meet the team, explore our facilities, and discover opportunities for STEM learning and innovation.",
-    badge: "Upcoming",
-  },
-  {
-    title: "National STEM Competition",
-    date: "Dec 28, 2025",
-    dateObj: new Date("2025-12-28"),
-    time: "09:00 - 18:00",
-    location: "KC Campus, Buea",
-    description: "A fast-paced build day where students prototype solutions to real local challenges with mentors on-site.",
-    badge: "Featured",
-  },
-  {
-    title: "Weekend Program for 2025/2026",
-    date: "Sep 14, 2025",
-    dateObj: new Date("2025-09-14"),
-    time: "12:00 - 17:00",
-    location: "KC Center",
-    description: "Teams demo autonomous bots, line followers, and arm builds. Families and partners welcome!",
-  },
-  {
-    title: "National STEM Convention",
-    date: "Aug 30, 2025",
-    dateObj: new Date("2025-08-30"),
-    time: "09:00 - 16:00",
-    location: "Mountain Hotel, Buea",
-    description: "Talks from scientists and engineers, scholarship guidance, and networking with peers.",
-  },
-  {
-    title: "Summer Opening Ceremony",
-    date: "Jul 05, 2025",
-    dateObj: new Date("2025-07-05"),
-    time: "09:00 - 15:00",
-    location: "Veracity University, Buea",
-    description: "Opening ceremony to the commencement of an impact full summer.",
-  },
-];
 
 const toGCalUrl = (title: string, date: string, time?: string, details?: string, location?: string) => {
   const [startStr, endStr] = (time || "00:00 - 00:00").split("-").map((s) => s.trim());
@@ -169,6 +149,28 @@ const TimelineEvent: React.FC<{ event: Event; index: number; isUpcoming: boolean
 };
 
 const EventsPage = () => {
+  const [dynamicEvents, setDynamicEvents] = useState<KCEvent[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        const data = await getEvents();
+        if (data && data.length > 0) {
+          setDynamicEvents(data);
+        } else {
+          setDynamicEvents(SEED_EVENTS);
+        }
+      } catch (error) {
+        console.error("Error fetching events:", error);
+        setDynamicEvents(SEED_EVENTS);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchEvents();
+  }, []);
+
   useSeo({
     title: "Events | Knowledge Center - STEM Programs & Competitions",
     description: "Discover upcoming Knowledge Center events including STEM competitions, workshops, mentorships, and networking opportunities for students and professionals.",
@@ -180,10 +182,14 @@ const EventsPage = () => {
   const now = new Date();
 
   const { upcoming, past } = useMemo(() => {
-    const upcoming = EVENTS.filter(e => e.dateObj >= now).sort((a, b) => a.dateObj.getTime() - b.dateObj.getTime());
-    const past = EVENTS.filter(e => e.dateObj < now).sort((a, b) => b.dateObj.getTime() - a.dateObj.getTime());
+    const mapped = dynamicEvents.map(e => ({
+      ...e,
+      dateObj: new Date(e.date_iso)
+    }));
+    const upcoming = mapped.filter(e => e.dateObj >= now).sort((a, b) => a.dateObj.getTime() - b.dateObj.getTime());
+    const past = mapped.filter(e => e.dateObj < now).sort((a, b) => b.dateObj.getTime() - a.dateObj.getTime());
     return { upcoming, past };
-  }, []);
+  }, [dynamicEvents]);
 
   const upcomingToShow = expandUpcoming ? upcoming : upcoming.slice(0, 3);
   const pastToShow = expandPast ? past : past.slice(0, 3);
