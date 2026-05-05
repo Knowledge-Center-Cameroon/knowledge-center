@@ -80,21 +80,21 @@ export async function registerGsp(payload: { google_id: string; username: string
 }
 
 export async function verifyEmailCode(payload: { email: string; code: string }) {
-  return apiRequest<{ success: boolean; message: string; token: string; user: GspUser }>("/api/auth/verify-email", {
+  return apiRequest<{ success: boolean; message: string; token: string; user: GspUser }>("/api/v2/auth/verify-email/", {
     method: "POST",
     body: JSON.stringify(payload),
   });
 }
 
 export async function resendVerificationCode(email: string) {
-  return apiRequest<{ success: boolean; message: string; debugVerificationCode?: string }>("/api/auth/resend-verification-code", {
+  return apiRequest<{ success: boolean; message: string; debugVerificationCode?: string }>("/api/v2/auth/resend-verification-code/", {
     method: "POST",
     body: JSON.stringify({ email }),
   });
 }
 
 export async function loginGsp(payload: { email: string; password: string }) {
-  return apiRequest<{ token: string; user: GspUser }>("/api/v2/auth/google-login", {
+  return apiRequest<{ token: string; user: GspUser }>("/api/v2/auth/google-login/", {
     method: "POST",
     body: JSON.stringify(payload),
   });
@@ -119,7 +119,7 @@ export async function getCurrentUser() {
 }
 
 export async function createPortalAccount(payload: { name: string; email: string; password: string }) {
-  return apiRequest<{ success: boolean; message?: string; token?: string; user?: GspUser }>("/api/auth/register", {
+  return apiRequest<{ success: boolean; message?: string; token?: string; user?: GspUser }>("/api/v2/auth/register/", {
     method: "POST",
     body: JSON.stringify(payload),
   });

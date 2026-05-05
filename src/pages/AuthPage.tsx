@@ -235,10 +235,10 @@ const AuthPage: React.FC = () => {
                   <Label htmlFor="verificationCode">Verification code</Label>
                   <Input
                     id="verificationCode"
-                    inputMode="numeric"
-                    maxLength={6}
+                    // inputMode="numeric"
+                    // maxLength={6}
                     value={form.verificationCode}
-                    onChange={(e) => setForm((p) => ({ ...p, verificationCode: e.target.value.replace(/\D/g, "").slice(0, 6) }))}
+                    onChange={(e) => setForm((p) => ({ ...p, verificationCode: e.target.value }))}
                     required
                   />
                 </div>
