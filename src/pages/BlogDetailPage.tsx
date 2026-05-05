@@ -10,7 +10,7 @@ import StemBackground from "@/components/StemBackground";
 import { useParallax, Parallax } from "@/hooks/use-parallax";
 import { useUser } from "@/contexts/UserContext";
 import { useGspAuth } from "@/contexts/GspAuthContext";
-import { toggleBlogLike, getBlogLikeStatus, getBlogComments, addBlogComment, updateBlogComment, deleteBlogComment, type BlogComment } from "@/services/blogApi";
+import { toggleBlogLike, getBlogLikeStatus, getBlogComments, addBlogComment, updateBlogComment, deleteBlogComment, getBlogPostBySlug, type BlogComment, type AdminBlogPost } from "@/services/blogApi";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useSeo } from "@/hooks/useSeo";
@@ -31,19 +31,50 @@ const BlogDetailPage: React.FC = () => {
   const [editingCommentId, setEditingCommentId] = React.useState<string | null>(null);
   const [editingText, setEditingText] = React.useState("");
   const [loading, setLoading] = React.useState(false);
+  const [fetchingPost, setFetchingPost] = React.useState(true);
+  const [dynamicPost, setDynamicPost] = React.useState<any>(null);
   const [submittingComment, setSubmittingComment] = React.useState(false);
   const [displayName, setDisplayName] = React.useState<string>(user?.name || "");
-  const isSignedIn = Boolean(portalUser);
-  const canInteract = Boolean(user?.id);
-  const approvedComments = comments.filter((comment) => comment.status !== "pending" && comment.status !== "rejected");
-  const visibleComments = comments.filter((comment) => comment.status !== "rejected");
 
-  const post = blogPosts.find(p => p.id === slug);
+  const staticPost = blogPosts.find(p => p.id === slug);
+  const post = staticPost || dynamicPost;
+
+  React.useEffect(() => {
+    const fetchDynamicPost = async () => {
+      if (staticPost) {
+        setFetchingPost(false);
+        return;
+      }
+      if (!slug) return;
+      try {
+        const data = await getBlogPostBySlug(slug);
+        setDynamicPost(data);
+      } catch (error) {
+        console.error("Error fetching dynamic post:", error);
+      } finally {
+        setFetchingPost(false);
+      }
+    };
+    fetchDynamicPost();
+  }, [slug, staticPost]);
 
   useSeo({
     title: post ? post.title : "Blog Post | Knowledge Center",
     description: post?.excerpt,
   });
+
+  const isSignedIn = Boolean(portalUser);
+  const canInteract = Boolean(user?.id);
+  const approvedComments = comments.filter((comment) => comment.status !== "pending" && comment.status !== "rejected");
+  const visibleComments = comments.filter((comment) => comment.status !== "rejected");
+
+  if (fetchingPost) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-kc-blue" />
+      </div>
+    );
+  }
 
   // Load like status and comments when component mounts
   React.useEffect(() => {
