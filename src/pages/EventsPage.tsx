@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { CalendarDays, MapPin, Clock, ChevronDown, Calendar, Info } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
