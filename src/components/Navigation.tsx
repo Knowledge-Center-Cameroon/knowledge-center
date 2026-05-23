@@ -51,9 +51,7 @@ const Navigation = () => {
   const handlePrefetch = (to: string) => () => prefetchRoute(to);
   const displayName = user?.name?.trim() || user?.email?.split("@")[0] || "User";
   const userInitial = displayName.charAt(0).toUpperCase();
-  const authRedirect = `/auth?redirect=${encodeURIComponent(
-    `${location.pathname}${location.search}`,
-  )}`;
+  const authRedirect = `/auth?redirect=${encodeURIComponent("/dashboard")}`;
 
   const handleLogout = () => {
     googleLogout();
@@ -66,7 +64,7 @@ const Navigation = () => {
       {user ? (
         <div className="flex items-center bg-white border border-border rounded-full shadow-sm overflow-hidden h-9">
           <Link
-            to="/gsp/dashboard"
+            to="/dashboard"
             className="flex items-center justify-center h-full pl-1 pr-2 hover:bg-muted transition-colors"
             aria-label="Open dashboard"
           >
@@ -279,7 +277,7 @@ const Navigation = () => {
                   {user ? (
                     <div className="flex items-center bg-white border border-border rounded-full shadow-sm overflow-hidden h-10 w-full">
                       <Link
-                        to="/gsp/dashboard"
+                        to="/dashboard"
                         className="flex items-center justify-center h-full pl-2 pr-3 hover:bg-muted transition-colors flex-1"
                         aria-label="Open dashboard"
                         onClick={closeMobile}
