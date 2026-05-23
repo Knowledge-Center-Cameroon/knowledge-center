@@ -1,6 +1,7 @@
 import React from "react";
 import { Link, Navigate, useParams } from "react-router-dom";
 import { ArrowLeft, CalendarDays, Download, ExternalLink, FileText, Mail, Phone, UserRound } from "lucide-react";
+import { PDFDocument, StandardFonts, rgb, type PDFFont, type PDFPage } from "pdf-lib";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -19,6 +20,16 @@ type FieldSpec = {
   aliases?: string[];
   multiline?: boolean;
   wide?: boolean;
+};
+
+type PdfContext = {
+  doc: PDFDocument;
+  page: PDFPage;
+  fonts: {
+    regular: PDFFont;
+    bold: PDFFont;
+  };
+  y: number;
 };
 
 const FORM_SECTIONS: Array<{ title: string; fields: FieldSpec[] }> = [
@@ -358,12 +369,389 @@ function DocumentsSection({ application, data }: { application: any; data: Recor
   );
 }
 
+const PDF_PAGE = {
+  width: 595.28,
+  height: 841.89,
+  margin: 38,
+  gap: 12,
+};
+
+const PDF_COLORS = {
+  ink: rgb(0.09, 0.13, 0.2),
+  muted: rgb(0.39, 0.45, 0.55),
+  border: rgb(0.82, 0.86, 0.91),
+  surface: rgb(0.97, 0.98, 0.99),
+  brand: rgb(0.05, 0.27, 0.63),
+  brandSoft: rgb(0.91, 0.95, 1),
+  white: rgb(1, 1, 1),
+};
+
+function buildPdfFilename(name: string, reference: string) {
+  const safeName = (name || "applicant")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/(^-|-$)/g, "");
+  const safeReference = (reference || "application")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/(^-|-$)/g, "");
+  return `gsp-${safeName || "applicant"}-${safeReference || "application"}.pdf`;
+}
+
+function wrapPdfText(text: string, font: PDFFont, size: number, maxWidth: number) {
+  const normalized = formatValue(text) || "Not provided";
+  const lines: string[] = [];
+
+  for (const paragraph of normalized.split(/\n+/)) {
+    const words = paragraph.split(/\s+/).filter(Boolean);
+    let line = "";
+
+    for (const word of words) {
+      const next = line ? `${line} ${word}` : word;
+      if (font.widthOfTextAtSize(next, size) <= maxWidth) {
+        line = next;
+      } else {
+        if (line) lines.push(line);
+        line = word;
+      }
+    }
+
+    lines.push(line || " ");
+  }
+
+  return lines;
+}
+
+function ensurePdfSpace(ctx: PdfContext, neededHeight: number) {
+  if (ctx.y - neededHeight >= PDF_PAGE.margin) return;
+  ctx.page = ctx.doc.addPage([PDF_PAGE.width, PDF_PAGE.height]);
+  ctx.y = PDF_PAGE.height - PDF_PAGE.margin;
+}
+
+function drawRoundedRect(page: PDFPage, x: number, y: number, width: number, height: number, fill = PDF_COLORS.white) {
+  page.drawRectangle({
+    x,
+    y,
+    width,
+    height,
+    color: fill,
+    borderColor: PDF_COLORS.border,
+    borderWidth: 0.8,
+  });
+}
+
+function getPdfFieldHeight(ctx: PdfContext, field: FieldSpec, value: any, width: number) {
+  const text = formatValue(value) || "Not provided";
+  const labelSize = 8.5;
+  const textSize = 10;
+  const lines = wrapPdfText(text, ctx.fonts.regular, textSize, width - 18);
+  const visibleLines = field.multiline ? lines : lines.slice(0, 2);
+  const lineHeight = 13;
+  const boxHeight = Math.max(field.multiline ? 72 : 36, 18 + visibleLines.length * lineHeight);
+  return labelSize + 8 + boxHeight;
+}
+
+function drawPdfField(ctx: PdfContext, field: FieldSpec, data: Record<string, any>, x: number, y: number, width: number) {
+  const value = readValue(data, field);
+  const text = formatValue(value) || "Not provided";
+  const labelSize = 8.5;
+  const textSize = 10;
+  const lines = wrapPdfText(text, ctx.fonts.regular, textSize, width - 18);
+  const visibleLines = field.multiline ? lines : lines.slice(0, 2);
+  const lineHeight = 13;
+  const boxHeight = Math.max(field.multiline ? 72 : 36, 18 + visibleLines.length * lineHeight);
+
+  ctx.page.drawText(field.label, {
+    x,
+    y: y - labelSize,
+    size: labelSize,
+    font: ctx.fonts.bold,
+    color: PDF_COLORS.muted,
+  });
+
+  drawRoundedRect(ctx.page, x, y - labelSize - 8 - boxHeight, width, boxHeight, PDF_COLORS.surface);
+
+  visibleLines.forEach((line, index) => {
+    ctx.page.drawText(line, {
+      x: x + 9,
+      y: y - labelSize - 22 - index * lineHeight,
+      size: textSize,
+      font: ctx.fonts.regular,
+      color: text ? PDF_COLORS.ink : PDF_COLORS.muted,
+    });
+  });
+
+  return labelSize + 8 + boxHeight;
+}
+
+function drawPdfSection(ctx: PdfContext, title: string, fields: FieldSpec[], data: Record<string, any>) {
+  ensurePdfSpace(ctx, 72);
+  ctx.page.drawText(title, {
+    x: PDF_PAGE.margin,
+    y: ctx.y,
+    size: 15,
+    font: ctx.fonts.bold,
+    color: PDF_COLORS.ink,
+  });
+  ctx.y -= 24;
+
+  const contentWidth = PDF_PAGE.width - PDF_PAGE.margin * 2;
+  const columnWidth = (contentWidth - PDF_PAGE.gap) / 2;
+  let pending: FieldSpec[] = [];
+
+  const flushPending = () => {
+    while (pending.length) {
+      const row = pending.splice(0, 2);
+      const rowHeight = Math.max(
+        ...row.map((field) => getPdfFieldHeight(ctx, field, readValue(data, field), columnWidth)),
+      );
+      ensurePdfSpace(ctx, rowHeight + 14);
+      const heights = row.map((field, index) => {
+        const x = PDF_PAGE.margin + index * (columnWidth + PDF_PAGE.gap);
+        return drawPdfField(ctx, field, data, x, ctx.y, columnWidth);
+      });
+      ctx.y -= Math.max(...heights) + 14;
+    }
+  };
+
+  for (const field of fields) {
+    if (field.wide || field.multiline) {
+      flushPending();
+      const fieldHeight = getPdfFieldHeight(ctx, field, readValue(data, field), contentWidth);
+      ensurePdfSpace(ctx, fieldHeight + 14);
+      const usedHeight = drawPdfField(ctx, field, data, PDF_PAGE.margin, ctx.y, contentWidth);
+      ctx.y -= usedHeight + 14;
+      continue;
+    }
+
+    if (pending.length === 0) ensurePdfSpace(ctx, 64);
+    pending.push(field);
+    if (pending.length === 2) flushPending();
+  }
+
+  flushPending();
+  ctx.y -= 6;
+}
+
+function drawPdfSubjects(ctx: PdfContext, subjects: any[]) {
+  const rows = Array.from({ length: Math.max(subjects?.length || 0, 5) }).map((_, index) => subjects?.[index] || {});
+  drawPdfSection(
+    ctx,
+    "Top Subjects",
+    rows.flatMap((subject, index) => [
+      { key: `subject-${index}-name`, label: `Subject ${index + 1}` },
+      { key: `subject-${index}-score`, label: "Score" },
+      { key: `subject-${index}-term`, label: "Exam / Term", wide: true },
+    ]),
+    rows.reduce((acc, subject, index) => {
+      acc[`subject-${index}-name`] = subject.name;
+      acc[`subject-${index}-score`] = subject.score;
+      acc[`subject-${index}-term`] = subject.examTerm || subject.exam_term;
+      return acc;
+    }, {} as Record<string, any>),
+  );
+}
+
+function drawPdfActivities(ctx: PdfContext, activities: any[]) {
+  const rows = activities?.length ? activities : [{}];
+  rows.forEach((activity, index) => {
+    drawPdfSection(
+      ctx,
+      `Activity ${index + 1}`,
+      [
+        { key: "title", label: "Activity title" },
+        { key: "duration", label: "Duration" },
+        { key: "hoursPerWeek", label: "Hours per week", aliases: ["hours_per_week"] },
+        { key: "weeksPerYear", label: "Weeks per year", aliases: ["weeks_per_year"] },
+        { key: "isStillDoing", label: "Still doing this?", aliases: ["is_still_doing"] },
+        { key: "stoppedIn", label: "Stopped in", aliases: ["stopped_in"] },
+        { key: "roleDescription", label: "Role description", aliases: ["role_description"], multiline: true, wide: true },
+      ],
+      activity || {},
+    );
+  });
+}
+
+function addPdfHeader(ctx: PdfContext, applicantName: string, reference: string, status: string, decision: string, email: string, phone: string, submittedAt: string) {
+  ctx.page.drawRectangle({
+    x: 0,
+    y: PDF_PAGE.height - 122,
+    width: PDF_PAGE.width,
+    height: 122,
+    color: PDF_COLORS.brandSoft,
+  });
+  ctx.page.drawText("KC Global Scholars Programme", {
+    x: PDF_PAGE.margin,
+    y: PDF_PAGE.height - 48,
+    size: 12,
+    font: ctx.fonts.bold,
+    color: PDF_COLORS.brand,
+  });
+  ctx.page.drawText(applicantName, {
+    x: PDF_PAGE.margin,
+    y: PDF_PAGE.height - 76,
+    size: 24,
+    font: ctx.fonts.bold,
+    color: PDF_COLORS.ink,
+  });
+
+  const meta = [
+    `Ref: ${reference}`,
+    `Status: ${status}`,
+    `Decision: ${decision}`,
+    email,
+    phone,
+    submittedAt ? `Submitted: ${new Date(submittedAt).toLocaleString()}` : "",
+  ].filter(Boolean);
+
+  ctx.page.drawText(meta.join("   |   "), {
+    x: PDF_PAGE.margin,
+    y: PDF_PAGE.height - 102,
+    size: 8.5,
+    font: ctx.fonts.regular,
+    color: PDF_COLORS.muted,
+  });
+  ctx.y = PDF_PAGE.height - 152;
+}
+
+async function fetchDocumentBytes(url: string) {
+  const response = await fetch(url);
+  if (!response.ok) throw new Error(`Could not fetch ${url}`);
+  return new Uint8Array(await response.arrayBuffer());
+}
+
+async function appendDocumentToPdf(doc: PDFDocument, document: { label: string; source: any; url: string }) {
+  if (!document.url) return;
+
+  const bytes = await fetchDocumentBytes(document.url);
+  const kind = getDocumentKind(document.source, document.url);
+
+  if (kind === "pdf") {
+    const uploadedPdf = await PDFDocument.load(bytes);
+    const pages = await doc.copyPages(uploadedPdf, uploadedPdf.getPageIndices());
+    pages.forEach((page) => doc.addPage(page));
+    return;
+  }
+
+  let image;
+  const cleanUrl = document.url.split("?")[0].toLowerCase();
+  const format = String(document.source?.format || "").toLowerCase();
+  if (format.includes("png") || cleanUrl.endsWith(".png")) {
+    image = await doc.embedPng(bytes);
+  } else {
+    image = await doc.embedJpg(bytes);
+  }
+
+  const page = doc.addPage([PDF_PAGE.width, PDF_PAGE.height]);
+  page.drawText(document.label, {
+    x: PDF_PAGE.margin,
+    y: PDF_PAGE.height - PDF_PAGE.margin,
+    size: 14,
+    font: await doc.embedFont(StandardFonts.HelveticaBold),
+    color: PDF_COLORS.ink,
+  });
+
+  const maxWidth = PDF_PAGE.width - PDF_PAGE.margin * 2;
+  const maxHeight = PDF_PAGE.height - PDF_PAGE.margin * 2 - 34;
+  const scaled = image.scale(Math.min(maxWidth / image.width, maxHeight / image.height, 1));
+  page.drawImage(image, {
+    x: (PDF_PAGE.width - scaled.width) / 2,
+    y: PDF_PAGE.margin,
+    width: scaled.width,
+    height: scaled.height,
+  });
+}
+
+async function generateApplicationPdf({
+  application,
+  data,
+  applicantName,
+  applicantEmail,
+  applicationReference,
+  submittedAt,
+}: {
+  application: any;
+  data: Record<string, any>;
+  applicantName: string;
+  applicantEmail: string;
+  applicationReference: string;
+  submittedAt: string;
+}) {
+  const doc = await PDFDocument.create();
+  const regular = await doc.embedFont(StandardFonts.Helvetica);
+  const bold = await doc.embedFont(StandardFonts.HelveticaBold);
+  const page = doc.addPage([PDF_PAGE.width, PDF_PAGE.height]);
+  const ctx: PdfContext = {
+    doc,
+    page,
+    fonts: { regular, bold },
+    y: PDF_PAGE.height - PDF_PAGE.margin,
+  };
+
+  addPdfHeader(
+    ctx,
+    applicantName,
+    applicationReference,
+    formatValue(application?.status || data.status || "draft"),
+    formatValue(application?.decisionStatus || data.decisionStatus || "pending"),
+    applicantEmail,
+    formatValue(data.phoneNumber || data.phone),
+    submittedAt,
+  );
+
+  FORM_SECTIONS.forEach((section) => {
+    drawPdfSection(ctx, section.title, section.fields, data);
+  });
+  drawPdfSubjects(ctx, data.topSubjects || data.top_subjects || []);
+  drawPdfActivities(ctx, data.activities || []);
+
+  const documents = DOCUMENT_FIELDS.map((field) => {
+    const document = getDocumentSource(application, data, field);
+    return { ...document, label: field.label };
+  }).filter((document) => document.url);
+
+  for (const document of documents) {
+    try {
+      await appendDocumentToPdf(doc, document);
+    } catch {
+      const fallbackPage = doc.addPage([PDF_PAGE.width, PDF_PAGE.height]);
+      fallbackPage.drawText(`${document.label} could not be embedded.`, {
+        x: PDF_PAGE.margin,
+        y: PDF_PAGE.height - PDF_PAGE.margin,
+        size: 14,
+        font: bold,
+        color: PDF_COLORS.ink,
+      });
+      fallbackPage.drawText(document.url, {
+        x: PDF_PAGE.margin,
+        y: PDF_PAGE.height - PDF_PAGE.margin - 24,
+        size: 9,
+        font: regular,
+        color: PDF_COLORS.brand,
+      });
+    }
+  }
+
+  return doc.save();
+}
+
+function downloadBytes(bytes: Uint8Array, filename: string) {
+  const blob = new Blob([bytes], { type: "application/pdf" });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = filename;
+  link.click();
+  URL.revokeObjectURL(url);
+}
+
 const GspAdminApplicationPage: React.FC = () => {
   const { id } = useParams();
   const { user, loading } = useGspAuth();
   const { toast } = useToast();
   const [application, setApplication] = React.useState<any>(null);
   const [fetching, setFetching] = React.useState(true);
+  const [generatingPdf, setGeneratingPdf] = React.useState(false);
 
   React.useEffect(() => {
     if (!id || user?.role !== "admin") return;
@@ -392,6 +780,32 @@ const GspAdminApplicationPage: React.FC = () => {
   const applicantName = application?.user?.name || [data.firstName, data.lastName].filter(Boolean).join(" ") || "Applicant";
   const applicantEmail = application?.user?.email || data.email || "";
   const submittedAt = application?.submittedAt || data.submittedAt || application?.createdAt || data.createdAt;
+  const applicationReference = application?.reference || data.reference || "N/A";
+
+  const downloadApplicationPdf = async () => {
+    if (!application) return;
+    setGeneratingPdf(true);
+    try {
+      const bytes = await generateApplicationPdf({
+        application,
+        data,
+        applicantName,
+        applicantEmail,
+        applicationReference,
+        submittedAt,
+      });
+      downloadBytes(bytes, buildPdfFilename(applicantName, applicationReference));
+      toast({ title: "PDF generated", description: "The application PDF has been downloaded." });
+    } catch (error: any) {
+      toast({
+        title: "PDF generation failed",
+        description: error.message || "Please try again.",
+        variant: "destructive" as any,
+      });
+    } finally {
+      setGeneratingPdf(false);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-slate-50/50">
@@ -423,7 +837,7 @@ const GspAdminApplicationPage: React.FC = () => {
                   <div className="flex flex-col gap-5 md:flex-row md:items-start md:justify-between">
                     <div>
                       <div className="flex flex-wrap items-center gap-2">
-                        <Badge variant="outline" className="rounded-full">Ref: {application.reference || data.reference || "N/A"}</Badge>
+                        <Badge variant="outline" className="rounded-full">Ref: {applicationReference}</Badge>
                         <Badge className="rounded-full">{formatValue(application.status || data.status || "draft")}</Badge>
                         <Badge variant="secondary" className="rounded-full">{formatValue(application.decisionStatus || data.decisionStatus || "pending")}</Badge>
                       </div>
@@ -462,6 +876,20 @@ const GspAdminApplicationPage: React.FC = () => {
               <TopSubjectsSection subjects={data.topSubjects || data.top_subjects || []} />
               <ActivitiesSection activities={data.activities || []} />
               <DocumentsSection application={application} data={data} />
+              <Card className="rounded-2xl border-slate-200 shadow-sm">
+                <CardContent className="flex flex-col gap-3 p-5 sm:flex-row sm:items-center sm:justify-between">
+                  <div>
+                    <h2 className="font-semibold text-slate-900">Download Application PDF</h2>
+                    <p className="text-sm text-slate-500">
+                      Generates a new PDF from the application data and appends uploaded documents as extra pages.
+                    </p>
+                  </div>
+                  <Button onClick={downloadApplicationPdf} disabled={generatingPdf} className="rounded-full">
+                    <Download className="mr-2 h-4 w-4" />
+                    {generatingPdf ? "Generating..." : "Download PDF"}
+                  </Button>
+                </CardContent>
+              </Card>
             </>
           )}
         </div>
