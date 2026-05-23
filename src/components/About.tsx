@@ -48,6 +48,7 @@ import {
 } from "@/components/ui/accordion";
 import StemBackground from "@/components/StemBackground";
 import { useParallax, Parallax } from "@/hooks/use-parallax";
+import LazyImageWithSkeleton from "@/components/LazyImageWithSkeleton";
 
 const CameroonMap = () => {
   const hubs = [
@@ -69,10 +70,12 @@ const CameroonMap = () => {
   return (
     <div className="relative w-full aspect-[992/1429] max-w-md mx-auto bg-white/95 rounded-3xl border border-kc-blue/10 ring-1 ring-kc-blue/5 p-2 shadow-card overflow-hidden">
       {/* Actual Cameroon Map Image */}
-      <img 
+      <LazyImageWithSkeleton
         src="/cameroon.svg" 
         alt="Map of Cameroon" 
         className="w-full h-full object-contain opacity-80"
+        loading="lazy"
+        decoding="async"
       />
       
       {/* Hub locations overlay */}
@@ -323,7 +326,7 @@ const About = () => {
                 {[about1, about, hero2, hero4, hero5].map((img, i) => (
                   <CarouselItem key={i}>
                     <div className="relative overflow-hidden rounded-xl">
-                      <img src={img} alt={`KC slide ${i + 1}`} className="w-full h-48 sm:h-60 md:h-72 lg:h-[360px] object-cover" loading="lazy" decoding="async" sizes="(min-width: 1024px) 50vw, 100vw" />
+                      <LazyImageWithSkeleton src={img} alt={`KC slide ${i + 1}`} className="w-full h-48 sm:h-60 md:h-72 lg:h-[360px] object-cover" loading="lazy" decoding="async" sizes="(min-width: 1024px) 50vw, 100vw" />
                     </div>
                   </CarouselItem>
                 ))}
@@ -341,7 +344,7 @@ const About = () => {
                 {[hero6, hero7, hero8, hero9, hero10, hero12].map((img, i) => (
                   <CarouselItem key={i}>
                     <div className="relative overflow-hidden rounded-xl">
-                      <img src={img} alt={`KC philosophy ${i + 1}`} className="w-full h-48 sm:h-60 md:h-72 lg:h-[360px] object-cover" loading="lazy" decoding="async" sizes="(min-width: 1024px) 50vw, 100vw" />
+                      <LazyImageWithSkeleton src={img} alt={`KC philosophy ${i + 1}`} className="w-full h-48 sm:h-60 md:h-72 lg:h-[360px] object-cover" loading="lazy" decoding="async" sizes="(min-width: 1024px) 50vw, 100vw" />
                     </div>
                   </CarouselItem>
                 ))}
@@ -419,7 +422,7 @@ const About = () => {
                 {[about1, hero2, hero3, hero4, hero5, hero8].map((img, i) => (
                   <CarouselItem key={i}>
                     <div className="relative overflow-hidden rounded-xl">
-                      <img src={img} alt={`KC future focus ${i + 1}`} className="w-full h-48 sm:h-60 md:h-72 lg:h-[360px] object-cover" loading="lazy" decoding="async" sizes="(min-width: 1024px) 50vw, 100vw" />
+                      <LazyImageWithSkeleton src={img} alt={`KC future focus ${i + 1}`} className="w-full h-48 sm:h-60 md:h-72 lg:h-[360px] object-cover" loading="lazy" decoding="async" sizes="(min-width: 1024px) 50vw, 100vw" />
                     </div>
                   </CarouselItem>
                 ))}
