@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Skeleton } from "@/components/ui/skeleton";
 import { blogPosts } from "@/data/blogs";
 import { Link } from "react-router-dom";
 import Timeline, { type TimelineItem } from "@/components/Timeline";
@@ -32,6 +33,51 @@ interface LikeStatus {
 
 const LINKEDIN_URL = "https://www.linkedin.com/company/knowledge-centercmr";
 
+const BlogFeedSkeleton = () => (
+  <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8">
+    <div className="lg:col-span-8 space-y-8">
+      {Array.from({ length: 3 }).map((_, index) => (
+        <Card
+          key={index}
+          className="overflow-hidden border-kc-blue/10 ring-1 ring-kc-blue/5 bg-white/95 shadow-sm"
+        >
+          <Skeleton className="h-52 sm:h-64 w-full rounded-none" />
+          <CardContent className="p-5 sm:p-6 md:p-8">
+            <div className="flex items-start gap-4">
+              <Skeleton className="h-12 w-12 rounded-full" />
+              <div className="flex-1 space-y-3">
+                <Skeleton className="h-5 w-3/4" />
+                <Skeleton className="h-4 w-32" />
+              </div>
+            </div>
+            <div className="mt-6 space-y-3">
+              <Skeleton className="h-4 w-full" />
+              <Skeleton className="h-4 w-5/6" />
+              <Skeleton className="h-4 w-2/3" />
+            </div>
+            <div className="mt-6 flex gap-2">
+              <Skeleton className="h-8 w-20 rounded-full" />
+              <Skeleton className="h-8 w-24 rounded-full" />
+              <Skeleton className="h-8 w-16 rounded-full" />
+            </div>
+          </CardContent>
+        </Card>
+      ))}
+    </div>
+    <div className="lg:col-span-4 mt-4 lg:mt-0">
+      <div className="rounded-2xl border border-kc-blue/10 bg-white/95 p-5 shadow-sm space-y-5">
+        <Skeleton className="h-5 w-32" />
+        {Array.from({ length: 5 }).map((_, index) => (
+          <div key={index} className="space-y-2">
+            <Skeleton className="h-4 w-3/4" />
+            <Skeleton className="h-3 w-24" />
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+);
+
 /**
  * Blog Page - Articles and insights on STEM education
  * 
@@ -54,6 +100,7 @@ const BlogPage: React.FC = () => {
   const [query, setQuery] = useState("");
   const [activeTag, setActiveTag] = useState<string | null>(null);
   const [dynamicPosts, setDynamicPosts] = useState<AdminBlogPost[]>([]);
+  const [loadingPosts, setLoadingPosts] = useState(true);
   const [likedPosts, setLikedPosts] = useState<Record<string, boolean>>({});
   const [likeCounts, setLikeCounts] = useState<Record<string, number>>({});
   const [commentCounts, setCommentCounts] = useState<Record<string, number>>({});
@@ -68,6 +115,8 @@ const BlogPage: React.FC = () => {
         setDynamicPosts(data);
       } catch (error) {
         console.error("Error fetching blog posts:", error);
+      } finally {
+        setLoadingPosts(false);
       }
     };
     fetchPosts();
@@ -334,7 +383,9 @@ const BlogPage: React.FC = () => {
         </div>
       </div>
 
-      {posts.length === 0 ? (
+      {loadingPosts ? (
+        <BlogFeedSkeleton />
+      ) : posts.length === 0 ? (
         <div className="text-muted-foreground">No posts yet. Check back soon.</div>
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8">
