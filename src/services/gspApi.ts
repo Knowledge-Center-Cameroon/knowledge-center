@@ -220,6 +220,11 @@ export async function adminGetApplications(query?: string) {
   return apiRequest<{ applications: any[] }>(`/api/admin/gsp/applications${params.toString() ? `?${params.toString()}` : ""}`);
 }
 
+export async function adminGetApplication(applicationId: string) {
+  const res = await apiRequest<any>(`/api/admin/gsp/applications/${applicationId}`);
+  return { application: res.application || res };
+}
+
 export async function adminSetDecision(applicationId: string, decisionStatus: GspDecisionStatus) {
   return apiRequest<{ success: boolean; application: any }>(`/api/admin/gsp/applications/${applicationId}/decision`, {
     method: "PATCH",

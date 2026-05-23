@@ -1,5 +1,5 @@
 import React from "react";
-import { Navigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -26,11 +26,12 @@ import {
   XCircle, 
   Clock,
   ShieldCheck,
-  LayoutDashboard
+  Eye
 } from "lucide-react";
 
 const GspAdminPage: React.FC = () => {
   const { user, loading } = useGspAuth();
+  const navigate = useNavigate();
   const { toast } = useToast();
   const [query, setQuery] = React.useState("");
   const [applications, setApplications] = React.useState<any[]>([]);
@@ -65,7 +66,7 @@ const GspAdminPage: React.FC = () => {
   }, [user, load]);
 
   if (!loading && !user) return <Navigate to="/auth?redirect=/gsp/admin" replace />;
-  if (user?.role !== "admin") return <Navigate to="/gsp/dashboard" replace />;
+  if (!loading && user?.role !== "admin") return <Navigate to="/gsp/dashboard" replace />;
 
   const setDecision = async (id: string, decisionStatus: "accepted" | "waitlisted" | "not_admitted" | "pending") => {
     try {
@@ -112,9 +113,9 @@ const GspAdminPage: React.FC = () => {
 
   const getStatusBadge = (status: string) => {
     switch (status.toLowerCase()) {
-      case 'submitted': return <Badge className="rounded-full bg-kc-blue text-white hover:bg-kc-blue border-0">Submitted</Badge>;
+      case 'submitted': return <Badge variant="default" className="rounded-full">Submitted</Badge>;
       case 'pending': return <Badge variant="outline" className="rounded-full">Pending</Badge>;
-      default: return <Badge variant="secondary" className="rounded-full">{status}</Badge>;
+      default: return <Badge variant="secondary" className="rounded-full">{status[0].toUpperCase() + status.slice(1).toLowerCase()}</Badge>;
     }
   };
 
@@ -232,8 +233,14 @@ const GspAdminPage: React.FC = () => {
                               <td colSpan={4} className="px-6 py-10 text-center text-slate-500">No applications found.</td>
                             </tr>
                           ) : (
-                            applications.map((item) => (
-                              <tr key={item._id} className="hover:bg-slate-50/30 transition-colors">
+                            applications.map((item) => {
+                              const applicationId = item._id || item.id || item.r_id;
+                              return (
+                              <tr
+                                key={applicationId}
+                                className="cursor-pointer hover:bg-slate-50/50 transition-colors"
+                                onClick={() => applicationId && navigate(`/gsp/admin/applications/${applicationId}`)}
+                              >
                                 <td className="px-6 py-4">
                                   <div className="font-medium text-slate-900">{item?.user?.name || "Unknown"}</div>
                                   <div className="text-slate-500 text-xs">{item?.user?.email || ""}</div>
@@ -241,31 +248,35 @@ const GspAdminPage: React.FC = () => {
                                 </td>
                                 <td className="px-6 py-4">
                                   {getStatusBadge(item.status)}
-                                  <div className="text-[10px] text-slate-400 mt-1">
+                                  {/* <div className="text-[10px] text-slate-400 mt-1">
                                     {item.submittedAt ? new Date(item.submittedAt).toLocaleDateString() : 'Draft'}
-                                  </div>
+                                  </div> */}
                                 </td>
                                 <td className="px-6 py-4">
                                   {getDecisionBadge(item.decisionStatus || 'pending')}
                                 </td>
                                 <td className="px-6 py-4">
-                                  <div className="flex flex-wrap gap-1">
-                                    <Button size="sm" variant="ghost" className="h-8 text-green-600 hover:text-green-700 hover:bg-green-50" onClick={() => setDecision(item._id, "accepted")}>
+                                  <div className="flex flex-wrap gap-1" onClick={(event) => event.stopPropagation()}>
+                                    <Button size="sm" variant="ghost" className="h-8 text-kc-blue hover:text-kc-blue hover:bg-blue-50" onClick={() => applicationId && navigate(`/gsp/admin/applications/${applicationId}`)}>
+                                      <Eye className="h-3.5 w-3.5 mr-1" />
+                                      View
+                                    </Button>
+                                    <Button size="sm" variant="ghost" className="h-8 text-green-600 hover:text-green-700 hover:bg-green-50" onClick={() => setDecision(applicationId, "accepted")}>
                                       <CheckCircle2 className="h-3.5 w-3.5 mr-1" />
                                       Accept
                                     </Button>
-                                    <Button size="sm" variant="ghost" className="h-8 text-amber-600 hover:text-amber-700 hover:bg-amber-50" onClick={() => setDecision(item._id, "waitlisted")}>
+                                    <Button size="sm" variant="ghost" className="h-8 text-amber-600 hover:text-amber-700 hover:bg-amber-50" onClick={() => setDecision(applicationId, "waitlisted")}>
                                       <Clock className="h-3.5 w-3.5 mr-1" />
                                       Waitlist
                                     </Button>
-                                    <Button size="sm" variant="ghost" className="h-8 text-red-600 hover:text-red-700 hover:bg-red-50" onClick={() => setDecision(item._id, "not_admitted")}>
+                                    <Button size="sm" variant="ghost" className="h-8 text-red-600 hover:text-red-700 hover:bg-red-50" onClick={() => setDecision(applicationId, "not_admitted")}>
                                       <XCircle className="h-3.5 w-3.5 mr-1" />
                                       Decline
                                     </Button>
                                   </div>
                                 </td>
                               </tr>
-                            ))
+                            )})
                           )}
                         </tbody>
                       </table>
@@ -353,7 +364,7 @@ const GspAdminPage: React.FC = () => {
                               <div className="text-slate-500 text-xs">{u.email}</div>
                             </td>
                             <td className="px-6 py-4">
-                              <Badge variant={u.role === 'admin' ? 'blue' : 'secondary'} className="rounded-full uppercase text-[10px]">
+                              <Badge variant={u.role === 'admin' ? 'default' : 'secondary'} className="rounded-full uppercase text-[10px]">
                                 {u.role}
                               </Badge>
                             </td>
