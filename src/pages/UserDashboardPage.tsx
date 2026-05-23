@@ -1,350 +1,661 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Link, Navigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { useGspAuth } from "@/contexts/GspAuthContext";
-import { getGspApplication } from "@/services/gspApi";
-import { getEvents } from "@/services/eventsApi";
 import { googleLogout } from "@react-oauth/google";
 import {
-  Home, LogOut, User, Calendar, BookOpen, MessageSquare,
-  Activity, GraduationCap, ChevronRight, Star, Clock,
-  Award, Bell, TrendingUp, Layers
+  Activity,
+  Award,
+  BookOpen,
+  Calendar,
+  ChevronRight,
+  GraduationCap,
+  Home,
+  Layers,
+  LogOut,
+  MessageSquare,
+  Star,
+  TrendingUp,
+  User,
 } from "lucide-react";
+
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
+import { useGspAuth } from "@/contexts/GspAuthContext";
+import { useUser } from "@/contexts/UserContext";
+import { blogPosts } from "@/data/blogs";
+import { computeProgressPct, computeSectionState, getPersistedSectionState } from "@/lib/gspUtils";
+import { getBlogComments, getBlogLikeStatus, getPublishedBlogPosts } from "@/services/blogApi";
+import { getEvents, type KCEvent } from "@/services/eventsApi";
+import { getGspApplication } from "@/services/gspApi";
 
-/* ─── tiny helpers ─── */
-const fmt = (d: string) => new Date(d).toLocaleDateString("en-US", { month: "short", day: "numeric" });
+const fmt = (d: string) =>
+  new Date(d).toLocaleDateString("en-US", { month: "short", day: "numeric" });
 
 const PROGRAMS = [
-  { id: "gsp", label: "Global Scholars Programme", short: "GSP 2026", color: "bg-blue-600", link: "/gsp/dashboard", icon: GraduationCap },
-  { id: "summer", label: "Summer STEM Camp", short: "Summer 2026", color: "bg-emerald-600", link: "/stem", icon: Star },
+  {
+    id: "gsp",
+    label: "Global Scholars Programme",
+    short: "GSP 2026",
+    link: "/gsp/dashboard",
+    icon: GraduationCap,
+  },
+  {
+    id: "summer",
+    label: "Summer STEM Camp",
+    short: "Summer 2026",
+    link: "/projects/summer-education",
+    icon: Star,
+  },
 ];
 
-/* ─── activity bar chart (static mock sparkline) ─── */
 const WEEKS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+
+type BlogPostSummary = {
+  id: string;
+  title: string;
+};
+
+type DashboardInteraction = {
+  likedPosts: BlogPostSummary[];
+  comments: number;
+};
+
+function getRoleLabel(role?: string) {
+  if (role === "admin") return "Administrator";
+  return "User";
+}
+
+function safeReadJson<T>(key: string, fallback: T): T {
+  try {
+    return JSON.parse(localStorage.getItem(key) || "") as T;
+  } catch {
+    return fallback;
+  }
+}
+
+function getPostId(post: any) {
+  return String(post?.slug || post?.id || post?._id || "");
+}
+
+function startOfDay(date: Date) {
+  const next = new Date(date);
+  next.setHours(0, 0, 0, 0);
+  return next;
+}
+
+function getGreeting(activityTotal: number) {
+  const hour = new Date().getHours();
+  const dayPart =
+    hour < 12 ? "Good morning" : hour < 17 ? "Good afternoon" : "Good evening";
+
+  if (activityTotal >= 4) {
+    return {
+      title: `${dayPart},`,
+      note: "You have real momentum today. Keep the important tabs close.",
+    };
+  }
+
+  if (hour < 12) {
+    return {
+      title: `${dayPart},`,
+      note: "Fresh start. Pick the one thing that moves your KC work forward.",
+    };
+  }
+
+  if (hour < 17) {
+    return {
+      title: `${dayPart},`,
+      note: "A steady afternoon is enough. Your portal is ready when you are.",
+    };
+  }
+
+  return {
+    title: `${dayPart},`,
+    note: "Wind down the day cleanly. Check what changed, then keep going.",
+  };
+}
+
+function buildActivityData({
+  application,
+  likedPosts,
+  comments,
+  lastLoginAt,
+}: {
+  application: any;
+  likedPosts: BlogPostSummary[];
+  comments: number;
+  lastLoginAt?: string;
+}) {
+  const today = startOfDay(new Date());
+  const weekStart = new Date(today);
+  weekStart.setDate(today.getDate() - ((today.getDay() + 6) % 7));
+  const data = Array(7).fill(0);
+
+  const addDate = (value?: string | null) => {
+    if (!value) return;
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return;
+    const day = startOfDay(date);
+    const offset = Math.floor((day.getTime() - weekStart.getTime()) / 86400000);
+    if (offset >= 0 && offset < 7) data[offset] += 1;
+  };
+
+  addDate(lastLoginAt);
+  addDate(application?.updatedAt || application?.updated_at || application?.modifiedAt || application?.modified_at);
+  addDate(application?.createdAt || application?.created_at);
+
+  if (likedPosts.length > 0) data[Math.min(6, Math.max(0, new Date().getDay() - 1))] += likedPosts.length;
+  if (comments > 0) data[Math.min(6, Math.max(0, new Date().getDay() - 1))] += comments;
+
+  return data;
+}
+
 const ActivityGraph: React.FC<{ data: number[] }> = ({ data }) => {
   const max = Math.max(...data, 1);
+  const total = data.reduce((sum, item) => sum + item, 0);
+
   return (
-    <div className="flex items-end gap-1.5 h-16">
-      {data.map((v, i) => (
-        <div key={i} className="flex flex-col items-center gap-1 flex-1">
-          <motion.div
-            initial={{ height: 0 }}
-            animate={{ height: `${(v / max) * 100}%` }}
-            transition={{ duration: 0.6, delay: i * 0.06 }}
-            className="w-full rounded-t-sm bg-kc-blue/70 min-h-[2px]"
-            style={{ height: `${(v / max) * 100}%` }}
-          />
-          <span className="text-[9px] text-muted-foreground">{WEEKS[i]}</span>
-        </div>
-      ))}
+    <div>
+      <div className="flex h-20 items-end gap-2">
+        {data.map((value, index) => (
+          <div key={WEEKS[index]} className="flex min-w-0 flex-1 flex-col items-center gap-1.5">
+            <motion.div
+              initial={{ height: 0 }}
+              animate={{ height: `${Math.max(8, (value / max) * 100)}%` }}
+              transition={{ duration: 0.45, delay: index * 0.04 }}
+              className="w-full rounded-sm border-2 border-foreground bg-kc-blue shadow-sm"
+            />
+            <span className="text-[10px] font-semibold text-muted-foreground">{WEEKS[index]}</span>
+          </div>
+        ))}
+      </div>
+      <p className="mt-3 text-center text-xs text-muted-foreground">
+        {total > 0 ? `${total} recorded portal interactions this week` : "No recorded portal interactions this week"}
+      </p>
     </div>
   );
 };
 
-/* ─── stat card ─── */
-const StatCard: React.FC<{ icon: React.ElementType; label: string; value: string | number; color: string }> = ({ icon: Icon, label, value, color }) => (
-  <motion.div whileHover={{ y: -3 }} className="bg-white rounded-2xl border border-border p-4 flex items-center gap-3 shadow-sm">
-    <div className={`w-10 h-10 rounded-xl ${color} flex items-center justify-center flex-shrink-0`}>
-      <Icon className="h-5 w-5 text-white" />
+const StatCard: React.FC<{
+  icon: React.ElementType;
+  label: string;
+  value: string | number;
+}> = ({ icon: Icon, label, value }) => (
+  <motion.div
+    whileHover={{ y: -2, x: -2 }}
+    className="rounded-lg border-2 border-foreground bg-white p-4 shadow-card"
+  >
+    <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-md border-2 border-foreground bg-kc-blue text-white">
+      <Icon className="h-5 w-5" />
     </div>
-    <div>
-      <p className="text-2xl font-bold text-foreground font-heading">{value}</p>
-      <p className="text-xs text-muted-foreground">{label}</p>
-    </div>
+    <p className="font-heading text-2xl font-bold text-foreground">{value}</p>
+    <p className="text-xs font-semibold text-muted-foreground">{label}</p>
   </motion.div>
 );
 
-/* ─── main ─── */
 const UserDashboardPage: React.FC = () => {
   const { user, loading, signOut } = useGspAuth();
+  const { user: blogUser } = useUser();
   const [gspApp, setGspApp] = useState<any>(null);
-  const [events, setEvents] = useState<any[]>([]);
+  const [events, setEvents] = useState<KCEvent[]>([]);
+  const [interactions, setInteractions] = useState<DashboardInteraction>({
+    likedPosts: [],
+    comments: 0,
+  });
   const [fetching, setFetching] = useState(true);
 
   const displayName = user?.name?.trim() || user?.email?.split("@")[0] || "User";
   const userInitial = displayName.charAt(0).toUpperCase();
+  const roleLabel = getRoleLabel(user?.role);
 
   useEffect(() => {
     if (!user) return;
-    Promise.all([
-      getGspApplication().then(d => setGspApp(d.application)).catch(() => null),
-      getEvents().then(setEvents).catch(() => []),
-    ]).finally(() => setFetching(false));
-  }, [user]);
 
-  const upcomingEvents = useMemo(() =>
-    events.filter(e => new Date(e.date_iso) >= new Date()).sort((a, b) => new Date(a.date_iso).getTime() - new Date(b.date_iso).getTime()).slice(0, 3),
-    [events]
+    let cancelled = false;
+
+    async function loadDashboard() {
+      setFetching(true);
+      try {
+        const [applicationResult, eventResult, dynamicPosts] = await Promise.all([
+          getGspApplication().catch(() => ({ application: null })),
+          getEvents().catch(() => []),
+          getPublishedBlogPosts().catch(() => []),
+        ]);
+
+        if (cancelled) return;
+
+        const mappedDynamicPosts = dynamicPosts.map((post: any) => ({
+          id: getPostId(post),
+          title: String(post?.title || "Untitled post"),
+        }));
+        const allPosts = [
+          ...blogPosts.map((post) => ({ id: post.id, title: post.title })),
+          ...mappedDynamicPosts,
+        ].filter((post) => post.id);
+
+        setGspApp(applicationResult.application);
+        setEvents(eventResult);
+
+        const localLiked = safeReadJson<Record<string, boolean>>("kc_liked_posts_v1", {});
+        const localLikesV2 = safeReadJson<Record<string, string[]>>("kc_blog_likes_v2", {});
+        const userId = blogUser?.id || user.id;
+
+        const interactionResults = await Promise.all(
+          allPosts.map(async (post) => {
+            const localIsLiked =
+              localLiked[post.id] === true || (localLikesV2[post.id] || []).includes(userId);
+            const [likeStatus, commentsData] = await Promise.all([
+              getBlogLikeStatus(post.id, userId).catch(() => ({
+                isLiked: localIsLiked,
+                likeCount: 0,
+              })),
+              getBlogComments(post.id, 1, 25, userId).catch(() => ({
+                comments: [],
+                pagination: { page: 1, limit: 25, total: 0, pages: 1 },
+              })),
+            ]);
+
+            return {
+              post,
+              isLiked: likeStatus.isLiked || localIsLiked,
+              comments: commentsData.comments.filter((comment) => comment.userId === userId).length,
+            };
+          }),
+        );
+
+        if (cancelled) return;
+
+        setInteractions({
+          likedPosts: interactionResults.filter((item) => item.isLiked).map((item) => item.post),
+          comments: interactionResults.reduce((sum, item) => sum + item.comments, 0),
+        });
+      } finally {
+        if (!cancelled) setFetching(false);
+      }
+    }
+
+    loadDashboard();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [blogUser?.id, user]);
+
+  const upcomingEvents = useMemo(
+    () =>
+      events
+        .filter((event) => new Date(event.date_iso) >= new Date())
+        .sort((a, b) => new Date(a.date_iso).getTime() - new Date(b.date_iso).getTime())
+        .slice(0, 3),
+    [events],
   );
 
-  const activityData = [2, 5, 3, 7, 4, 6, 1]; // mock weekly activity
+  const appPayload = useMemo(() => ({ ...(gspApp?.data || {}), ...(gspApp || {}) }), [gspApp]);
+  const sectionState = useMemo(
+    () => getPersistedSectionState(gspApp) || computeSectionState(appPayload),
+    [appPayload, gspApp],
+  );
+  const progress = gspApp?.status === "submitted" ? 100 : computeProgressPct(sectionState);
+  const hasApplication = Boolean(gspApp?.r_id || gspApp?.id || gspApp?.status);
+  const activityData = useMemo(
+    () =>
+      buildActivityData({
+        application: gspApp,
+        likedPosts: interactions.likedPosts,
+        comments: interactions.comments,
+        lastLoginAt: user?.lastLoginAt,
+      }),
+    [gspApp, interactions.comments, interactions.likedPosts, user?.lastLoginAt],
+  );
+  const activityTotal = activityData.reduce((sum, item) => sum + item, 0);
+  const greeting = getGreeting(activityTotal);
 
-  const handleLogout = () => { googleLogout(); signOut(); };
+  const handleLogout = () => {
+    googleLogout();
+    signOut();
+  };
 
   if (!loading && !user) return <Navigate to="/auth?redirect=/dashboard" replace />;
 
   return (
-    <div className="min-h-screen bg-slate-50">
-      {/* Top bar */}
-      <div className="bg-white border-b border-border sticky top-0 z-40 px-4 md:px-8">
-        <div className="max-w-6xl mx-auto flex items-center justify-between h-14">
-          <Link to="/" className="flex items-center gap-2 text-kc-blue font-heading font-bold text-sm hover:opacity-80 transition-opacity">
-            <Home className="h-4 w-4" />
-            <span className="hidden sm:inline">Knowledge Center</span>
+    <div className="min-h-screen bg-background">
+      <div className="sticky top-0 z-40 border-b border-border bg-white px-4 shadow-sm md:px-8">
+        <div className="mx-auto flex h-16 max-w-6xl items-center justify-between">
+          <Link to="/" className="flex items-center gap-3 hover:opacity-80" aria-label="Knowledge Center home">
+            <img src="/logo.png" alt="Knowledge Center Logo" className="h-10 w-10 object-contain" />
+            <span className="hidden font-heading text-base font-bold text-kc-blue sm:inline">
+              Knowledge Center
+            </span>
           </Link>
-          <span className="text-sm font-semibold text-foreground">My Dashboard</span>
+          <span className="font-heading text-sm font-bold text-foreground">My Dashboard</span>
           <div className="flex items-center gap-2">
-            <Avatar className="h-7 w-7 border border-kc-blue/20">
-              <AvatarFallback className="bg-kc-blue text-white text-xs font-bold">{userInitial}</AvatarFallback>
+            <Avatar className="h-8 w-8 border border-kc-blue/20">
+              <AvatarFallback className="bg-kc-blue text-xs font-bold text-white">
+                {userInitial}
+              </AvatarFallback>
             </Avatar>
-            <button onClick={handleLogout} className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-red-500 transition-colors px-2 py-1 rounded-full hover:bg-red-50">
-              <LogOut className="h-3.5 w-3.5" /> <span className="hidden sm:inline">Logout</span>
+            <button
+              type="button"
+              onClick={handleLogout}
+              className="flex items-center gap-1.5 rounded-md px-2 py-1 text-xs font-semibold text-foreground hover:bg-kc-red/10 hover:text-kc-red"
+            >
+              <LogOut className="h-3.5 w-3.5" />
+              <span className="hidden sm:inline">Logout</span>
             </button>
           </div>
         </div>
       </div>
 
-      <div className="max-w-6xl mx-auto px-4 md:px-8 py-8 space-y-8">
-
-        {/* Hero greeting */}
-        <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}
-          className="relative bg-gradient-to-br from-kc-blue to-blue-700 rounded-3xl p-6 md:p-8 text-white overflow-hidden">
-          <div className="absolute inset-0 opacity-10">
-            {[...Array(6)].map((_, i) => (
-              <div key={i} className="absolute rounded-full border border-white"
-                style={{ width: `${80 + i * 60}px`, height: `${80 + i * 60}px`, top: "50%", right: `${-20 + i * 15}px`, transform: "translateY(-50%)" }} />
-            ))}
-          </div>
-          <div className="relative z-10 flex items-start justify-between gap-4">
-            <div>
-              <p className="text-blue-200 text-sm font-medium mb-1">Welcome back</p>
-              <h1 className="text-2xl md:text-3xl font-heading font-bold text-white">{displayName}</h1>
-              <p className="text-blue-200 text-sm mt-1">{user?.email}</p>
-              <div className="flex items-center gap-2 mt-3">
-                <Badge className="bg-white/20 text-white border-white/30 text-xs">
-                  {user?.role === "admin" ? "Administrator" : "Student"}
+      <main className="mx-auto max-w-6xl space-y-8 px-4 py-8 md:px-8">
+        <motion.section
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4 }}
+          className="rounded-lg border-2 border-foreground bg-white p-6 shadow-card md:p-8"
+        >
+          <div className="flex flex-col gap-6 md:flex-row md:items-start md:justify-between">
+            <div className="max-w-2xl">
+              <p className="mb-2 text-sm font-bold uppercase tracking-[0.14em] text-kc-blue">
+                {greeting.title}
+              </p>
+              <h1 className="font-heading text-3xl font-bold leading-tight text-foreground md:text-4xl">
+                {displayName}
+              </h1>
+              <p className="mt-3 text-sm text-muted-foreground">{greeting.note}</p>
+              <div className="mt-4 flex flex-wrap items-center gap-2">
+                <Badge className="rounded-md border border-kc-blue bg-white text-kc-blue hover:bg-white">
+                  {roleLabel}
                 </Badge>
-                {user?.isEmailVerified && <Badge className="bg-emerald-500/80 text-white border-0 text-xs">Verified</Badge>}
+                {user?.isEmailVerified && (
+                  <Badge className="rounded-md bg-kc-blue text-white hover:bg-kc-blue">
+                    Verified email
+                  </Badge>
+                )}
               </div>
             </div>
-            <Avatar className="h-16 w-16 border-2 border-white/40 flex-shrink-0">
-              <AvatarFallback className="bg-white/20 text-white text-2xl font-bold">{userInitial}</AvatarFallback>
+            <Avatar className="h-16 w-16 border-2 border-foreground">
+              <AvatarFallback className="bg-kc-blue font-heading text-2xl font-bold text-white">
+                {userInitial}
+              </AvatarFallback>
             </Avatar>
           </div>
-        </motion.div>
+        </motion.section>
 
-        {/* Stats row */}
-        <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.1 }}
-          className="grid grid-cols-2 md:grid-cols-4 gap-3">
-          <StatCard icon={Calendar} label="Upcoming Events" value={upcomingEvents.length} color="bg-kc-blue" />
-          <StatCard icon={BookOpen} label="Blogs Liked" value={0} color="bg-violet-500" />
-          <StatCard icon={MessageSquare} label="Comments" value={0} color="bg-amber-500" />
-          <StatCard icon={Layers} label="Programs" value={gspApp ? 1 : 0} color="bg-emerald-600" />
-        </motion.div>
+        <motion.section
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, delay: 0.05 }}
+          className="grid grid-cols-2 gap-3 md:grid-cols-4"
+        >
+          <StatCard icon={Calendar} label="Upcoming Events" value={upcomingEvents.length} />
+          <StatCard icon={BookOpen} label="Blogs Liked" value={interactions.likedPosts.length} />
+          <StatCard icon={MessageSquare} label="Comments" value={interactions.comments} />
+          <StatCard icon={Layers} label="Programs" value={hasApplication ? 1 : 0} />
+        </motion.section>
 
-        {/* Main grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-
-          {/* LEFT: Programs + Activity */}
-          <div className="lg:col-span-2 space-y-6">
-
-            {/* Programs */}
-            <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.15 }}
-              className="bg-white rounded-3xl border border-border p-5 shadow-sm">
-              <div className="flex items-center gap-2 mb-4">
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+          <div className="space-y-6 lg:col-span-2">
+            <motion.section
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, delay: 0.1 }}
+              className="rounded-lg border-2 border-foreground bg-white p-5 shadow-card"
+            >
+              <div className="mb-4 flex items-center gap-2">
                 <GraduationCap className="h-5 w-5 text-kc-blue" />
-                <h2 className="font-heading font-bold text-base">Programs Applied For</h2>
+                <h2 className="font-heading text-base font-bold text-foreground">Programs</h2>
               </div>
               <div className="space-y-3">
-                {PROGRAMS.map((prog) => {
-                  const isGsp = prog.id === "gsp";
-                  const hasApp = isGsp && Boolean(gspApp);
-                  const status = isGsp ? (gspApp?.status || (fetching ? "loading" : "not started")) : "not started";
-                  const progress = isGsp && gspApp ? (gspApp.status === "submitted" ? 100 : 40) : 0;
+                {PROGRAMS.map((program) => {
+                  const isGsp = program.id === "gsp";
+                  const status = isGsp
+                    ? gspApp?.status || (fetching ? "loading" : "not started")
+                    : "open";
+
                   return (
-                    <Link key={prog.id} to={prog.link}
-                      className="flex items-center gap-4 p-4 rounded-2xl border border-border hover:border-kc-blue/40 hover:bg-blue-50/30 transition-all group">
-                      <div className={`w-10 h-10 rounded-xl ${prog.color} flex items-center justify-center flex-shrink-0`}>
-                        <prog.icon className="h-5 w-5 text-white" />
+                    <Link
+                      key={program.id}
+                      to={program.link}
+                      className="group flex items-center gap-4 rounded-lg border-2 border-foreground bg-white p-4 text-foreground shadow-sm hover:-translate-x-0.5 hover:-translate-y-0.5 hover:bg-kc-blue/5 hover:text-foreground hover:shadow-card"
+                    >
+                      <div className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-md border-2 border-foreground bg-kc-blue text-white">
+                        <program.icon className="h-5 w-5" />
                       </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="font-semibold text-sm text-foreground truncate">{prog.label}</p>
-                        {isGsp && (
-                          <div className="mt-1.5">
-                            <div className="flex items-center justify-between mb-1">
-                              <span className="text-xs text-muted-foreground capitalize">{status}</span>
-                              <span className="text-xs font-semibold text-kc-blue">{progress}%</span>
+                      <div className="min-w-0 flex-1">
+                        <div className="flex flex-wrap items-center gap-2">
+                          <p className="truncate text-sm font-bold text-foreground">{program.label}</p>
+                          <Badge variant="outline" className="rounded-md text-[10px]">
+                            {program.short}
+                          </Badge>
+                        </div>
+                        {isGsp ? (
+                          <div className="mt-2">
+                            <div className="mb-1 flex items-center justify-between gap-3">
+                              <span className="text-xs capitalize text-muted-foreground">{status}</span>
+                              <span className="text-xs font-bold text-kc-blue">{progress}%</span>
                             </div>
-                            <Progress value={progress} className="h-1.5" />
+                            <Progress value={progress} className="h-2" />
                           </div>
+                        ) : (
+                          <p className="mt-1 text-xs text-muted-foreground">Explore the programme page</p>
                         )}
-                        {!isGsp && <p className="text-xs text-muted-foreground mt-0.5">Explore &amp; register</p>}
                       </div>
-                      <ChevronRight className="h-4 w-4 text-muted-foreground group-hover:text-kc-blue transition-colors flex-shrink-0" />
+                      <ChevronRight className="h-4 w-4 flex-shrink-0 text-kc-blue" />
                     </Link>
                   );
                 })}
-                {!fetching && !gspApp && (
-                  <p className="text-xs text-center text-muted-foreground py-2">You haven't started any program application yet.</p>
+                {!fetching && !hasApplication && (
+                  <p className="py-2 text-center text-xs text-muted-foreground">
+                    No GSP application has been started yet.
+                  </p>
                 )}
               </div>
-            </motion.div>
+            </motion.section>
 
-            {/* Activity graph */}
-            <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.2 }}
-              className="bg-white rounded-3xl border border-border p-5 shadow-sm">
-              <div className="flex items-center justify-between mb-4">
+            <motion.section
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, delay: 0.15 }}
+              className="rounded-lg border-2 border-foreground bg-white p-5 shadow-card"
+            >
+              <div className="mb-4 flex items-center justify-between gap-3">
                 <div className="flex items-center gap-2">
                   <TrendingUp className="h-5 w-5 text-kc-blue" />
-                  <h2 className="font-heading font-bold text-base">Activity This Week</h2>
+                  <h2 className="font-heading text-base font-bold text-foreground">Activity This Week</h2>
                 </div>
-                <Badge variant="outline" className="text-xs rounded-full">Last 7 days</Badge>
+                <Badge variant="outline" className="rounded-md text-xs">
+                  Real data
+                </Badge>
               </div>
               <ActivityGraph data={activityData} />
-              <p className="text-xs text-muted-foreground mt-3 text-center">Platform interactions across the week</p>
-            </motion.div>
+            </motion.section>
 
-            {/* Blogs / Comments placeholder */}
-            <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.25 }}
-              className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="bg-white rounded-3xl border border-border p-5 shadow-sm">
-                <div className="flex items-center gap-2 mb-3">
-                  <BookOpen className="h-4 w-4 text-violet-500" />
-                  <h3 className="font-semibold text-sm">Liked Blogs</h3>
+            <motion.section
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, delay: 0.2 }}
+              className="grid grid-cols-1 gap-4 sm:grid-cols-2"
+            >
+              <div className="rounded-lg border-2 border-foreground bg-white p-5 shadow-card">
+                <div className="mb-3 flex items-center gap-2">
+                  <BookOpen className="h-4 w-4 text-kc-blue" />
+                  <h3 className="text-sm font-bold text-foreground">Liked Blogs</h3>
                 </div>
-                <div className="flex flex-col items-center justify-center py-6 text-center">
-                  <BookOpen className="h-8 w-8 text-muted-foreground/30 mb-2" />
-                  <p className="text-xs text-muted-foreground">No liked posts yet</p>
-                  <Link to="/blog" className="mt-2 text-xs text-kc-blue font-medium hover:underline">Browse Blog →</Link>
+                {interactions.likedPosts.length === 0 ? (
+                  <div className="py-6 text-center">
+                    <BookOpen className="mx-auto mb-2 h-8 w-8 text-kc-blue/40" />
+                    <p className="text-xs text-muted-foreground">No liked posts yet</p>
+                    <Link to="/blog" className="mt-2 inline-flex text-xs font-bold text-kc-blue hover:underline">
+                      Browse Blog
+                    </Link>
+                  </div>
+                ) : (
+                  <div className="space-y-2">
+                    {interactions.likedPosts.slice(0, 3).map((post) => (
+                      <Link
+                        key={post.id}
+                        to={`/blog/${post.id}`}
+                        className="block rounded-md border border-border px-3 py-2 text-xs font-semibold text-foreground hover:bg-kc-blue/5"
+                      >
+                        {post.title}
+                      </Link>
+                    ))}
+                  </div>
+                )}
+              </div>
+              <div className="rounded-lg border-2 border-foreground bg-white p-5 shadow-card">
+                <div className="mb-3 flex items-center gap-2">
+                  <MessageSquare className="h-4 w-4 text-kc-blue" />
+                  <h3 className="text-sm font-bold text-foreground">My Comments</h3>
+                </div>
+                <div className="py-6 text-center">
+                  <MessageSquare className="mx-auto mb-2 h-8 w-8 text-kc-blue/40" />
+                  <p className="text-xs text-muted-foreground">
+                    {interactions.comments > 0
+                      ? `${interactions.comments} comment${interactions.comments === 1 ? "" : "s"} recorded`
+                      : "No comments yet"}
+                  </p>
+                  <Link to="/blog" className="mt-2 inline-flex text-xs font-bold text-kc-blue hover:underline">
+                    Join a discussion
+                  </Link>
                 </div>
               </div>
-              <div className="bg-white rounded-3xl border border-border p-5 shadow-sm">
-                <div className="flex items-center gap-2 mb-3">
-                  <MessageSquare className="h-4 w-4 text-amber-500" />
-                  <h3 className="font-semibold text-sm">My Comments</h3>
-                </div>
-                <div className="flex flex-col items-center justify-center py-6 text-center">
-                  <MessageSquare className="h-8 w-8 text-muted-foreground/30 mb-2" />
-                  <p className="text-xs text-muted-foreground">No comments yet</p>
-                  <Link to="/blog" className="mt-2 text-xs text-kc-blue font-medium hover:underline">Join a discussion →</Link>
-                </div>
-              </div>
-            </motion.div>
+            </motion.section>
           </div>
 
-          {/* RIGHT: Profile + Events */}
-          <div className="space-y-6">
-
-            {/* Profile card */}
-            <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.1 }}
-              className="bg-white rounded-3xl border border-border p-5 shadow-sm">
-              <div className="flex items-center gap-2 mb-4">
+          <aside className="space-y-6">
+            <motion.section
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, delay: 0.1 }}
+              className="rounded-lg border-2 border-foreground bg-white p-5 shadow-card"
+            >
+              <div className="mb-4 flex items-center gap-2">
                 <User className="h-5 w-5 text-kc-blue" />
-                <h2 className="font-heading font-bold text-base">Profile</h2>
+                <h2 className="font-heading text-base font-bold text-foreground">Profile</h2>
               </div>
-              <div className="flex flex-col items-center text-center gap-3">
-                <Avatar className="h-16 w-16 border-2 border-kc-blue/20">
-                  <AvatarFallback className="bg-kc-blue text-white text-2xl font-bold">{userInitial}</AvatarFallback>
+              <div className="flex flex-col items-center gap-3 text-center">
+                <Avatar className="h-16 w-16 border-2 border-foreground">
+                  <AvatarFallback className="bg-kc-blue font-heading text-2xl font-bold text-white">
+                    {userInitial}
+                  </AvatarFallback>
                 </Avatar>
                 <div>
-                  <p className="font-semibold text-base text-foreground">{displayName}</p>
-                  <p className="text-xs text-muted-foreground mt-0.5">{user?.email}</p>
+                  <p className="font-bold text-foreground">{displayName}</p>
+                  <p className="mt-0.5 text-xs text-muted-foreground">{user?.email}</p>
                 </div>
-                <div className="w-full pt-3 border-t border-border space-y-2 text-left">
-                  <div className="flex justify-between text-xs">
+                <div className="w-full space-y-2 border-t border-border pt-3 text-left">
+                  <div className="flex justify-between gap-3 text-xs">
                     <span className="text-muted-foreground">Role</span>
-                    <span className="font-medium capitalize">{user?.role || "student"}</span>
+                    <span className="font-bold text-foreground">{roleLabel}</span>
                   </div>
-                  <div className="flex justify-between text-xs">
+                  <div className="flex justify-between gap-3 text-xs">
                     <span className="text-muted-foreground">Email verified</span>
-                    <span className={`font-medium ${user?.isEmailVerified ? "text-emerald-600" : "text-amber-500"}`}>
+                    <span className={`font-bold ${user?.isEmailVerified ? "text-kc-blue" : "text-kc-red"}`}>
                       {user?.isEmailVerified ? "Yes" : "Pending"}
                     </span>
                   </div>
                   {user?.lastLoginAt && (
-                    <div className="flex justify-between text-xs">
+                    <div className="flex justify-between gap-3 text-xs">
                       <span className="text-muted-foreground">Last login</span>
-                      <span className="font-medium">{fmt(user.lastLoginAt)}</span>
+                      <span className="font-bold text-foreground">{fmt(user.lastLoginAt)}</span>
                     </div>
                   )}
                 </div>
               </div>
-            </motion.div>
+            </motion.section>
 
-            {/* Upcoming events */}
-            <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.2 }}
-              className="bg-white rounded-3xl border border-border p-5 shadow-sm">
-              <div className="flex items-center justify-between mb-4">
+            <motion.section
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, delay: 0.15 }}
+              className="rounded-lg border-2 border-foreground bg-white p-5 shadow-card"
+            >
+              <div className="mb-4 flex items-center justify-between gap-3">
                 <div className="flex items-center gap-2">
                   <Calendar className="h-5 w-5 text-kc-blue" />
-                  <h2 className="font-heading font-bold text-base">Upcoming Events</h2>
+                  <h2 className="font-heading text-base font-bold text-foreground">Upcoming Events</h2>
                 </div>
-                <Link to="/events" className="text-xs text-kc-blue hover:underline font-medium">See all</Link>
+                <Link to="/events" className="text-xs font-bold text-kc-blue hover:underline">
+                  See all
+                </Link>
               </div>
               {fetching ? (
                 <div className="space-y-3">
-                  {[1, 2].map(i => <div key={i} className="h-14 rounded-xl bg-muted animate-pulse" />)}
+                  {[1, 2].map((item) => (
+                    <div key={item} className="h-14 animate-pulse rounded-md bg-muted" />
+                  ))}
                 </div>
               ) : upcomingEvents.length === 0 ? (
-                <div className="flex flex-col items-center py-6 text-center">
-                  <Calendar className="h-8 w-8 text-muted-foreground/30 mb-2" />
+                <div className="py-6 text-center">
+                  <Calendar className="mx-auto mb-2 h-8 w-8 text-kc-blue/40" />
                   <p className="text-xs text-muted-foreground">No upcoming events</p>
                 </div>
               ) : (
                 <div className="space-y-3">
-                  {upcomingEvents.map((ev) => (
-                    <div key={ev.id} className="flex items-start gap-3 p-3 rounded-xl bg-blue-50/50 border border-blue-100">
-                      <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-kc-blue flex flex-col items-center justify-center text-white">
-                        <span className="text-[9px] font-bold uppercase leading-none">{new Date(ev.date_iso).toLocaleString("en", { month: "short" })}</span>
-                        <span className="text-sm font-bold leading-none">{new Date(ev.date_iso).getDate()}</span>
+                  {upcomingEvents.map((event) => (
+                    <div key={event.id} className="flex items-start gap-3 rounded-md border border-border p-3">
+                      <div className="flex h-10 w-10 flex-shrink-0 flex-col items-center justify-center rounded-md bg-kc-blue text-white">
+                        <span className="text-[9px] font-bold uppercase leading-none">
+                          {new Date(event.date_iso).toLocaleString("en", { month: "short" })}
+                        </span>
+                        <span className="text-sm font-bold leading-none">{new Date(event.date_iso).getDate()}</span>
                       </div>
                       <div className="min-w-0">
-                        <p className="text-xs font-semibold text-foreground line-clamp-1">{ev.title}</p>
-                        <p className="text-[10px] text-muted-foreground mt-0.5">{ev.time} · {ev.location}</p>
+                        <p className="line-clamp-1 text-xs font-bold text-foreground">{event.title}</p>
+                        <p className="mt-0.5 text-[10px] text-muted-foreground">
+                          {event.time} / {event.location}
+                        </p>
                       </div>
                     </div>
                   ))}
                 </div>
               )}
-            </motion.div>
+            </motion.section>
 
-            {/* Quick links */}
-            <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.25 }}
-              className="bg-white rounded-3xl border border-border p-5 shadow-sm">
-              <div className="flex items-center gap-2 mb-4">
+            <motion.section
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, delay: 0.2 }}
+              className="rounded-lg border-2 border-foreground bg-white p-5 shadow-card"
+            >
+              <div className="mb-4 flex items-center gap-2">
                 <Activity className="h-5 w-5 text-kc-blue" />
-                <h2 className="font-heading font-bold text-base">Quick Links</h2>
+                <h2 className="font-heading text-base font-bold text-foreground">Quick Links</h2>
               </div>
               <div className="space-y-1">
                 {[
                   { label: "Browse Blog", to: "/blog", icon: BookOpen },
                   { label: "View Events", to: "/events", icon: Calendar },
-                  { label: "GSP Application", to: "/gsp/application", icon: GraduationCap },
-                  { label: "STEM Programs", to: "/stem", icon: Award },
-                ].map(link => (
-                  <Link key={link.to} to={link.to}
-                    className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-blue-50 transition-colors group">
-                    <link.icon className="h-4 w-4 text-muted-foreground group-hover:text-kc-blue transition-colors" />
-                    <span className="text-sm text-foreground group-hover:text-kc-blue transition-colors">{link.label}</span>
-                    <ChevronRight className="h-3.5 w-3.5 text-muted-foreground ml-auto group-hover:text-kc-blue transition-colors" />
+                  { label: "GSP Dashboard", to: "/gsp/dashboard", icon: GraduationCap },
+                  { label: "STEM Programs", to: "/projects/stem", icon: Award },
+                ].map((link) => (
+                  <Link
+                    key={link.to}
+                    to={link.to}
+                    className="group flex items-center gap-3 rounded-md px-3 py-2.5 text-foreground hover:bg-kc-blue/5 hover:text-foreground"
+                  >
+                    <link.icon className="h-4 w-4 text-kc-blue" />
+                    <span className="text-sm font-semibold">{link.label}</span>
+                    <ChevronRight className="ml-auto h-3.5 w-3.5 text-kc-blue" />
                   </Link>
                 ))}
               </div>
-            </motion.div>
-          </div>
+            </motion.section>
+          </aside>
         </div>
 
-        {/* Back to home button */}
-        <div className="flex justify-center pt-4 pb-8">
-          <Button asChild variant="outline" className="rounded-full gap-2">
-            <Link to="/"><Home className="h-4 w-4" /> Back to Home</Link>
+        <div className="flex justify-center pb-8 pt-4">
+          <Button asChild variant="outline" className="gap-2">
+            <Link to="/">
+              <Home className="h-4 w-4" />
+              Back to Home
+            </Link>
           </Button>
         </div>
-      </div>
+      </main>
     </div>
   );
 };
