@@ -12,15 +12,30 @@ import {
   computeSectionState,
   computeProgressPct,
   GSP_PROGRESS_KEYS,
+  getPersistedSectionState,
 } from "@/lib/gspUtils";
-
-const getPersistedSectionState = (source: any): Record<string, boolean> | null => {
-  const state = source?.sectionState || source?.section_state;
-  return state && typeof state === "object" ? state : null;
-};
 
 const hasCompletedSection = (state: Record<string, boolean>) =>
   GSP_PROGRESS_KEYS.some((key) => Boolean(state[key]));
+
+const DashboardCardSkeleton = () => (
+  <div className="space-y-4" aria-label="Loading application overview">
+    <div className="space-y-3">
+      <div className="flex items-center justify-between gap-4">
+        <div className="space-y-2">
+          <div className="h-3 w-16 rounded-full bg-kc-blue/10" />
+          <div className="h-8 w-20 rounded-xl bg-kc-blue/15" />
+        </div>
+        <div className="h-3 w-44 max-w-[45%] rounded-full bg-kc-blue/15" />
+      </div>
+      <div className="h-4 w-64 max-w-full rounded-full bg-kc-blue/10" />
+    </div>
+    <div className="flex flex-col gap-3 pt-4 sm:flex-row">
+      <div className="h-11 w-full rounded-full bg-kc-blue/15 sm:w-44" />
+      <div className="h-11 w-full rounded-full bg-kc-blue/10 sm:w-36" />
+    </div>
+  </div>
+);
 
 const GspDashboardPage: React.FC = () => {
   const { user, loading, signOut } = useGspAuth();
@@ -56,16 +71,25 @@ const GspDashboardPage: React.FC = () => {
   React.useEffect(() => {
     if (!user) return;
 
+    let cancelled = false;
+    setFetching(true);
+
     (async () => {
       try {
         const data = await getGspApplication();
-        setApplication(data.application);
+        if (!cancelled) setApplication(data.application);
       } catch (error: any) {
-        toast({ title: "Failed to load dashboard", description: error.message || "Please refresh", variant: "destructive" as any });
+        if (!cancelled) {
+          toast({ title: "Failed to load dashboard", description: error.message || "Please refresh", variant: "destructive" as any });
+        }
       } finally {
-        setFetching(false);
+        if (!cancelled) setFetching(false);
       }
     })();
+
+    return () => {
+      cancelled = true;
+    };
   }, [user, toast]);
 
   if (!loading && !user) return <Navigate to="/auth?redirect=%2Fgsp%2Fdashboard" replace />;
@@ -94,23 +118,23 @@ const GspDashboardPage: React.FC = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
-          <Card className="rounded-3xl md:col-span-2 p-0 overflow-hidden">
-            <div className="p-4 sm:p-6 bg-gradient-to-r from-kc-blue/10 via-white to-kc-blue/5">
+          <Card className="rounded-3xl md:col-span-2 p-0 overflow-hidden border-kc-blue/10 shadow-card">
+            <div className="min-h-[250px] p-4 sm:p-6 bg-[linear-gradient(135deg,hsl(var(--kc-blue)/0.12),#fff_48%,hsl(var(--kc-blue)/0.08))]">
               <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
                 <div>
                   <h3 className="text-base sm:text-lg font-semibold">Global Scholars Programme 2026</h3>
                   <p className="text-xs sm:text-sm text-muted-foreground mt-1">Application overview and quick actions</p>
                 </div>
                 <div className="sm:text-right">
-                  <Badge variant={application?.status === 'submitted' ? 'default' : (application?.status === 'under_review' ? 'secondary' : 'outline')}>
-                    {(application?.status || 'draft').toUpperCase()}
+                  <Badge variant={fetching ? "outline" : (application?.status === 'submitted' ? 'default' : (application?.status === 'under_review' ? 'secondary' : 'outline'))}>
+                    {(fetching ? "loading" : application?.status || 'draft').toUpperCase()}
                   </Badge>
                 </div>
               </div>
 
               <div className="mt-4 sm:mt-6">
                 {fetching ? (
-                  <p className="text-muted-foreground">Loading application...</p>
+                  <DashboardCardSkeleton />
                 ) : (
                   <>
                     <div className="space-y-3">

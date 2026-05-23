@@ -1,5 +1,6 @@
 import React, { Suspense } from "react";
 import EngagingLoader from "@/components/EngagingLoader";
+import { optimisticPreloadAuthFlow } from "@/route-prefetch";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { UserProvider } from "./contexts/UserContext";
@@ -111,7 +112,10 @@ const App: React.FC = () => {
     });
 
     Promise.all([waitForWindowLoad, waitForMinimumDelay]).then(() => {
-      if (mounted) setIsBootReady(true);
+      if (mounted) {
+        setIsBootReady(true);
+        optimisticPreloadAuthFlow();
+      }
     });
 
     return () => {

@@ -51,6 +51,7 @@ const PROGRAMS = [
 ];
 
 const WEEKS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+const CARD_CLASS = "rounded-2xl bg-white p-5 shadow-card ring-1 ring-kc-blue/10";
 
 type BlogPostSummary = {
   id: string;
@@ -165,7 +166,7 @@ const ActivityGraph: React.FC<{ data: number[] }> = ({ data }) => {
               initial={{ height: 0 }}
               animate={{ height: `${Math.max(8, (value / max) * 100)}%` }}
               transition={{ duration: 0.45, delay: index * 0.04 }}
-              className="w-full rounded-sm border-2 border-foreground bg-kc-blue shadow-sm"
+              className={index === 5 || index === 6 ? "w-full rounded-t-md bg-kc-red shadow-sm" : "w-full rounded-t-md bg-kc-blue shadow-sm"}
             />
             <span className="text-[10px] font-semibold text-muted-foreground">{WEEKS[index]}</span>
           </div>
@@ -184,10 +185,10 @@ const StatCard: React.FC<{
   value: string | number;
 }> = ({ icon: Icon, label, value }) => (
   <motion.div
-    whileHover={{ y: -2, x: -2 }}
-    className="rounded-lg border-2 border-foreground bg-white p-4 shadow-card"
+    whileHover={{ y: -2 }}
+    className="rounded-2xl bg-white p-4 shadow-card ring-1 ring-kc-blue/10"
   >
-    <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-md border-2 border-foreground bg-kc-blue text-white">
+    <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-kc-blue text-white shadow-sm">
       <Icon className="h-5 w-5" />
     </div>
     <p className="font-heading text-2xl font-bold text-foreground">{value}</p>
@@ -320,7 +321,7 @@ const UserDashboardPage: React.FC = () => {
   if (!loading && !user) return <Navigate to="/auth?redirect=/dashboard" replace />;
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-kc-blue/5">
       <div className="sticky top-0 z-40 border-b border-border bg-white px-4 shadow-sm md:px-8">
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between">
           <Link to="/" className="flex items-center gap-3 hover:opacity-80" aria-label="Knowledge Center home">
@@ -353,30 +354,30 @@ const UserDashboardPage: React.FC = () => {
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
-          className="rounded-lg border-2 border-foreground bg-white p-6 shadow-card md:p-8"
+          className="overflow-hidden rounded-2xl bg-kc-blue p-6 text-white shadow-hover md:p-8"
         >
           <div className="flex flex-col gap-6 md:flex-row md:items-start md:justify-between">
             <div className="max-w-2xl">
-              <p className="mb-2 text-sm font-bold uppercase tracking-[0.14em] text-kc-blue">
+              <p className="mb-2 text-sm font-bold uppercase tracking-[0.14em] text-white/80">
                 {greeting.title}
               </p>
-              <h1 className="font-heading text-3xl font-bold leading-tight text-foreground md:text-4xl">
+              <h1 className="font-heading text-3xl font-bold leading-tight text-white md:text-4xl">
                 {displayName}
               </h1>
-              <p className="mt-3 text-sm text-muted-foreground">{greeting.note}</p>
+              <p className="mt-3 max-w-xl text-sm text-white/80">{greeting.note}</p>
               <div className="mt-4 flex flex-wrap items-center gap-2">
-                <Badge className="rounded-md border border-kc-blue bg-white text-kc-blue hover:bg-white">
+                <Badge className="rounded-full bg-white text-kc-blue hover:bg-white">
                   {roleLabel}
                 </Badge>
                 {user?.isEmailVerified && (
-                  <Badge className="rounded-md bg-kc-blue text-white hover:bg-kc-blue">
+                  <Badge className="rounded-full bg-kc-red text-white hover:bg-kc-red">
                     Verified email
                   </Badge>
                 )}
               </div>
             </div>
-            <Avatar className="h-16 w-16 border-2 border-foreground">
-              <AvatarFallback className="bg-kc-blue font-heading text-2xl font-bold text-white">
+            <Avatar className="h-16 w-16 ring-4 ring-white/20">
+              <AvatarFallback className="bg-white font-heading text-2xl font-bold text-kc-blue">
                 {userInitial}
               </AvatarFallback>
             </Avatar>
@@ -401,7 +402,7 @@ const UserDashboardPage: React.FC = () => {
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4, delay: 0.1 }}
-              className="rounded-lg border-2 border-foreground bg-white p-5 shadow-card"
+              className={CARD_CLASS}
             >
               <div className="mb-4 flex items-center gap-2">
                 <GraduationCap className="h-5 w-5 text-kc-blue" />
@@ -418,9 +419,9 @@ const UserDashboardPage: React.FC = () => {
                     <Link
                       key={program.id}
                       to={program.link}
-                      className="group flex items-center gap-4 rounded-lg border-2 border-foreground bg-white p-4 text-foreground shadow-sm hover:-translate-x-0.5 hover:-translate-y-0.5 hover:bg-kc-blue/5 hover:text-foreground hover:shadow-card"
+                      className="group flex items-center gap-4 rounded-2xl bg-kc-blue/5 p-4 text-foreground ring-1 ring-kc-blue/10 transition-all hover:-translate-y-0.5 hover:bg-white hover:text-foreground hover:shadow-card"
                     >
-                      <div className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-md border-2 border-foreground bg-kc-blue text-white">
+                      <div className={`flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl text-white shadow-sm ${isGsp ? "bg-kc-blue" : "bg-kc-red"}`}>
                         <program.icon className="h-5 w-5" />
                       </div>
                       <div className="min-w-0 flex-1">
@@ -458,14 +459,14 @@ const UserDashboardPage: React.FC = () => {
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4, delay: 0.15 }}
-              className="rounded-lg border-2 border-foreground bg-white p-5 shadow-card"
+              className={CARD_CLASS}
             >
               <div className="mb-4 flex items-center justify-between gap-3">
                 <div className="flex items-center gap-2">
                   <TrendingUp className="h-5 w-5 text-kc-blue" />
                   <h2 className="font-heading text-base font-bold text-foreground">Activity This Week</h2>
                 </div>
-                <Badge variant="outline" className="rounded-md text-xs">
+                <Badge className="rounded-full bg-kc-red text-white hover:bg-kc-red">
                   Real data
                 </Badge>
               </div>
@@ -478,7 +479,7 @@ const UserDashboardPage: React.FC = () => {
               transition={{ duration: 0.4, delay: 0.2 }}
               className="grid grid-cols-1 gap-4 sm:grid-cols-2"
             >
-              <div className="rounded-lg border-2 border-foreground bg-white p-5 shadow-card">
+              <div className={CARD_CLASS}>
                 <div className="mb-3 flex items-center gap-2">
                   <BookOpen className="h-4 w-4 text-kc-blue" />
                   <h3 className="text-sm font-bold text-foreground">Liked Blogs</h3>
@@ -505,7 +506,7 @@ const UserDashboardPage: React.FC = () => {
                   </div>
                 )}
               </div>
-              <div className="rounded-lg border-2 border-foreground bg-white p-5 shadow-card">
+              <div className={CARD_CLASS}>
                 <div className="mb-3 flex items-center gap-2">
                   <MessageSquare className="h-4 w-4 text-kc-blue" />
                   <h3 className="text-sm font-bold text-foreground">My Comments</h3>
@@ -530,14 +531,14 @@ const UserDashboardPage: React.FC = () => {
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4, delay: 0.1 }}
-              className="rounded-lg border-2 border-foreground bg-white p-5 shadow-card"
+              className={CARD_CLASS}
             >
               <div className="mb-4 flex items-center gap-2">
                 <User className="h-5 w-5 text-kc-blue" />
                 <h2 className="font-heading text-base font-bold text-foreground">Profile</h2>
               </div>
               <div className="flex flex-col items-center gap-3 text-center">
-                <Avatar className="h-16 w-16 border-2 border-foreground">
+                <Avatar className="h-16 w-16 ring-4 ring-kc-blue/10">
                   <AvatarFallback className="bg-kc-blue font-heading text-2xl font-bold text-white">
                     {userInitial}
                   </AvatarFallback>
@@ -571,7 +572,7 @@ const UserDashboardPage: React.FC = () => {
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4, delay: 0.15 }}
-              className="rounded-lg border-2 border-foreground bg-white p-5 shadow-card"
+              className={CARD_CLASS}
             >
               <div className="mb-4 flex items-center justify-between gap-3">
                 <div className="flex items-center gap-2">
@@ -596,8 +597,8 @@ const UserDashboardPage: React.FC = () => {
               ) : (
                 <div className="space-y-3">
                   {upcomingEvents.map((event) => (
-                    <div key={event.id} className="flex items-start gap-3 rounded-md border border-border p-3">
-                      <div className="flex h-10 w-10 flex-shrink-0 flex-col items-center justify-center rounded-md bg-kc-blue text-white">
+                    <div key={event.id} className="flex items-start gap-3 rounded-2xl bg-kc-blue/5 p-3">
+                      <div className="flex h-10 w-10 flex-shrink-0 flex-col items-center justify-center rounded-xl bg-kc-blue text-white">
                         <span className="text-[9px] font-bold uppercase leading-none">
                           {new Date(event.date_iso).toLocaleString("en", { month: "short" })}
                         </span>
@@ -619,7 +620,7 @@ const UserDashboardPage: React.FC = () => {
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4, delay: 0.2 }}
-              className="rounded-lg border-2 border-foreground bg-white p-5 shadow-card"
+              className={CARD_CLASS}
             >
               <div className="mb-4 flex items-center gap-2">
                 <Activity className="h-5 w-5 text-kc-blue" />
