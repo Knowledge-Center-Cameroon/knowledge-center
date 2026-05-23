@@ -12,6 +12,7 @@ import { Badge } from "@/components/ui/badge";
 import { useSeo } from "@/hooks/useSeo";
 import { useToast } from "@/components/ui/use-toast";
 import { Bell, CalendarDays } from "lucide-react";
+import LazyImageWithSkeleton from "@/components/LazyImageWithSkeleton";
 
 const cardVariants = {
   hidden: {
@@ -256,15 +257,13 @@ const ProjectsPage: React.FC = () => {
                   <Card className="group h-full overflow-hidden bg-white/95 border border-kc-blue/10 ring-1 ring-kc-blue/5 shadow-card rounded-3xl transition-all duration-500 hover:border-kc-blue/40 hover:shadow-hover">
                     <CardContent className="p-0 h-full flex flex-col">
                       <div className="relative aspect-[4/3] w-full overflow-hidden">
-                        <motion.img
+                        <LazyImageWithSkeleton
                           src={p.images[0]}
                           alt={p.title}
                           className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 will-change-transform"
                           loading="lazy"
                           decoding="async"
                           sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
-                          whileHover={{ scale: 1.05 }}
-                          transition={{ duration: 0.4 }}
                         />
                         <motion.div
                           className="absolute inset-0 bg-kc-blue/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
