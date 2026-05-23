@@ -70,6 +70,39 @@ const COUNTRY_CODES = [
   { code: "+221", country: "SN" },
 ];
 
+const DOB_MONTHS = [
+  { value: "01", label: "January" },
+  { value: "02", label: "February" },
+  { value: "03", label: "March" },
+  { value: "04", label: "April" },
+  { value: "05", label: "May" },
+  { value: "06", label: "June" },
+  { value: "07", label: "July" },
+  { value: "08", label: "August" },
+  { value: "09", label: "September" },
+  { value: "10", label: "October" },
+  { value: "11", label: "November" },
+  { value: "12", label: "December" },
+];
+
+const DOB_YEARS = Array.from(
+  { length: new Date().getFullYear() - 1959 },
+  (_, index) => String(new Date().getFullYear() - index),
+);
+
+const emptyDobParts = { year: "", month: "", day: "" };
+
+const parseDobParts = (value?: string) => {
+  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value || "");
+  if (!match) return emptyDobParts;
+  return { year: match[1], month: match[2], day: match[3] };
+};
+
+const daysInDobMonth = (year: string, month: string) => {
+  if (!year || !month) return 31;
+  return new Date(Number(year), Number(month), 0).getDate();
+};
+
 const EDUCATION_LEVELS = [
   "None",
   "Primary School",
@@ -379,6 +412,9 @@ const GspApplicationPage: React.FC = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
   const [data, setData] = React.useState<any>(defaultData);
+  const [dobParts, setDobParts] = React.useState(() =>
+    parseDobParts(defaultData.dob),
+  );
   const [sectionState, setSectionState] = React.useState<
     Record<string, boolean>
   >({});
@@ -388,6 +424,9 @@ const GspApplicationPage: React.FC = () => {
   const [activeSection, setActiveSection] = React.useState(0);
   const [sectionTransitioning, setSectionTransitioning] = React.useState(false);
   const [mobileSidebarOpen, setMobileSidebarOpen] = React.useState(false);
+
+  const setField = (key: string, value: any) =>
+    setData((prev: any) => ({ ...prev, [key]: value }));
 
   const progressPct = React.useMemo(() => {
     return computeProgressPct(sectionState);
@@ -461,11 +500,31 @@ const GspApplicationPage: React.FC = () => {
     };
   }, [data, user, fetching, isApplicationSubmitted]);
 
+  React.useEffect(() => {
+    setDobParts(parseDobParts(data.dob));
+  }, [data.dob]);
+
+  const setDobPart = (part: "year" | "month" | "day", value: string) => {
+    setDobParts((prev) => {
+      const next = { ...prev, [part]: value };
+      const maxDay = daysInDobMonth(next.year, next.month);
+
+      if (next.day && Number(next.day) > maxDay) {
+        next.day = String(maxDay).padStart(2, "0");
+      }
+
+      if (next.year && next.month && next.day) {
+        setField("dob", `${next.year}-${next.month}-${next.day}`);
+      } else if (data.dob) {
+        setField("dob", "");
+      }
+
+      return next;
+    });
+  };
+
   if (!loading && !user)
     return <Navigate to="/auth?redirect=/gsp/application" replace />;
-
-  const setField = (key: string, value: any) =>
-    setData((prev: any) => ({ ...prev, [key]: value }));
 
   const saveCurrentDraft = async (
     payload = data,
@@ -992,12 +1051,59 @@ const GspApplicationPage: React.FC = () => {
                         </div>
                         <div>
                           <Label>Date of birth</Label>
-                          <Input
-                            disabled={!editable}
-                            type="date"
-                            value={data.dob}
-                            onChange={(e) => setField("dob", e.target.value)}
-                          />
+                          <div className="grid grid-cols-[1fr_1.4fr_1fr] gap-2">
+                            <Select
+                              disabled={!editable}
+                              value={dobParts.day}
+                              onValueChange={(val) => setDobPart("day", val)}
+                            >
+                              <SelectTrigger>
+                                <SelectValue placeholder="Day" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {Array.from(
+                                  { length: daysInDobMonth(dobParts.year, dobParts.month) },
+                                  (_, index) => String(index + 1).padStart(2, "0"),
+                                ).map((day) => (
+                                  <SelectItem key={day} value={day}>
+                                    {Number(day)}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                            <Select
+                              disabled={!editable}
+                              value={dobParts.month}
+                              onValueChange={(val) => setDobPart("month", val)}
+                            >
+                              <SelectTrigger>
+                                <SelectValue placeholder="Month" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {DOB_MONTHS.map((month) => (
+                                  <SelectItem key={month.value} value={month.value}>
+                                    {month.label}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                            <Select
+                              disabled={!editable}
+                              value={dobParts.year}
+                              onValueChange={(val) => setDobPart("year", val)}
+                            >
+                              <SelectTrigger>
+                                <SelectValue placeholder="Year" />
+                              </SelectTrigger>
+                              <SelectContent className="max-h-72">
+                                {DOB_YEARS.map((year) => (
+                                  <SelectItem key={year} value={year}>
+                                    {year}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                          </div>
                         </div>
                         <div>
                           <Label>Phone</Label>
