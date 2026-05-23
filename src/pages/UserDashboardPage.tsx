@@ -51,7 +51,7 @@ const PROGRAMS = [
 ];
 
 const WEEKS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
-const CARD_CLASS = "rounded-2xl bg-white p-5 shadow-card ring-1 ring-kc-blue/10";
+const CARD_CLASS = "rounded-2xl border border-kc-blue/10 bg-white p-5 shadow-card";
 
 type BlogPostSummary = {
   id: string;
@@ -166,7 +166,7 @@ const ActivityGraph: React.FC<{ data: number[] }> = ({ data }) => {
               initial={{ height: 0 }}
               animate={{ height: `${Math.max(8, (value / max) * 100)}%` }}
               transition={{ duration: 0.45, delay: index * 0.04 }}
-              className={index === 5 || index === 6 ? "w-full rounded-t-md bg-kc-red shadow-sm" : "w-full rounded-t-md bg-kc-blue shadow-sm"}
+              className="w-full rounded-t-md bg-kc-blue/80 shadow-sm"
             />
             <span className="text-[10px] font-semibold text-muted-foreground">{WEEKS[index]}</span>
           </div>
@@ -186,9 +186,9 @@ const StatCard: React.FC<{
 }> = ({ icon: Icon, label, value }) => (
   <motion.div
     whileHover={{ y: -2 }}
-    className="rounded-2xl bg-white p-4 shadow-card ring-1 ring-kc-blue/10"
+    className="rounded-2xl border border-kc-blue/10 bg-white p-4 shadow-card"
   >
-    <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-kc-blue text-white shadow-sm">
+    <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-kc-blue/10 text-kc-blue">
       <Icon className="h-5 w-5" />
     </div>
     <p className="font-heading text-2xl font-bold text-foreground">{value}</p>
@@ -321,16 +321,19 @@ const UserDashboardPage: React.FC = () => {
   if (!loading && !user) return <Navigate to="/auth?redirect=/dashboard" replace />;
 
   return (
-    <div className="min-h-screen bg-kc-blue/5">
-      <div className="sticky top-0 z-40 border-b border-border bg-white px-4 shadow-sm md:px-8">
-        <div className="mx-auto flex h-16 max-w-6xl items-center justify-between">
+    <div className="min-h-screen bg-background">
+      <header className="sticky top-0 z-50 border-b border-border bg-white/95 backdrop-blur-md">
+        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
           <Link to="/" className="flex items-center gap-3 hover:opacity-80" aria-label="Knowledge Center home">
             <img src="/logo.png" alt="Knowledge Center Logo" className="h-10 w-10 object-contain" />
             <span className="hidden font-heading text-base font-bold text-kc-blue sm:inline">
               Knowledge Center
             </span>
           </Link>
-          <span className="font-heading text-sm font-bold text-foreground">My Dashboard</span>
+          <div className="hidden items-center gap-2 sm:flex">
+            <span className="text-sm font-semibold text-kc-blue">KC Portal</span>
+            <span className="text-xs text-muted-foreground">- My Dashboard</span>
+          </div>
           <div className="flex items-center gap-2">
             <Avatar className="h-8 w-8 border border-kc-blue/20">
               <AvatarFallback className="bg-kc-blue text-xs font-bold text-white">
@@ -340,44 +343,44 @@ const UserDashboardPage: React.FC = () => {
             <button
               type="button"
               onClick={handleLogout}
-              className="flex items-center gap-1.5 rounded-md px-2 py-1 text-xs font-semibold text-foreground hover:bg-kc-red/10 hover:text-kc-red"
+              className="flex items-center gap-1.5 rounded-full px-2 py-1 text-xs font-semibold text-muted-foreground hover:bg-kc-blue/10 hover:text-kc-blue"
             >
               <LogOut className="h-3.5 w-3.5" />
               <span className="hidden sm:inline">Logout</span>
             </button>
           </div>
         </div>
-      </div>
+      </header>
 
-      <main className="mx-auto max-w-6xl space-y-8 px-4 py-8 md:px-8">
+      <main className="mx-auto max-w-7xl space-y-6 px-4 py-6 sm:px-6 lg:px-8 lg:py-10">
         <motion.section
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
-          className="overflow-hidden rounded-2xl bg-kc-blue p-6 text-white shadow-hover md:p-8"
+          className="rounded-2xl border border-kc-blue/10 bg-white p-6 shadow-card md:p-8"
         >
           <div className="flex flex-col gap-6 md:flex-row md:items-start md:justify-between">
             <div className="max-w-2xl">
-              <p className="mb-2 text-sm font-bold uppercase tracking-[0.14em] text-white/80">
+              <p className="mb-2 text-sm font-bold uppercase tracking-[0.14em] text-kc-blue">
                 {greeting.title}
               </p>
-              <h1 className="font-heading text-3xl font-bold leading-tight text-white md:text-4xl">
+              <h1 className="font-heading text-3xl font-bold leading-tight text-foreground md:text-4xl">
                 {displayName}
               </h1>
-              <p className="mt-3 max-w-xl text-sm text-white/80">{greeting.note}</p>
+              <p className="mt-3 max-w-xl text-sm text-muted-foreground">{greeting.note}</p>
               <div className="mt-4 flex flex-wrap items-center gap-2">
-                <Badge className="rounded-full bg-white text-kc-blue hover:bg-white">
+                <Badge className="rounded-full bg-kc-blue/10 text-kc-blue hover:bg-kc-blue/10">
                   {roleLabel}
                 </Badge>
                 {user?.isEmailVerified && (
-                  <Badge className="rounded-full bg-kc-red text-white hover:bg-kc-red">
+                  <Badge className="rounded-full bg-kc-blue text-white hover:bg-kc-blue">
                     Verified email
                   </Badge>
                 )}
               </div>
             </div>
-            <Avatar className="h-16 w-16 ring-4 ring-white/20">
-              <AvatarFallback className="bg-white font-heading text-2xl font-bold text-kc-blue">
+            <Avatar className="h-16 w-16 ring-4 ring-kc-blue/10">
+              <AvatarFallback className="bg-kc-blue font-heading text-2xl font-bold text-white">
                 {userInitial}
               </AvatarFallback>
             </Avatar>
@@ -396,7 +399,7 @@ const UserDashboardPage: React.FC = () => {
           <StatCard icon={Layers} label="Programs" value={hasApplication ? 1 : 0} />
         </motion.section>
 
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
           <div className="space-y-6 lg:col-span-2">
             <motion.section
               initial={{ opacity: 0, y: 12 }}
@@ -419,9 +422,9 @@ const UserDashboardPage: React.FC = () => {
                     <Link
                       key={program.id}
                       to={program.link}
-                      className="group flex items-center gap-4 rounded-2xl bg-kc-blue/5 p-4 text-foreground ring-1 ring-kc-blue/10 transition-all hover:-translate-y-0.5 hover:bg-white hover:text-foreground hover:shadow-card"
+                      className="group flex items-center gap-4 rounded-2xl border border-kc-blue/10 bg-white p-4 text-foreground transition-all hover:border-kc-blue/30 hover:bg-kc-blue/5 hover:text-foreground"
                     >
-                      <div className={`flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl text-white shadow-sm ${isGsp ? "bg-kc-blue" : "bg-kc-red"}`}>
+                      <div className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl bg-kc-blue/10 text-kc-blue">
                         <program.icon className="h-5 w-5" />
                       </div>
                       <div className="min-w-0 flex-1">
@@ -458,6 +461,15 @@ const UserDashboardPage: React.FC = () => {
             <motion.section
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, delay: 0.14 }}
+              className="rounded-2xl border border-kc-blue/15 bg-kc-blue/5 p-4 text-sm text-kc-blue"
+            >
+              Your dashboard gathers your KC portal activity in one place. Start with GSP if you are applying, or use the links below to continue reading and exploring KC programmes.
+            </motion.section>
+
+            <motion.section
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4, delay: 0.15 }}
               className={CARD_CLASS}
             >
@@ -466,7 +478,7 @@ const UserDashboardPage: React.FC = () => {
                   <TrendingUp className="h-5 w-5 text-kc-blue" />
                   <h2 className="font-heading text-base font-bold text-foreground">Activity This Week</h2>
                 </div>
-                <Badge className="rounded-full bg-kc-red text-white hover:bg-kc-red">
+                <Badge className="rounded-full bg-kc-blue/10 text-kc-blue hover:bg-kc-blue/10">
                   Real data
                 </Badge>
               </div>
@@ -554,7 +566,7 @@ const UserDashboardPage: React.FC = () => {
                   </div>
                   <div className="flex justify-between gap-3 text-xs">
                     <span className="text-muted-foreground">Email verified</span>
-                    <span className={`font-bold ${user?.isEmailVerified ? "text-kc-blue" : "text-kc-red"}`}>
+                    <span className="font-bold text-kc-blue">
                       {user?.isEmailVerified ? "Yes" : "Pending"}
                     </span>
                   </div>
