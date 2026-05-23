@@ -18,6 +18,7 @@ import {
 import { useGspAuth } from "@/contexts/GspAuthContext";
 import { useSeo } from "@/hooks/useSeo";
 import { useGoogleLogin, googleLogout } from "@react-oauth/google";
+import { optimisticPreloadAuthFlow, prefetchRoute } from "@/route-prefetch";
 
 type GoogleProfile = {
   sub: string;
@@ -47,6 +48,10 @@ const AuthPage: React.FC = () => {
 
   
   const { user, refreshUser, signIn } = useGspAuth();
+
+  React.useEffect(() => {
+    optimisticPreloadAuthFlow();
+  }, []);
 
   const handleGoogleAccessToken = React.useCallback(
     async (accessToken: string) => {
@@ -141,6 +146,7 @@ const AuthPage: React.FC = () => {
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    prefetchRoute(redirectUrl);
     setLoading(true);
     try {
       if (mode === "signup") {
@@ -305,10 +311,10 @@ const AuthPage: React.FC = () => {
             )}
             <div className="mt-4 text-sm flex flex-wrap gap-3 text-muted-foreground">
               {mode !== "login" && (
-                <button className="underline" onClick={() => setMode("login")} type="button">Sign in</button>
+                <button className="underline" onClick={() => { optimisticPreloadAuthFlow(); setMode("login"); }} type="button">Sign in</button>
               )}
               {mode !== "signup" && mode !== "verify" && (
-                <button className="underline" onClick={() => setMode("signup")} type="button">Create account</button>
+                <button className="underline" onClick={() => { optimisticPreloadAuthFlow(); setMode("signup"); }} type="button">Create account</button>
               )}
               {mode !== "forgot" && mode !== "reset" && mode !== "verify" && (
                 <button className="underline" onClick={() => setMode("forgot")} type="button">Forgot password</button>
