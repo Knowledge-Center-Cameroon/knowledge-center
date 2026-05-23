@@ -29,6 +29,7 @@ const AuthCallbackPage = React.lazy(() => import("./pages/AuthCallbackPage"));
 const GspApplicationPage = React.lazy(() => import("./pages/GspApplicationPage"));
 const GspDecisionPage = React.lazy(() => import("./pages/GspDecisionPage"));
 const GspAdminPage = React.lazy(() => import("./pages/GspAdminPage"));
+const GspAdminApplicationPage = React.lazy(() => import("./pages/GspAdminApplicationPage"));
 const NotFound = React.lazy(() => import("./pages/NotFound"));
 
 const queryClient = new QueryClient();
@@ -73,6 +74,7 @@ const AppShell: React.FC = () => (
                   <Route path="gsp/dashboard" element={<GspDashboardPage />} />
                   <Route path="gsp/decision" element={<GspDecisionPage />} />
                   <Route path="gsp/admin" element={<GspAdminPage />} />
+                  <Route path="gsp/admin/applications/:id" element={<GspAdminApplicationPage />} />
                   <Route path="privacy" element={<PrivacyPage />} />
                   <Route path="terms" element={<TermsPage />} />
                 </Route>
