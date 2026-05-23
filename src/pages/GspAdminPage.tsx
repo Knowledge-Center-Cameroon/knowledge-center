@@ -112,7 +112,7 @@ const GspAdminPage: React.FC = () => {
 
   const getStatusBadge = (status: string) => {
     switch (status.toLowerCase()) {
-      case 'submitted': return <Badge variant="blue" className="rounded-full">Submitted</Badge>;
+      case 'submitted': return <Badge className="rounded-full bg-kc-blue text-white hover:bg-kc-blue border-0">Submitted</Badge>;
       case 'pending': return <Badge variant="outline" className="rounded-full">Pending</Badge>;
       default: return <Badge variant="secondary" className="rounded-full">{status}</Badge>;
     }

@@ -30,7 +30,7 @@ const AuthPage: React.FC = () => {
   const { toast } = useToast();
   const [searchParams] = useSearchParams();
   const resetToken = searchParams.get("resetToken");
-  const redirectUrl = searchParams.get("redirect") || "/gsp/dashboard";
+  const redirectUrl = searchParams.get("redirect") || "/dashboard";
   
   const [mode, setMode] = React.useState<"login" | "signup" | "verify" | "forgot" | "reset">(resetToken ? "reset" : "login");
   const [loading, setLoading] = React.useState(false);
