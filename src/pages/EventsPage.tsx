@@ -1,8 +1,8 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { CalendarDays, MapPin, Clock, ChevronDown, Calendar, Info } from "lucide-react";
-import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 import StemBackground from "@/components/StemBackground";
 import { useParallax, Parallax } from "@/hooks/use-parallax";
 import { useSeo } from "@/hooks/useSeo";
@@ -148,6 +148,46 @@ const TimelineEvent: React.FC<{ event: Event; index: number; isUpcoming: boolean
   );
 };
 
+const EventsTimelineSkeleton = () => (
+  <div className="relative pb-16">
+    <div className="absolute left-3.5 md:left-1/2 top-0 bottom-0 w-1 bg-kc-blue/20 md:-translate-x-1/2" />
+    <div className="space-y-8">
+      {Array.from({ length: 4 }).map((_, index) => {
+        const isLeft = index % 2 === 0;
+        return (
+          <div
+            key={index}
+            className={`relative flex md:grid md:grid-cols-2 md:gap-12 ${
+              isLeft ? "" : "md:[&>*]:col-start-2"
+            }`}
+          >
+            <div className="absolute left-3.5 md:left-1/2 top-2 h-6 w-6 -translate-x-1/2 rounded-full border-4 border-white bg-kc-blue/20" />
+            <div className="ml-12 md:ml-0 w-full">
+              <div className="max-w-xs rounded-3xl border border-kc-blue/10 ring-1 ring-kc-blue/5 bg-white/95 p-5 shadow-sm">
+                <Skeleton className="mb-4 h-6 w-24 rounded-full" />
+                <Skeleton className="mb-4 h-5 w-4/5" />
+                <div className="space-y-2">
+                  <Skeleton className="h-3 w-36" />
+                  <Skeleton className="h-3 w-28" />
+                  <Skeleton className="h-3 w-40" />
+                </div>
+                <div className="mt-5 space-y-2">
+                  <Skeleton className="h-3 w-full" />
+                  <Skeleton className="h-3 w-3/4" />
+                </div>
+                <div className="mt-5 flex gap-2">
+                  <Skeleton className="h-8 w-20 rounded-full" />
+                  <Skeleton className="h-8 w-16 rounded-full" />
+                </div>
+              </div>
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  </div>
+);
+
 const EventsPage = () => {
   const [dynamicEvents, setDynamicEvents] = useState<KCEvent[]>([]);
   const [loading, setLoading] = useState(true);
@@ -226,6 +266,10 @@ const EventsPage = () => {
 
         {/* Timeline */}
         <div className="relative">
+          {loading ? (
+            <EventsTimelineSkeleton />
+          ) : (
+            <>
 
           {/* Mobile Timeline: Upcoming Events */}
           <div className="md:hidden">
@@ -362,6 +406,8 @@ const EventsPage = () => {
               </>
             )}
           </div>
+            </>
+          )}
         </div>
       </div>
     </motion.section>

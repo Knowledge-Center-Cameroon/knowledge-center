@@ -118,3 +118,17 @@ export function computeProgressPct(sectionState: Record<string, boolean>): numbe
   const done = GSP_PROGRESS_KEYS.filter((key) => Boolean(sectionState[key])).length;
   return Math.round((done / GSP_PROGRESS_KEYS.length) * 100);
 }
+
+export function getPersistedSectionState(source: any): Record<string, boolean> | null {
+  if (!source) return null;
+
+  const candidates = [
+    source.sectionState,
+    source.section_state,
+    source.data?.sectionState,
+    source.data?.section_state,
+  ];
+
+  const persisted = candidates.find((value) => value && typeof value === "object");
+  return persisted ? (persisted as Record<string, boolean>) : null;
+}
