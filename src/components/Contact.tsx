@@ -9,6 +9,8 @@ import { Send, MapPin, Phone, Mail } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import emailjs from '@emailjs/browser';
 
+const supportEmail = "info@kcedu.org";
+
 const Contact: React.FC = () => {
   const { toast } = useToast();
   const [formData, setFormData] = useState({
@@ -22,6 +24,20 @@ const Contact: React.FC = () => {
   const emailjsServiceId = import.meta.env.VITE_EMAILJS_SERVICE_ID;
   const emailjsTemplateId = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
   const emailjsPublicKey = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
+
+  const openMailClient = () => {
+    const params = new URLSearchParams({
+      subject: formData.subject ? `KC Contact: ${formData.subject}` : "KC Contact",
+      body: [
+        `Name: ${formData.name}`,
+        `Email: ${formData.email}`,
+        "",
+        formData.message,
+      ].join("\n"),
+    });
+
+    window.location.href = `mailto:${supportEmail}?${params.toString()}`;
+  };
 
   const handleInputChange = (field: keyof typeof formData, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -48,13 +64,12 @@ const Contact: React.FC = () => {
     setIsSubmitting(true);
 
     if (!emailjsServiceId || !emailjsTemplateId || !emailjsPublicKey) {
-      setTimeout(() => {
-        toast({
-          title: "Demo: Message not actually sent",
-          description: "Set VITE_EMAILJS_* keys in your .env to enable real submissions.",
-        });
-        setIsSubmitting(false);
-      }, 600);
+      toast({
+        title: "Email app opened",
+        description: "We could not use the web form yet, so your email app will open instead.",
+      });
+      openMailClient();
+      setIsSubmitting(false);
       return;
     }
 
@@ -63,10 +78,13 @@ const Contact: React.FC = () => {
         emailjsServiceId,
         emailjsTemplateId,
         {
-          name: formData.name,
-          email: formData.email,
+          to_email: supportEmail,
+          to_name: "Knowledge Center",
+          from_name: formData.name,
+          from_email: formData.email,
           subject: formData.subject,
           message: formData.message,
+          reply_to: formData.email,
         },
         emailjsPublicKey
       );
@@ -84,9 +102,10 @@ const Contact: React.FC = () => {
     } catch (error: any) {
       toast({
         title: "Failed to send message",
-        description: error.text || error.message || "Please check your connection and try again.",
-        variant: "destructive" as any,
+        description: error.text || error.message || "Opening your email app so you can send the message manually.",
+        variant: "destructive",
       });
+      openMailClient();
     } finally {
       setIsSubmitting(false);
     }
@@ -106,7 +125,7 @@ const Contact: React.FC = () => {
     {
       icon: Mail,
       title: "Email Us",
-      details: ["kcstemhub@gmail.com"],
+      details: [supportEmail],
     },
   ];
 
