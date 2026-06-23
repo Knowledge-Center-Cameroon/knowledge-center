@@ -46,7 +46,6 @@ const Toast = React.forwardRef<
   return (
     <ToastPrimitives.Root
       ref={ref}
-      swipeDirection="right"
       className={cn(toastVariants({ variant }), className)}
       {...props}
     />

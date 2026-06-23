@@ -36,7 +36,7 @@ const Contact: React.FC = () => {
       ].join("\n"),
     });
 
-    window.location.href = `mailto:${supportEmail}?${params.toString()}`;
+    return window.location.assign(`mailto:${supportEmail}?${params.toString()}`);
   };
 
   const handleInputChange = (field: keyof typeof formData, value: string) => {
@@ -65,8 +65,8 @@ const Contact: React.FC = () => {
 
     if (!emailjsServiceId || !emailjsTemplateId || !emailjsPublicKey) {
       toast({
-        title: "Email app opened",
-        description: "We could not use the web form yet, so your email app will open instead.",
+        title: "Open your email app",
+        description: "We could not send from the site yet, so we will hand the message to your email client.",
       });
       openMailClient();
       setIsSubmitting(false);
@@ -99,11 +99,10 @@ const Contact: React.FC = () => {
       } else {
         throw new Error(res.text || "Unknown error");
       }
-    } catch (error: any) {
+    } catch {
       toast({
-        title: "Failed to send message",
-        description: error.text || error.message || "Opening your email app so you can send the message manually.",
-        variant: "destructive",
+        title: "Open your email app",
+        description: "The form could not send directly, so we will open your email client instead.",
       });
       openMailClient();
     } finally {
