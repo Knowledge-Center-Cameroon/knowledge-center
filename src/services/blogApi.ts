@@ -1,7 +1,9 @@
 // API service for blog interactions
 import { getToken } from "./gspApi";
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://kcbackend-production-7ae5.up.railway.app';
+const API_BASE_URL =
+  import.meta.env.VITE_API_BASE_URL ||
+  "https://kcbackend-production-7ae5.up.railway.app";
 const LOCAL_LIKES_KEY = "kc_blog_likes_v2";
 const LOCAL_COMMENTS_KEY = "kc_blog_comments_v2";
 
@@ -62,7 +64,11 @@ function authHeaders() {
 
 function normalizeComment(raw: any, postId: string): BlogComment {
   return {
-    _id: String(raw?._id || raw?.id || `comment_${Date.now()}_${Math.random().toString(36).slice(2)}`),
+    _id: String(
+      raw?._id ||
+        raw?.id ||
+        `comment_${Date.now()}_${Math.random().toString(36).slice(2)}`,
+    ),
     postId: String(raw?.postId || raw?.post_id || raw?.blogId || postId),
     userId: String(raw?.userId || raw?.user_id || raw?.authorId || ""),
     author: String(raw?.author || raw?.authorName || raw?.name || "Guest"),
@@ -72,18 +78,30 @@ function normalizeComment(raw: any, postId: string): BlogComment {
     likes: Number(raw?.likes || raw?.likeCount || 0),
     created_at: raw?.created_at || raw?.createdAt || new Date().toISOString(),
     updated_at: raw?.updated_at || raw?.updatedAt,
-    replies: Array.isArray(raw?.replies) ? raw.replies.map((reply: any) => normalizeComment(reply, postId)) : undefined,
+    replies: Array.isArray(raw?.replies)
+      ? raw.replies.map((reply: any) => normalizeComment(reply, postId))
+      : undefined,
     replyCount: Number(raw?.replyCount || raw?.reply_count || 0),
   };
 }
 
-function localLikeStatus(postId: string, userId?: string): { likeCount: number; isLiked: boolean } {
+function localLikeStatus(
+  postId: string,
+  userId?: string,
+): { likeCount: number; isLiked: boolean } {
   const likes = readJson<Record<string, string[]>>(LOCAL_LIKES_KEY, {});
   const users = likes[postId] || [];
-  return { likeCount: users.length, isLiked: Boolean(userId && users.includes(userId)) };
+  return {
+    likeCount: users.length,
+    isLiked: Boolean(userId && users.includes(userId)),
+  };
 }
 
-function localToggleLike(postId: string, userId: string, isCurrentlyLiked: boolean): BlogLikeResponse {
+function localToggleLike(
+  postId: string,
+  userId: string,
+  isCurrentlyLiked: boolean,
+): BlogLikeResponse {
   const likes = readJson<Record<string, string[]>>(LOCAL_LIKES_KEY, {});
   const users = new Set(likes[postId] || []);
   if (isCurrentlyLiked) users.delete(userId);
@@ -93,9 +111,17 @@ function localToggleLike(postId: string, userId: string, isCurrentlyLiked: boole
   return { liked: users.has(userId), likeCount: users.size };
 }
 
-function localComments(postId: string, page: number, limit: number, userId?: string): BlogCommentsResponse {
+function localComments(
+  postId: string,
+  page: number,
+  limit: number,
+  userId?: string,
+): BlogCommentsResponse {
   const all = readJson<Record<string, BlogComment[]>>(LOCAL_COMMENTS_KEY, {});
-  const visible = (all[postId] || []).filter((comment) => comment.status === "approved" || (userId && comment.userId === userId));
+  const visible = (all[postId] || []).filter(
+    (comment) =>
+      comment.status === "approved" || (userId && comment.userId === userId),
+  );
   return {
     comments: visible.slice((page - 1) * limit, page * limit),
     pagination: {
@@ -111,26 +137,28 @@ function localComments(postId: string, page: number, limit: number, userId?: str
 export const toggleBlogLike = async (
   postId: string,
   userId: string,
-  isCurrentlyLiked: boolean
+  isCurrentlyLiked: boolean,
 ): Promise<BlogLikeResponse> => {
   try {
-    const endpoint = isCurrentlyLiked ? 'DELETE' : 'POST';
+    const endpoint = isCurrentlyLiked ? "DELETE" : "POST";
     const response = await fetch(`${API_BASE_URL}/api/blog/${postId}/like`, {
       method: endpoint,
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({ userId }),
     });
 
     if (!response.ok) {
       const errorData = await response.json();
-      throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
+      throw new Error(
+        errorData.error || `HTTP error! status: ${response.status}`,
+      );
     }
 
     return await response.json();
   } catch (error) {
-    console.error('Error toggling blog like:', error);
+    console.error("Error toggling blog like:", error);
     return localToggleLike(postId, userId, isCurrentlyLiked);
   }
 };
@@ -138,11 +166,13 @@ export const toggleBlogLike = async (
 // Get like status and count for a blog post
 export const getBlogLikeStatus = async (
   postId: string,
-  userId?: string
+  userId?: string,
 ): Promise<{ likeCount: number; isLiked: boolean }> => {
   try {
-    const params = userId ? `?userId=${userId}` : '';
-    const response = await fetch(`${API_BASE_URL}/api/blog/${postId}/likes${params}`);
+    const params = userId ? `?userId=${userId}` : "";
+    const response = await fetch(
+      `${API_BASE_URL}/api/blog/${postId}/likes${params}`,
+    );
 
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
@@ -150,7 +180,7 @@ export const getBlogLikeStatus = async (
 
     return await response.json();
   } catch (error) {
-    console.error('Error getting blog like status:', error);
+    console.error("Error getting blog like status:", error);
     return localLikeStatus(postId, userId);
   }
 };
@@ -160,12 +190,12 @@ export const getBlogComments = async (
   postId: string,
   page: number = 1,
   limit: number = 10,
-  userId?: string
+  userId?: string,
 ): Promise<BlogCommentsResponse> => {
   try {
     const userParam = userId ? `&userId=${encodeURIComponent(userId)}` : "";
     const response = await fetch(
-      `${API_BASE_URL}/api/blog/${postId}/comments?page=${page}&limit=${limit}${userParam}`
+      `${API_BASE_URL}/api/blog/${postId}/comments?page=${page}&limit=${limit}${userParam}`,
     );
 
     if (!response.ok) {
@@ -173,8 +203,12 @@ export const getBlogComments = async (
     }
 
     const data = await response.json();
-    const rawComments = Array.isArray(data) ? data : (data.comments || data.results || []);
-    const comments = rawComments.map((comment: any) => normalizeComment(comment, postId));
+    const rawComments = Array.isArray(data)
+      ? data
+      : data.comments || data.results || [];
+    const comments = rawComments.map((comment: any) =>
+      normalizeComment(comment, postId),
+    );
     const total = data.pagination?.total ?? data.count ?? comments.length;
     return {
       comments,
@@ -186,7 +220,7 @@ export const getBlogComments = async (
       },
     };
   } catch (error) {
-    console.error('Error getting blog comments:', error);
+    console.error("Error getting blog comments:", error);
     return localComments(postId, page, limit, userId);
   }
 };
@@ -197,31 +231,36 @@ export const addBlogComment = async (
   userId: string,
   author: string,
   content: string,
-  parentId?: string
+  parentId?: string,
 ): Promise<BlogComment> => {
   try {
-    const response = await fetch(`${API_BASE_URL}/api/blog/${postId}/comments`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
+    const response = await fetch(
+      `${API_BASE_URL}/api/blog/${postId}/comments`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          userId,
+          author,
+          content,
+          parentId,
+          status: "pending",
+        }),
       },
-      body: JSON.stringify({
-        userId,
-        author,
-        content,
-        parentId,
-        status: "pending"
-      }),
-    });
+    );
 
     if (!response.ok) {
       const errorData = await response.json();
-      throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
+      throw new Error(
+        errorData.error || `HTTP error! status: ${response.status}`,
+      );
     }
 
     return normalizeComment(await response.json(), postId);
   } catch (error) {
-    console.error('Error adding blog comment:', error);
+    console.error("Error adding blog comment:", error);
     const all = readJson<Record<string, BlogComment[]>>(LOCAL_COMMENTS_KEY, {});
     const comment: BlogComment = {
       _id: `local_${Date.now()}_${Math.random().toString(36).slice(2)}`,
@@ -244,33 +283,45 @@ export const addBlogComment = async (
 export const updateBlogComment = async (
   commentId: string,
   userId: string,
-  content: string
+  content: string,
 ): Promise<BlogComment> => {
   try {
-    const response = await fetch(`${API_BASE_URL}/api/blog/comments/${commentId}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
+    const response = await fetch(
+      `${API_BASE_URL}/api/blog/comments/${commentId}`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          userId,
+          content,
+        }),
       },
-      body: JSON.stringify({
-        userId,
-        content
-      }),
-    });
+    );
 
     if (!response.ok) {
       const errorData = await response.json();
-      throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
+      throw new Error(
+        errorData.error || `HTTP error! status: ${response.status}`,
+      );
     }
 
     return await response.json();
   } catch (error) {
-    console.error('Error updating blog comment:', error);
+    console.error("Error updating blog comment:", error);
     const all = readJson<Record<string, BlogComment[]>>(LOCAL_COMMENTS_KEY, {});
     for (const postId of Object.keys(all)) {
-      const idx = all[postId].findIndex((comment) => comment._id === commentId && comment.userId === userId);
+      const idx = all[postId].findIndex(
+        (comment) => comment._id === commentId && comment.userId === userId,
+      );
       if (idx !== -1) {
-        all[postId][idx] = { ...all[postId][idx], content, status: "pending", updated_at: new Date().toISOString() };
+        all[postId][idx] = {
+          ...all[postId][idx],
+          content,
+          status: "pending",
+          updated_at: new Date().toISOString(),
+        };
         writeJson(LOCAL_COMMENTS_KEY, all);
         return all[postId][idx];
       }
@@ -282,28 +333,35 @@ export const updateBlogComment = async (
 // Delete a comment
 export const deleteBlogComment = async (
   commentId: string,
-  userId: string
+  userId: string,
 ): Promise<{ deleted: boolean }> => {
   try {
-    const response = await fetch(`${API_BASE_URL}/api/blog/comments/${commentId}`, {
-      method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json',
+    const response = await fetch(
+      `${API_BASE_URL}/api/blog/comments/${commentId}`,
+      {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ userId }),
       },
-      body: JSON.stringify({ userId }),
-    });
+    );
 
     if (!response.ok) {
       const errorData = await response.json();
-      throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
+      throw new Error(
+        errorData.error || `HTTP error! status: ${response.status}`,
+      );
     }
 
     return await response.json();
   } catch (error) {
-    console.error('Error deleting blog comment:', error);
+    console.error("Error deleting blog comment:", error);
     const all = readJson<Record<string, BlogComment[]>>(LOCAL_COMMENTS_KEY, {});
     for (const postId of Object.keys(all)) {
-      const next = all[postId].filter((comment) => !(comment._id === commentId && comment.userId === userId));
+      const next = all[postId].filter(
+        (comment) => !(comment._id === commentId && comment.userId === userId),
+      );
       if (next.length !== all[postId].length) {
         all[postId] = next;
         writeJson(LOCAL_COMMENTS_KEY, all);
@@ -314,22 +372,33 @@ export const deleteBlogComment = async (
   }
 };
 
-export const adminGetBlogComments = async (status: "pending" | "approved" | "rejected" | "all" = "pending"): Promise<{ comments: BlogComment[] }> => {
+export const adminGetBlogComments = async (
+  status: "pending" | "approved" | "rejected" | "all" = "pending",
+): Promise<{ comments: BlogComment[] }> => {
   try {
-    const response = await fetch(`${API_BASE_URL}/api/admin/blog/comments?status=${status}`, {
-      headers: {
-        "Content-Type": "application/json",
-        ...authHeaders(),
+    const response = await fetch(
+      `${API_BASE_URL}/api/admin/blog/comments?status=${status}`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          ...authHeaders(),
+        },
       },
-    });
+    );
 
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
 
     const data = await response.json();
-    const rawComments = Array.isArray(data) ? data : (data.comments || data.results || []);
-    return { comments: rawComments.map((comment: any) => normalizeComment(comment, comment?.postId || comment?.post_id || "")) };
+    const rawComments = Array.isArray(data)
+      ? data
+      : data.comments || data.results || [];
+    return {
+      comments: rawComments.map((comment: any) =>
+        normalizeComment(comment, comment?.postId || comment?.post_id || ""),
+      ),
+    };
   } catch (error) {
     console.error("Error loading admin blog comments:", error);
     const all = readJson<Record<string, BlogComment[]>>(LOCAL_COMMENTS_KEY, {});
@@ -342,32 +411,46 @@ export const adminGetBlogComments = async (status: "pending" | "approved" | "rej
 
 export const adminModerateBlogComment = async (
   commentId: string,
-  status: "approved" | "rejected"
+  status: "approved" | "rejected",
 ): Promise<BlogComment> => {
   try {
-    const response = await fetch(`${API_BASE_URL}/api/admin/blog/comments/${commentId}`, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-        ...authHeaders(),
+    const response = await fetch(
+      `${API_BASE_URL}/api/admin/blog/comments/${commentId}`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          ...authHeaders(),
+        },
+        body: JSON.stringify({ status, approved: status === "approved" }),
       },
-      body: JSON.stringify({ status, approved: status === "approved" }),
-    });
+    );
 
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
-      throw new Error(errorData.error || errorData.message || `HTTP error! status: ${response.status}`);
+      throw new Error(
+        errorData.error ||
+          errorData.message ||
+          `HTTP error! status: ${response.status}`,
+      );
     }
 
     const data = await response.json();
-    return normalizeComment(data.comment || data, data.comment?.postId || data.postId || "");
+    return normalizeComment(
+      data.comment || data,
+      data.comment?.postId || data.postId || "",
+    );
   } catch (error) {
     console.error("Error moderating blog comment:", error);
     const all = readJson<Record<string, BlogComment[]>>(LOCAL_COMMENTS_KEY, {});
     for (const postId of Object.keys(all)) {
       const idx = all[postId].findIndex((comment) => comment._id === commentId);
       if (idx !== -1) {
-        all[postId][idx] = { ...all[postId][idx], status, updated_at: new Date().toISOString() };
+        all[postId][idx] = {
+          ...all[postId][idx],
+          status,
+          updated_at: new Date().toISOString(),
+        };
         writeJson(LOCAL_COMMENTS_KEY, all);
         return all[postId][idx];
       }
@@ -382,11 +465,11 @@ export const adminModerateBlogComment = async (
 
 export interface AdminBlogPost {
   _id: string;
-  id: string;           // slug used in routing
+  id: string; // slug used in routing
   title: string;
   excerpt: string;
-  content: string;      // HTML from rich text editor
-  date: string;         // ISO string
+  content: string; // HTML from rich text editor
+  date: string; // ISO string
   author: string;
   cover?: string;
   dp?: string;
@@ -396,13 +479,18 @@ export interface AdminBlogPost {
   updatedAt?: string;
 }
 
-export type CreateBlogPostPayload = Omit<AdminBlogPost, "_id" | "createdAt" | "updatedAt">;
+export type CreateBlogPostPayload = Omit<
+  AdminBlogPost,
+  "_id" | "createdAt" | "updatedAt"
+>;
 
 const LOCAL_BLOG_POSTS_KEY = "kc_admin_blog_posts_v1";
 
 function readLocalBlogPosts(): AdminBlogPost[] {
   try {
-    return JSON.parse(localStorage.getItem(LOCAL_BLOG_POSTS_KEY) || "[]") as AdminBlogPost[];
+    return JSON.parse(
+      localStorage.getItem(LOCAL_BLOG_POSTS_KEY) || "[]",
+    ) as AdminBlogPost[];
   } catch {
     return [];
   }
@@ -443,7 +531,9 @@ export async function getPublishedBlogPosts(): Promise<AdminBlogPost[]> {
 }
 
 /** Fetch a single blog post by slug */
-export async function getBlogPostBySlug(slug: string): Promise<AdminBlogPost | null> {
+export async function getBlogPostBySlug(
+  slug: string,
+): Promise<AdminBlogPost | null> {
   try {
     const resp = await fetch(`${API_BASE_URL}/api/blog-posts/${slug}`);
     if (!resp.ok) throw new Error("Failed to load blog post");
@@ -451,12 +541,14 @@ export async function getBlogPostBySlug(slug: string): Promise<AdminBlogPost | n
     return data;
   } catch (error) {
     console.error("getBlogPostBySlug error:", error);
-    return readLocalBlogPosts().find(p => p.id === slug) || null;
+    return readLocalBlogPosts().find((p) => p.id === slug) || null;
   }
 }
 
 /** Admin: Create a blog post */
-export async function adminCreateBlogPost(payload: CreateBlogPostPayload): Promise<AdminBlogPost> {
+export async function adminCreateBlogPost(
+  payload: CreateBlogPostPayload,
+): Promise<AdminBlogPost> {
   try {
     const resp = await fetch(`${API_BASE_URL}/api/admin/blog/posts`, {
       method: "POST",
@@ -465,7 +557,9 @@ export async function adminCreateBlogPost(payload: CreateBlogPostPayload): Promi
     });
     if (!resp.ok) {
       const errData = await resp.json().catch(() => ({}));
-      throw new Error(errData.error || errData.message || "Create blog post failed");
+      throw new Error(
+        errData.error || errData.message || "Create blog post failed",
+      );
     }
     const data = await resp.json();
     const post = data.post || data;
@@ -490,7 +584,7 @@ export async function adminCreateBlogPost(payload: CreateBlogPostPayload): Promi
 /** Admin: Update a blog post */
 export async function adminUpdateBlogPost(
   postId: string,
-  payload: Partial<CreateBlogPostPayload>
+  payload: Partial<CreateBlogPostPayload>,
 ): Promise<AdminBlogPost> {
   try {
     const resp = await fetch(`${API_BASE_URL}/api/admin/blog/posts/${postId}`, {
@@ -500,7 +594,9 @@ export async function adminUpdateBlogPost(
     });
     if (!resp.ok) {
       const errData = await resp.json().catch(() => ({}));
-      throw new Error(errData.error || errData.message || "Update blog post failed");
+      throw new Error(
+        errData.error || errData.message || "Update blog post failed",
+      );
     }
     const data = await resp.json();
     return data.post || data;
@@ -509,7 +605,11 @@ export async function adminUpdateBlogPost(
     const local = readLocalBlogPosts();
     const idx = local.findIndex((p) => p._id === postId);
     if (idx !== -1) {
-      local[idx] = { ...local[idx], ...payload, updatedAt: new Date().toISOString() };
+      local[idx] = {
+        ...local[idx],
+        ...payload,
+        updatedAt: new Date().toISOString(),
+      };
       writeLocalBlogPosts(local);
       return local[idx];
     }
@@ -518,7 +618,9 @@ export async function adminUpdateBlogPost(
 }
 
 /** Admin: Delete a blog post */
-export async function adminDeleteBlogPost(postId: string): Promise<{ deleted: boolean }> {
+export async function adminDeleteBlogPost(
+  postId: string,
+): Promise<{ deleted: boolean }> {
   try {
     const resp = await fetch(`${API_BASE_URL}/api/admin/blog/posts/${postId}`, {
       method: "DELETE",

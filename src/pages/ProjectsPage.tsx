@@ -152,7 +152,7 @@ const ProjectsPage: React.FC = () => {
                 </div>
               </div>
               <Button asChild variant="blue" className="rounded-full gap-2">
-                <Link to="/gsp/dashboard">
+                <Link to="/gsp/application">
                   Apply now
                   <ArrowRight className="h-4 w-4" />
                 </Link>
