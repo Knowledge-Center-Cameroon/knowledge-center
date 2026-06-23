@@ -13,6 +13,7 @@ type AuthContextValue = {
   user: GspUser | null;
   loading: boolean;
   refreshUser: () => Promise<void>;
+  setAuthenticatedUser: (user: GspUser | null) => void;
   signIn: (email: string, password: string) => Promise<void>;
   signOut: () => void;
 };
@@ -59,7 +60,7 @@ export const GspAuthProvider: React.FC<{ children: React.ReactNode }> = ({ child
   };
 
   return (
-    <GspAuthContext.Provider value={{ user, loading, refreshUser, signIn, signOut }}>
+    <GspAuthContext.Provider value={{ user, loading, refreshUser, setAuthenticatedUser: setUser, signIn, signOut }}>
       {children}
     </GspAuthContext.Provider>
   );

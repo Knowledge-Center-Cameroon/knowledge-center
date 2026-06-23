@@ -175,11 +175,11 @@ const Footer = () => {
                   <span>Molyko, Buea<br />Southwest Region, Cameroon</span>
                 </div>
 
-                <a href="mailto:kcstemhub@gmail.com" className="flex gap-4 hover:text-kc-blue">
+                <a href="mailto:info@kcedu.org" className="flex gap-4 hover:text-kc-blue">
                   <div className="bg-kc-blue/10 p-2 rounded-lg">
                     <Mail className="h-5 w-5 text-kc-blue" />
                   </div>
-                  kcstemhub@gmail.com
+                  info@kcedu.org
                 </a>
 
                 <a href="tel:+237680789894" className="flex gap-4 hover:text-kc-blue">

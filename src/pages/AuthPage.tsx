@@ -26,12 +26,17 @@ type GoogleProfile = {
   email?: string;
 };
 
+const getSafeRedirect = (redirect: string | null) => {
+  if (!redirect) return "/";
+  return redirect.startsWith("/") && !redirect.startsWith("//") ? redirect : "/";
+};
+
 const AuthPage: React.FC = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [searchParams] = useSearchParams();
   const resetToken = searchParams.get("resetToken");
-  const redirectUrl = searchParams.get("redirect") || "/dashboard";
+  const redirectUrl = getSafeRedirect(searchParams.get("redirect"));
   
   const [mode, setMode] = React.useState<"login" | "signup" | "verify" | "forgot" | "reset">(resetToken ? "reset" : "login");
   const [loading, setLoading] = React.useState(false);
@@ -47,7 +52,7 @@ const AuthPage: React.FC = () => {
   });
 
   
-  const { user, refreshUser, signIn } = useGspAuth();
+  const { user, refreshUser, setAuthenticatedUser, signIn } = useGspAuth();
 
   React.useEffect(() => {
     optimisticPreloadAuthFlow();
@@ -76,8 +81,12 @@ const AuthPage: React.FC = () => {
         }
 
         saveAuthToken(token);
-        await refreshUser();
-        navigate(redirectUrl);
+        if (data.user) {
+          setAuthenticatedUser(data.user);
+        } else {
+          await refreshUser();
+        }
+        navigate(redirectUrl, { replace: true });
       } catch (error: unknown) {
         googleLogout();
         const message =
@@ -93,7 +102,7 @@ const AuthPage: React.FC = () => {
         setGoogleLoading(false);
       }
     },
-    [navigate, redirectUrl, refreshUser, toast],
+    [navigate, redirectUrl, refreshUser, setAuthenticatedUser, toast],
   );
 
   const googleLogin = useGoogleLogin({
@@ -136,7 +145,7 @@ const AuthPage: React.FC = () => {
           description: "Please wait while we set things up. This may take a moment.",
         });
       }, 3000);
-      navigate(redirectUrl);
+      navigate(redirectUrl, { replace: true });
       return () => clearTimeout(slowTimer);
     }
   }, [user, navigate, redirectUrl, toast]);
@@ -158,8 +167,12 @@ const AuthPage: React.FC = () => {
         });
         if (data.token) {
           saveAuthToken(data.token);
-          await refreshUser();
-          navigate(redirectUrl);
+          if (data.user) {
+            setAuthenticatedUser(data.user);
+          } else {
+            await refreshUser();
+          }
+          navigate(redirectUrl, { replace: true });
           return;
         }
         toast({
@@ -174,11 +187,15 @@ const AuthPage: React.FC = () => {
           code: form.verificationCode,
         });
         saveAuthToken(data.token);
-        await refreshUser();
-        navigate(redirectUrl);
+        if (data.user) {
+          setAuthenticatedUser(data.user);
+        } else {
+          await refreshUser();
+        }
+        navigate(redirectUrl, { replace: true });
       } else if (mode === "login") {
         await signIn(form.email, form.password);
-        navigate(redirectUrl);
+        navigate(redirectUrl, { replace: true });
       } else if (mode === "forgot") {
         await forgotPassword(form.email);
         toast({ title: "Reset link sent", description: "If your account exists, a password reset link has been sent." });
