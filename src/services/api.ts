@@ -21,7 +21,10 @@ export async function subscribeEmail(email: string): Promise<void> {
   try {
     const resp = await fetch(`${BASE_URL}/api/newsletter`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        'ngrok-skip-browser-warning': '69420',
+      },
       body: JSON.stringify({ email }),
     });
     if (!resp.ok) throw new Error('subscribe failed');
@@ -39,7 +42,11 @@ const TL_KEY = "kc_timeline";
 
 export async function getTimeline(): Promise<TimelineEvent[]> {
   try {
-    const resp = await fetch(`${BASE_URL}/api/timeline`);
+    const resp = await fetch(`${BASE_URL}/api/timeline`, {
+      headers: {
+        'ngrok-skip-browser-warning': '69420',
+      },
+    });
     if (!resp.ok) throw new Error('timeline failed');
     return await resp.json();
   } catch {
@@ -75,7 +82,10 @@ export async function addTimelineEvent(event: Omit<TimelineEvent, "id">): Promis
   try {
     const resp = await fetch(`${BASE_URL}/api/timeline`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        'ngrok-skip-browser-warning': '69420',
+      },
       body: JSON.stringify(event),
     });
     if (!resp.ok) throw new Error('add event failed');
@@ -124,7 +134,10 @@ export async function initiateStemPayment(
   try {
     const resp = await fetch(`${BASE_URL}/api/stem/register`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        'ngrok-skip-browser-warning': '69420',
+      },
       body: JSON.stringify({ payload, amount }),
     });
     if (!resp.ok) throw new Error('initiate failed');

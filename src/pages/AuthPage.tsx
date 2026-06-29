@@ -51,7 +51,6 @@ const AuthPage: React.FC = () => {
     verificationCode: "",
   });
 
-  
   const { user, refreshUser, setAuthenticatedUser, signIn } = useGspAuth();
 
   React.useEffect(() => {
@@ -62,18 +61,9 @@ const AuthPage: React.FC = () => {
     async (accessToken: string) => {
       setGoogleLoading(true);
       try {
-        const profileRes = await fetch("https://www.googleapis.com/oauth2/v3/userinfo", {
-          headers: { Authorization: `Bearer ${accessToken}` },
-        });
-        const profile = (await profileRes.json().catch(() => ({}))) as GoogleProfile;
-        if (!profileRes.ok || !profile.sub || !profile.email) {
-          throw new Error("Could not read your Google profile.");
-        }
-
+        // Send the access_token to the backend for verification
         const data = await registerGsp({
-          google_id: profile.sub,
-          username: profile.name || profile.email,
-          email: profile.email,
+          access_token: accessToken,
         });
         if (!data?.success || !persistAuthTokens(data)) {
           throw new Error("Unable to register with Google account.");
@@ -126,13 +116,10 @@ const AuthPage: React.FC = () => {
     },
   });
 
-  
-
   useSeo({
     title: "GSP Portal | Knowledge Center",
     description: "Sign in or create an account for the Knowledge Center Global Scholars Programme portal.",
   });
-
 
   React.useEffect(() => {
     if (user) {
@@ -147,9 +134,6 @@ const AuthPage: React.FC = () => {
       return () => clearTimeout(slowTimer);
     }
   }, [user, navigate, redirectUrl, toast]);
-
-
-
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -172,9 +156,13 @@ const AuthPage: React.FC = () => {
           navigate(redirectUrl, { replace: true });
           return;
         }
+        let desc = data.message || "Enter the code from your email to finish creating your account.";
+        if ((data as any).debugVerificationCode) {
+          desc += ` (Debug Code: ${(data as any).debugVerificationCode})`;
+        }
         toast({
           title: "Verification code sent",
-          description: data.message || "Enter the code from your email to finish creating your account.",
+          description: desc,
         });
         setForm((prev) => ({ ...prev, password: "", confirmPassword: "", verificationCode: "" }));
         setMode("verify");
@@ -218,10 +206,14 @@ const AuthPage: React.FC = () => {
   const onResendCode = async () => {
     setResendingCode(true);
     try {
-      await resendVerificationCode(form.email);
+      const data = await resendVerificationCode(form.email);
+      let desc = "A new verification code has been sent to your email.";
+      if ((data as any).debugVerificationCode) {
+        desc += ` (Debug Code: ${(data as any).debugVerificationCode})`;
+      }
       toast({
         title: "Code resent",
-        description: "A new verification code has been sent to your email.",
+        description: desc,
       });
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : "Please try again.";
@@ -292,8 +284,6 @@ const AuthPage: React.FC = () => {
                   <Label htmlFor="verificationCode">Verification code</Label>
                   <Input
                     id="verificationCode"
-                    // inputMode="numeric"
-                    // maxLength={6}
                     value={form.verificationCode}
                     onChange={(e) => setForm((p) => ({ ...p, verificationCode: e.target.value }))}
                     required
@@ -325,10 +315,10 @@ const AuthPage: React.FC = () => {
             )}
             <div className="mt-4 text-sm flex flex-wrap gap-3 text-muted-foreground">
               {mode !== "login" && (
-                <button className="underline" onClick={() => { optimisticPreloadAuthFlow(); setMode("login"); }} type="button">Sign in</button>
+                <button className="underline" onClick={() => { setMode("login"); }} type="button">Sign in</button>
               )}
               {mode !== "signup" && mode !== "verify" && (
-                <button className="underline" onClick={() => { optimisticPreloadAuthFlow(); setMode("signup"); }} type="button">Create account</button>
+                <button className="underline" onClick={() => { setMode("signup"); }} type="button">Create account</button>
               )}
               {mode !== "forgot" && mode !== "reset" && mode !== "verify" && (
                 <button className="underline" onClick={() => setMode("forgot")} type="button">Forgot password</button>
