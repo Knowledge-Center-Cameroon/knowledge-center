@@ -3,7 +3,7 @@ import { getToken } from "./gspApi";
 
 const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL ||
-  "https://kcbackend-production-7ae5.up.railway.app";
+  "https://forestial-afocal-rex.ngrok-free.dev";
 const LOCAL_LIKES_KEY = "kc_blog_likes_v2";
 const LOCAL_COMMENTS_KEY = "kc_blog_comments_v2";
 

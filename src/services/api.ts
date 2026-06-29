@@ -12,7 +12,9 @@ export type TimelineEvent = {
 };
 
 const delay = (ms: number) => new Promise((res) => setTimeout(res, ms));
-const BASE_URL = (import.meta as any).env?.VITE_API_BASE_URL || "http://localhost:8080";
+const BASE_URL =
+  (import.meta as any).env?.VITE_API_BASE_URL ||
+  "https://forestial-afocal-rex.ngrok-free.dev";
 
 // Newsletter subscription stub
 export async function subscribeEmail(email: string): Promise<void> {

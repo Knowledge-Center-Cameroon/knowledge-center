@@ -9,10 +9,10 @@ import { useToast } from "@/components/ui/use-toast";
 import {
   createPortalAccount,
   forgotPassword,
+  persistAuthTokens,
   registerGsp,
   resendVerificationCode,
   resetPassword,
-  saveAuthToken,
   verifyEmailCode,
 } from "@/services/gspApi";
 import { useGspAuth } from "@/contexts/GspAuthContext";
@@ -75,12 +75,10 @@ const AuthPage: React.FC = () => {
           username: profile.name || profile.email,
           email: profile.email,
         });
-        const token = data?.access || data?.token;
-        if (!data?.success || !token) {
+        if (!data?.success || !persistAuthTokens(data)) {
           throw new Error("Unable to register with Google account.");
         }
 
-        saveAuthToken(token);
         if (data.user) {
           setAuthenticatedUser(data.user);
         } else {
@@ -165,8 +163,7 @@ const AuthPage: React.FC = () => {
           email: form.email,
           password: form.password,
         });
-        if (data.token) {
-          saveAuthToken(data.token);
+        if (persistAuthTokens(data)) {
           if (data.user) {
             setAuthenticatedUser(data.user);
           } else {
@@ -186,7 +183,7 @@ const AuthPage: React.FC = () => {
           email: form.email,
           code: form.verificationCode,
         });
-        saveAuthToken(data.token);
+        persistAuthTokens(data);
         if (data.user) {
           setAuthenticatedUser(data.user);
         } else {

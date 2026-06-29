@@ -5,9 +5,8 @@ import {
   getCurrentUser,
   hasAuthToken,
   loginGsp,
-  saveAuthToken,
+  persistAuthTokens,
 } from "@/services/gspApi";
-import { getToken } from "@/services/gspApi";
 
 type AuthContextValue = {
   user: GspUser | null;
@@ -50,7 +49,7 @@ export const GspAuthProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
   const signIn = async (email: string, password: string) => {
     const data = await loginGsp({ email, password });
-    saveAuthToken(data.token);
+    persistAuthTokens(data);
     setUser(data.user);
   };
 

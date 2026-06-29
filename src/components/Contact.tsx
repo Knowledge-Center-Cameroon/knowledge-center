@@ -86,7 +86,9 @@ const Contact: React.FC = () => {
           message: formData.message,
           reply_to: formData.email,
         },
-        emailjsPublicKey
+        {
+          publicKey: emailjsPublicKey,
+        }
       );
 
       if (res.status === 200) {
@@ -99,17 +101,30 @@ const Contact: React.FC = () => {
       } else {
         throw new Error(res.text || "Unknown error");
       }
-    } catch {
-      toast({
-        title: "Open your email app",
-        description: "The form could not send directly, so we will open your email client instead.",
-      });
+    } catch (err: any) {
+      console.error("[KC] EmailJS send failed:", err);
+      
+      // Copy email to clipboard as a helpful fallback for users without a local mail client
+      try {
+        await navigator.clipboard.writeText(supportEmail);
+        toast({
+          title: "Form submission failed",
+          description: `We've copied our email (${supportEmail}) to your clipboard so you can write to us directly.`,
+          variant: "destructive",
+        });
+      } catch {
+        toast({
+          title: "Form submission failed",
+          description: `Please write to us directly at ${supportEmail}.`,
+          variant: "destructive",
+        });
+      }
+      
       openMailClient();
     } finally {
       setIsSubmitting(false);
     }
   };
-
   const contactInfo = [
     {
       icon: MapPin,
