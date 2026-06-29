@@ -1,6 +1,8 @@
 import { toast } from "sonner";
 
-const BASE_URL = (import.meta as any).env?.VITE_API_BASE_URL || "https://kcbackend-production-7ae5.up.railway.app";
+const BASE_URL =
+  (import.meta as any).env?.VITE_API_BASE_URL ||
+  "https://forestial-afocal-rex.ngrok-free.dev";
 const TOKEN_KEY = "kc_gsp_token";
 
 export type GspUser = {
@@ -20,7 +22,11 @@ export type UploadedDocument = {
   originalFilename: string;
 };
 
-export type GspDecisionStatus = "pending" | "accepted" | "waitlisted" | "not_admitted";
+export type GspDecisionStatus =
+  | "pending"
+  | "accepted"
+  | "waitlisted"
+  | "not_admitted";
 
 export function getToken() {
   return localStorage.getItem(TOKEN_KEY);
@@ -58,7 +64,11 @@ export function hasAuthToken() {
   return Boolean(getToken());
 }
 
-export async function registerGsp(payload: { google_id: string; username: string; email: string }) {
+export async function registerGsp(payload: {
+  google_id: string;
+  username: string;
+  email: string;
+}) {
   const res = await fetch(`${BASE_URL}/api/v2/auth/google-login/`, {
     headers: {
       "Content-Type": "application/json",
@@ -70,28 +80,49 @@ export async function registerGsp(payload: { google_id: string; username: string
   if (!res.ok) {
     throw new Error(data?.error || data?.message || "Google sign-in failed");
   }
-  return data as { success: boolean; refresh?: string; access?: string; token?: string; user: GspUser };
+  return data as {
+    success: boolean;
+    refresh?: string;
+    access?: string;
+    token?: string;
+    user: GspUser;
+  };
 }
 
-export async function verifyEmailCode(payload: { email: string; code: string }) {
-  return apiRequest<{ success: boolean; message: string; token: string; user: GspUser }>("/api/v2/auth/verify-email/", {
+export async function verifyEmailCode(payload: {
+  email: string;
+  code: string;
+}) {
+  return apiRequest<{
+    success: boolean;
+    message: string;
+    token: string;
+    user: GspUser;
+  }>("/api/v2/auth/verify-email/", {
     method: "POST",
     body: JSON.stringify(payload),
   });
 }
 
 export async function resendVerificationCode(email: string) {
-  return apiRequest<{ success: boolean; message: string; debugVerificationCode?: string }>("/api/v2/auth/resend-verification-code/", {
+  return apiRequest<{
+    success: boolean;
+    message: string;
+    debugVerificationCode?: string;
+  }>("/api/v2/auth/resend-verification-code/", {
     method: "POST",
     body: JSON.stringify({ email }),
   });
 }
 
 export async function loginGsp(payload: { email: string; password: string }) {
-  return apiRequest<{ token: string; user: GspUser }>("/api/v2/auth/google-login/", {
-    method: "POST",
-    body: JSON.stringify(payload),
-  });
+  return apiRequest<{ token: string; user: GspUser }>(
+    "/api/v2/auth/google-login/",
+    {
+      method: "POST",
+      body: JSON.stringify(payload),
+    },
+  );
 }
 
 export async function forgotPassword(email: string) {
@@ -112,8 +143,17 @@ export async function getCurrentUser() {
   return apiRequest<{ user: GspUser }>("/api/v2/auth/me/");
 }
 
-export async function createPortalAccount(payload: { name: string; email: string; password: string }) {
-  return apiRequest<{ success: boolean; message?: string; token?: string; user?: GspUser }>("/api/v2/auth/register/", {
+export async function createPortalAccount(payload: {
+  name: string;
+  email: string;
+  password: string;
+}) {
+  return apiRequest<{
+    success: boolean;
+    message?: string;
+    token?: string;
+    user?: GspUser;
+  }>("/api/v2/auth/register/", {
     method: "POST",
     body: JSON.stringify(payload),
   });
@@ -155,38 +195,68 @@ function buildGspApplicationPayload(
   };
 }
 
-export async function saveGspDraft(data: any, sectionState: Record<string, boolean>, r_id?: string) {
+export async function saveGspDraft(
+  data: any,
+  sectionState: Record<string, boolean>,
+  r_id?: string,
+) {
   const payload = buildGspApplicationPayload(data, sectionState);
 
   if (r_id) {
-    return apiRequest<{ success: boolean; application: any }>(`/api/v2/gsp/registration/${r_id}/`, {
-      method: "PATCH",
-      body: JSON.stringify(payload),
-    });
+    return apiRequest<{ success: boolean; application: any }>(
+      `/api/v2/gsp/registration/${r_id}/`,
+      {
+        method: "PATCH",
+        body: JSON.stringify(payload),
+      },
+    );
   } else {
-    return apiRequest<{ success: boolean; application: any }>("/api/v2/gsp/registration/", {
-      method: "POST",
-      body: JSON.stringify(payload),
-    });
+    return apiRequest<{ success: boolean; application: any }>(
+      "/api/v2/gsp/registration/",
+      {
+        method: "POST",
+        body: JSON.stringify(payload),
+      },
+    );
   }
-} 
+}
 
-export async function submitGspApplication(data: any, sectionState: Record<string, boolean>, r_id: string) {
+export async function submitGspApplication(
+  data: any,
+  sectionState: Record<string, boolean>,
+  r_id: string,
+) {
   const payload = buildGspApplicationPayload(data, sectionState, {
     submitted: true,
     status: "submitted",
   });
-  return apiRequest<{ success: boolean; reference: string; application: any }>(`/api/v2/gsp/registration/${r_id}/`, {
-    method: "PATCH",
-    body: JSON.stringify(payload),
-  });
+  return apiRequest<{ success: boolean; reference: string; application: any }>(
+    `/api/v2/gsp/registration/${r_id}/`,
+    {
+      method: "PATCH",
+      body: JSON.stringify(payload),
+    },
+  );
 }
 
 export async function getGspDecision() {
-  return apiRequest<{ released: boolean; decisionStatus: GspDecisionStatus | null; reference?: string; lowerSixthPathwayChoice?: string | null }>("/api/gsp/application/decision");
+  return apiRequest<{
+    released: boolean;
+    decisionStatus: GspDecisionStatus | null;
+    reference?: string;
+    lowerSixthPathwayChoice?: string | null;
+  }>("/api/gsp/application/decision");
 }
 
-export async function uploadGspDocument({ file, application, field }: { file: File; application: string; field: "reportCard" | "olSlip" | "alSlip" }) {
+export async function uploadGspDocument({
+  file,
+  application,
+  field,
+}: {
+  file: File;
+  application: string;
+  field: "reportCard" | "olSlip" | "alSlip";
+}) {
   const form = new FormData();
   form.append(field, file);
   // return apiRequest<UploadedDocument>(`/api/v2/gsp/registration/${application}`, {
@@ -199,37 +269,52 @@ export async function uploadGspDocument({ file, application, field }: { file: Fi
       Authorization: `Bearer ${getToken()}`,
     },
     body: form,
-  }).then(async (res) => {
-    const data = await res.json().catch(() => ({}));
-    if (!res.ok) {
-      throw new Error(data?.error || data?.message || "Failed to upload document");
-    }
-    return data;
   })
-  .then(data => {return data})
-  .catch(e => {
-    console.error(e);
-    toast.error("Failed to upload document. Please try again.");
-    throw e;
-  });
+    .then(async (res) => {
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        throw new Error(
+          data?.error || data?.message || "Failed to upload document",
+        );
+      }
+      return data;
+    })
+    .then((data) => {
+      return data;
+    })
+    .catch((e) => {
+      console.error(e);
+      toast.error("Failed to upload document. Please try again.");
+      throw e;
+    });
 }
 
 export async function adminGetApplications(query?: string) {
   const params = new URLSearchParams();
   if (query) params.set("query", query);
-  return apiRequest<{ applications: any[] }>(`/api/admin/gsp/applications${params.toString() ? `?${params.toString()}` : ""}`);
+  return apiRequest<{ applications: any[] }>(
+    `/api/admin/gsp/applications${params.toString() ? `?${params.toString()}` : ""}`,
+  );
 }
 
 export async function adminGetApplication(applicationId: string) {
-  const res = await apiRequest<any>(`/api/admin/gsp/applications/${applicationId}`);
+  const res = await apiRequest<any>(
+    `/api/admin/gsp/applications/${applicationId}`,
+  );
   return { application: res.application || res };
 }
 
-export async function adminSetDecision(applicationId: string, decisionStatus: GspDecisionStatus) {
-  return apiRequest<{ success: boolean; application: any }>(`/api/admin/gsp/applications/${applicationId}/decision`, {
-    method: "PATCH",
-    body: JSON.stringify({ decisionStatus }),
-  });
+export async function adminSetDecision(
+  applicationId: string,
+  decisionStatus: GspDecisionStatus,
+) {
+  return apiRequest<{ success: boolean; application: any }>(
+    `/api/admin/gsp/applications/${applicationId}/decision`,
+    {
+      method: "PATCH",
+      body: JSON.stringify({ decisionStatus }),
+    },
+  );
 }
 
 export async function adminGetUsers() {
@@ -237,12 +322,17 @@ export async function adminGetUsers() {
 }
 
 export async function adminToggleRelease(isReleased: boolean) {
-  return apiRequest<{ success: boolean; release: { isReleased: boolean; releasedAt: string | null } }>("/api/admin/gsp/release", {
+  return apiRequest<{
+    success: boolean;
+    release: { isReleased: boolean; releasedAt: string | null };
+  }>("/api/admin/gsp/release", {
     method: "PATCH",
     body: JSON.stringify({ isReleased }),
   });
 }
 
 export async function adminGetRelease() {
-  return apiRequest<{ release: { isReleased: boolean; releasedAt: string | null } }>("/api/admin/gsp/release");
+  return apiRequest<{
+    release: { isReleased: boolean; releasedAt: string | null };
+  }>("/api/admin/gsp/release");
 }

@@ -3,7 +3,7 @@ import { getToken } from "./gspApi";
 
 const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL ||
-  "https://kcbackend-production-7ae5.up.railway.app";
+  "https://forestial-afocal-rex.ngrok-free.dev";
 
 function authHeaders() {
   const token = getToken();
@@ -11,11 +11,11 @@ function authHeaders() {
 }
 
 export interface KCEvent {
-  id: string;            // UUID from Django
+  id: string; // UUID from Django
   title: string;
-  date: string;          // e.g. "Feb 9, 2026"
-  date_iso: string;      // ISO date string for sorting
-  time: string;          // e.g. "10:00 - 14:00"
+  date: string; // e.g. "Feb 9, 2026"
+  date_iso: string; // ISO date string for sorting
+  time: string; // e.g. "10:00 - 14:00"
   location: string;
   description: string;
   badge?: string;
@@ -23,7 +23,10 @@ export interface KCEvent {
   updated_at?: string;
 }
 
-export type CreateEventPayload = Omit<KCEvent, "id" | "created_at" | "updated_at">;
+export type CreateEventPayload = Omit<
+  KCEvent,
+  "id" | "created_at" | "updated_at"
+>;
 
 /* ---- Local Storage Fallback ---- */
 const EVENTS_KEY = "kc_events_v1";
@@ -59,7 +62,7 @@ export async function getEvents(): Promise<KCEvent[]> {
 
 /** Admin: Create a new event */
 export async function adminCreateEvent(
-  payload: CreateEventPayload
+  payload: CreateEventPayload,
 ): Promise<KCEvent> {
   try {
     const resp = await fetch(`${API_BASE_URL}/api/admin/events`, {
@@ -72,7 +75,9 @@ export async function adminCreateEvent(
     });
     if (!resp.ok) {
       const errData = await resp.json().catch(() => ({}));
-      throw new Error(errData.error || errData.message || "Create event failed");
+      throw new Error(
+        errData.error || errData.message || "Create event failed",
+      );
     }
     const data = await resp.json();
     const event = data.event || data;
@@ -99,7 +104,7 @@ export async function adminCreateEvent(
 /** Admin: Update an event */
 export async function adminUpdateEvent(
   eventId: string,
-  payload: Partial<CreateEventPayload>
+  payload: Partial<CreateEventPayload>,
 ): Promise<KCEvent> {
   try {
     const resp = await fetch(`${API_BASE_URL}/api/admin/events/${eventId}`, {
@@ -112,7 +117,9 @@ export async function adminUpdateEvent(
     });
     if (!resp.ok) {
       const errData = await resp.json().catch(() => ({}));
-      throw new Error(errData.error || errData.message || "Update event failed");
+      throw new Error(
+        errData.error || errData.message || "Update event failed",
+      );
     }
     const data = await resp.json();
     return data.event || data;
@@ -121,7 +128,11 @@ export async function adminUpdateEvent(
     const local = readLocalEvents();
     const idx = local.findIndex((e) => e._id === eventId);
     if (idx !== -1) {
-      local[idx] = { ...local[idx], ...payload, updatedAt: new Date().toISOString() };
+      local[idx] = {
+        ...local[idx],
+        ...payload,
+        updatedAt: new Date().toISOString(),
+      };
       writeLocalEvents(local);
       return local[idx];
     }
@@ -130,7 +141,9 @@ export async function adminUpdateEvent(
 }
 
 /** Admin: Delete an event */
-export async function adminDeleteEvent(eventId: string): Promise<{ deleted: boolean }> {
+export async function adminDeleteEvent(
+  eventId: string,
+): Promise<{ deleted: boolean }> {
   try {
     const resp = await fetch(`${API_BASE_URL}/api/admin/events/${eventId}`, {
       method: "DELETE",
