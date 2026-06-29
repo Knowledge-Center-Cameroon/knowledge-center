@@ -382,10 +382,19 @@ const normalizeGspApplicationData = (source: any, userEmail?: string) => {
       ]),
       false,
     ),
+    secondGuardianOccupation:
+      source.secondaryGuardianOccupation ||
+      source.secondGuardianOccupation ||
+      "",
     alternateWhatsApp:
       source.alternateWhatsApp ||
       source.alternate_whatsapp ||
       source.whatsappAlternate ||
+      "",
+    lowerSixthAlternatives:
+      source.lowerSixthAlternatives ||
+      source.lowerSixthPathwayChoice ||
+      source.lower_sixth_pathway_choice ||
       "",
   };
 };

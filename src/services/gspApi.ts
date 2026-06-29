@@ -6,6 +6,9 @@ const BASE_URL =
 const JSON_HEADERS = {
   "Content-Type": "application/json",
 };
+const NGROK_HEADERS = {
+  "ngrok-skip-browser-warning": "true",
+};
 const ACCESS_TOKEN_KEY = "kc_gsp_access_token";
 const REFRESH_TOKEN_KEY = "kc_gsp_refresh_token";
 const LEGACY_TOKEN_KEY = "kc_gsp_token";
@@ -55,16 +58,20 @@ async function refreshAccessToken() {
 
   const res = await fetch(`${BASE_URL}/api/v2/auth/token/refresh/`, {
     method: "POST",
-    headers: JSON_HEADERS,
+    headers: { ...JSON_HEADERS, ...NGROK_HEADERS },
     body: JSON.stringify({ refresh }),
   });
-  const data = await res.json().catch(() => ({}));
+  const contentType = res.headers.get("content-type") || "";
+  const isJson = contentType.includes("application/json");
+  const data = isJson ? await res.json().catch(() => ({})) : {};
   if (!res.ok || !data?.access) {
     clearAuthToken();
     return null;
   }
 
-  saveAuthToken(data.access, refresh);
+  // Use the new refresh token if the server rotates them
+  const newRefresh = data.refresh || refresh;
+  saveAuthToken(data.access, newRefresh);
   return data.access as string;
 }
 
@@ -77,11 +84,14 @@ async function apiRequest<T>(
     ...init,
     headers: {
       ...JSON_HEADERS,
+      ...NGROK_HEADERS,
       ...authHeaders(),
       ...(init?.headers || {}),
     },
   });
-  const data = await res.json().catch(() => ({}));
+  const contentType = res.headers.get("content-type") || "";
+  const isJson = contentType.includes("application/json");
+  const data = isJson ? await res.json().catch(() => ({})) : {};
   if (res.status === 401 && !hasRetried && getRefreshToken()) {
     const nextToken = await refreshAccessToken();
     if (nextToken) {
@@ -123,18 +133,22 @@ export function persistAuthTokens(data: {
 }
 
 export async function registerGsp(payload: {
-  google_id: string;
-  username: string;
-  email: string;
+  google_id?: string;
+  username?: string;
+  email?: string;
+  access_token?: string;
 }) {
   const res = await fetch(`${BASE_URL}/api/v2/auth/google-login/`, {
     headers: {
       ...JSON_HEADERS,
+      ...NGROK_HEADERS,
     },
     method: "POST",
     body: JSON.stringify(payload),
   });
-  const data = await res.json().catch(() => ({}));
+  const contentType = res.headers.get("content-type") || "";
+  const isJson = contentType.includes("application/json");
+  const data = isJson ? await res.json().catch(() => ({})) : {};
   if (!res.ok) {
     throw new Error(data?.error || data?.message || "Google sign-in failed");
   }
@@ -253,6 +267,7 @@ function buildGspApplicationPayload(
     ...applicationData,
     phoneNumber: `${data.phoneCode || "+237"} ${data.phone || ""}`.trim(),
     secondaryGuardianOccupation: data.secondGuardianOccupation,
+    lowerSixthPathwayChoice: data.lowerSixthAlternatives,
     sectionState,
     ...extras,
   };
@@ -330,6 +345,7 @@ export async function uploadGspDocument({
       method: "PATCH",
       headers: {
         ...authHeaders(),
+        ...NGROK_HEADERS,
       },
       body: form,
     });
@@ -343,7 +359,9 @@ export async function uploadGspDocument({
       return res;
     })
     .then(async (res) => {
-      const data = await res.json().catch(() => ({}));
+      const contentType = res.headers.get("content-type") || "";
+      const isJson = contentType.includes("application/json");
+      const data = isJson ? await res.json().catch(() => ({})) : {};
       if (!res.ok) {
         throw new Error(
           data?.error || data?.message || "Failed to upload document",

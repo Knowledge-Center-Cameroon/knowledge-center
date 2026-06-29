@@ -67,7 +67,7 @@ const FORM_SECTIONS: Array<{ title: string; fields: FieldSpec[] }> = [
       { key: "schoolCity", label: "School city", aliases: ["school_city"] },
       { key: "schoolRegion", label: "School region", aliases: ["school_region"] },
       { key: "currentClass", label: "Current class", aliases: ["current_class"] },
-      { key: "lowerSixthAlternatives", label: "Lower Sixth pathway alternatives", aliases: ["lower_sixth_alternatives"], wide: true },
+      { key: "lowerSixthAlternatives", label: "Lower Sixth pathway alternatives", aliases: ["lower_sixth_alternatives", "lowerSixthPathwayChoice", "lower_sixth_pathway_choice"], wide: true },
       { key: "intendedFieldWhy", label: "Intended field and why", aliases: ["intended_field_why"], multiline: true, wide: true },
     ],
   },
