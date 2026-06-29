@@ -3,7 +3,12 @@ import { toast } from "sonner";
 const BASE_URL =
   (import.meta as any).env?.VITE_API_BASE_URL ||
   "https://forestial-afocal-rex.ngrok-free.dev";
-const TOKEN_KEY = "kc_gsp_token";
+const JSON_HEADERS = {
+  "Content-Type": "application/json",
+};
+const ACCESS_TOKEN_KEY = "kc_gsp_access_token";
+const REFRESH_TOKEN_KEY = "kc_gsp_refresh_token";
+const LEGACY_TOKEN_KEY = "kc_gsp_token";
 
 export type GspUser = {
   id: string;
@@ -29,7 +34,14 @@ export type GspDecisionStatus =
   | "not_admitted";
 
 export function getToken() {
-  return localStorage.getItem(TOKEN_KEY);
+  return (
+    localStorage.getItem(ACCESS_TOKEN_KEY) ||
+    localStorage.getItem(LEGACY_TOKEN_KEY)
+  );
+}
+
+function getRefreshToken() {
+  return localStorage.getItem(REFRESH_TOKEN_KEY);
 }
 
 function authHeaders() {
@@ -37,16 +49,45 @@ function authHeaders() {
   return token ? { Authorization: `Bearer ${token}` } : {};
 }
 
-async function apiRequest<T>(path: string, init?: RequestInit): Promise<T> {
+async function refreshAccessToken() {
+  const refresh = getRefreshToken();
+  if (!refresh) return null;
+
+  const res = await fetch(`${BASE_URL}/api/v2/auth/token/refresh/`, {
+    method: "POST",
+    headers: JSON_HEADERS,
+    body: JSON.stringify({ refresh }),
+  });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok || !data?.access) {
+    clearAuthToken();
+    return null;
+  }
+
+  saveAuthToken(data.access, refresh);
+  return data.access as string;
+}
+
+async function apiRequest<T>(
+  path: string,
+  init?: RequestInit,
+  hasRetried = false,
+): Promise<T> {
   const res = await fetch(`${BASE_URL}${path}`, {
     ...init,
     headers: {
-      "Content-Type": "application/json",
+      ...JSON_HEADERS,
       ...authHeaders(),
       ...(init?.headers || {}),
     },
   });
   const data = await res.json().catch(() => ({}));
+  if (res.status === 401 && !hasRetried && getRefreshToken()) {
+    const nextToken = await refreshAccessToken();
+    if (nextToken) {
+      return apiRequest<T>(path, init, true);
+    }
+  }
   if (!res.ok) {
     const message = data?.error || data?.message || "Request failed";
     throw new Error(message);
@@ -54,14 +95,31 @@ async function apiRequest<T>(path: string, init?: RequestInit): Promise<T> {
   return data as T;
 }
 
-export function saveAuthToken(token: string) {
-  localStorage.setItem(TOKEN_KEY, token);
+export function saveAuthToken(accessToken: string, refreshToken?: string) {
+  localStorage.setItem(ACCESS_TOKEN_KEY, accessToken);
+  localStorage.removeItem(LEGACY_TOKEN_KEY);
+  if (refreshToken) {
+    localStorage.setItem(REFRESH_TOKEN_KEY, refreshToken);
+  }
 }
 export function clearAuthToken() {
-  localStorage.removeItem(TOKEN_KEY);
+  localStorage.removeItem(ACCESS_TOKEN_KEY);
+  localStorage.removeItem(REFRESH_TOKEN_KEY);
+  localStorage.removeItem(LEGACY_TOKEN_KEY);
 }
 export function hasAuthToken() {
   return Boolean(getToken());
+}
+
+export function persistAuthTokens(data: {
+  access?: string;
+  refresh?: string;
+  token?: string;
+}) {
+  const accessToken = data.access || data.token;
+  if (!accessToken) return false;
+  saveAuthToken(accessToken, data.refresh);
+  return true;
 }
 
 export async function registerGsp(payload: {
@@ -71,7 +129,7 @@ export async function registerGsp(payload: {
 }) {
   const res = await fetch(`${BASE_URL}/api/v2/auth/google-login/`, {
     headers: {
-      "Content-Type": "application/json",
+      ...JSON_HEADERS,
     },
     method: "POST",
     body: JSON.stringify(payload),
@@ -116,8 +174,13 @@ export async function resendVerificationCode(email: string) {
 }
 
 export async function loginGsp(payload: { email: string; password: string }) {
-  return apiRequest<{ token: string; user: GspUser }>(
-    "/api/v2/auth/google-login/",
+  return apiRequest<{
+    success: boolean;
+    token: string;
+    refresh?: string;
+    user: GspUser;
+  }>(
+    "/api/v2/auth/login/",
     {
       method: "POST",
       body: JSON.stringify(payload),
@@ -126,14 +189,14 @@ export async function loginGsp(payload: { email: string; password: string }) {
 }
 
 export async function forgotPassword(email: string) {
-  return apiRequest<{ success: boolean }>("/api/auth/forgot-password", {
+  return apiRequest<{ success: boolean }>("/api/v2/auth/forgot-password/", {
     method: "POST",
     body: JSON.stringify({ email }),
   });
 }
 
 export async function resetPassword(token: string, newPassword: string) {
-  return apiRequest<{ success: boolean }>("/api/auth/reset-password", {
+  return apiRequest<{ success: boolean }>("/api/v2/auth/reset-password/", {
     method: "POST",
     body: JSON.stringify({ token, newPassword }),
   });
@@ -239,13 +302,15 @@ export async function submitGspApplication(
   );
 }
 
+// NOTE: Trailing slash is required — Django APPEND_SLASH will 301-redirect
+// slashless PATCH/POST requests and the body is dropped.
 export async function getGspDecision() {
   return apiRequest<{
     released: boolean;
     decisionStatus: GspDecisionStatus | null;
     reference?: string;
     lowerSixthPathwayChoice?: string | null;
-  }>("/api/gsp/application/decision");
+  }>("/api/gsp/application/decision/");
 }
 
 export async function uploadGspDocument({
@@ -259,17 +324,24 @@ export async function uploadGspDocument({
 }) {
   const form = new FormData();
   form.append(field, file);
-  // return apiRequest<UploadedDocument>(`/api/v2/gsp/registration/${application}`, {
-  //   method: "PATCH",
-  //   body: form
-  // });
-  return await fetch(`${BASE_URL}/api/v2/gsp/registration/${application}/`, {
-    method: "PATCH",
-    headers: {
-      Authorization: `Bearer ${getToken()}`,
-    },
-    body: form,
-  })
+
+  const upload = () =>
+    fetch(`${BASE_URL}/api/v2/gsp/registration/${application}/`, {
+      method: "PATCH",
+      headers: {
+        ...authHeaders(),
+      },
+      body: form,
+    });
+
+  return await upload()
+    .then(async (res) => {
+      if (res.status === 401 && getRefreshToken()) {
+        const nextToken = await refreshAccessToken();
+        if (nextToken) return upload();
+      }
+      return res;
+    })
     .then(async (res) => {
       const data = await res.json().catch(() => ({}));
       if (!res.ok) {
@@ -293,13 +365,13 @@ export async function adminGetApplications(query?: string) {
   const params = new URLSearchParams();
   if (query) params.set("query", query);
   return apiRequest<{ applications: any[] }>(
-    `/api/admin/gsp/applications${params.toString() ? `?${params.toString()}` : ""}`,
+    `/api/admin/gsp/applications/${params.toString() ? `?${params.toString()}` : ""}`,
   );
 }
 
 export async function adminGetApplication(applicationId: string) {
   const res = await apiRequest<any>(
-    `/api/admin/gsp/applications/${applicationId}`,
+    `/api/admin/gsp/applications/${applicationId}/`,
   );
   return { application: res.application || res };
 }
@@ -309,7 +381,7 @@ export async function adminSetDecision(
   decisionStatus: GspDecisionStatus,
 ) {
   return apiRequest<{ success: boolean; application: any }>(
-    `/api/admin/gsp/applications/${applicationId}/decision`,
+    `/api/admin/gsp/applications/${applicationId}/decision/`,
     {
       method: "PATCH",
       body: JSON.stringify({ decisionStatus }),
@@ -318,14 +390,14 @@ export async function adminSetDecision(
 }
 
 export async function adminGetUsers() {
-  return apiRequest<{ users: GspUser[] }>("/api/admin/gsp/users");
+  return apiRequest<{ users: GspUser[] }>("/api/admin/gsp/users/");
 }
 
 export async function adminToggleRelease(isReleased: boolean) {
   return apiRequest<{
     success: boolean;
     release: { isReleased: boolean; releasedAt: string | null };
-  }>("/api/admin/gsp/release", {
+  }>("/api/admin/gsp/release/", {
     method: "PATCH",
     body: JSON.stringify({ isReleased }),
   });
@@ -334,5 +406,5 @@ export async function adminToggleRelease(isReleased: boolean) {
 export async function adminGetRelease() {
   return apiRequest<{
     release: { isReleased: boolean; releasedAt: string | null };
-  }>("/api/admin/gsp/release");
+  }>("/api/admin/gsp/release/");
 }
