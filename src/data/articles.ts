@@ -164,7 +164,7 @@ export const articles: Article[] = [
           "Young People and Online Scams: Findings from a Community Study in Limbe, Cameroon",
         description:
           "Read the full research report to explore the methodology, detailed findings, analysis and recommendations.",
-        url: "https://drive.google.com/file/d/1iQtw9Ee1lLw-DG-JyDfwmQzJRA70so0Z/view?usp=drive_link",
+        url: "https://drive.google.com/file/d/1KPpKuw1vAFlPHkINBF2JFbH0zw2069nH/view?usp=sharing",
         meta: "PDF report · Google Drive",
       },
       { type: "heading", level: 2, text: "About the research" },
