@@ -16,6 +16,8 @@ const ProjectsPage = React.lazy(() => import("./pages/ProjectsPage"));
 const ProjectDetailPage = React.lazy(() => import("./pages/ProjectDetailPage"));
 const BlogPage = React.lazy(() => import("./pages/BlogPage"));
 const BlogDetailPage = React.lazy(() => import("./pages/BlogDetailPage"));
+const ArticlesPage = React.lazy(() => import("./pages/ArticlesPage"));
+const ArticleDetailPage = React.lazy(() => import("./pages/ArticleDetailPage"));
 const ContactPage = React.lazy(() => import("./pages/ContactPage"));
 const DonatePage = React.lazy(() => import("./pages/DonatePage"));
 const StemRegistrationPage = React.lazy(() => import("./pages/StemRegistrationPage"));
@@ -187,6 +189,8 @@ const AppShell: React.FC = () => (
                   <Route path="events" element={<EventsPage />} />
                   <Route path="blog" element={<BlogPage />} />
                   <Route path="blog/:slug" element={<BlogDetailPage />} />
+                  <Route path="articles" element={<ArticlesPage />} />
+                  <Route path="articles/:slug" element={<ArticleDetailPage />} />
                   <Route path="contact" element={<ContactPage />} />
                   <Route path="donate" element={<DonatePage />} />
                   <Route path="stem" element={<StemRegistrationPage />} />

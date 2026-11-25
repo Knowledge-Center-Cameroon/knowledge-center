@@ -7,6 +7,7 @@ export const routePrefetchers: Record<string, () => Promise<unknown>> = {
   "/projects": () => import("./pages/ProjectsPage"),
   "/events": () => import("./pages/EventsPage"),
   "/blog": () => import("./pages/BlogPage"),
+  "/articles": () => import("./pages/ArticlesPage"),
   "/contact": () => import("./pages/ContactPage"),
   "/donate": () => import("./pages/DonatePage"),
   "/auth": () => import("./pages/AuthPage"),

@@ -46,6 +46,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
+const STEM_SITE_URL = "https://stem.kcedu.org";
+
 /**
  * Projects Component - Display KC's flagship programs and projects
  */
@@ -316,10 +318,8 @@ const Projects = () => {
                       {/* CTA Buttons */}
                       <div className="mt-5 flex flex-col sm:flex-row gap-3">
                         {(() => {
-                          const enrollHref = activeTab === 'stem'
-                            ? '/stem'
-                            : activeTab === 'summer'
-                              ? '/projects/summer-education'
+                          const enrollHref = activeTab === 'summer'
+                            ? '/projects/summer-education'
                             : '/gsp';
                           const learnHref = activeTab === 'stem'
                             ? '/projects/stem'
@@ -334,10 +334,21 @@ const Projects = () => {
                                   className="group font-semibold w-full sm:w-auto h-10 px-6"
                                   asChild
                                 >
-                                  <Link to={enrollHref}>
-                                    Enroll Now
-                                    <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
-                                  </Link>
+                                  {activeTab === 'stem' ? (
+                                    <a
+                                      href={STEM_SITE_URL}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                    >
+                                      Enroll Now
+                                      <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                                    </a>
+                                  ) : (
+                                    <Link to={enrollHref}>
+                                      Enroll Now
+                                      <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                                    </Link>
+                                  )}
                                 </Button>
                               </motion.div>
                               <motion.div whileHover={{ y: -2 }} whileTap={{ scale: 0.98 }}>
@@ -414,10 +425,14 @@ const Projects = () => {
                       className="group font-semibold rounded-full px-6 sm:px-7 "
                       asChild
                     >
-                      <Link to="/stem">
+                      <a
+                        href={STEM_SITE_URL}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
                         <span>Join Competition</span>
                         <Trophy className="ml-2 h-4 w-4 group-hover:scale-110 group-hover:translate-x-0.5 transition-transform" />
-                      </Link>
+                      </a>
                     </Button>
                   </motion.div>
                 </motion.div>

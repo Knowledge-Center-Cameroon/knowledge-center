@@ -23,6 +23,10 @@ export default {
 				'sans': ['Montserrat', 'system-ui', 'Segoe UI', 'sans-serif'],
 				'heading': ['Poppins', 'system-ui', 'Segoe UI', 'sans-serif'],
 				'body': ['Montserrat', 'system-ui', 'Segoe UI', 'sans-serif'],
+				/* Editorial type used only by the KC Articles section */
+				'article-display': ['Newsreader', 'Georgia', 'Times New Roman', 'serif'],
+				'article-body': ['Source Serif 4', 'Georgia', 'Times New Roman', 'serif'],
+				'article-ui': ['Inter', 'system-ui', 'Segoe UI', 'sans-serif'],
 			},
 			fontSize: {
 				/* Semantic heading scale: 96/80/64/48/36/24/20/16/14/12px */
@@ -93,7 +97,17 @@ export default {
 					light: 'hsl(var(--kc-red-light))'
 				},
 				'kc-black': 'hsl(var(--kc-black))',
-				'kc-gray': 'hsl(var(--kc-gray))'
+				'kc-gray': 'hsl(var(--kc-gray))',
+				/* KC Articles editorial palette */
+				'article': {
+					paper: '#FBFAF7',
+					cream: '#F4F1EA',
+					ink: '#17191E',
+					'soft-ink': '#33363D',
+					muted: '#5E626B',
+					rule: '#E3DED3',
+					'rule-strong': '#CFC8B9'
+				}
 			},
 			borderRadius: {
 				lg: 'var(--radius)',

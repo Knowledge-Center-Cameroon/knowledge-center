@@ -9,6 +9,8 @@ import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious
 
 const MotionButton = motion(Button);
 
+const STEM_SITE_URL = "https://stem.kcedu.org";
+
 interface ProjectDetailContentProps {
   project: Project;
 }
@@ -328,7 +330,13 @@ const ProjectDetailContent: React.FC<ProjectDetailContentProps> = ({ project }) 
                         className="w-full font-bold text-base bg-white text-kc-blue hover:bg-gray-50 h-14 shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all"
                         asChild
                       >
-                        <Link to="/stem">Get Registered</Link>
+                        <a
+                          href={STEM_SITE_URL}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          Get Registered
+                        </a>
                       </Button>
                     )}
                     {project.slug === "gsp" && (

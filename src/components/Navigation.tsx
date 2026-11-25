@@ -10,6 +10,13 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { googleLogout } from "@react-oauth/google";
 
 /**
+ * The Google sign-in control is temporarily hidden while the site focuses on
+ * its core programmes. Flip this to `true` to restore the account controls
+ * exactly as they were — the auth provider, routes, and handlers stay intact.
+ */
+const SHOW_AUTH_CONTROLS = false;
+
+/**
  * Navigation Component - Primary site navigation
  * 
  * Features:
@@ -120,7 +127,7 @@ const Navigation = () => {
     { label: "About", to: "/about" },
     { label: "Projects", to: "/projects" },
     { label: "Events", to: "/events" },
-    { label: "Blog", to: "/blog" },
+    { label: "Articles", to: "/articles" },
     { label: "Contact", to: "/contact" },
   ];
 
@@ -221,7 +228,7 @@ const Navigation = () => {
                 Donate
               </Link>
             </Button>
-            {authControls}
+            {SHOW_AUTH_CONTROLS ? authControls : null}
           </div>
 
           {/* Mobile Menu Button */}
@@ -279,8 +286,9 @@ const Navigation = () => {
                 ))}
               </div>
               <div className="px-4 py-4 border-t border-border/70 flex flex-col gap-3">
-                <div className="flex items-center justify-between gap-3 w-full">
-                  {user ? (
+                {SHOW_AUTH_CONTROLS ? (
+                  <div className="flex items-center justify-between gap-3 w-full">
+                    {user ? (
                     <div className="flex items-center bg-white border border-border rounded-full shadow-sm overflow-hidden h-10 w-full">
                       <Link
                         to="/dashboard"
@@ -329,7 +337,8 @@ const Navigation = () => {
                       </Link>
                     </Button>
                   )}
-                </div>
+                  </div>
+                ) : null}
                 <Button
                   asChild
                   variant="blackOutline"

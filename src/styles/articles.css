@@ -1,0 +1,511 @@
+/* ==========================================================================
+   KC Articles — editorial design system
+   --------------------------------------------------------------------------
+   This stylesheet is loaded only by the /articles routes. It deliberately
+   steps away from the site's Montserrat/Poppins UI type to give long-form
+   writing its own voice:
+
+     Display / headlines : Newsreader   (serif)
+     Body / long-form    : Source Serif 4 (serif)
+     Meta / interface    : Inter        (grotesque sans)
+
+   All three families are self-hosted in /public/fonts.
+   ========================================================================== */
+
+@font-face {
+  font-family: "Newsreader";
+  src: url("/fonts/newsreader.woff2") format("woff2");
+  font-weight: 200 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Newsreader";
+  src: url("/fonts/newsreader-italic.woff2") format("woff2");
+  font-weight: 200 800;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Source Serif 4";
+  src: url("/fonts/source-serif-4.woff2") format("woff2");
+  font-weight: 200 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Source Serif 4";
+  src: url("/fonts/source-serif-4-italic.woff2") format("woff2");
+  font-weight: 200 900;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Inter";
+  src: url("/fonts/inter.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+.kc-articles {
+  --kc-paper: #fbfaf7;
+  --kc-paper-deep: #f4f1ea;
+  --kc-ink: #17191e;
+  --kc-ink-soft: #33363d;
+  --kc-muted: #5e626b;
+  --kc-rule: #e3ded3;
+  --kc-rule-strong: #cfc8b9;
+  --kc-accent: hsl(var(--kc-blue));
+  --kc-accent-dark: hsl(var(--kc-blue-dark));
+  --kc-font-display: "Newsreader", Georgia, "Times New Roman", serif;
+  --kc-font-body: "Source Serif 4", Georgia, "Times New Roman", serif;
+  --kc-font-ui: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+
+  background-color: var(--kc-paper);
+  color: var(--kc-ink);
+  font-family: var(--kc-font-ui);
+  font-optical-sizing: auto;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+.kc-articles ::selection {
+  background: hsl(var(--kc-blue) / 0.16);
+  color: var(--kc-ink);
+}
+
+/* Headings inside the journal keep the editorial voice, not the site voice. */
+.kc-articles :where(h1, h2, h3, h4, h5, h6) {
+  font-family: var(--kc-font-display);
+  color: var(--kc-ink);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+
+.kc-ui {
+  font-family: var(--kc-font-ui);
+  font-feature-settings: "cv11", "ss01";
+}
+
+/* Keep the Tailwind font utilities authoritative inside the journal. */
+.kc-articles .font-article-ui {
+  font-family: var(--kc-font-ui);
+}
+
+.kc-articles .font-article-body {
+  font-family: var(--kc-font-body);
+}
+
+.kc-articles .font-article-display {
+  font-family: var(--kc-font-display);
+}
+
+.kc-display {
+  font-family: var(--kc-font-display);
+  font-weight: 500;
+  letter-spacing: -0.025em;
+  line-height: 1.04;
+  color: var(--kc-ink);
+}
+
+.kc-serif {
+  font-family: var(--kc-font-body);
+}
+
+.kc-eyebrow {
+  font-family: var(--kc-font-ui);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  line-height: 1.4;
+  text-transform: uppercase;
+  color: var(--kc-muted);
+}
+
+.kc-masthead-title {
+  font-family: var(--kc-font-display);
+  font-size: clamp(3.1rem, 8.5vw, 6.2rem);
+  font-weight: 500;
+  letter-spacing: -0.045em;
+  line-height: 0.94;
+  color: var(--kc-ink);
+}
+
+.kc-article-title {
+  font-family: var(--kc-font-display);
+  font-size: clamp(2.35rem, 5.6vw, 4.35rem);
+  font-weight: 500;
+  letter-spacing: -0.035em;
+  line-height: 1.04;
+  color: var(--kc-ink);
+  text-wrap: balance;
+}
+
+.kc-card-title {
+  font-family: var(--kc-font-display);
+  font-size: clamp(1.45rem, 2.4vw, 2rem);
+  font-weight: 500;
+  letter-spacing: -0.025em;
+  line-height: 1.14;
+  color: var(--kc-ink);
+  text-wrap: balance;
+}
+
+.kc-dek {
+  font-family: var(--kc-font-body);
+  font-size: clamp(1.125rem, 1.8vw, 1.375rem);
+  font-weight: 400;
+  line-height: 1.6;
+  color: var(--kc-muted);
+}
+
+/* --------------------------------------------------------------------------
+   Article body
+   -------------------------------------------------------------------------- */
+
+.kc-article-prose {
+  font-family: var(--kc-font-body);
+  font-size: 1.0625rem;
+  line-height: 1.78;
+  color: var(--kc-ink-soft);
+  font-optical-sizing: auto;
+}
+
+@media (min-width: 768px) {
+  .kc-article-prose {
+    font-size: 1.1875rem;
+    line-height: 1.8;
+  }
+}
+
+.kc-article-prose > p {
+  margin: 0 0 1.55em;
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  color: inherit;
+}
+
+.kc-article-prose > p.kc-opening {
+  color: var(--kc-ink);
+}
+
+@media (min-width: 640px) {
+  .kc-article-prose > p.kc-opening::first-letter {
+    float: left;
+    font-family: var(--kc-font-display);
+    font-size: 4.15em;
+    font-weight: 500;
+    line-height: 0.78;
+    padding: 0.09em 0.12em 0 0;
+    color: var(--kc-accent);
+  }
+}
+
+.kc-article-prose h2 {
+  font-family: var(--kc-font-display);
+  font-size: clamp(1.7rem, 3.2vw, 2.15rem);
+  font-weight: 600;
+  letter-spacing: -0.025em;
+  line-height: 1.18;
+  color: var(--kc-ink);
+  margin: 2.35em 0 0.65em;
+  scroll-margin-top: 7rem;
+}
+
+.kc-article-prose h3 {
+  font-family: var(--kc-font-display);
+  font-size: clamp(1.35rem, 2.4vw, 1.6rem);
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  line-height: 1.3;
+  color: var(--kc-ink);
+  margin: 2em 0 0.55em;
+  scroll-margin-top: 7rem;
+}
+
+.kc-article-prose h2 + p,
+.kc-article-prose h3 + p {
+  margin-top: 0;
+}
+
+.kc-article-prose strong {
+  font-weight: 700;
+  color: var(--kc-ink);
+}
+
+.kc-article-prose em {
+  font-style: italic;
+}
+
+.kc-article-prose a {
+  color: var(--kc-accent);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  text-decoration-color: hsl(var(--kc-blue) / 0.35);
+  transition: color 180ms ease, text-decoration-color 180ms ease;
+}
+
+.kc-article-prose a:hover {
+  color: var(--kc-accent-dark);
+  text-decoration-color: var(--kc-accent-dark);
+}
+
+.kc-article-prose code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.86em;
+  background: var(--kc-paper-deep);
+  border: 1px solid var(--kc-rule);
+  border-radius: 3px;
+  padding: 0.12em 0.35em;
+  color: var(--kc-ink);
+}
+
+.kc-article-prose ul,
+.kc-article-prose ol {
+  margin: 0 0 1.7em;
+  padding: 0;
+  list-style: none;
+}
+
+.kc-article-prose ul > li {
+  position: relative;
+  margin: 0.7em 0;
+  padding-left: 1.55rem;
+  font-size: inherit;
+  line-height: inherit;
+}
+
+.kc-article-prose ul > li::before {
+  content: "—";
+  position: absolute;
+  left: 0;
+  top: 0;
+  color: var(--kc-accent);
+  font-family: var(--kc-font-ui);
+  font-size: 0.9em;
+}
+
+.kc-article-prose ol {
+  counter-reset: kc-list;
+}
+
+.kc-article-prose ol > li {
+  counter-increment: kc-list;
+  position: relative;
+  margin: 0.7em 0;
+  padding-left: 2.4rem;
+  font-size: inherit;
+  line-height: inherit;
+}
+
+.kc-article-prose ol > li::before {
+  content: counter(kc-list, decimal-leading-zero);
+  position: absolute;
+  left: 0;
+  top: 0.38em;
+  color: var(--kc-muted);
+  font-family: var(--kc-font-ui);
+  font-size: 0.68em;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+}
+
+.kc-article-prose blockquote {
+  margin: 2.6em 0;
+  padding: 0.2em 0 0.2em 1.5rem;
+  border-left: 2px solid var(--kc-accent);
+}
+
+.kc-article-prose blockquote p {
+  font-family: var(--kc-font-display);
+  font-size: clamp(1.5rem, 3vw, 1.95rem);
+  font-style: italic;
+  font-weight: 400;
+  line-height: 1.32;
+  letter-spacing: -0.015em;
+  color: var(--kc-ink);
+  margin: 0;
+}
+
+.kc-article-prose figcaption {
+  font-family: var(--kc-font-ui);
+}
+
+.kc-article-prose hr {
+  border: 0;
+  border-top: 1px solid var(--kc-rule);
+  margin: 3em auto;
+  width: 5rem;
+}
+
+.kc-article-prose .kc-inline-image {
+  width: 100%;
+  height: auto;
+  display: block;
+  background: var(--kc-paper-deep);
+  border: 1px solid var(--kc-rule);
+}
+
+/* --------------------------------------------------------------------------
+   Downloadable report card
+   -------------------------------------------------------------------------- */
+
+.kc-download {
+  margin: 2.9rem 0;
+  padding: 1.5rem 1.35rem 1.6rem;
+  border: 1px solid var(--kc-rule);
+  border-top: 3px solid var(--kc-accent);
+  background: var(--kc-paper-deep);
+}
+
+@media (min-width: 640px) {
+  .kc-download {
+    padding: 1.9rem 2rem 2rem;
+  }
+}
+
+.kc-article-prose .kc-download__label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin: 0;
+  font-family: var(--kc-font-ui);
+  font-size: 0.68rem;
+  font-weight: 600;
+  line-height: 1.4;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--kc-accent);
+}
+
+.kc-article-prose .kc-download__title {
+  margin: 0.6rem 0 0;
+  font-family: var(--kc-font-display);
+  font-size: clamp(1.2rem, 2.4vw, 1.45rem);
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: -0.015em;
+  color: var(--kc-ink);
+}
+
+.kc-article-prose .kc-download__desc {
+  margin: 0.55rem 0 0;
+  font-family: var(--kc-font-body);
+  font-size: 1rem;
+  line-height: 1.65;
+  color: var(--kc-ink-soft);
+}
+
+.kc-article-prose .kc-download__action {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.72rem 1.15rem;
+  background: var(--kc-accent);
+  color: #ffffff;
+  font-family: var(--kc-font-ui);
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  text-decoration: none;
+  transition: background-color 180ms ease;
+}
+
+.kc-article-prose .kc-download__action:hover,
+.kc-article-prose .kc-download__action:focus-visible {
+  background: var(--kc-accent-dark);
+  color: #ffffff;
+  text-decoration: none;
+}
+
+.kc-article-prose .kc-download__meta {
+  font-family: var(--kc-font-ui);
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  color: var(--kc-muted);
+}
+
+/* --------------------------------------------------------------------------
+   Table of contents
+   -------------------------------------------------------------------------- */
+
+.kc-toc a {
+  display: block;
+  padding: 0.38rem 0 0.38rem 0.9rem;
+  border-left: 1px solid var(--kc-rule);
+  color: var(--kc-muted);
+  font-family: var(--kc-font-ui);
+  font-size: 0.78rem;
+  line-height: 1.45;
+  text-decoration: none;
+  transition: color 160ms ease, border-color 160ms ease;
+}
+
+.kc-toc a:hover,
+.kc-toc a:focus-visible {
+  color: var(--kc-accent);
+  border-left-color: var(--kc-accent);
+}
+
+.kc-toc a[data-level="3"] {
+  padding-left: 1.6rem;
+  font-size: 0.74rem;
+}
+
+/* --------------------------------------------------------------------------
+   Buttons, inputs and small touches inside the journal
+   -------------------------------------------------------------------------- */
+
+.kc-articles button,
+.kc-articles input,
+.kc-articles textarea {
+  font-family: var(--kc-font-ui);
+}
+
+.kc-articles :focus-visible {
+  outline: 2px solid hsl(var(--kc-blue) / 0.55);
+  outline-offset: 3px;
+}
+
+.kc-rule {
+  border-color: var(--kc-rule);
+}
+
+.kc-image-zoom img {
+  transition: transform 900ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.kc-image-zoom:hover img {
+  transform: scale(1.035);
+}
+
+/* A quiet paper texture for the masthead — pure CSS, no image request. */
+.kc-masthead-wash {
+  background-image:
+    radial-gradient(circle at 12% 18%, hsl(var(--kc-blue) / 0.055), transparent 34%),
+    radial-gradient(circle at 88% 10%, rgba(197, 165, 105, 0.12), transparent 38%);
+}
+
+.kc-drop-rule {
+  height: 1px;
+  background: linear-gradient(90deg, var(--kc-rule-strong), transparent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .kc-articles *,
+  .kc-articles *::before,
+  .kc-articles *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}

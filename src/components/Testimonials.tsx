@@ -117,7 +117,7 @@ const Testimonials: React.FC = () => {
         </div>
 
         <div className="mt-10 mb-4 md:mb-6 text-center">
-          <a href="/blog" className="inline-flex items-center gap-2 rounded-full px-5 py-2.5 bg-kc-blue text-white font-semibold shadow hover:bg-kc-blue-dark transition-colors">
+          <a href="/articles" className="inline-flex items-center gap-2 rounded-full px-5 py-2.5 bg-kc-blue text-white font-semibold shadow hover:bg-kc-blue-dark transition-colors">
             View more stories
           </a>
         </div>

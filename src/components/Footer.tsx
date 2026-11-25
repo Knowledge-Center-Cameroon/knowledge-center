@@ -129,7 +129,7 @@ const Footer = () => {
                   { label: "About Us", to: "/about" },
                   { label: "Projects", to: "/projects" },
                   { label: "Events", to: "/events" },
-                  { label: "Blog", to: "/blog" },
+                  { label: "Articles", to: "/articles" },
                   { label: "Contact Us", to: "/contact" },
                 ].map((item) => (
                   <li key={item.label}>

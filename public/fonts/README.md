@@ -1,11 +1,13 @@
-# Montserrat webfont
+# Editorial webfonts
 
-Place the Montserrat webfont files you are licensed to use in this folder.
+These fonts are used only by the KC Articles section (`/articles`).
 
-Expected filenames (variable fonts recommended):
-- Montserrat.woff2 (normal/roman)
+- `Newsreader` — display and article headings (SIL Open Font License)
+- `Source Serif 4` — long-form article body (SIL Open Font License)
+- `Inter` — article metadata and interface labels (SIL Open Font License)
 
+They were downloaded from Google Fonts as latin-subset variable WOFF2 files so
+the journal does not depend on a third-party font CDN.
 
-Why this is needed:
-- Browsers and devices that don’t have Montserrat installed will download these webfonts from your site so your typography stays consistent.
-- Ensure you have the right to self-host Montserrat. If not, use an Adobe Fonts kit that includes Montserrat and replace the @font-face src URLs with the kit URLs.
+The site's main Montserrat and Poppins fonts remain in this folder for the rest
+of the website.
